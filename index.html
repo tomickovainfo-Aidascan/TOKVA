@@ -27,6 +27,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 .topbar a.back:hover { color:var(--gold); }
 .topbar .brand { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; }
 .topbar .brand span { color:var(--gold); }
+.topbar-login { color:var(--gold); text-decoration:none; font-size:13px; font-weight:700; border:1px solid var(--gold); padding:7px 16px; border-radius:6px; transition:background .15s,color .15s; margin-right:14px; }
+.topbar-login:hover { background:var(--gold); color:var(--black); }
+.topbar-right { display:flex; align-items:center; }
 .preview-flag { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); border:1px solid rgba(233,169,27,0.4); padding:4px 10px; border-radius:3px; }
 
 /* layout */
@@ -282,7 +285,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 <div class="topbar">
   <a class="back" href="index.html">← Zpět na hlavní web</a>
   <div class="brand">Nástrojovna <span>Gabriela Tomíčková</span></div>
-  <div class="preview-flag">Náhled</div>
+  <div class="topbar-right">
+    <a class="topbar-login" href="prihlaseni.html">Moje Nástrojovna</a>
+    <div class="preview-flag">Náhled</div>
+  </div>
 </div>
 
 <div class="layout">
