@@ -5,7 +5,7 @@
 
 // Vrátí aktuální session (nebo null, pokud nikdo není přihlášený).
 async function ziskatSession() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   return session;
 }
 
@@ -28,7 +28,7 @@ async function ziskatMojiOrganizaci() {
   const session = await ziskatSession();
   if (!session) return null;
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from('organization_members')
     .select('organization_id, role, organizations(name, plan, plan_expires_at)')
     .eq('user_id', session.user.id)
@@ -39,6 +39,16 @@ async function ziskatMojiOrganizaci() {
   return data;
 }
 
+// Řekne appce, jestli firma má aktivní Pro (ne jen "je přihlášený").
+// Kontroluje plan i to, jestli náhodou nevypršel.
+function maAktivniPro(clenstvi) {
+  if (!clenstvi || !clenstvi.organizations) return false;
+  if (clenstvi.organizations.plan !== 'pro') return false;
+  const expiruje = clenstvi.organizations.plan_expires_at;
+  if (expiruje && new Date(expiruje) < new Date()) return false;
+  return true;
+}
+
 // Založí novou firmu a rovnou přihlášeného uživatele udělá jejím majitelem.
 // Používá databázovou funkci create_organization (viz supabase-schema-navrh.md),
 // protože běžný zápis přes .insert() by tady na založení první členské role nestačil.
@@ -46,7 +56,7 @@ async function zalozitOrganizaci(nazevFirmy) {
   const session = await ziskatSession();
   if (!session) throw new Error('Nejste přihlášeni.');
 
-  const { data, error } = await supabase.rpc('create_organization', {
+  const { data, error } = await supabaseClient.rpc('create_organization', {
     org_name: nazevFirmy
   });
 
@@ -56,6 +66,6 @@ async function zalozitOrganizaci(nazevFirmy) {
 
 // Odhlášení, s přesměrováním zpátky na přihlašovací stránku.
 async function odhlasit() {
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
   window.location.href = '/prihlaseni.html';
 }

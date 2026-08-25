@@ -11,4 +11,6 @@ const SUPABASE_URL = 'https://uiqjzeubhhnzspkoekxx.supabase.co';
 // ne skrytí tohohle klíče. NIKDY sem nedávej Secret / service_role klíč.
 const SUPABASE_ANON_KEY = 'sb_publishable_IMOVcKSNKeRB80iudKdBZw_4RTm2KY2';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Pozor: proměnná se NESMÍ jmenovat "supabase" - to jméno si už zabírá
+// samotná knihovna načtená z CDN, a tyhle dvě deklarace by se srazily.
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

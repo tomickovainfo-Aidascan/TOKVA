@@ -136,12 +136,12 @@ async function odeslatFormularUctu() {
 
   try {
     if (aktivniTab === 'registrovat') {
-      const { error } = await supabase.auth.signUp({ email, password: heslo });
+      const { error } = await supabaseClient.auth.signUp({ email, password: heslo });
       if (error) throw error;
       ukazatZpravuUcet('Účet založen. Zkontrolujte e-mail a potvrďte registraci, pak se přihlaste.', false);
       prepnoutTab('prihlasit');
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password: heslo });
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password: heslo });
       if (error) throw error;
       await poPrihlaseni();
     }
