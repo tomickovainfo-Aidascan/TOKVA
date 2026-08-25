@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Přihlášení | Moje Nástrojovna</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Cpolygon points='4,9 18,9 28,16 18,23 4,23' fill='%23e9a91b'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b; --gold-dark: #976e12; --gold-light: #fdf3d9;
+  --black: #000000; --dark: #111111; --mid: #545454; --silver: #a8a6a6;
+  --white: #ffffff; --paper: #fafaf8; --border: #e8e8e8;
+  --gold-border: #f0e2b8;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--dark);
+  line-height:1.6; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+}
+.karta {
+  background:var(--white); border:1px solid var(--border); border-radius:16px;
+  padding:36px 32px; max-width:400px; width:100%;
+}
+.logo { font-family:'Poppins',sans-serif; font-weight:800; font-size:16px; margin-bottom:28px; text-align:center; }
+.logo span { color:var(--gold); }
+h1 { font-family:'Poppins',sans-serif; font-size:20px; font-weight:800; margin-bottom:6px; }
+.podnadpis { font-size:13.5px; color:var(--mid); margin-bottom:24px; }
+.taby { display:flex; gap:6px; margin-bottom:24px; background:var(--paper); border-radius:10px; padding:4px; }
+.tab-btn {
+  flex:1; border:none; background:none; padding:9px; border-radius:7px; cursor:pointer;
+  font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:600; color:var(--mid);
+}
+.tab-btn.active { background:var(--white); color:var(--dark); box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+label { display:block; font-size:12.5px; font-weight:600; color:var(--mid); margin-bottom:5px; margin-top:14px; }
+label:first-of-type { margin-top:0; }
+input {
+  width:100%; border:1px solid var(--border); border-radius:8px; padding:11px 13px;
+  font-family:'DM Sans',sans-serif; font-size:14px; outline:none;
+}
+input:focus { border-color:var(--gold); }
+.btn-gold {
+  width:100%; background:var(--gold); border:none; color:var(--black); font-size:14px;
+  font-weight:700; padding:12px 16px; border-radius:8px; cursor:pointer; margin-top:20px;
+  transition:background .15s; font-family:'DM Sans',sans-serif;
+}
+.btn-gold:hover { background:var(--gold-dark); color:var(--white); }
+.btn-gold:disabled { opacity:.6; cursor:default; }
+.zprava { font-size:13px; margin-top:14px; padding:10px 12px; border-radius:8px; display:none; }
+.zprava.chyba { display:block; background:#fdecec; color:#a12626; }
+.zprava.ok { display:block; background:var(--gold-light); color:var(--gold-dark); }
+.krok { display:none; }
+.krok.aktivni { display:block; }
+.zpatky-link { font-size:12.5px; color:var(--mid); text-align:center; margin-top:16px; display:block; text-decoration:none; }
+.zpatky-link:hover { color:var(--gold-dark); }
+</style>
+</head>
+<body>
+
+<div class="karta">
+  <div class="logo">Moje <span>Nástrojovna</span></div>
+
+  <!-- KROK 1: přihlášení / registrace -->
+  <div id="krok-ucet" class="krok aktivni">
+    <h1 id="nadpis-ucet">Přihlásit se</h1>
+    <p class="podnadpis" id="podnadpis-ucet">Přístup ke svým nástrojům, projektům a akčnímu plánu.</p>
+
+    <div class="taby">
+      <button class="tab-btn active" id="tab-prihlasit" onclick="prepnoutTab('prihlasit')">Přihlásit se</button>
+      <button class="tab-btn" id="tab-registrovat" onclick="prepnoutTab('registrovat')">Založit účet</button>
+    </div>
+
+    <label for="email">E-mail</label>
+    <input id="email" type="email" placeholder="vas@email.cz" autocomplete="email">
+
+    <label for="heslo">Heslo</label>
+    <input id="heslo" type="password" placeholder="min. 6 znaků" autocomplete="current-password">
+
+    <button class="btn-gold" id="btn-ucet" onclick="odeslatFormularUctu()">Chci se přihlásit</button>
+
+    <div class="zprava" id="zprava-ucet"></div>
+  </div>
+
+  <!-- KROK 2: založení firmy (jen při prvním přihlášení) -->
+  <div id="krok-firma" class="krok">
+    <h1>Vítejte v Nástrojovně</h1>
+    <p class="podnadpis">Ještě potřebujeme založit vaši firmu nebo provoz – pod ní se budou ukládat všechny vaše výsledky a projekty.</p>
+
+    <label for="nazev-firmy">Název firmy nebo provozu</label>
+    <input id="nazev-firmy" type="text" placeholder="např. Novák s.r.o. – sklad Vrchlabí">
+
+    <button class="btn-gold" id="btn-firma" onclick="odeslatZalozeniFirmy()">Chci pokračovat</button>
+
+    <div class="zprava" id="zprava-firma"></div>
+  </div>
+
+  <a class="zpatky-link" href="/">← Zpět na přehled nástrojů</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script src="auth.js"></script>
+<script>
+let aktivniTab = 'prihlasit';
+
+function prepnoutTab(tab) {
+  aktivniTab = tab;
+  document.getElementById('tab-prihlasit').classList.toggle('active', tab === 'prihlasit');
+  document.getElementById('tab-registrovat').classList.toggle('active', tab === 'registrovat');
+  document.getElementById('nadpis-ucet').textContent = tab === 'prihlasit' ? 'Přihlásit se' : 'Založit účet';
+  document.getElementById('podnadpis-ucet').textContent = tab === 'prihlasit'
+    ? 'Přístup ke svým nástrojům, projektům a akčnímu plánu.'
+    : 'Zabere to necelou minutu, e-mail a heslo stačí.';
+  document.getElementById('btn-ucet').textContent = tab === 'prihlasit' ? 'Chci se přihlásit' : 'Chci si založit účet';
+  ukazatZpravuUcet('');
+}
+
+function ukazatZpravuUcet(text, jeChyba) {
+  const el = document.getElementById('zprava-ucet');
+  el.textContent = text;
+  el.className = 'zprava' + (text ? (jeChyba ? ' chyba' : ' ok') : '');
+}
+
+async function odeslatFormularUctu() {
+  const email = document.getElementById('email').value.trim();
+  const heslo = document.getElementById('heslo').value;
+  const btn = document.getElementById('btn-ucet');
+
+  if (!email || !heslo) {
+    ukazatZpravuUcet('Vyplňte e-mail i heslo.', true);
+    return;
+  }
+
+  btn.disabled = true;
+  ukazatZpravuUcet('');
+
+  try {
+    if (aktivniTab === 'registrovat') {
+      const { error } = await supabase.auth.signUp({ email, password: heslo });
+      if (error) throw error;
+      ukazatZpravuUcet('Účet založen. Zkontrolujte e-mail a potvrďte registraci, pak se přihlaste.', false);
+      prepnoutTab('prihlasit');
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password: heslo });
+      if (error) throw error;
+      await poPrihlaseni();
+    }
+  } catch (e) {
+    ukazatZpravuUcet(prelozitChybu(e.message), true);
+  }
+  btn.disabled = false;
+}
+
+// Po úspěšném přihlášení zjistí, jestli má uživatel už firmu.
+// Pokud ne, zobrazí krok se založením firmy. Pokud ano, přesměruje dál.
+async function poPrihlaseni() {
+  const organizace = await ziskatMojiOrganizaci();
+  if (organizace) {
+    presmerovatPoPrihlaseni();
+  } else {
+    document.getElementById('krok-ucet').classList.remove('aktivni');
+    document.getElementById('krok-firma').classList.add('aktivni');
+  }
+}
+
+async function odeslatZalozeniFirmy() {
+  const nazev = document.getElementById('nazev-firmy').value.trim();
+  const btn = document.getElementById('btn-firma');
+  const zprava = document.getElementById('zprava-firma');
+
+  if (!nazev) {
+    zprava.textContent = 'Zadejte název firmy nebo provozu.';
+    zprava.className = 'zprava chyba';
+    return;
+  }
+
+  btn.disabled = true;
+  try {
+    await zalozitOrganizaci(nazev);
+    presmerovatPoPrihlaseni();
+  } catch (e) {
+    zprava.textContent = 'Nepodařilo se založit firmu, zkuste to znovu.';
+    zprava.className = 'zprava chyba';
+    btn.disabled = false;
+  }
+}
+
+function presmerovatPoPrihlaseni() {
+  const params = new URLSearchParams(window.location.search);
+  const zpet = params.get('zpet');
+  window.location.href = zpet ? decodeURIComponent(zpet) : '/';
+}
+
+function prelozitChybu(msg) {
+  if (msg.includes('Invalid login credentials')) return 'Nesprávný e-mail nebo heslo.';
+  if (msg.includes('already registered')) return 'Tenhle e-mail už má účet – zkuste se přihlásit.';
+  if (msg.includes('Password should be')) return 'Heslo musí mít aspoň 6 znaků.';
+  if (msg.includes('Email not confirmed')) return 'Nejdřív potvrďte registraci v e-mailu, který jsme vám poslali.';
+  return 'Něco se nepovedlo: ' + msg;
+}
+
+// Pokud je uživatel na tuhle stránku přesměrovaný, ale je už přihlášený
+// (např. otevřel si odkaz znovu), rovnou ho pošleme dál.
+(async function () {
+  const session = await ziskatSession();
+  if (session) await poPrihlaseni();
+})();
+</script>
+
+</body>
+</html>

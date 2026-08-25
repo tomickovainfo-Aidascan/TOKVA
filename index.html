@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nástrojovna | Gabriela Tomíčková</title>
+<!-- TODO: až se rozhodne finální adresa Nástrojovny, nahradit href skutečnou URL a doplnit odpovídající řádek do sitemap.xml -->
+<link rel="canonical" href="https://gabrielatomickova.cz/nastroje/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Cpolygon points='4,9 18,9 28,16 18,23 4,23' fill='%23e9a91b'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b; --gold-dark: #976e12; --gold-light: #fdf3d9;
+  /* --gold-dark upraveno 24.8. z #c48e10 na #976e12, čitelnost na bílé/světlé z 2,07:1 (2,90:1 u staré verze) na 4,60:1, splňuje WCAG AA i pro drobný text. --gold zůstává pro pozadí a text na tmavém/černém podkladu, tam je kontrast v pořádku i bez úpravy. */
+  --black: #000000; --dark: #111111; --mid: #545454; --silver: #a8a6a6;
+  --white: #ffffff; --paper: #fafaf8; --border: #e8e8e8;
+  --border2: #e8e6e0; --border-strong: #e2e0da; --dashed: #d8d3c4;
+  --gold-border: #f0e2b8; --ph-bg: #fffdf7; --paper2: #f6f5f1;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--dark); line-height:1.7; font-size:16px; }
+
+/* topbar */
+.topbar { background:var(--black); color:var(--white); padding:14px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:200; border-bottom:2px solid var(--gold); }
+.topbar a.back { color:rgba(255,255,255,0.7); text-decoration:none; font-size:13px; font-weight:600; }
+.topbar a.back:hover { color:var(--gold); }
+.topbar .brand { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; }
+.topbar .brand span { color:var(--gold); }
+.preview-flag { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); border:1px solid rgba(233,169,27,0.4); padding:4px 10px; border-radius:3px; }
+
+/* layout */
+.layout { display:grid; grid-template-columns:290px 1fr; min-height:calc(100vh - 53px); align-items:start; }
+
+/* sidebar */
+.sidebar { position:sticky; top:53px; height:calc(100vh - 53px); overflow-y:auto; background:var(--paper); border-right:1px solid var(--border); padding:22px 14px 60px; }
+.sb-group { margin-bottom:10px; }
+.sb-group-title { font-family:'Poppins',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dark); padding:14px 10px 10px; }
+.sb-home { display:flex; align-items:center; width:100%; text-align:left; background:none; border:none; border-bottom:1px solid var(--border); cursor:pointer; padding:10px 10px 16px; margin-bottom:8px; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:700; color:var(--dark); transition:color .15s; }
+.sb-home:hover { color:var(--gold-dark); }
+.sb-home.active { color:var(--gold-dark); }
+
+.sb-item { display:flex; align-items:center; gap:10px; width:100%; text-align:left; border-radius:8px; padding:11px 13px; margin-bottom:6px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:600; border:1.5px solid transparent; text-decoration:none; line-height:1.35; transition:transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s, background .2s, color .2s, border-color .2s; }
+.sb-item .ic { width:8px; height:8px; min-width:8px; border-radius:50%; border:1.5px solid currentColor; transition:background .2s; }
+.sb-item.active .ic { background:currentColor; }
+.sb-item .lock { font-size:11px; margin-left:auto; opacity:.7; }
+
+.sb-item.free { background:var(--gold-light); color:var(--dark); }
+.sb-item.free:hover { background:var(--gold); color:var(--black); transform:scale(1.035) rotate(-0.5deg); }
+.sb-item.free.active { background:var(--gold-dark); color:var(--white); }
+
+.sb-item.paid { background:#1c1c1c; color:rgba(233,169,27,0.75); }
+.sb-item.paid:hover { background:var(--black); color:var(--gold); transform:scale(1.035) rotate(-0.5deg); }
+.sb-item.paid.active { background:var(--black); color:var(--gold); border-color:var(--gold); }
+
+/* main */
+.main { padding:64px 56px 100px; max-width:820px; }
+.main.wide { max-width:1160px; }
+
+/* intro (landing) */
+.intro { display:none; }
+.intro.active { display:block; }
+.intro .eyebrow { font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-dark); margin-bottom:14px; }
+.intro h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,38px); font-weight:900; letter-spacing:-0.5px; margin-bottom:26px; line-height:1.2; }
+.intro p { font-size:16.5px; color:var(--mid); margin-bottom:18px; max-width:640px; }
+.intro strong { color:var(--dark); font-weight:600; }
+.intro-sub { font-size:16.5px; color:var(--mid); margin-bottom:10px; max-width:720px; }
+.intro-proof { font-size:13.5px; font-weight:700; color:var(--gold-dark); letter-spacing:.2px; margin-bottom:30px; }
+
+/* oblast filtr */
+.oblast-label { font-family:'Poppins',sans-serif; font-size:12px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold-dark); margin-bottom:12px; }
+.oblast-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px; }
+.chip { background:var(--white); border:1.5px solid var(--border-strong); border-radius:100px; padding:9px 16px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; color:var(--dark); cursor:pointer; transition:all .15s; }
+.chip:hover { border-color:var(--gold); }
+.chip.active { background:var(--dark); border-color:var(--dark); color:var(--gold); }
+
+/* cesta - kroky */
+.krok-block { margin-bottom:36px; }
+.krok-head { display:flex; gap:16px; align-items:baseline; margin-bottom:16px; }
+.krok-head .krok-num { font-family:'Poppins',sans-serif; font-weight:900; font-size:26px; color:var(--gold-dark); min-width:34px; }
+.krok-head h3 { font-family:'Poppins',sans-serif; font-weight:800; font-size:18px; margin-bottom:4px; }
+.krok-head p { font-size:14px; color:var(--mid); margin:0; max-width:560px; }
+.krok-list { display:grid; gap:10px; }
+.krok-row { display:flex; align-items:center; justify-content:space-between; gap:18px; width:100%; text-align:left; background:var(--white); border:1.5px solid var(--border2); border-radius:10px; padding:16px 20px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:border-color .15s, transform .15s; }
+.krok-row:hover { border-color:var(--gold); transform:translateX(2px); }
+.krok-row .krok-benefit { font-size:14.5px; font-weight:600; color:var(--dark); line-height:1.5; }
+.krok-row .krok-meta { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.krok-row .krok-name { font-size:12px; color:var(--silver); white-space:nowrap; }
+.krok-row .krok-tag { font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:1px; padding:4px 8px; border-radius:100px; background:var(--gold-light); color:var(--gold-dark); white-space:nowrap; }
+.krok-row .arr { width:11px; height:7px; min-width:11px; color:var(--gold-dark); }
+.krok-row.paid { background:#1c1c1c; border-color:#1c1c1c; }
+.krok-row.paid .krok-benefit { color:var(--white); }
+.krok-row.paid .krok-name { color:rgba(255,255,255,.45); }
+.krok-row.paid .krok-tag { background:rgba(233,169,27,.15); color:var(--gold); }
+.krok-row.paid .arr { color:var(--gold); }
+.krok-row.paid:hover { border-color:var(--gold); }
+
+/* sidebar - oblasti a sbalitelný seznam */
+.sb-areas { display:flex; flex-direction:column; gap:4px; }
+.sb-area { display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:none; border:none; border-radius:8px; padding:9px 10px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:600; color:var(--dark); transition:background .15s, color .15s; }
+.sb-area:hover { background:var(--gold-light); }
+.sb-area.active { background:var(--gold-dark); color:var(--white); }
+.sb-toggle { display:flex; align-items:center; justify-content:space-between; width:100%; background:none; border:none; cursor:pointer; padding:14px 10px 10px; font-family:'Poppins',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dark); }
+.sb-toggle .chev { font-size:11px; transition:transform .2s; }
+.sb-toggle.open .chev { transform:rotate(180deg); }
+.sb-all-list { overflow:hidden; max-height:2000px; transition:max-height .25s ease; }
+.sb-all-list.collapsed { max-height:0; }
+
+/* detail */
+.detail { display:none; }
+.detail.active { display:block; }
+.detail-back { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--mid); text-decoration:none; background:none; border:none; cursor:pointer; margin-bottom:22px; padding:0; }
+.detail-back:hover { color:var(--gold-dark); }
+
+/* brand šipka, znovupoužitá všude jako odrážka/CTA šipka */
+.arr { display:inline-block; background:currentColor; clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%); }
+
+/* karta nástroje (design 2a) */
+.detail-card { background:var(--white); border-radius:14px; overflow:hidden; box-shadow:0 18px 50px rgba(0,0,0,.09); margin-bottom:44px; }
+
+.d-badge { display:inline-flex; align-items:center; gap:8px; font-family:'Poppins',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; padding:6px 14px; border-radius:100px; border:1px solid rgba(233,169,27,.45); color:var(--gold); margin-bottom:22px; }
+.d-badge .arr { width:13px; height:8px; min-width:13px; }
+
+/* 1. hero */
+.d-hero { background:var(--black); color:var(--white); padding:44px 48px 40px; display:grid; grid-template-columns:1fr 260px; gap:44px; align-items:start; }
+.d-hero h2 { font-family:'Poppins',sans-serif; font-weight:900; font-size:clamp(28px,4vw,50px); line-height:1.05; letter-spacing:-1.4px; margin-bottom:20px; }
+.d-hero-sub { font-size:17px; font-weight:300; line-height:1.65; color:rgba(255,255,255,.7); max-width:520px; }
+.d-hero-cta { display:flex; flex-direction:column; gap:12px; }
+.d-hero-cta .btn-cta { background:var(--gold); color:var(--black); font-family:'DM Sans',sans-serif; font-size:15.5px; font-weight:700; padding:17px 22px; border-radius:6px; text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center; gap:8px; transition:background .2s; cursor:pointer; border:none; }
+.d-hero-cta .btn-cta:hover { background:var(--white); }
+.d-hero-cta .btn-cta .arr { color:var(--black); width:11px; height:7px; min-width:11px; }
+.d-hero-cta .btn-cta.disabled { background:transparent; border:1px solid rgba(255,255,255,.25); color:rgba(255,255,255,.5); cursor:default; }
+.d-hero-cta .btn-cta.disabled .arr { display:none; }
+.d-hero-note { font-size:12.5px; color:rgba(255,255,255,.45); text-align:center; line-height:1.6; }
+
+/* 2. číselný pás */
+.d-stats { background:var(--dark); display:grid; grid-template-columns:repeat(4,1fr); }
+.d-stat { padding:22px 24px; border-right:1px solid rgba(255,255,255,.08); }
+.d-stat:last-child { border-right:none; }
+.d-stat .num { font-family:'Poppins',sans-serif; font-weight:900; font-size:28px; color:var(--gold); line-height:1.1; margin-bottom:6px; }
+.d-stat .lbl { font-size:11px; text-transform:uppercase; letter-spacing:1.6px; color:rgba(255,255,255,.45); }
+
+/* 3. poznáváte se aspoň v jedné */
+.d-recognize { background:var(--gold-light); padding:42px 48px; }
+.d-recognize h3 { font-family:'Poppins',sans-serif; font-weight:900; font-size:clamp(21px,2.6vw,28px); letter-spacing:-0.5px; margin-bottom:22px; }
+.d-recognize-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px 22px; margin-bottom:22px; }
+.d-recognize-item { background:rgba(255,255,255,.7); border-radius:8px; padding:14px 16px; display:flex; gap:10px; align-items:flex-start; font-size:14.5px; line-height:1.55; color:var(--dark); }
+.d-recognize-item .arr { width:15px; height:10px; min-width:15px; margin-top:5px; color:var(--gold-dark); }
+.d-recognize-close { font-size:15.5px; font-weight:600; color:var(--dark); }
+
+/* 4. jak to funguje */
+.d-how { background:var(--white); padding:42px 48px; border-bottom:1px solid var(--border2); display:grid; grid-template-columns:1.35fr 1fr; gap:40px; }
+.d-how h3 { font-family:'Poppins',sans-serif; font-weight:900; font-size:clamp(20px,2.4vw,26px); letter-spacing:-0.5px; margin-bottom:16px; }
+.d-how-text p { font-size:15px; line-height:1.7; margin-bottom:14px; color:var(--dark); }
+.d-how-text p:last-child { color:var(--mid); margin-bottom:0; }
+.d-how-panel { background:var(--paper2); border-radius:12px; padding:24px 26px; align-self:start; }
+.d-how-panel .panel-label { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--gold-dark); margin-bottom:14px; }
+.d-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+.d-chip { background:var(--white); border-radius:5px; padding:7px 11px; font-size:12px; font-weight:700; color:var(--dark); }
+.d-how-panel .panel-hr { border-top:1px solid var(--border-strong); padding-top:16px; margin-top:2px; }
+.d-how-panel .panel-forwhom { font-size:13.5px; line-height:1.65; color:var(--dark); }
+.d-how-panel .panel-forwhom b { color:var(--gold-dark); }
+
+/* 5. postup v krocích */
+.d-steps { background:var(--paper); padding:38px 48px; }
+.d-steps h3 { font-family:'Poppins',sans-serif; font-weight:900; font-size:22px; margin-bottom:22px; }
+.d-steps-grid { display:grid; grid-template-columns:repeat(var(--steps-cols,6),1fr); gap:12px; }
+.d-step { border-top:2px solid var(--gold); padding-top:12px; }
+.d-step:last-child { border-top-color:var(--dark); }
+.d-step .step-num { font-family:'Poppins',sans-serif; font-weight:900; font-size:12px; color:var(--gold-dark); margin-bottom:6px; }
+.d-step:last-child .step-num { color:var(--dark); }
+.d-step .step-text { font-size:13px; line-height:1.55; color:var(--dark); }
+
+/* 6. příklad z praxe */
+.d-example { background:var(--black); color:var(--white); padding:52px 48px; }
+.d-example-eyebrow { display:flex; align-items:center; gap:8px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:2.2px; color:var(--gold); margin-bottom:18px; }
+.d-example-eyebrow .arr { width:12px; height:7px; }
+.d-example h3 { font-family:'Poppins',sans-serif; font-weight:900; font-size:clamp(24px,3.6vw,38px); line-height:1.15; letter-spacing:-1px; margin-bottom:28px; }
+.d-example-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:44px; align-items:start; }
+.d-example-text p { font-size:16px; line-height:1.7; color:rgba(255,255,255,.8); margin-bottom:14px; }
+.d-example-text p:last-child { color:var(--white); margin-bottom:0; }
+.d-example-stat { border-left:3px solid var(--gold); padding-left:26px; }
+.d-example-stat .stat-num { font-family:'Poppins',sans-serif; font-weight:900; font-size:40px; color:var(--gold); line-height:1.05; margin-bottom:10px; }
+.d-example-stat.quote .stat-num { font-size:23px; line-height:1.4; letter-spacing:-0.3px; }
+.d-example-stat .stat-note { font-size:14px; line-height:1.65; color:rgba(255,255,255,.6); }
+
+/* 7. vstupy/výstupy + časté chyby */
+.d-io-mistakes { background:var(--white); padding:42px 48px; display:grid; grid-template-columns:1fr 1fr; gap:36px; }
+.d-kicker { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--gold-dark); margin-bottom:16px; }
+.d-io-inner { display:grid; grid-template-columns:1fr auto 1fr; gap:12px; align-items:stretch; }
+.d-io-col { border-radius:10px; padding:16px 18px; }
+.d-io-col.in { border:1.5px dashed var(--dashed); background:var(--ph-bg); }
+.d-io-col.out { border:1.5px solid var(--gold-border); background:var(--gold-light); }
+.d-io-col .io-lbl { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1.5px; color:var(--gold-dark); margin-bottom:8px; }
+.d-io-col .io-val { font-size:13.5px; line-height:1.6; color:var(--dark); }
+.d-io-arrow2 { display:flex; align-items:center; justify-content:center; }
+.d-io-arrow2 .arr { width:16px; height:11px; color:var(--gold-dark); }
+.d-mistakes-list { list-style:none; }
+.d-mistakes-list li { display:flex; gap:12px; align-items:flex-start; padding:13px 0; border-bottom:1px solid var(--border2); font-size:14px; line-height:1.6; color:var(--mid); }
+.d-mistakes-list li:last-child { border-bottom:none; }
+.d-mistakes-list .xcircle { min-width:20px; height:20px; border-radius:50%; background:var(--dark); color:var(--white); font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+@media (max-width:900px) { .d-io-inner { grid-template-columns:1fr; } .d-io-arrow2 .arr { transform:rotate(90deg); } }
+
+/* 8. časté otázky + související nástroje */
+.d-faq-related { background:var(--paper); border-top:1px solid var(--border2); padding:36px 48px 44px; }
+.d-faq-related-grid { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start; }
+.d-faq-card { background:var(--white); border:1px solid var(--border2); border-radius:12px; overflow:hidden; }
+.d-faq-card .faq-item { border-bottom:1px solid var(--border2); }
+.d-faq-card .faq-item:last-child { border-bottom:none; }
+.d-related-grid { display:grid; gap:14px; }
+.d-related-card { background:var(--white); border:1px solid var(--border2); border-radius:10px; padding:16px 18px; text-align:left; cursor:pointer; transition:border-color .2s; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.d-related-card:hover { border-color:var(--gold); }
+.d-related-card.primary { background:var(--gold-light); border-color:var(--gold-border); }
+.d-related-card .rname { font-weight:700; font-size:14.5px; color:var(--dark); margin-bottom:2px; }
+.d-related-card .rsub { font-size:12.5px; color:var(--silver); }
+.d-related-card .rarrow { color:var(--gold-dark); font-size:13px; font-weight:700; white-space:nowrap; }
+@media (max-width:900px) { .d-faq-related-grid { grid-template-columns:1fr; } }
+
+/* FAQ akordeon (sdílené) */
+.faq-item { border-bottom:1px solid var(--border2); }
+.faq-q { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:16px 20px; cursor:pointer; font-weight:700; font-size:14.5px; background:none; border:none; width:100%; text-align:left; color:var(--dark); font-family:'DM Sans',sans-serif; }
+.faq-q:hover { color:var(--gold-dark); }
+.faq-q .chev { font-size:12px; color:var(--gold-dark); transition:transform .25s; }
+.faq-item.open .faq-q .chev { transform:rotate(180deg); }
+.faq-a { max-height:0; overflow:hidden; transition:max-height .2s ease; }
+.faq-item.open .faq-a { max-height:260px; }
+.faq-a-inner { padding:0 20px 16px; font-size:14px; line-height:1.65; color:var(--mid); }
+
+/* kostra / nedokončený obsah, stejný vzor napříč sekcemi */
+.placeholder { border:1.5px dashed var(--dashed); border-radius:8px; padding:20px 22px; background:var(--ph-bg); }
+.placeholder .ph-label { font-size:12.5px; font-weight:700; color:var(--gold-dark); margin-bottom:6px; }
+.placeholder .ph-text { font-size:13.5px; color:var(--silver); font-style:italic; }
+
+/* mobilní přepínač, sbaluje sidebar do jednoho tlačítka */
+.mobile-nav-toggle { display:none; width:100%; align-items:center; justify-content:center; gap:8px; background:var(--black); color:var(--white); border:none; padding:14px 24px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; }
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns:1fr; }
+  .mobile-nav-toggle { display:flex; }
+  .sidebar { position:relative; top:0; height:auto; border-right:none; border-bottom:1px solid var(--border); display:none; }
+  .sidebar.mobile-open { display:block; }
+  .main { padding:40px 24px 80px; }
+  .main.wide { max-width:none; }
+  .krok-row { flex-direction:column; align-items:flex-start; }
+  .krok-row .krok-meta { width:100%; justify-content:space-between; }
+}
+
+@media (max-width: 860px) {
+  .d-hero { grid-template-columns:1fr; padding:36px 28px 32px; }
+  .d-stats { grid-template-columns:repeat(2,1fr); }
+  .d-stat:nth-child(2) { border-right:none; }
+  .d-recognize, .d-how, .d-steps, .d-example, .d-io-mistakes, .d-faq-related { padding:32px 26px; }
+  .d-recognize-grid { grid-template-columns:1fr; }
+  .d-how { grid-template-columns:1fr; }
+  .d-steps-grid { grid-template-columns:repeat(2,1fr) !important; }
+  .d-example-grid { grid-template-columns:1fr; }
+  .d-io-mistakes { grid-template-columns:1fr; }
+}
+
+/* cookies lišta, stejný vzor jako u ostatních nástrojů */
+.cookies-bar { position:fixed; bottom:0; left:0; right:0; background:#111; border-top:2px solid #e9a91b; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; z-index:9999; font-family:'DM Sans',sans-serif; }
+.cookies-bar p { font-size:13px; color:rgba(255,255,255,.6); line-height:1.6; margin:0; flex:1; min-width:200px; }
+.cookies-bar a { color:#e9a91b; text-decoration:none; }
+.cookies-bar a:hover { text-decoration:underline; }
+.cookies-btns { display:flex; gap:8px; flex-shrink:0; }
+.cookies-ok { background:#e9a91b; color:#000; border:none; border-radius:4px; padding:8px 18px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
+.cookies-ok:hover { background:#c48e10; }
+.cookies-no { background:transparent; color:rgba(255,255,255,.4); border:1px solid rgba(255,255,255,.15); border-radius:4px; padding:8px 14px; font-family:'DM Sans',sans-serif; font-size:13px; cursor:pointer; }
+.cookies-no:hover { color:rgba(255,255,255,.7); }
+</style>
+</head>
+<body>
+
+<div class="cookies-bar" id="cookies-bar" style="display:none;">
+  <p>Tento web používá analytické cookies (Google Analytics) pro měření návštěvnosti. <a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></p>
+  <div class="cookies-btns">
+    <button class="cookies-no" onclick="cookiesOdmitnout()">Odmítnout</button>
+    <button class="cookies-ok" onclick="cookiesSouhlasit()">Souhlasím</button>
+  </div>
+</div>
+
+<div class="topbar">
+  <a class="back" href="index.html">← Zpět na hlavní web</a>
+  <div class="brand">Nástrojovna <span>Gabriela Tomíčková</span></div>
+  <div class="preview-flag">Náhled</div>
+</div>
+
+<div class="layout">
+
+  <button class="mobile-nav-toggle" id="mobile-nav-toggle" data-mobile-toggle="1">☰ Nástrojovna / Vybrat oblast</button>
+
+  <nav class="sidebar" id="sidebar">
+    <button class="sb-home active" id="home-link" data-home="1">Domů</button>
+    <div class="sb-group">
+      <div class="sb-group-title">Kde vás to pálí</div>
+      <div class="sb-areas" id="sb-areas"></div>
+    </div>
+    <div class="sb-group">
+      <button class="sb-toggle" id="sb-toggle-all" data-toggle-all="1">
+        <span>Všechny nástroje</span><span class="chev">▾</span>
+      </button>
+      <div class="sb-all-list collapsed" id="sb-all-list"></div>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <section class="intro active" id="intro">
+      <div class="eyebrow">Nástrojovna</div>
+      <h1>Nástroje, které vám ukážou, kde reálně ztrácíte čas a peníze.</h1>
+      <p class="intro-sub">Něco ve firmě drhne, ale nevíte přesně kde? Vyberte, co vás teď nejvíc trápí, Nástrojovna vám pomůže problém najít, změřit a rozhodnout, co má cenu měnit.</p>
+      <p class="intro-proof">První výsledek za pár minut · část nástrojů zdarma · bez znalosti Kaizenu</p>
+
+      <div class="oblast-label">Kde vás to nejvíc pálí?</div>
+      <div class="oblast-chips" id="oblast-chips"></div>
+
+      <div id="cesta"></div>
+    </section>
+
+    <section class="detail" id="detail"></section>
+
+  </main>
+
+</div>
+
+<script>
+const TOOLS = [
+  // ZDARMA
+  { id:"meric-free", group:"free", name:"Měřič plýtvání Free", krok:2, oblasti:["sklad","vyroba"], benefit:"Změříte, kolik času vaši lidé skutečně tráví prací, a kolik chozením a čekáním.",
+    popis:"Máte pocit, že vaši zaměstnanci víc nachodí, než vyrobí? Nebo že půlku pracovní doby vyplňují papíry? To jste tady správně.\n\nMěřič plýtvání vám pomůže objevit místa, kde ztrácíte nejvíc.\n\nZvolíte si proces, který chcete změřit, pozorujete pracovníka přímo při práci a klikáte na tlačítka podle toho, co zrovna dělá.\n\nAppka sama spočítá, kolik času padá na práci, přesun, hledání, čekání, administrativu, kontrolu a přípravu. Tři cykly zdarma, bez registrace.",
+    proKoho:"Majitel nebo manažer výroby či skladu, co tuší, že se někde ztrácí čas, ale nemá to podložené čísly.",
+    url:"https://meric-plytvani-free.gabrielatomickova.cz", souvisejici:["meric-pro","kalkulacka","kviz-komunikace"],
+    metaTitle:"Výpočet produktivity práce zdarma | Gabriela Tomíčková",
+    metaDescription:"Zjistěte výpočet produktivity práce ve vaší firmě za 10 minut. Bez stopek a papíru, zdarma online, výsledek na e-mail.",
+    ucelMetoda:"Měřič plýtvání Free je jednoduchá časová studie jednoho konkrétního procesu. Místo stopek a papíru klikáte na tlačítko podle toho, co zrovna pracovník dělá, appka sama měří, jak dlouho která činnost trvá. Na konci uvidíte, kolik času padá na skutečnou práci, a kolik na chození, hledání, čekání, papírování nebo kontrolu.\n\nKdo zná metodu KAIZEN, pozná v těch kategoriích klasické druhy plýtvání, takzvané muda. Znát ji ale vůbec nemusíte, appka funguje stejně dobře i bez toho.",
+    kdyPouzit:{
+      otazky:[
+        "Nestíháte vyrábět, i když všichni pracují na plný výkon?",
+        "Furt se něco hledá, nářadí, materiál, informace, a nikdo netuší kolik času to sežere?",
+        "Pracovníky fakt bolí nohy, protože celou směnu chodí tam a zpátky?",
+        "Když se podíváte na dělníky, máte pocit, že jen postávají? Nebo naopak pořád běhají sem tam, a stejně to nikde nevidíte na výsledku?",
+        "Místo vyrábění někdo furt jen zapisuje do papírů, nebo hledá informaci v systému?",
+        "Kontrolujete stejný výrobek třikrát, čtyřikrát, a stejně vám něco propadne?",
+        "Trvá příprava pracoviště nebo materiálu skoro stejně dlouho jako samotná práce?"
+      ],
+      zaver:[
+        "Pokud jste si u aspoň jedné otázky řekli \"to je přesně u nás\", máte tušení, kde plýtváte. Měřič plýtvání vám ukáže přesně kolik, ne jen že \"asi něco\".",
+        "Nehodí se na jednorázové věci. Měříte opakující se proces, jednu konkrétní operaci, ne celý den najednou."
+      ]
+    },
+    princip:"Vyberete proces, spustíte měření a klikáte na tlačítko podle aktuální činnosti vždy na jejím začátku, ne na konci. Appka automaticky ukončí předchozí činnost a spustí další. Po 3 změřených cyklech (ve free verzi) spočítá průměrné rozložení času mezi kategoriemi.",
+    postup:[
+      "Zvolte proces, který chcete měřit, jednu konkrétní opakující se operaci.",
+      "Spusťte měření a klikejte na tlačítko podle toho, co zrovna děláte, vždy na začátku činnosti.",
+      "Absolvujte 3 cykly (free verze).",
+      "Prohlédněte si průměrné rozložení času mezi kategoriemi.",
+      "Zaměřte se na plýtvání, které vychází nejvyšší, a postupně eliminujte všechna zjištěná plýtvání.",
+      "Pošlete si výsledek e-mailem, nebo zvažte Měřič plýtvání Pro pro víc cyklů, vlastní kroky procesu a export."
+    ],
+    vstupy:"Název procesu, který měříte, a živé kliky na tlačítka během reálné práce.",
+    vystupy:"Průměrné rozložení času mezi 7 kategoriemi za změřené cykly, nalezení různých druhů plýtvání, možnost poslat si výsledek e-mailem.",
+    priklad:"Řekněme, že máte na skladě Honzu, který furt čeká na materiál. Jenže nikdo pořádně neví, na kolik minut se to čekání za směnu natáhne.\n\nSpustíte Měřič plýtvání Free a jdete se na Honzu podívat přímo do provozu. Klikáte na tlačítka podle toho, co zrovna dělá: práce, čekání na materiál, chození pro dodací list, co byl přece ráno na stole.\n\nPo pár cyklech appka spočítá skutečná čísla. Ne odhad typu \"tak nějak deset minut, možná patnáct\", ale přesný podíl času, který padá na čekání, hledání a chození.\n\nTahle čísla pak stačí zadat do Kalkulačky neviditelných ztrát a najednou víte, kolik vás to čekání stojí ročně v korunách. Ne tuším, ale vím.",
+    chyby:[
+      "Kliknutí na konci činnosti místo na jejím začátku, appka pak měří špatný úsek.",
+      "Míchání různých variant procesu dohromady, cykly pak nejdou mezi sebou srovnat.",
+      "Jen 3 cykly a rovnou definitivní závěr, na první orientaci stačí, na jistotu se hodí 5 až 10 cyklů, to už je v Pro verzi."
+    ],
+    faq:[
+      { q:"Kolik cyklů potřebuju pro spolehlivý výsledek?", a:"Free verze měří 3 cykly, to stačí na první orientaci. Pro přesnější statistiku appka sama doporučuje 5 až 10 cyklů, což je součást Pro verze." },
+      { q:"Co když moje činnost nespadá do žádné ze 7 kategorií?", a:"Free verze pracuje jen s těmito kategoriemi. Přidání vlastních kroků procesu je dostupné v Měřiči plýtvání Pro." },
+      { q:"Kam se mi pošlou výsledky měření?", a:"Na e-mail, který zadáte po dokončení měření." }
+    ],
+    design2a:{
+      heroLines:["Kde vám","reálně mizí čas."],
+      heroNote:"3 cykly zdarma · bez registrace<br>výsledek hned",
+      ctaLabel:"Chci si to změřit",
+      stats:[
+        {num:"7", lbl:"kategorií času"},
+        {num:"3", lbl:"cykly ve free verzi"},
+        {num:"0", lbl:"stopek a papírů"},
+        {num:"KAIZEN", lbl:"metoda v pozadí"}
+      ],
+      recognizeClose:"Pokud jste se našli alespoň v jedné, má smysl změřit, kolik času tam skutečně mizí.",
+      how:{ chipsLabel:"Sedm kategorií času", chips:["Práce","Přesun","Hledání","Čekání","Administrativa","Kontrola","Příprava"] },
+      example:{
+        headline:"Kolik času denně zabere obyčejné čekání?",
+        stat:{ quote:true, text:"Ne tuším, ale vím.", note:"Přesný podíl času na čekání, hledání a chození, místo odhadu od oka." }
+      }
+    } },
+
+  { id:"kalkulacka", group:"free", name:"Kalkulačka neviditelných ztrát", krok:2, oblasti:["sklad","vyroba"], benefit:"Zjistíte v korunách, kolik vás ročně stojí obyčejná rutina ve skladu nebo výrobě.",
+    popis:"Tušíte, že vám ve skladu nebo ve výrobě někde uniká čas a peníze, ale nemáte to podložené číslem? Tady ho zjistíte za pár minut.\n\nZadáte pár čísel o svém provozu, kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje, a kalkulačka to spočítá na hodiny, kilometry a koruny za rok.\n\nVýsledek je orientační, ne audit na korunu přesně. Ale vychází z reálných měření, ne z odhadu od stolu.",
+    proKoho:"Vedoucí skladu nebo výroby, co chce první rychlé číslo, ne jen pocit, že něco vázne. Ideální pro tým 5 až 50 lidí.",
+    url:"https://kalkulacka.gabrielatomickova.cz", souvisejici:["mini-audit","meric-free","kviz-komunikace"],
+    kdyPouzit:{
+      otazky:[
+        "Tušíte, že vám někde uniká čas, ale netušíte o jakém celkovém čísle je vlastně řeč?",
+        "Chcete přijít za vedením nebo majitelem s konkrétním číslem, ne jen s pocitem, že něco nesedí?",
+        "Zvažujete změnu v provozu a chcete napřed vědět, jestli se vůbec vyplatí ji řešit?"
+      ],
+      zaver:[
+        "Pokud se aspoň u jedné otázky poznáváte, kalkulačka vám dá první číslo, se kterým se dá pracovat, ne jen tušení.",
+        "Výsledek je orientační, nejde o audit na korunu přesně. Ale vychází z reálných měření, která jsem roky dělala ručně se stopkami přímo v provozu, takže bývá překvapivě blízko realitě."
+      ]
+    },
+    ucelMetoda:"Kalkulačka neviditelných ztrát je rychlý odhad, kolik vás ročně stojí běžná rutina ve skladu nebo ve výrobě. Zadáte pár čísel o svém provozu (kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje) a kalkulačka to přepočítá na hodiny, kilometry a koruny za rok.\n\nNení to náhrada za měření přímo v provozu. Je to první rychlý odhad, jestli se vůbec vyplatí to řešit dál.",
+    princip:"Do posuvníků zadáte základní údaje o provozu (počet lidí, směny, mzdové náklady) a čtyři čísla o ztrátách (zbytečná chůze, ruční administrativa, čekání a prostoje, ruční zpracování dodávek a expedic). Kalkulačka je hned přepočítá na hodiny týdně, kilometry navíc za rok a koruny za měsíc i za rok, a ukáže i to, kde ztráta vzniká nejvíc.",
+    postup:[
+      "Zadejte základní údaje o provozu: počet lidí, počet směn a mzdové náklady.",
+      "Zadejte čísla o ztrátách: kolik se zbytečně chodí, kolik se ručně přepisuje, kolik se čeká a kolik trvá zpracování dodávky nebo expedice.",
+      "Výsledek se spočítá okamžitě, bez registrace, přímo na stránce.",
+      "Podívejte se, jaká je vaše výchozí situace a kolik vás plýtvání reálně stojí, vezměte to jako startovní čáru. U kategorie, kde ztrácíte nejvíc času, začněte a udělejte si detailnější rozbor procesu."
+    ],
+    vstupy:"Počet pracovníků, počet směn, mzdové náklady, a čtyři čísla o ztrátách: zbytečná chůze a přesuny, ruční administrativa, čekání a prostoje, ruční zpracování dodávek a expedic.",
+    vystupy:"Celková ztráta za rok v korunách, náklady za měsíc, zbytečné hodiny za týden, kilometry nachozené navíc za rok, a kolik lidí v přepočtu pracuje jen na těchto ztrátách. Plus rozpad podle toho, kde ztráta vzniká nejvíc.",
+    priklad:"Sklad, 5 lidí, jedna směna. Nic dramatického, jen běžná rutina: špatně rozmístěné zboží, přepisování dodacích listů, čekání na informaci. Dohromady to dělalo kolem 40 minut zbytečně za směnu na člověka.\n\nKalkulačka z těchto čísel spočítala 522 000 Kč ročně za práci, která nepřinášela žádnou hodnotu.\n\nŘešení nebylo drahé. Změnilo se rozmístění zboží a jeden formulář pro příjem zboží. Žádná velká investice, jen jinak nastavený systém.",
+    chyby:[
+      "Čekání s vyplněním, dokud nemáte přesná čísla. Kalkulačka počítá s odhadem, přesnost tady není cíl, směr ano.",
+      "Brát výsledek jako přesný audit. Je to orientační číslo pro rychlé rozhodnutí, jestli se vyplatí to řešit dál, ne finální částka.",
+      "Nezačít situaci řešit, i když kalkulačka ukáže vysoké číslo. Samo o sobě nic nezmění, dokud se podle něj nezačne jednat."
+    ],
+    faq:[
+      { q:"Je výsledek přesný?", a:"Není, a záměrně. Kalkulačka počítá s čísly, která zadáte, a ta jsou vždy odhadem. Cílem není přesný audit, ale rychlá orientace. Pokud vás výsledek překvapí, teprve pak má smysl měřit přesněji." },
+      { q:"Potřebuji znát přesné minuty?", a:"Ne. Zadejte odhad, vedoucí, který v provozu stojí denně, ho má v hlavě. Výsledek bude dostatečně blízko realitě." },
+      { q:"Jak mám zjistit přesná, nebo alespoň orientační čísla, když je neznám?", a:"Stačí odhad od oka, všimněte si při běžné směně, kolik se chodí, čeká nebo ručně přepisuje. Přesnost tady není cíl. Pokud budete chtít čísla přesnější, vyzkoušejte Měřič plýtvání Free, ten vám je změří přímo v provozu." }
+    ],
+    design2a:{
+      heroLines:["Kolik vás stojí","obyčejná rutina?"],
+      heroNote:"Bez registrace · výsledek hned<br>orientační odhad za pár minut",
+      ctaLabel:"Chci znát svoje číslo",
+      stats:[
+        {num:"3", lbl:"základní údaje o provozu"},
+        {num:"4", lbl:"čísla o ztrátách"},
+        {num:"0", lbl:"nutná registrace"},
+        {num:"3", lbl:"výstupy: hodiny, km, Kč"}
+      ],
+      recognizeClose:"Pokud se aspoň u jedné otázky poznáváte, kalkulačka vám dá první číslo, se kterým se dá pracovat, ne jen tušení.",
+      how:{ chipsLabel:"Co se počítá", chips:["Zbytečná chůze","Administrativa","Čekání a prostoje","Zpracování dodávek"] },
+      example:{
+        headline:"Kolik stojí pár minut chůze denně?",
+        stat:{ num:"522 000 Kč", note:"ročně za práci, která nepřinášela žádnou hodnotu. Stačilo přerovnat zboží a upravit jeden formulář pro příjem." }
+      }
+    } },
+
+  { id:"mini-audit", group:"free", name:"Mini audit skladu", krok:1, oblasti:["sklad"], benefit:"Za 5 minut zjistíte, kde váš sklad ztrácí čas a kapacitu.",
+    popis:"Za 5 minut víte, kde váš sklad ztrácí čas, lidi a kapacitu.\n\n10 otázek ze skutečného provozu. Bez teorie, bez přípravy. Konkrétní tipy pro 3 nejkritičtější oblasti hned na stránce.",
+    proKoho:"Vedoucí skladu s týmem 3 až 30 lidí.",
+    url:"https://audit.gabrielatomickova.cz", souvisejici:["kalkulacka","meric-pro","kviz-sklad","spaghetti-sklad"],
+    kdyPouzit:{
+      otazky:[
+        "Máte pocit, že někde ztrácíte čas, ale nevíte přesně kde?",
+        "Jsou lidi v napětí, každý řeší věci jinak, pořád se na něco ptají nebo čekají na rozhodnutí?",
+        "Chcete přijít za vedením nebo majitelem s konkrétním zjištěním, ne s pocitem?"
+      ],
+      zaver:[
+        "Otázky v auditu vycházejí z kontrolních bodů, které jsem procházela ručně ve skladech různého charakteru. Nic vymyšleného, jen to, co v provozu skutečně bolí.",
+        "Nepotřebujete konzultanta, přípravu, podklady ani přesná data ze systému. Stačí znát svůj sklad a 5 minut klidu."
+      ]
+    },
+    ucelMetoda:"Mini audit skladu je krátký checklist, 10 otázek o vašem skladu. Odpovíte podle toho, jak to u vás skutečně funguje, a appka hned ukáže skóre a konkrétní tipy pro 3 oblasti, kde to bolí nejvíc.\n\nNení to náhrada za procesní audit na místě, je to první rychlá orientace, kde má smysl se podívat pořádněji.",
+    princip:"Audit spustíte rovnou, e-mail je nepovinný. Odpovíte na 10 otázek, většinou jedním kliknutím. Appka z odpovědí spočítá skóre a vybere 3 nejkritičtější oblasti, ke kterým rovnou dostanete konkrétní tipy. E-mail necháte, jen pokud chcete výsledek poslat i na později.",
+    postup:[
+      "Spusťte audit, žádná příprava ani podklady nejsou potřeba, e-mail nepotřebujete.",
+      "Odpovězte na 10 otázek o svém skladu, podle skutečného stavu, ne podle toho, jak by to mělo být.",
+      "Dostanete skóre a konkrétní tipy pro 3 oblasti, kde to bolí nejvíc, hned na stránce."
+    ],
+    vstupy:"Odpovědi na 10 otázek o vašem skladu, e-mail jen nepovinně, pokud chcete výsledek i poslat.",
+    vystupy:"Skóre 0 až 30 bodů se slovním hodnocením (třeba \"firma ztrácí významnou kapacitu každý týden\"), přehled odpovědí po jednotlivých otázkách, a konkrétní tipy pro 3 nejkritičtější oblasti, hned na stránce.",
+    priklad:"Petr vedl sklad v Hradci. 12 lidí, příjem zboží každý den, dva až tři kamiony týdně. Stěžoval si, že lidi nestíhají. Uvažoval o posilách.\n\nAudit odhalil dva problémy. Při příjmu kamionu nebylo jasné, kdo kontroluje zboží a kdo ho zaskladňuje, dělal to vždy ten, kdo byl zrovna volný. Zboží proto čekalo na zaskladnění průměrně 2,5 hodiny po vyložení, leželo na rampě a blokovalo provoz. Druhý problém byly výjimky, poškozené zboží, chybějící položky, nesouhlasící množství, bez jasného postupu to každý řešil jinak.\n\nJedno pravidlo pro příjem zkrátilo dobu příjmu kamionu ze 3 hodin na 55 minut. Při 10 kamionech za měsíc to dělá 480 hodin ročně, při 300 Kč nákladu na osobu za hodinu skoro 145 000 Kč.\n\nPosily nepřišly. Čas se našel jinde.",
+    chyby:[
+      "Přeskočit otázku, na kterou přesně neznáte odpověď. Nevím je taky odpověď, a často důležitá, ukazuje, kde se ve skladu vůbec nesleduje, co se děje.",
+      "Snažit se audit rozdělit na víckrát. Nedá se uložit a vrátit se k němu později, lepší je najít 5 minut vcelku."
+    ],
+    faq:[
+      { q:"Musím zadat e-mail?", a:"Ne. Audit spustíte rovnou bez e-mailu a výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit." },
+      { q:"Co když nevím odpověď na některou otázku?", a:"Zvolte odpověď, která je nejblíž realitě. Nevíte-li vůbec, je to samo o sobě výsledek, pokud o situaci ve svém skladu nevíte, je to červená." },
+      { q:"Musím projít celý audit najednou?", a:"Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte, 5 minut najdete vždy." }
+    ],
+    design2a:{
+      heroLines:["Za 5 minut víte,","kde sklad ztrácí čas."],
+      heroNote:"10 otázek · bez přípravy<br>tipy hned na stránce",
+      ctaLabel:"Chci si audit udělat",
+      stats:[
+        {num:"10", lbl:"otázek ze skutečného provozu"},
+        {num:"5", lbl:"minut na celý audit"},
+        {num:"3", lbl:"nejkritičtější oblasti"},
+        {num:"0", lbl:"teorie a příprava"}
+      ],
+      recognizeClose:"Stačí znát svůj sklad a 5 minut klidu.",
+      example:{
+        headline:"Kolik stojí 2,5 hodiny čekání na rampě?",
+        stat:{ num:"145 000 Kč", note:"ročně, jen díky jednomu jasnému pravidlu pro příjem zboží. Posily nepřišly, čas se našel jinde." }
+      }
+    } },
+
+  { id:"kviz-sklad", group:"free", name:"Kvíz: Jak dobře znáte svůj sklad", krok:1, oblasti:["sklad"], benefit:"Zjistíte, co o svém skladu vlastně nevíte, ale měli byste.",
+    popis:"10 otázek, které odhalí slepá místa ve vašem provozu.\n\nNejde o znalosti, jde o to, jestli máte čísla a přehled, který potřebujete k rozhodování.",
+    proKoho:"Vedoucí skladu nebo výroby s týmem 3 až 50 lidí.",
+    url:"https://kviz.gabrielatomickova.cz", souvisejici:["mini-audit","kalkulacka"],
+    kdyPouzit:{
+      otazky:[
+        "Vedete sklad nebo výrobu a nejste si jistí, jestli máte přehled, který byste měli mít?",
+        "Tušíte, že někde jsou slepá místa, ale nevíte přesně kde?",
+        "Chystáte se na změnu a chcete vědět, co o svém provozu vlastně nevíte?",
+        "Potřebujete argument pro vedení, kde vám chybí data a proč to vadí?"
+      ],
+      zaver:[
+        "Otázky vycházejí z věcí, na které narážím v reálných provozech, slepá místa, která mají vedoucí skladu nejčastěji společná.",
+        "Nepotřebujete konzultanta, poradce, přípravu, podklady, přesná čísla ze systému ani zkušenosti s KAIZEN. Stačí 5 minut a ochota odpovědět upřímně."
+      ]
+    },
+    ucelMetoda:"Kvíz Jak dobře znáte svůj sklad je 10 otázek o vašem provozu. Neukazuje, kde konkrétně vznikají ztráty, to dělá Mini audit skladu. Ukazuje slepá místa, věci, které neměříte, nesledujete nebo k nim nemáte číslo, přestože byste ho mít měli.\n\nNení to test znalostí. Je to test přehledu.",
+    princip:"Zadáte e-mail, ten slouží jako přístup ke kvízu. Pak odpovíte na 10 otázek, vždy tři možnosti, jedno kliknutí. Appka z odpovědí spočítá skóre a u oblastí, kde vám chybí přehled nejvíc, dostanete konkrétní tipy, co sledovat jako první.",
+    postup:[
+      "Zadejte e-mail a spusťte kvíz, žádná příprava ani podklady nejsou potřeba.",
+      "Odpovězte na 10 otázek o svém provozu, vždy tři možnosti a jedno kliknutí.",
+      "Dostanete skóre a konkrétní tipy, co sledovat jako první, hned na stránce."
+    ],
+    vstupy:"E-mail (slouží jako přístup ke kvízu) a odpovědi na 10 otázek o vašem provozu.",
+    vystupy:"Skóre 0 až 20 bodů se slovním hodnocením (třeba \"provoz řídí vás, ne vy provoz\"), přehled po jednotlivých oblastech, kde vám chybí přehled, a konkrétní tipy pro oblasti, kde to bolí nejvíc, hned na stránce.",
+    priklad:"Vedoucí skladu, 15 lidí, firma fungovala. Na papíře v pohodě. Přišel kvíz.\n\nNeznal náklady na metr čtvereční. Nevedl statistiku chyb. Nevěděl, kolik ho stojí odchod jednoho člověka. Tři procesy závisely na jednom skladníkovi, který byl u firmy 11 let. Kdyby odešel, nikdo by nevěděl, jak to dělá.\n\nKaždou z těchto věcí věděl, že nějak fungují. Ale číslo k žádné z nich neměl.\n\nKvíz nezjistil, co nefunguje. Zjistil, co neví. A to byl první krok k tomu, aby to začal řídit.",
+    chyby:[
+      "Odpovídat, jak by to mělo být, ne jak to skutečně je. Kvíz ukáže reálný stav jen tehdy, když odpovídáte upřímně.",
+      "Splést si kvíz s mini auditem skladu. Kvíz ukazuje, co nevíte a neměříte, mini audit hledá, kde konkrétně vznikají ztráty v procesech."
+    ],
+    faq:[
+      { q:"Proč musím zadat e-mail?", a:"Kvíz je zdarma, e-mail slouží jako přístup. Žádný spam, jen občasné tipy pro vedoucí skladu. Kdykoli se můžete odhlásit." },
+      { q:"Jaký je rozdíl mezi kvízem a mini auditem skladu?", a:"Kvíz odhaluje slepá místa v přehledu, co nevíte, co neměříte, kde chybí čísla. Mini audit skladu hledá, kde konkrétně vznikají ztráty v procesech." },
+      { q:"Musím projít celý kvíz najednou?", a:"Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte, 5 minut najdete vždy." }
+    ],
+    design2a:{
+      heroLines:["10 otázek,","co odhalí slepá místa."],
+      heroNote:"5 minut · bez příprav<br>stačí upřímná odpověď",
+      ctaLabel:"Chci zjistit, co nevím",
+      stats:[
+        {num:"10", lbl:"otázek o vašem provozu"},
+        {num:"20", lbl:"bodů maximální skóre"},
+        {num:"5", lbl:"minut na celý kvíz"},
+        {num:"0", lbl:"znalostí KAIZEN potřeba"}
+      ],
+      recognizeClose:"Stačí 5 minut a ochota odpovědět upřímně.",
+      example:{
+        headline:"Co všechno o svém skladu vlastně nevíte?",
+        stat:{ quote:true, text:"Zjistil, co neví.", note:"Ne co nefunguje, ale co nikdo nesleduje. To je první krok k tomu, začít to řídit." }
+      }
+    } },
+
+  { id:"kviz-komunikace", group:"free", name:"Kvíz komunikačního chaosu", krok:1, oblasti:["lide"], benefit:"Zjistíte, na které ze 4 úrovní komunikačního chaosu vaše firma je.",
+    popis:"Rychlý test komunikace ve firmě, 11 otázek o tom, jak si předáváte informace. Podle bodů zjistíte, na které ze 4 úrovní komunikačního chaosu jste, a která z 6 oblastí vás nejvíc brzdí.",
+    proKoho:"Majitel nebo manažer, kde lidi dělají věci jinak, než bylo domluveno, a nikdo přesně neví proč.",
+    url:"https://kviz-komunikacni-chaos.gabrielatomickova.cz", souvisejici:["kalkulacka","meric-free","casova-studie"],
+    kdyPouzit:{
+      otazky:[
+        "Běží k jedné zakázce informace přes e-mail, WhatsApp, papírový lístek i telefon, a nikdo si není jistý, co platí naposled?",
+        "Zapisujete stejné údaje o zákazníkovi nebo zakázce ručně na víc míst, protože systémy spolu nemluví?",
+        "Čeká někdo pravidelně na informaci nebo pokyn, místo aby mohl rovnou pracovat dál?",
+        "Slyšíte často větu \"to mi nikdo neřekl\", a nikdo přesně neví, čí to byla chyba?",
+        "Když se změní termín nebo množství, musíte to ručně obvolat, aby se to vůbec dozvěděli všichni, kterých se to týká?",
+        "Je ve firmě jeden konkrétní člověk, na kterého se všichni obrací s \"jak to vlastně je\", a bez něj by to nikdo nevěděl?"
+      ],
+      zaver:[
+        "Pokud jste se poznali aspoň v jedné, komunikace vás pravděpodobně stojí víc času, než si myslíte, i když to na první pohled vypadá jako drobnost.",
+        "Nepotřebujete znát žádnou metodu ani terminologii, stačí odpovídat podle toho, jak to u vás reálně chodí, ne jak by to chodit mělo."
+      ]
+    },
+    ucelMetoda:"Kvíz komunikačního chaosu je 11 otázek o předávání informací ve firmě, o tom, přes kolik kanálů to jde a kdo nakonec neví, jak to vlastně je. Podle bodů appka ukáže, na které ze 4 úrovní komunikačního chaosu vaše firma je, od poměrně čisté komunikace až po stav, kdy je komunikace jedno z hlavních úzkých míst firmy, a navíc pojmenuje, do které ze 6 konkrétních oblastí (třeba kanálový chaos, přepisování dat, čekání a dohledávání, závislost na jedné osobě, chaos při změnách nebo roztříštěné úložiště) to u vás nejvíc patří.\n\nNejdražší přitom obvykle není samotný telefonát, ten trvá půl minuty. Je to to, co se stane s kolegou na druhém konci. Přeruší, co zrovna dělal, chvíli myslí na něco úplně jiného, a než se vrátí zpátky do rytmu své práce, může to trvat 15 až 20 minut. Jeden dotaz na tři kolegy tak dokáže zdržet klidně čtyři lidi najednou, ne kvůli délce hovoru, ale kvůli ztracenému soustředění.",
+    princip:"Odpovídáte na 11 otázek o tom, jaký je u vás tok informací k zakázce, kolika kanály to jde, kde se čeká a kdo je nakonec ten, co ví, jak to je. Appka body sečte, porovná se 4 pásmy chaosu, a navíc vyhodnotí, do které ze 6 pojmenovaných oblastí (třeba kanálový chaos, čekání a dohledávání nebo závislost na jedné osobě) patří to, co vás nejvíc brzdí.",
+    postup:[
+      "Spusťte kvíz, žádný e-mail na start nepotřebujete.",
+      "Odpovězte na 11 otázek o tom, jak si ve firmě předáváte informace.",
+      "Podívejte se na skóre, pásmo a pojmenovanou oblast, kde to bolí nejvíc.",
+      "Pokud chcete podrobnější rozbor, nechte si ho poslat na e-mail."
+    ],
+    vstupy:"Odpovědi na 11 otázek o tom, jak a kudy si ve firmě předáváte informace, kolik kanálů používáte, kde se nejvíc čeká a jak sdílíte soubory.",
+    vystupy:"Skóre 0 až 33 bodů, zařazení do jedné ze 4 úrovní komunikačního chaosu se slovním vysvětlením, a pojmenování jedné ze 6 konkrétních oblastí, kde vás to nejvíc brzdí (třeba kanálový chaos, přepisování dat nebo závislost na jedné osobě). Volitelně podrobnější rozbor na e-mail.",
+    priklad:"Pavel vede údržbu. Každá akce má svou složku a svůj akční plán plný úkolů, a rozpracovaných projektů běží víc najednou.\n\nJednou dopoledne mu Monika pošle e-mail s připomínkou jednoho z projektů a odkazem na akční plán. Pavel ho otevře a najde 12 úkolů, za které odpovídá. 4 z nich má rozpracované, 2 další navazují na to, co už běží. Ale u zbylých 6 si nepamatuje detaily, a začne obvolávat kolegy, aby zjistil, jak to vlastně bylo.\n\nDohledávání těch 6 úkolů sežere jemu i kolegům desítky minut. A to je jen jeden akční plán, otevřený z jednoho e-mailu. Rozjetých projektů mají 5, každý se svým vlastním plánem.\n\nPřitom by úplně stačilo mít jeden společný akční plán, kde si každý vyfiltruje jen svoje úkoly. Nikdo by na nic nezapomněl, a nikdo by si nemusel nic pamatovat nazpaměť.\n\nJedno pravidlo, a každý vždy ví, kde najde všechny svoje úkoly k projektům.",
+    chyby:[
+      "Odpovídat, jak by komunikace měla fungovat podle vnitřní směrnice, ne jak to reálně chodí v provozu.",
+      "Zapomenout na kanály, které si lidi zavedli sami mezi sebou, třeba WhatsApp skupinu nebo papírové lístky, protože nejsou \"oficiální\".",
+      "Brát nízké skóre jako důvod komunikaci dál vůbec neřešit, i malé zlepšení dokáže ušetřit hodiny týdně."
+    ],
+    faq:[
+      { q:"Musím zadat e-mail, abych mohl kvíz spustit?", a:"Ne. Kvíz spustíte rovnou, bez e-mailu. E-mail se řeší až u volitelného podrobnějšího rozboru po vyhodnocení." },
+      { q:"Jak dlouho kvíz trvá?", a:"Běžně kolem 5 minut, jedenáct otázek, většinou stačí jedno kliknutí." },
+      { q:"Znamená vysoké skóre u kanálů, že mám mít jen jeden způsob komunikace?", a:"Ne nutně. Jde o to, že čím víc kanálů běžně používáte, tím větší je riziko, že si přestanou říkat totéž. Kvíz vás na to jen upozorní, neříká vám, který kanál zrušit." }
+    ],
+    design2a:{
+      heroLines:["Kde se vám ve firmě","ztrácí informace?"],
+      heroNote:"11 otázek · bez e-mailu na start<br>5 minut",
+      ctaLabel:"Chci zjistit, kde to vázne",
+      stats:[
+        {num:"11", lbl:"otázek o vaší komunikaci"},
+        {num:"6", lbl:"pojmenovaných oblastí, kde to může bolet"},
+        {num:"0", lbl:"e-mail na start kvízu"},
+        {num:"5", lbl:"minut na celý kvíz"}
+      ],
+      recognizeClose:"Pokud jste se poznali aspoň v jedné, komunikace vás pravděpodobně stojí víc času, než si myslíte.",
+      how:{ chipsLabel:"4 úrovně chaosu", chips:["Komunikace je čistá","Info se začínají ztrácet","Ztráta času mezi odděleními","Hlavní úzké místo firmy"] },
+      example:{
+        headline:"Co stojí jeden zapomenutý akční plán?",
+        stat:{ num:"6 z 12", note:"úkolů, u kterých si vedoucí nepamatoval detaily a musel obvolávat kolegy. Jeden společný akční plán, kde si každý vyfiltruje jen svoje úkoly, by stačil, aby se to nestávalo." }
+      }
+    } },
+
+  { id:"montazni-checklist", group:"free", name:"Montážní checklist", krok:3, oblasti:["vyroba"], krowTag:"Na míru", benefit:"Vyzkoušíte si živý checklist zdarma, a uvidíte, jak by mohl vypadat na míru pro váš provoz.",
+    popis:"Živá ukázka mobilního checklistu před odjezdem na zakázku (vestavěná skříň, kuchyňská linka, servisní výjezd), zdarma k vyzkoušení. Na míru pro vaše vlastní montáže se pak dělá jako samostatná zakázka.",
+    proKoho:"Firmy, kde montážníci nebo servisní technici jezdí na zakázky a občas se vrací pro zapomenutou věc.",
+    url:"https://montaz.gabrielatomickova.cz", souvisejici:[],
+    kdyPouzit:{
+      otazky:[
+        "Vrací se vám montážníci nebo servisní technici z cesty zpátky na dílnu, protože něco zapomněli naložit?",
+        "Má každý pracovník trochu jiný postup, co a jak si před odjezdem zkontroluje, podle vlastní paměti a zvyku?",
+        "Stalo se vám, že kvůli chybějícímu šroubku, kování nebo kusu materiálu stála celá montáž na místě?",
+        "Nevíte přesně, kdo a kdy potvrdil, že je auto naložené kompletně, a kdo za to tedy odpovídá?"
+      ],
+      zaver:[
+        "Pokud se poznáváte aspoň v jedné, pár minut zaškrtávání před odjezdem vás vyjde levněji, než jeden návrat pro zapomenutou věc.",
+        "Tři ukázkové checklisty (skříň, kuchyň, servis) si můžete hned vyzkoušet zdarma, verze na míru pro vaše vlastní výrobky a montáže se pak dělá jako samostatná zakázka."
+      ]
+    },
+    ucelMetoda:"Montážní checklist je živá ukázka toho, jak může vypadat mobilní checklist na míru pro montážní nebo servisní firmu. Tři vzorové checklisty (vestavěná skříň, kuchyňská linka, servisní výjezd) si můžete rovnou vyzkoušet zdarma. Appka rozdělí položky do kategorií (výrobek a díly, spojovací materiál, nářadí, bezpečnost a ochrana, dokumentace), pracovník je odškrtává při nakládce auta, appka počítá procento hotovo a na konci se checklist potvrdí jménem a časem.\n\nVerze na míru pro vaše vlastní výrobky a typy zakázek se pak dělá jako samostatná zakázka, s kategoriemi podle vašeho provozu a mobilním odkazem funkčním na jakémkoli telefonu. Cena začíná na 5000 Kč a liší se podle provedení.",
+    princip:"Vyberete typ zakázky, appka zobrazí kategorie s položkami k naložení. Při nakládce auta je postupně odškrtáváte, appka průběžně počítá procento hotovo za celý checklist i za každou kategorii zvlášť. Na konci pracovník zadá jméno a potvrdí, appka zaznamená čas a kolik položek bylo zkontrolováno.",
+    postup:[
+      "Vyberte typ zakázky (v ukázce skříň, kuchyň nebo servis, na míru podle vašich vlastních typů montáží).",
+      "Procházejte kategorie (výrobek, spojovací materiál, nářadí, bezpečnost, dokumentace) a odškrtávejte položky při nakládce.",
+      "Sledujte procento hotovo, dokud není celý checklist na 100 %.",
+      "Potvrďte jménem, appka zaznamená čas a počet zkontrolovaných položek.",
+      "Potvrzení vytiskněte nebo uložte jako důkaz, že checklist před odjezdem proběhl."
+    ],
+    vstupy:"Výběr typu zakázky a postupné odškrtávání položek v jednotlivých kategoriích při nakládce auta.",
+    vystupy:"Průběžné procento hotovo za celý checklist i za každou kategorii, a po dokončení potvrzení se jménem pracovníka, časem a počtem zkontrolovaných položek, k vytištění nebo uložení.",
+    priklad:"Dva montážníci dojedou na zakázku a zjistí, že jim chybí kus kování. Vrací se pro něj zpátky na dílnu, i když je to jen pár kilometrů přes město, cesta tam a zpátky zabere přes hodinu.\n\nZa tu dobu zaplatíte mzdu a odvody obou montážníků, pohonné hmoty, a k tomu zpoždění zákazníka a nervozitu, kterou se těžko vyčísluje. Jeden takový návrat vyjde na víc než 1000 Kč. Když se to stane třikrát za rok, je to 3000 Kč, když jednou měsíčně, je to 12 000 Kč ročně jen za to, co by vyřešilo pár minut zaškrtávání před odjezdem.",
+    chyby:[
+      "Nechat checklist jen jako formalitu a odškrtat všechno najednou až po návratu, ne v okamžiku skutečné nakládky.",
+      "Nemít v checklistu rezervu na drobný spojovací materiál, právě ta zachraňuje montáž, když něco chybí.",
+      "Nezaznamenat, kdo checklist prošel a kdy, bez podpisu se odpovědnost za naložení ztrácí."
+    ],
+    faq:[
+      { q:"Je tenhle checklist zdarma?", a:"Ano, tři ukázkové checklisty (vestavěná skříň, kuchyňská linka, servisní výjezd) můžete použít hned a zdarma. Placená je až verze na míru pro vaše vlastní výrobky a montáže." },
+      { q:"Co znamená verze na míru?", a:"Checklist upravený přesně na vaše typy zakázek, s kategoriemi podle vašeho provozu, mobilním odkazem pro pracovníky a potvrzením nakládky jménem a časem." },
+      { q:"Co je v ceně verze na míru?", a:"Cena začíná na 5000 Kč a liší se podle provedení, počtu typů zakázek a rozsahu kategorií. Zahrnuje úvodní rozhovor nad typy vašich zakázek, checklist upravený na vaše výrobky, rozdělení do kategorií (výrobek, díly, spojovací materiál, nářadí, dokumentace, bezpečnost), mobilní odkaz funkční na každém telefonu, potvrzení nakládky jménem a časem, tisk nebo uložení checklistu a zaškolení nebo videonávod." }
+    ],
+    design2a:{
+      heroLines:["Auto naložené,","nebo se vracíte pro zapomenuté?"],
+      heroNote:"3 živé ukázky zdarma · skříň, kuchyň, servis<br>na míru od 5000 Kč dle provedení",
+      ctaLabel:"Vyzkoušet checklist zdarma",
+      stats:[
+        {num:"3", lbl:"živé ukázkové checklisty"},
+        {num:"5", lbl:"kategorií položek v checklistu"},
+        {num:"0", lbl:"Kč za vyzkoušení ukázky"},
+        {num:"5000", lbl:"Kč verze na míru, dle provedení"}
+      ],
+      recognizeClose:"Pokud se poznáváte aspoň v jedné, pár minut zaškrtávání před odjezdem vás vyjde levněji, než jeden návrat pro zapomenutou věc.",
+      how:{ chipsLabel:"5 kategorií v checklistu", chips:["Výrobek a díly","Spojovací materiál","Nářadí","Bezpečnost a ochrana","Dokumentace k zakázce"] },
+      example:{
+        headline:"Kolik stojí jeden návrat pro zapomenutou věc?",
+        stat:{ num:"1000+", note:"Kč za jeden návrat dvou montážníků kvůli zapomenutému dílu (mzda, odvody, pohonné hmoty). Třikrát za rok je to 3000 Kč, jednou měsíčně 12 000 Kč ročně." }
+      }
+    } },
+
+  { id:"spaghetti-sklad", group:"free", name:"Spaghetti diagram", krok:2, oblasti:["sklad","vyroba"], benefit:"Uvidíte na plánku skladu nebo výroby, kolik lidé reálně nachodí.",
+    popis:"Nahrajete plánek skladu nebo výroby, zaklikáte trasu pohybu, nástroj spočítá počet bodů, délku trasy a celkovou vzdálenost na zakázku.",
+    proKoho:"Vedoucí skladu nebo výroby, co chce vidět, kolik lidí reálně nachodí, ne odhadovat.",
+    url:"https://spaghetti.gabrielatomickova.cz", souvisejici:["spaghetti-vyroba","meric-free"],
+    kdyPouzit:{
+      otazky:[
+        "Máte pocit, že lidé ve skladu chodí víc, než by museli, ale nevíte přesně o kolik?",
+        "Rozmisťovalo se zboží na sklad tak, jak se to zrovna hodilo při stěhování nebo dodávce, ne podle toho, co se vychystává nejčastěji?",
+        "Stěžují si lidé na bolavé nohy nebo únavu z chůze, a berete to jako normální součást práce ve skladu?",
+        "Chtěli byste trasu vychystávání vidět černé na bílém, místo abyste ji jen odhadovali od stolu?"
+      ],
+      zaver:[
+        "Pokud se poznáváte aspoň v jedné, stačí nahrát plánek skladu a pár kliknutí, a uvidíte to, co jste dřív jen tušili.",
+        "Nástroj je celý zdarma, bez registrace, funguje pro jednu trasu i pro víc zakázek najednou."
+      ]
+    },
+    ucelMetoda:"Spaghetti diagram je starý nástroj z výroby, papír a tužka: sledujete pohyb člověka a každý krok zaznamenáte čarou. Po chvíli je na papíře změť čar, která vypadá jako talíř špaget, odtud název. Čím víc čar a čím víc se kříží, tím víc zbytečného pohybu se ve skladu nebo výrobě děje.\n\nTenhle nástroj dělá to samé, jen na počítači nebo mobilu. Nahrajete plánek skladu nebo výroby, zadáte jedno měřítko (třeba délku regálu na plánku a jeho skutečnou délku v metrech), a appka pak z vámi zaklikaných bodů trasy sama spočítá reálnou vzdálenost v metrech, ne jen hezký obrázek.",
+    princip:"Klikáte body přesně tam, kudy se při vychystávání pohybujete, každou zatáčku a odbočku. Appka body spojí čarou a podle zadaného měřítka spočítá délku trasy ve metrech. Můžete zaznamenat víc zakázek najednou, každou jinou barvou, a appka spočítá délku každé zvlášť i součet všech.",
+    postup:[
+      "Nahrajte plánek skladu nebo výroby, fotku nebo obrázek půdorysu.",
+      "Zadejte měřítko: naměřenou vzdálenost na plánku a odpovídající reálnou délku v metrech (třeba délku regálu).",
+      "Pojmenujte zakázku a klikněte Začít kreslit trasu.",
+      "Klikejte body přesně tam, kudy se při vychystávání pohybujete.",
+      "Sledujte statistiky (počet bodů, délku trasy, počet zakázek, celkem) a diagram stáhněte nebo vytiskněte."
+    ],
+    vstupy:"Fotka nebo obrázek plánku skladu nebo výroby (JPG, PNG), a jedna známá vzdálenost pro měřítko, třeba délka regálu nebo šířka uličky.",
+    vystupy:"Spaghetti diagram ke stažení jako obrázek nebo k vytisknutí, délka trasy v metrech pro každou zakázku i celkem, počet zaznamenaných bodů a zakázek.",
+    priklad:"Andula pracovala na výdeji skladu roky, věděla, kde co je. Nikdo si nestěžoval, nikomu nic nechybělo. Jenže nikdo netušil, kolik toho za směnu nachodí, dokud to nezměřili krokoměrem: 7,5 km za směnu, jen na výdeji.\n\nNakreslily spaghetti diagram jejího pohybu a bylo vidět, kde se trasa zbytečně kříží a prodlužuje. Přesunuly šest položek v regálu, nic víc. Nový výsledek: 4,2 km za směnu, o 44 % míň. Žádný projekt, žádná investice, jen krokoměr, spaghetti diagram a selský rozum. Anduliny nohy přestaly bolet, a od té doby věří změnám, které se ve skladu plánují, protože viděla na vlastní kůži, že to není teorie.",
+    chyby:[
+      "Neuvést přesné měřítko. Stačí jedna známá vzdálenost (délka regálu, šířka uličky), appka podle ní přepočítá zbytek, ale bez ní jsou metry jen odhad.",
+      "Zaznamenat jen jednu trasu a myslet si, že to vypovídá o celém provozu. Každá zakázka má jiný počet položek, takže jednotlivé trasy nejdou srovnávat 1:1, cíl je najít, kde se ztrácí nejvíc pohybu celkově, ne porovnávat jednu trasu s druhou.",
+      "Nekombinovat to s krokoměrem. Diagram ukáže kde se chodí zbytečně, krokoměr dá skutečné číslo za celou směnu, dohromady je to nejsilnější důkaz, co změnu prosadí."
+    ],
+    faq:[
+      { q:"Je nástroj opravdu celý zdarma?", a:"Ano, bez registrace a bez e-mailu. Nahrajete plánek, zakreslíte trasu, stáhnete nebo vytisknete diagram." },
+      { q:"Kolik tras nebo zakázek můžu zaznamenat?", a:"Kolik potřebujete, každá má svou barvu a appka spočítá délku každé zvlášť i součet všech dohromady." },
+      { q:"Co když potřebuju sledovat i zastávky, kde se pracovník u něčeho zastaví, ne jen prochází?", a:"To umí placená verze, Spaghetti diagram Pro, určená pro víc lidí najednou, ve skladu i ve výrobě." }
+    ],
+    design2a:{
+      heroLines:["Kolik lidé","reálně nachodí?"],
+      heroNote:"Celé zdarma, bez registrace · spaghetti diagram na pár kliknutí",
+      ctaLabel:"Nakreslit spaghetti diagram zdarma",
+      stats:[
+        {num:"0", lbl:"Kč, nástroj je celý zdarma"},
+        {num:"5", lbl:"kroků od nahrání plánku po hotový diagram"},
+        {num:"4", lbl:"metriky v reálném čase: body, délka, zakázky, celkem"},
+        {num:"44", lbl:"% kratší trasa po přesunu pár položek, reálný případ ze skladu"}
+      ],
+      recognizeClose:"Pokud se poznáváte aspoň v jedné, stačí nahrát plánek a pár kliknutí, a uvidíte to, co jste dřív jen tušili.",
+      how:{ chipsLabel:"5 kroků k hotovému diagramu", chips:["Nahrát plánek","Zadat měřítko","Pojmenovat zakázku","Zaklikat trasu","Stáhnout nebo vytisknout"] },
+      example:{
+        headline:"Kolik uleví přesunutí pár položek v regálu?",
+        stat:{ num:"44", note:"% kratší trasa u reálné zaměstnankyně ve skladu, ze 7,5 km na 4,2 km za směnu, jen přesunem šesti položek v regálu, bez jakékoli investice." }
+      }
+    } },
+
+  { id:"aidoklad", group:"free", name:"AIDoklad Agent (ukázka)", krok:3, oblasti:["administrativa"], krowTag:"Ukázka", benefit:"Uvidíte, jak AI agenti umí sami zpracovat faktury od začátku do konce.",
+    popis:"Ukázka schopností, ne hlavní produkt. Šest AI agentů za sebou zpracuje faktury, ověří IČ a DIČ přes ARES, najde duplicity a spočítá částky.",
+    proKoho:"Kdokoliv, kdo chce vidět, co umí udělat AI agenti postavení na míru, ne obecné demo.",
+    url:"https://aidokladagent.cz", souvisejici:[] },
+
+  { id:"automat-faktury", group:"free", name:"Automatické stahování faktur (návod)", krok:3, oblasti:["administrativa"], krowTag:"Návod", benefit:"Přestanete ručně stahovat a přepisovat faktury z e-mailu.",
+    popis:"Návod, jak si nechat automaticky stahovat faktury z e-mailu rovnou na Google Drive. Instalace na míru za 199 Kč.",
+    proKoho:"Kdo je unavený z ručního stahování a přepisování faktur.",
+    url:"https://checklist.gabrielatomickova.cz",
+    souvisejici:[] },
+
+  // PLACENÉ SAMOSTATNĚ
+  { id:"meric-pro", group:"paid-solo", name:"Měřič plýtvání Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Změříte čas přesněji, s vlastními kroky procesu a exportem dat.",
+    popis:"Jde do hloubky víc než free verze. Pro výrobní firmy a sklady, co chtějí přesnější čísla a víc kontextu.",
+    proKoho:"Kdo si vyzkoušel Free verzi a chce dál.",
+    prodejniStranka:"https://gabrielatomickova.cz/kde-mi-mizi-cas.html", souvisejici:["meric-free","mini-audit"] },
+
+  { id:"spaghetti-vyroba", group:"paid-solo", name:"Spaghetti diagram Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Zaznamenáte pohyb víc lidí najednou, ve skladu i ve výrobě, včetně zastávek.",
+    popis:"Zaznamenáte trasy víc lidí najednou, včetně zastávek, kde se zastaví a něco dělají. Umí i rovnou spočítat, o kolik je návrh lepší než současný stav. Pro sklad i pro výrobu.",
+    proKoho:"Vedoucí skladu nebo výroby, co řeší zbytečný pohyb víc lidí najednou.",
+    prodejniStranka:null, prodejniNote:"Prodejní stránka se zatím připravuje.",
+    souvisejici:["spaghetti-sklad"],
+    kdyPouzit:{
+      otazky:[
+        "Máte na lince nebo ve skladu víc lidí, co dělají podobnou práci, a nevíte, kdo z nich chodí zbytečně nejvíc?",
+        "Potřebujete kromě chůze zaznamenat i místa, kde se pracovník zastaví a něco dělá, bere materiál, sedá k montáži, ne jen kudy chodí?",
+        "Chystáte přestavbu pracoviště nebo přesun materiálu a chcete mít dopředu černé na bílém, kolik metrů to reálně ušetří?",
+        "Řešíte tohle na víc místech najednou a chcete si to mít uložené a porovnatelné, ne jen jednorázově na papíře?"
+      ],
+      zaver:[
+        "Appka umí to samé jako zdarma verze, jen navíc pro víc lidí najednou, se zastávkami a s automatickým porovnáním současného stavu a návrhu.",
+        "Je to placená verze, součást Rozšířeného ročního balíčku, přístup přes kód."
+      ]
+    },
+    ucelMetoda:"Spaghetti diagram je starý nástroj z výroby, papír a tužka: sledujete pohyb člověka a každý krok zaznamenáte čarou. Tahle appka dělá to samé digitálně, a navíc umí, co papír s tužkou neumí: zaznamenat víc lidí najednou do stejného půdorysu, označit místa kde se pracovník zastaví a něco dělá (zastávka), a když nakreslíte dvě trasy vedle sebe, sama spočítá, o kolik metrů a procent je jedna kratší než druhá.\n\nTohle poslední, porovnání současného stavu s návrhem, je přesně to, co se dřív dělalo ručně: naměřit současný stav, navrhnout změnu, naměřit ji znovu, a teprve pak spočítat rozdíl na kalkulačce. Appka teď ten poslední krok udělá za vás sama.",
+    princip:"Nahrajete půdorys a kreslíte trasu prvnímu pracovníkovi stejně jako ve zdarma verzi. Tlačítkem Zastávka označíte místo, kde se zrovna zastavil a něco dělá. Tlačítkem + Přidat novou zakázku přidáte dalšího pracovníka, každý má svou barvu. Když chcete porovnat současný stav s návrhem, nakreslíte obě varianty jako dvě samostatné trasy a u jedné kliknete na kroužek S (současný stav) a u druhé na N (návrh) - appka nad tím rovnou zobrazí kartu s úsporou v metrech i procentech.",
+    postup:[
+      "Nahrajte půdorys skladu nebo výroby a zadejte měřítko.",
+      "Pojmenujte prvního pracovníka a nakreslete jeho trasu, klikejte body přesně tam, kudy se pohybuje.",
+      "Tlačítkem Zastávka označte místa, kde se zastaví a něco dělá.",
+      "Přidejte další pracovníky, pokud chcete zaznamenat víc lidí najednou.",
+      "Volitelně: nakreslete druhou variantu trasy a označte ji S (současný stav) / N (návrh), appka spočítá úsporu sama.",
+      "Diagram i statistiky stáhněte jako obrázek nebo vytiskněte."
+    ],
+    vstupy:"Fotka nebo obrázek půdorysu skladu nebo výroby (JPG, PNG), měřítko (jedna známá vzdálenost) a jména pracovníků, které chcete sledovat.",
+    vystupy:"Spaghetti diagram ke stažení nebo k vytisknutí, délka trasy a počet zastávek pro každého pracovníka i celkem za všechny, a když je označené srovnání, i úspora v metrech a procentech mezi současným stavem a návrhem.",
+    priklad:"Na lince sedadlových senzorů v Takatě Dolní Kalná operátorky chodily kvůli špatně rozmístěnému materiálu 45,5 metru na každý cyklus. Materiál byl rozmístěný tak, jak se to hodilo při stavbě linky, ne tak, aby to dávalo smysl pro práci. Tenhle konkrétní případ se tehdy měřil ještě postaru, papírem a tužkou, appka na to v tu dobu ještě nebyla.\n\nPo přestavbě rozmístění materiálu a pracovišť klesla chůze na 23 metrů na cyklus, bez jediného nového stroje nebo investice do technologie, jen jiné rozmístění toho, co tam už bylo. Přesně tenhle typ srovnání, kolik chodíte teď a kolik byste chodili po změně, appka dneska spočítá sama, jakmile obě trasy označíte jako současný stav a návrh.",
+    chyby:[
+      "Zaznamenat jen jednoho pracovníka a myslet si, že to platí pro celou linku. Různí lidé dělají stejnou práci trochu jinak, proto appka umí víc pracovníků najednou, ne aby se závěr dělal z jednoho člověka.",
+      "Zastávka ukazuje jen kde se pracovník zastavil, ne jak dlouho tam stráví čas. Pokud potřebujete i časy u zastávek, kombinujte appku se stopkami nebo krokoměrem, stejně jako u zdarma verze.",
+      "Nakreslit jen jednu variantu trasy a čekat, že appka porovnání zobrazí sama. Pro srovnání musí existovat dvě trasy, jedna označená jako současný stav a druhá jako návrh, teprve pak se objeví karta s úsporou."
+    ],
+    faq:[
+      { q:"Jak funguje přístup do appky?", a:"Appka je za přístupovým kódem, je součástí Rozšířeného ročního balíčku (obsahuje i Měřič plýtvání Pro, 5S pro každého smrtelníka, 5x Proč AI kouč a Časovou studii mého dne)." },
+      { q:"Čím se liší od zdarma verze Spaghetti diagramu?", a:"Zdarma verze umí zaznamenat víc tras (zakázek) a jejich délku. Pro navíc umí zastávky, víc pracovníků najednou ve stejném půdorysu, a přímé porovnání současného stavu s návrhem s automaticky spočítanou úsporou." },
+      { q:"Funguje appka i na mobilu nebo tabletu?", a:"Ano, kreslení trasy, zoom i posun mapy fungují i na dotykovém displeji, ne jen myší na počítači." }
+    ],
+    design2a:{
+      heroLines:["O kolik je","návrh lepší?"],
+      heroNote:"Placená verze · víc pracovníků, zastávky i přímé srovnání se současným stavem",
+      stats:[
+        {num:"6", lbl:"kroků od nahrání půdorysu po hotové srovnání"},
+        {num:"5", lbl:"metrik v reálném čase: body, délka, pracovníci, zastávky, celkem"},
+        {num:"2", lbl:"trasy vedle sebe, appka sama spočítá úsporu v m i %"},
+        {num:"45", lbl:"m chůze na cyklus, reálný případ z výrobní linky před přestavbou"}
+      ],
+      recognizeClose:"Appka umí to samé jako zdarma verze, jen navíc pro víc lidí najednou, se zastávkami a s automatickým porovnáním současného stavu a návrhu.",
+      how:{ chipsLabel:"6 kroků k hotovému srovnání", chips:["Nahrát půdorys","Nakreslit trasu","Označit zastávky","Přidat další pracovníky","Označit S / N","Stáhnout nebo vytisknout"] },
+      example:{
+        headline:"Kolik ušetří přestavba pracoviště bez jediné investice?",
+        stat:{ num:"23", note:"m chůze na cyklus po přestavbě linky, místo původních 45,5 m. Bez nových strojů, jen jiné rozmístění toho, co na lince už bylo." }
+      }
+    } },
+
+  { id:"5s-audit", group:"paid-solo", name:"5S pro každého smrtelníka", krok:3, oblasti:["sklad","vyroba"], benefit:"Uspořádáte pracoviště krok za krokem, s fotkami před a po.",
+    popis:"Krok po kroku uspořádáte jakékoliv pracoviště. Fotodokumentace před a po, report co se změnilo.",
+    prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje." },
+
+  { id:"5x-proc", group:"paid-solo", name:"5x Proč AI kouč", krok:3, oblasti:["sklad","vyroba"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
+    popis:"AI kouč vás provede rozhovorem a dovede ke kořenu problému. Strukturovaný výstup s příčinou a prvním krokem.",
+    prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje." },
+
+  { id:"casova-studie", group:"paid-solo", name:"Časová studie mého dne", krok:3, oblasti:["sklad","vyroba"], benefit:"Získáte skutečný přehled svého dne, podklad pro delegování nebo automatizaci.",
+    popis:"Skutečný přehled vašeho dne s činnostmi a intervaly. Podklad pro delegování nebo automatizaci, export do CSV.",
+    prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje.",
+    souvisejici:["kviz-komunikace"] },
+
+  { id:"kalkulacka-naklady-skladu", group:"free", name:"Kalkulačka nákladů provozu skladu na m²", krok:2, oblasti:["sklad"], benefit:"Spočítáte, kolik vás sklad stojí na metr čtvereční, a porovnáte to s trhem.",
+    popis:"Spočítá měsíční a roční náklady na m² skladu (nájem nebo odpisy budovy, energie, daně a pojištění, revize, provozní služby, odpisy vybavení) a porovná je s benchmarkem trhu v ČR.",
+    url:null, formNote:"Nástroj je hotový, čeká na zveřejnění na doméně." },
+];
+
+const byId = id => TOOLS.find(t => t.id === id);
+
+const OBLASTI = [
+  { key:"sklad", label:"Sklad" },
+  { key:"vyroba", label:"Výroba" },
+  { key:"administrativa", label:"Administrativa" },
+  { key:"lide", label:"Lidé a komunikace" }
+];
+
+const KROKY = [
+  { n:1, title:"Ukažte mi, kde to bolí", desc:"Rychlá diagnostika zdarma. Pár otázek, žádná příprava, výsledek hned na stránce." },
+  { n:2, title:"Změřte to v korunách", desc:"Z tušení uděláte číslo. Čas, vzdálenost i koruny za rok, bez registrace." },
+  { n:3, title:"Napravte to a udržte", desc:"Nástroje na nápravu a udržení pořádku. Pár z nich je zdarma rovnou, ty hlubší postupně přejdou pod jeden měsíční přístup ke všem nástrojům Nástrojovny." }
+];
+
+let activeArea = "";
+
+function chipsHtml() {
+  const all = `<button class="chip${!activeArea ? " active" : ""}" data-area="">Nevím, čím začít</button>`;
+  return all + OBLASTI.map(o => `<button class="chip${activeArea === o.key ? " active" : ""}" data-area="${o.key}">${o.label}</button>`).join("");
+}
+
+function krokRowHtml(t) {
+  const isPaid = t.group === "paid-solo";
+  const tag = t.krowTag ? `<span class="krok-tag">${t.krowTag}</span>` : (isPaid ? `<span class="krok-tag">🔒</span>` : "");
+  return `<button class="krok-row${isPaid ? " paid" : ""}" data-id="${t.id}">
+    <span class="krok-benefit">${t.benefit || t.name}</span>
+    <span class="krok-meta"><span class="krok-name">${t.name}</span>${tag}<span class="arr"></span></span>
+  </button>`;
+}
+
+function renderCesta() {
+  document.getElementById("oblast-chips").innerHTML = chipsHtml();
+  const cesta = document.getElementById("cesta");
+  cesta.innerHTML = KROKY.map(k => {
+    const tools = TOOLS.filter(t => t.krok === k.n && (!activeArea || (t.oblasti || []).includes(activeArea)));
+    if (!tools.length) return "";
+    return `<div class="krok-block">
+      <div class="krok-head"><span class="krok-num">0${k.n}</span><div><h3>${k.title}</h3><p>${k.desc}</p></div></div>
+      <div class="krok-list">${tools.map(krokRowHtml).join("")}</div>
+    </div>`;
+  }).join("");
+}
+
+function sbAreasHtml() {
+  const all = `<button class="sb-area${!activeArea ? " active" : ""}" data-area="">Nevím, čím začít</button>`;
+  return all + OBLASTI.map(o => `<button class="sb-area${activeArea === o.key ? " active" : ""}" data-area="${o.key}">${o.label}</button>`).join("");
+}
+
+function sbAllListHtml() {
+  const row = t => {
+    const lock = t.group === "paid-solo" ? '<span class="lock">🔒</span>' : "";
+    const cls = t.group === "paid-solo" ? "paid" : "free";
+    return `<button class="sb-item ${cls}" data-id="${t.id}"><span class="ic"></span>${t.name}${lock}</button>`;
+  };
+  const free = TOOLS.filter(t => t.group === "free");
+  const paid = TOOLS.filter(t => t.group === "paid-solo");
+  return `<div class="sb-group-title" style="padding-top:2px;">Zdarma</div>${free.map(row).join("")}<div class="sb-group-title">Placené</div>${paid.map(row).join("")}`;
+}
+
+function renderSidebar() {
+  document.getElementById("sb-areas").innerHTML = sbAreasHtml();
+  document.getElementById("sb-all-list").innerHTML = sbAllListHtml();
+}
+
+function closeMobileSidebar() {
+  document.getElementById("sidebar").classList.remove("mobile-open");
+}
+
+function showIntro() {
+  document.getElementById("intro").classList.add("active");
+  document.getElementById("detail").classList.remove("active");
+  document.querySelectorAll(".sb-item").forEach(b => b.classList.remove("active"));
+  document.getElementById("home-link").classList.add("active");
+  document.querySelector(".main").classList.remove("wide");
+  closeMobileSidebar();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function ph(hint) {
+  return `<div class="placeholder"><div class="ph-label">Zatím kostra, obsah doplníme</div><div class="ph-text">${hint}</div></div>`;
+}
+
+function ctaHtml(t, d2) {
+  const label = d2.ctaLabel || (t.group === "paid-solo" ? "Chci zjistit cenu" : "Chci nástroj otevřít");
+  let btn, note;
+  if (t.group === "free") {
+    if (t.url) {
+      btn = `<a class="btn-cta" href="${t.url}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`;
+      note = d2.heroNote || "Zdarma · bez registrace";
+    } else {
+      btn = `<div class="btn-cta disabled">${t.formNote || "Připravuje se"}</div>`;
+      note = "";
+    }
+  } else if (t.group === "paid-solo") {
+    if (t.prodejniStranka) {
+      btn = `<a class="btn-cta" href="${t.prodejniStranka}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`;
+      note = d2.heroNote || "Součást měsíčního přístupu ke všem nástrojům Nástrojovny.";
+    } else {
+      btn = `<div class="btn-cta disabled">${t.prodejniNote || "Prodejní stránka se připravuje"}</div>`;
+      note = "";
+    }
+  } else {
+    btn = ""; note = "";
+  }
+  return btn + (note ? `<div class="d-hero-note">${note}</div>` : "");
+}
+
+function statsHtml(stats) {
+  const items = (stats && stats.length) ? stats : [0,1,2,3].map(() => ({num:"—", lbl:"čeká na doplnění"}));
+  return `<div class="d-stats">${items.map(s => `<div class="d-stat"><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join("")}</div>`;
+}
+
+function recognizeHtml(t, d2) {
+  const otazky = (t.kdyPouzit && t.kdyPouzit.otazky) ? t.kdyPouzit.otazky : [];
+  const close = d2.recognizeClose || (t.kdyPouzit && t.kdyPouzit.zaver ? t.kdyPouzit.zaver[0] : "");
+  let inner;
+  if (otazky.length) {
+    inner = `<div class="d-recognize-grid">${otazky.map(q => `<div class="d-recognize-item"><span class="arr"></span><span>${q}</span></div>`).join("")}</div>`;
+    if (close) inner += `<div class="d-recognize-close">${close}</div>`;
+  } else {
+    inner = ph("Sem přijdou otázky, ve kterých se čtenář pozná, a jedna uzavírací věta.");
+  }
+  return `<div class="d-recognize"><h3>Poznáváte se aspoň v jedné?</h3>${inner}</div>`;
+}
+
+function mergeHowParas(t) {
+  const parts = [];
+  if (t.ucelMetoda) parts.push(...t.ucelMetoda.split("\n\n").filter(Boolean));
+  if (t.princip) parts.push(...t.princip.split("\n\n").filter(Boolean));
+  return parts;
+}
+
+function howHtml(t, d2) {
+  const paras = mergeHowParas(t);
+  const left = paras.length
+    ? `<div class="d-how-text">${paras.map(p => `<p>${p}</p>`).join("")}</div>`
+    : ph("Sem přijde, jaký problém nástroj řeší, na jaké metodě je postavený a jak funguje v pozadí.");
+
+  const how = d2.how || {};
+  const hasChips = how.chips && how.chips.length;
+  let panel = "";
+  if (hasChips) {
+    panel += `<div class="panel-label">${how.chipsLabel || "Co uvidíte"}</div>`;
+    panel += `<div class="d-chips">${how.chips.map(c => `<span class="d-chip">${c}</span>`).join("")}</div>`;
+  } else {
+    panel += `<div class="panel-label">Pro koho</div>`;
+  }
+  if (t.proKoho) {
+    panel += `<div class="${hasChips ? "panel-hr " : ""}panel-forwhom">${hasChips ? "<b>Pro koho:</b> " : ""}${t.proKoho}</div>`;
+  } else if (!hasChips) {
+    panel += `<div class="panel-forwhom" style="color:var(--silver);font-style:italic;">Sem přijde, pro koho je nástroj určený.</div>`;
+  }
+
+  return `<div class="d-how"><div><h3>Jak to funguje</h3>${left}</div><div class="d-how-panel">${panel}</div></div>`;
+}
+
+function stepsHtml(t) {
+  const items = t.postup || [];
+  if (!items.length) {
+    return `<div class="d-steps"><h3>Postup v krocích</h3>${ph("Sem přijde postup krok za krokem, jak s nástrojem pracovat od začátku do konce.")}</div>`;
+  }
+  const cols = Math.min(items.length, 6);
+  return `<div class="d-steps"><h3>Postup v krocích</h3><div class="d-steps-grid" style="--steps-cols:${cols}">${items.map((s, i) => `<div class="d-step"><div class="step-num">${i + 1}</div><div class="step-text">${s}</div></div>`).join("")}</div></div>`;
+}
+
+function exampleHtml(t, d2) {
+  const paras = (t.priklad || "").split("\n\n").filter(Boolean);
+  const ex = d2.example || {};
+  const eyebrow = `<div class="d-example-eyebrow"><span class="arr"></span>Z praxe</div>`;
+  if (!paras.length) {
+    return `<div class="d-example">${eyebrow}<h3>Praktický příklad</h3>${ph("Sem přijde konkrétní scéna z reálného provozu, ideálně se screenshotem nebo číslem.")}</div>`;
+  }
+  const left = `<div class="d-example-text">${paras.map(p => `<p>${p}</p>`).join("")}</div>`;
+  let right = "";
+  if (ex.stat) {
+    right = ex.stat.quote
+      ? `<div class="d-example-stat quote"><div class="stat-num">"${ex.stat.text}"</div><div class="stat-note">${ex.stat.note || ""}</div></div>`
+      : `<div class="d-example-stat"><div class="stat-num">${ex.stat.num}</div><div class="stat-note">${ex.stat.note || ""}</div></div>`;
+  }
+  return `<div class="d-example">${eyebrow}<h3>${ex.headline || "Praktický příklad"}</h3><div class="d-example-grid" style="${right ? "" : "grid-template-columns:1fr;"}">${left}${right}</div></div>`;
+}
+
+function ioColHtml(cls, label, value, fallback) {
+  const val = value ? `<div class="io-val">${value}</div>` : `<div class="io-val" style="color:var(--silver);font-style:italic;">${fallback}</div>`;
+  return `<div class="d-io-col ${cls}"><div class="io-lbl">${label}</div>${val}</div>`;
+}
+
+function ioMistakesHtml(t) {
+  const io = `<div>
+    <div class="d-kicker">Vstupy a výstupy</div>
+    <div class="d-io-inner">
+      ${ioColHtml("in", "Vstupy", t.vstupy, "Sem přijde, co si má člověk připravit nebo zadat, než začne.")}
+      <div class="d-io-arrow2"><span class="arr"></span></div>
+      ${ioColHtml("out", "Výstupy", t.vystupy, "Sem přijde, co nástroj na konci ukáže nebo spočítá.")}
+    </div>
+  </div>`;
+
+  const mistakesReal = t.chyby && t.chyby.length;
+  const mistakesList = mistakesReal ? t.chyby : [
+    "Sem přijde první častá chyba, co si lidi spletou.",
+    "Sem přijde druhá častá chyba nebo mylný předpoklad.",
+    "Sem přijde třetí věc, co se nejčastěji přehlédne."
+  ];
+  const mistakesStyle = mistakesReal ? "" : "color:var(--silver);font-style:italic;";
+  const mistakes = `<div>
+    <div class="d-kicker">Časté chyby</div>
+    <ul class="d-mistakes-list">${mistakesList.map(m => `<li><span class="xcircle">✕</span><span style="${mistakesStyle}">${m}</span></li>`).join("")}</ul>
+  </div>`;
+
+  return `<div class="d-io-mistakes">${io}${mistakes}</div>`;
+}
+
+function faqItemsHtml(t) {
+  const real = t.faq && t.faq.length;
+  const list = real ? t.faq : [
+    { q:"Otázka číslo 1, doplnit", a:"Sem přijde odpověď na tuhle otázku." },
+    { q:"Otázka číslo 2, doplnit", a:"Sem přijde odpověď na tuhle otázku." },
+    { q:"Otázka číslo 3, doplnit", a:"Sem přijde odpověď na tuhle otázku." }
+  ];
+  const style = real ? "" : "font-style:italic;color:var(--silver);";
+  return list.map((item, i) => `<div class="faq-item${i === 0 ? " open" : ""}">
+    <button class="faq-q" data-faq="1"><span>${item.q}</span><span class="chev">▾</span></button>
+    <div class="faq-a"><div class="faq-a-inner" style="${style}">${item.a}</div></div>
+  </div>`).join("");
+}
+
+function relatedCardHtml(rid, i) {
+  const rt = byId(rid);
+  if (!rt) return "";
+  const sub = rt.group === "paid-solo" ? "Placený přístup" : "Zdarma, otevře se rovnou";
+  return `<button class="d-related-card${i === 0 ? " primary" : ""}" data-id="${rid}">
+    <div><div class="rname">${rt.name}</div><div class="rsub">${sub}</div></div>
+    <span class="rarrow">→</span>
+  </button>`;
+}
+
+function faqRelatedHtml(t) {
+  const related = (t.souvisejici && t.souvisejici.length)
+    ? `<div><div class="d-kicker">Související nástroje</div><div class="d-related-grid">${t.souvisejici.map(relatedCardHtml).join("")}</div></div>`
+    : "";
+  return `<div class="d-faq-related"><div class="d-faq-related-grid">
+    <div><div class="d-kicker">Časté otázky</div><div class="d-faq-card">${faqItemsHtml(t)}</div></div>
+    ${related}
+  </div></div>`;
+}
+
+function renderDetail(id) {
+  const t = byId(id);
+  if (!t) return;
+  const d2 = t.design2a || {};
+
+  let html = `<button class="detail-back" data-back="1">← Zpět na Nástrojovnu</button>`;
+  html += `<div class="detail-card">`;
+
+  const heroLines = (d2.heroLines && d2.heroLines.length) ? d2.heroLines : [t.name];
+  const badgeLabel = t.group === "free" ? "Zdarma" : t.group === "paid-solo" ? "Placený přístup" : "";
+  const heroSub = (t.popis || "").split("\n\n").filter(Boolean)[0] || "";
+  html += `<div class="d-hero">
+    <div>
+      ${badgeLabel ? `<div class="d-badge"><span class="arr"></span>${badgeLabel}</div>` : ""}
+      <h2>${heroLines.join("<br>")}</h2>
+      <p class="d-hero-sub">${heroSub}</p>
+    </div>
+    <div class="d-hero-cta">${ctaHtml(t, d2)}</div>
+  </div>`;
+
+  html += statsHtml(d2.stats);
+  html += recognizeHtml(t, d2);
+  html += howHtml(t, d2);
+  html += stepsHtml(t);
+  html += exampleHtml(t, d2);
+  html += ioMistakesHtml(t);
+  html += faqRelatedHtml(t);
+
+  html += `</div>`;
+
+  document.getElementById("detail").innerHTML = html;
+  document.getElementById("intro").classList.remove("active");
+  document.getElementById("detail").classList.add("active");
+  document.getElementById("home-link").classList.remove("active");
+  document.querySelector(".main").classList.add("wide");
+  document.querySelectorAll(".sb-item").forEach(b => b.classList.toggle("active", b.dataset.id === id));
+  closeMobileSidebar();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+document.addEventListener("click", e => {
+  const mobileToggle = e.target.closest("[data-mobile-toggle]");
+  if (mobileToggle) { document.getElementById("sidebar").classList.toggle("mobile-open"); return; }
+  const home = e.target.closest("[data-home]");
+  if (home) { showIntro(); return; }
+  const faqQ = e.target.closest("[data-faq]");
+  if (faqQ) {
+    const item = faqQ.closest(".faq-item");
+    const card = faqQ.closest(".d-faq-card") || item.parentElement;
+    const wasOpen = item.classList.contains("open");
+    card.querySelectorAll(".faq-item").forEach(i => i.classList.remove("open"));
+    if (!wasOpen) item.classList.add("open");
+    return;
+  }
+  const areaBtn = e.target.closest("[data-area]");
+  if (areaBtn) {
+    activeArea = areaBtn.dataset.area;
+    document.getElementById("intro").classList.add("active");
+    document.getElementById("detail").classList.remove("active");
+    document.getElementById("home-link").classList.remove("active");
+    document.querySelectorAll(".sb-item").forEach(b => b.classList.remove("active"));
+    document.querySelector(".main").classList.remove("wide");
+    renderCesta();
+    renderSidebar();
+    closeMobileSidebar();
+    window.scrollTo({top:0, behavior:"smooth"});
+    return;
+  }
+  const krokRow = e.target.closest(".krok-row");
+  if (krokRow) { renderDetail(krokRow.dataset.id); return; }
+  const toggleAll = e.target.closest("[data-toggle-all]");
+  if (toggleAll) { toggleAll.classList.toggle("open"); document.getElementById("sb-all-list").classList.toggle("collapsed"); return; }
+  const sbItem = e.target.closest(".sb-item");
+  if (sbItem) { renderDetail(sbItem.dataset.id); return; }
+  const relCard = e.target.closest(".d-related-card");
+  if (relCard) { renderDetail(relCard.dataset.id); return; }
+  const back = e.target.closest("[data-back]");
+  if (back) { showIntro(); return; }
+});
+
+renderSidebar();
+renderCesta();
+</script>
+
+<script>
+// TODO: doplnit skutečné GA4 ID pro Nástrojovnu, teď je tam jen placeholder
+var NASTROJOVNA_GA_ID = 'G-XXXXXXXXXX';
+
+(function(){
+  var s = localStorage.getItem('cookies_souhlas');
+  if (s === 'ano') {
+    spustitGA();
+  } else if (s === null) {
+    document.getElementById('cookies-bar').style.display = 'flex';
+  }
+})();
+
+function spustitGA() {
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + NASTROJOVNA_GA_ID;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', NASTROJOVNA_GA_ID);
+}
+
+function cookiesSouhlasit() {
+  localStorage.setItem('cookies_souhlas', 'ano');
+  document.getElementById('cookies-bar').style.display = 'none';
+  spustitGA();
+}
+
+function cookiesOdmitnout() {
+  localStorage.setItem('cookies_souhlas', 'ne');
+  document.getElementById('cookies-bar').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
