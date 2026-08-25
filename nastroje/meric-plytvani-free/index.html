@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="canonical" href="https://meric-plytvani-free.gabrielatomickova.cz/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="canonical" href="https://meric-plytvani-free.gabrielatomickova.cz/">
+<title>Měřič plýtvání - časová studie výroby zdarma | Gabriela Tomíčková</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#e9a91b; --gold-dark:#c48e10; --gold-light:#fdf3d9;
+  --black:#000; --dark:#111; --mid:#545454; --light:#a8a6a6;
+  --white:#fff; --paper:#f5f4f0; --border:#e2e2e2;
+  --green:#2a7a4f; --green-light:#e8f5ee;
+  --prace:#2a7a4f; --presun:#1a6aaa; --hledani:#d97706;
+  --cekani:#c0392b; --papiry:#7c3aed; --priprava:#545454; --kontrola:#0891b2;
+  --pro:#8b5cf6;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--dark);min-height:100vh;line-height:1.6;}
+
+nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--black);}
+.nav-brand span{color:var(--gold);}
+.nav-pro{font-size:12px;font-weight:700;color:var(--pro);text-decoration:none;padding:5px 12px;border:1px solid var(--pro);border-radius:4px;}
+
+.page-header{background:var(--black);padding:28px 20px 24px;position:relative;overflow:hidden;}
+.page-header::before{content:"";position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:50px solid rgba(233,169,27,.07);pointer-events:none;}
+.page-header-inner{max-width:520px;margin:0 auto;position:relative;z-index:1;}
+.badge{display:inline-block;background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:2px;margin-bottom:10px;}
+.page-header h1{font-family:"Poppins",sans-serif;font-size:clamp(20px,4vw,28px);font-weight:900;color:white;line-height:1.2;margin-bottom:6px;}
+.page-header h1 em{color:var(--gold);font-style:normal;}
+.page-header p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;}
+
+.main{max-width:520px;margin:0 auto;padding:24px 16px 80px;}
+
+/* SETUP */
+.setup-krok{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;}
+.krok-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.krok-title{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:10px;}
+.krok-popis{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;}
+
+.field label{font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:5px;}
+.field input{width:100%;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
+.field input:focus{border-color:var(--gold);background:white;}
+.field+.field{margin-top:12px;}
+
+/* TLACITKA PREHLED */
+.kat-prehled{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+.kat-item{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);}
+.kat-dot{width:14px;height:9px;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;}
+.kat-info{}
+.kat-info strong{font-size:12px;font-weight:700;color:var(--dark);display:block;}
+.kat-info span{font-size:11px;color:var(--light);line-height:1.4;}
+
+/* PRO sekce */
+.pro-sekce{background:#f5f0ff;border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:14px 16px;margin-bottom:14px;opacity:.7;}
+.pro-label{display:inline-flex;align-items:center;gap:5px;background:var(--pro);color:white;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:10px;margin-bottom:8px;}
+.pro-sekce .krok-title{color:var(--mid);}
+.pro-btn{background:#f0ebff;border:1px dashed rgba(139,92,246,.4);border-radius:6px;padding:8px;width:100%;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--pro);cursor:pointer;opacity:.6;}
+.pro-input{width:100%;border:1px dashed rgba(139,92,246,.3);border-radius:6px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--mid);background:#f5f0ff;cursor:not-allowed;}
+
+.pro-tooltip{background:var(--pro);color:white;font-size:12px;padding:8px 12px;border-radius:6px;margin-top:8px;display:none;line-height:1.5;}
+.pro-tooltip a{color:#c4b5fd;font-weight:700;}
+
+/* CYKLY */
+.cykly-info{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--dark);display:flex;align-items:center;gap:8px;}
+.cykly-info strong{color:var(--gold-dark);}
+
+/* TLACITKO SPUSTIT */
+.btn-spustit{width:100%;background:var(--gold);color:var(--black);border:none;border-radius:10px;padding:15px;font-family:"Poppins",sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;}
+.btn-spustit:hover{background:var(--gold-dark);color:white;}
+.btn-spustit .arr{width:16px;height:10px;background:currentColor;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);}
+
+/* MERENI */
+.mereni{display:none;max-width:520px;margin:0 auto;padding:14px 16px 80px;}
+
+.m-header{background:var(--black);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.m-nazev{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:white;}
+.m-cykly{font-family:"DM Mono",monospace;font-size:11px;color:rgba(255,255,255,.4);}
+
+.instrukce{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:8px;padding:12px 14px;margin-bottom:10px;font-size:13px;color:var(--dark);line-height:1.65;}
+.instrukce strong{color:var(--gold-dark);}
+
+.timer-box{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;text-align:center;}
+.timer-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--light);margin-bottom:4px;}
+.timer{font-family:"DM Mono",monospace;font-size:44px;font-weight:500;color:var(--dark);line-height:1;margin-bottom:6px;transition:color .3s;}
+.timer-kat{font-size:12px;font-weight:600;color:white;padding:3px 12px;border-radius:20px;display:inline-block;background:var(--light);}
+.timer-start{background:var(--green);color:white;border:none;border-radius:8px;padding:10px 24px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-top:10px;width:100%;}
+
+.kat-sekce-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--light);margin-bottom:6px;margin-top:8px;}
+.kat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.kat-btn{border:none;border-radius:10px;padding:12px 10px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:flex-start;gap:3px;}
+.kat-btn:active{transform:scale(.97);}
+.kat-btn.on{box-shadow:0 4px 16px rgba(0,0,0,.2);transform:scale(1.02);}
+.kat-arr{width:18px;height:11px;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);margin-bottom:2px;}
+.kat-cas{font-family:"DM Mono",monospace;font-size:13px;font-weight:500;}
+
+.k-prace{background:#e8f5ee;color:var(--prace);}
+.k-prace .kat-arr{background:var(--prace);}
+.k-prace.on{background:var(--prace);color:white;}
+.k-prace.on .kat-arr{background:white;}
+.k-presun{background:#e3f0fa;color:var(--presun);}
+.k-presun .kat-arr{background:var(--presun);}
+.k-presun.on{background:var(--presun);color:white;}
+.k-presun.on .kat-arr{background:white;}
+.k-hledani{background:#fef3c7;color:var(--hledani);}
+.k-hledani .kat-arr{background:var(--hledani);}
+.k-hledani.on{background:var(--hledani);color:white;}
+.k-hledani.on .kat-arr{background:white;}
+.k-cekani{background:#fee2e2;color:var(--cekani);}
+.k-cekani .kat-arr{background:var(--cekani);}
+.k-cekani.on{background:var(--cekani);color:white;}
+.k-cekani.on .kat-arr{background:white;}
+.k-papiry{background:#ede9fe;color:var(--papiry);}
+.k-papiry .kat-arr{background:var(--papiry);}
+.k-papiry.on{background:var(--papiry);color:white;}
+.k-papiry.on .kat-arr{background:white;}
+.k-priprava{background:#f0f0f0;color:var(--priprava);}
+.k-priprava .kat-arr{background:var(--priprava);}
+.k-priprava.on{background:var(--priprava);color:white;}
+.k-priprava.on .kat-arr{background:white;}
+.k-kontrola{background:#e0f2fe;color:var(--kontrola);}
+.k-kontrola .kat-arr{background:var(--kontrola);}
+.k-kontrola.on{background:var(--kontrola);color:white;}
+.k-kontrola.on .kat-arr{background:white;}
+
+.ovladani{display:flex;gap:8px;margin-top:8px;}
+.btn-stop{flex:1;background:var(--cekani);color:white;border:none;border-radius:10px;padding:13px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;cursor:pointer;}
+.btn-novy{flex:1;background:var(--dark);color:white;border:none;border-radius:10px;padding:13px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:none;}
+.btn-konec{flex:1;background:var(--gold);color:var(--black);border:none;border-radius:10px;padding:13px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:none;}
+
+.ulozene{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:10px;display:none;}
+.uloz-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:8px;}
+.c-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #f5f5f5;font-size:12px;}
+.c-row:last-child{border-bottom:none;}
+.c-num{font-family:"DM Mono",monospace;font-size:11px;color:var(--light);width:16px;}
+.c-cas{font-family:"DM Mono",monospace;font-weight:500;color:var(--dark);width:40px;}
+.c-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;display:flex;}
+
+/* SOUHRN */
+.souhrn{display:none;max-width:520px;margin:0 auto;padding:18px 16px 80px;}
+.s-header{background:var(--black);border-radius:12px;padding:16px;margin-bottom:12px;}
+.s-nazev{font-family:"Poppins",sans-serif;font-size:16px;font-weight:800;color:white;margin-bottom:3px;}
+.s-meta{font-size:11px;color:rgba(255,255,255,.4);}
+.s-logo{font-family:"Poppins",sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.25);margin-top:8px;}
+.s-logo span{color:var(--gold);}
+
+.tbl-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:auto;margin-bottom:12px;}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.tbl th{background:var(--dark);color:white;padding:7px 8px;text-align:left;font-weight:600;font-size:10px;white-space:nowrap;}
+.tbl td{padding:6px 8px;border-bottom:1px solid #f5f5f5;font-family:"DM Mono",monospace;font-size:10px;white-space:nowrap;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr.avg td{background:var(--gold-light);font-weight:700;}
+.tbl tr.ply td{background:#fee2e2;}
+
+.graf-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
+.graf-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;}
+.g-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.g-lbl{font-size:11px;font-weight:600;width:90px;flex-shrink:0;}
+.g-bg{flex:1;height:16px;background:var(--border);border-radius:3px;overflow:hidden;}
+.g-bar{height:100%;border-radius:3px;}
+.g-val{font-family:"DM Mono",monospace;font-size:10px;color:var(--mid);width:65px;text-align:right;flex-shrink:0;}
+
+.email-box{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:10px;padding:16px;margin-bottom:12px;}
+.email-box-title{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px;}
+.email-box-text{font-size:12px;color:var(--mid);line-height:1.6;margin-bottom:10px;}
+.email-box form{display:flex;gap:8px;flex-wrap:wrap;}
+.email-box input[type="email"]{flex:1;min-width:150px;border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-family:"DM Sans",sans-serif;font-size:13px;outline:none;background:white;}
+.email-box input[type="email"]:focus{border-color:var(--gold);}
+.email-box button{background:var(--gold);color:var(--black);border:none;border-radius:6px;padding:10px 18px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;}
+.email-box button:hover{background:var(--gold-dark);color:white;}
+.email-box-note{font-size:10px;color:var(--light);margin-top:6px;}
+.email-ok{font-size:13px;color:var(--dark);font-weight:600;}
+
+.insight-box{border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.insight-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;}
+.insight-text{font-size:13px;line-height:1.7;color:var(--mid);}
+
+/* PRO CTA */
+.pro-cta{background:linear-gradient(135deg,#1e1b4b,#2e1065);border-radius:12px;padding:22px 18px;margin-bottom:12px;text-align:center;}
+.pro-cta h3{font-family:"Poppins",sans-serif;font-size:16px;font-weight:800;color:white;margin-bottom:8px;}
+.pro-cta p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:16px;}
+.pro-cta-features{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;text-align:left;}
+.pro-cta-features span{font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px;}
+.pro-cta-features span::before{content:"";width:14px;height:9px;background:#c4b5fd;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;}
+.btn-pro{display:block;background:var(--pro);color:white;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;padding:13px 20px;border-radius:6px;text-decoration:none;transition:all .2s;}
+.btn-pro:hover{background:#7c3aed;}
+
+.btn-znovu{width:100%;background:transparent;color:var(--mid);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;margin-top:8px;}
+
+footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:40px;}
+.footer-brand{font-family:"Poppins",sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.3);}
+.footer-brand span{color:var(--gold);}
+.footer-legal{font-size:10px;color:rgba(255,255,255,.15);}
+.footer-legal a{color:rgba(255,255,255,.15);text-decoration:none;}
+
+@media(max-width:520px){
+  nav,.main,.mereni,.souhrn{padding-left:14px;padding-right:14px;}
+  .page-header{padding:24px 14px 20px;}
+}
+</style>
+
+<style id="cookies-css">
+.cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
+.cookies-bar p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin:0;flex:1;min-width:200px;}
+.cookies-bar a{color:#e9a91b;text-decoration:none;}
+.cookies-bar a:hover{text-decoration:underline;}
+.cookies-btns{display:flex;gap:8px;flex-shrink:0;}
+.cookies-ok{background:#e9a91b;color:#000;border:none;border-radius:4px;padding:8px 18px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.cookies-ok:hover{background:#c48e10;}
+.cookies-no{background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:8px 14px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;}
+.cookies-no:hover{color:rgba(255,255,255,.7);}
+</style>
+</head>
+<body>
+
+<div class="cookies-bar" id="cookies-bar" style="display:none;">
+  <p>Tento web používá analytické cookies (Google Analytics) pro měření návštěvnosti. <a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></p>
+  <div class="cookies-btns">
+    <button class="cookies-no" onclick="cookiesOdmitnout()">Odmítnout</button>
+    <button class="cookies-ok" onclick="cookiesSouhlasit()">Souhlasím</button>
+  </div>
+</div>
+
+<nav>
+  <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;">Gabriela <span>Tomíčková</span></a>
+  <a href="https://meric-plytvani-pro.gabrielatomickova.cz" class="nav-pro">Otevřít Pro</a>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="badge">Zdarma</div>
+    <h1>Měřič <em>plýtvání</em></h1>
+    <p>Změřte kde ve vašem procesu vzniká plýtvání. Bez stopek, bez papíru, za 10 minut.</p>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div class="main" id="setup">
+
+  <!-- KROK 1 - PROCES -->
+  <div class="setup-krok">
+    <div class="krok-num">Krok 1</div>
+    <div class="krok-title">Zvolte si proces který chcete měřit</div>
+    <div class="krok-popis">Vyberte jednu konkrétní opakující se operaci - vychystávání objednávky, montáž dílu, příjem zboží. Čím konkrétnější, tím přesnější výsledek.</div>
+    <div class="field">
+      <label>Název procesu</label>
+      <input type="text" id="inp-nazev" placeholder="např. Vychystávání objednávky">
+    </div>
+
+  </div>
+
+  <!-- KROK 2 - TLACITKA -->
+  <div class="setup-krok">
+    <div class="krok-num">Krok 2</div>
+    <div class="krok-title">Jak fungují tlačítka měření</div>
+    <div class="krok-popis">Vždy klikněte na tlačítko <strong>na začátku</strong> dané činnosti - ne na konci. Aplikace měří jak dlouho trvá než kliknete na další tlačítko.</div>
+    <div class="kat-prehled">
+      <div class="kat-item">
+        <div class="kat-dot" style="background:var(--prace)"></div>
+        <div class="kat-info"><strong>Práce</strong><span>Čistá přidaná hodnota - skutečná výrobní nebo manipulační činnost</span></div>
+      </div>
+      <div class="kat-item">
+        <div class="kat-dot" style="background:var(--presun)"></div>
+        <div class="kat-info"><strong>Přesun</strong><span>Chůze, transport materiálu nebo výrobku z místa na místo</span></div>
+      </div>
+      <div class="kat-item">
+        <div class="kat-dot" style="background:var(--hledani)"></div>
+        <div class="kat-info"><strong>Hledání</strong><span>Hledání nářadí, materiálu, informace nebo místa</span></div>
+      </div>
+      <div class="kat-item">
+        <div class="kat-dot" style="background:var(--cekani)"></div>
+        <div class="kat-info"><strong>Čekání</strong><span>Čekání na materiál, informaci, stroj nebo rozhodnutí</span></div>
+      </div>
+      <div class="kat-item">
+        <div class="kat-dot" style="background:var(--papiry)"></div>
+        <div class="kat-info"><strong>Administrativa</strong><span>Vypisování, přepisování, skenování, evidence</span></div>
+      </div>
+      <div class="kat-item">
+        <div class="kat-dot" style="background:var(--kontrola)"></div>
+        <div class="kat-info"><strong>Kontrola</strong><span>Vizuální nebo fyzická kontrola kvality výrobku</span></div>
+      </div>
+      <div class="kat-item">
+        <div class="kat-dot" style="background:var(--priprava)"></div>
+        <div class="kat-info"><strong>Příprava</strong><span>Příprava pracoviště, nástrojů nebo materiálu před operací</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KROK 3 - VLASTNI OPERACE (PRO) -->
+  <div class="pro-sekce">
+    <div class="pro-label">Pro</div>
+    <div class="krok-title">Vlastní operace pro váš proces</div>
+    <div class="krok-popis" style="font-size:12px;">Přidejte konkrétní kroky vašeho procesu - omotávání, svařování, zapékání. Zobrazí se jako zelená tlačítka vedle Práce.</div>
+    <button class="pro-btn" onclick="zobrazProTooltip('tt-operace')">+ Přidat vlastní operaci</button>
+    <div class="pro-tooltip" id="tt-operace">Vlastní operace jsou dostupné v <a href="https://gabrielatomickova.cz/kde-mi-mizi-cas.html">Měřiči plýtvání Pro</a>.</div>
+  </div>
+
+  <!-- KROK 4 - POCET CYKLU (PRO) -->
+  <div class="pro-sekce">
+    <div class="pro-label">Pro</div>
+    <div class="krok-title">Počet cyklů měření</div>
+    <div class="krok-popis" style="font-size:12px;">Ve free verzi měříte 3 cykly. Pro přesnější výsledky a statistiku doporučujeme 5-10 cyklů.</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <input class="pro-input" type="number" value="3" disabled>
+      <span style="font-size:12px;color:var(--mid);">Neomezený počet cyklů v Pro verzi</span>
+    </div>
+    <button class="pro-btn" style="margin-top:8px;" onclick="zobrazProTooltip('tt-cykly')">Odemknout více cyklů</button>
+    <div class="pro-tooltip" id="tt-cykly">Neomezený počet cyklů je dostupný v <a href="https://gabrielatomickova.cz/kde-mi-mizi-cas.html">Měřiči plýtvání Pro</a>.</div>
+  </div>
+
+  <button class="btn-spustit" onclick="prejitKMereni()">
+    <span class="arr"></span> Rozumím, přejít k měření
+  </button>
+
+</div>
+
+<!-- MERENI -->
+<div class="mereni" id="mereni">
+
+  <div class="m-header">
+    <div class="m-nazev" id="m-nazev">-</div>
+    <div class="m-cykly" id="m-cykly">Cyklus 1 / 3</div>
+  </div>
+
+  <div class="instrukce">
+    <strong>Jak měřit:</strong> Klikněte na tlačítko vždy na <strong>začátku</strong> dané činnosti. Časomíra se spustí prvním kliknutím. Aplikace automaticky ukončí předchozí činnost a začne měřit novou. Až cyklus skončí, klikněte STOP.
+  </div>
+
+  <div class="timer-box">
+    <div class="timer-lbl">Čas cyklu</div>
+    <div class="timer" id="timer">00:00</div>
+    <div class="timer-kat" id="timer-kat">Klikněte na první činnost</div>
+  </div>
+
+  <div id="tlacitka-wrap">
+    <div class="kat-sekce-title">Klikněte na začátku každé činnosti</div>
+    <div class="kat-grid">
+      <button class="kat-btn k-prace" onclick="setKat('prace','Práce','#2a7a4f')">
+        <div class="kat-arr"></div><div>Práce</div><div class="kat-cas" id="k-prace">0:00</div>
+      </button>
+      <button class="kat-btn k-presun" onclick="setKat('presun','Přesun','#1a6aaa')">
+        <div class="kat-arr"></div><div>Přesun</div><div class="kat-cas" id="k-presun">0:00</div>
+      </button>
+      <button class="kat-btn k-hledani" onclick="setKat('hledani','Hledání','#d97706')">
+        <div class="kat-arr"></div><div>Hledání</div><div class="kat-cas" id="k-hledani">0:00</div>
+      </button>
+      <button class="kat-btn k-cekani" onclick="setKat('cekani','Čekání','#c0392b')">
+        <div class="kat-arr"></div><div>Čekání</div><div class="kat-cas" id="k-cekani">0:00</div>
+      </button>
+      <button class="kat-btn k-papiry" onclick="setKat('papiry','Administrativa','#7c3aed')">
+        <div class="kat-arr"></div><div>Administrativa</div><div class="kat-cas" id="k-papiry">0:00</div>
+      </button>
+      <button class="kat-btn k-kontrola" onclick="setKat('kontrola','Kontrola','#0891b2')">
+        <div class="kat-arr"></div><div>Kontrola</div><div class="kat-cas" id="k-kontrola">0:00</div>
+      </button>
+      <button class="kat-btn k-priprava" onclick="setKat('priprava','Příprava','#545454')" style="grid-column:span 2;">
+        <div class="kat-arr"></div><div>Příprava</div><div class="kat-cas" id="k-priprava">0:00</div>
+      </button>
+    </div>
+
+    <div class="ovladani">
+      <button class="btn-stop" id="btn-stop" onclick="stopCyklus()">STOP</button>
+      <button class="btn-novy" id="btn-novy" onclick="novyCyklus()">NOVÝ CYKLUS</button>
+      <button class="btn-konec" id="btn-konec" onclick="ukoncit()">UKONČIT</button>
+    </div>
+
+    <div class="ulozene" id="ulozene">
+      <div class="uloz-title">Uložené cykly</div>
+      <div id="uloz-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SOUHRN -->
+<div class="souhrn" id="souhrn">
+  <div class="s-header">
+    <div class="s-nazev" id="s-nazev">-</div>
+    <div class="s-meta" id="s-meta">-</div>
+    <div class="s-logo">Gabriela <span>Tomíčková</span> - Měřič plýtvání</div>
+  </div>
+
+  <div class="tbl-wrap"><table class="tbl" id="tbl"></table></div>
+  <div class="graf-wrap"><div class="graf-title">Průměrné rozložení času</div><div id="graf"></div></div>
+
+  <div class="email-box" id="email-box">
+    <div class="email-box-title">Chcete si tenhle výsledek uložit?</div>
+    <iframe name="brevo-target-frame" style="display:none;" title="odeslani formulare"></iframe>
+    <form id="email-form" action="https://2f524664.sibforms.com/serve/MUIFAFB3FTaqaMZ49xXeYzNHlP3i4C3GD_gfzxg8GVIDzxmq2oJQ7rAaHdCyUB3SC_ip0444hWrazJrC1GD5ffA3DaD7RSdo8nxkwG6lSavX0lmmrbhcs0WT3DCCe-CTsnH4VO9f9vaf_mCSYlJ4hlSizwazavsJ8ElGMBzk0OLh9WcAOqbR2w3opLCGTCsWxmXIEs_40Y_AjkUP_Q==" method="POST" target="brevo-target-frame" onsubmit="return odeslatEmail(event)">
+      <input type="email" id="inp-email" name="EMAIL" placeholder="vas@email.cz" required>
+      <input type="hidden" name="email_address_check" value="">
+      <input type="hidden" name="locale" value="en">
+      <input type="hidden" name="PROCES" id="hid-proces" value="">
+      <input type="hidden" name="PLYTVANI_PCT" id="hid-plytvani-pct" value="">
+      <input type="hidden" name="PRUMER_CYKLUS" id="hid-prumer-cyklus" value="">
+      <input type="hidden" name="PLYTVANI_KC_ROK" id="hid-plytvani-kc" value="">
+      <button type="submit">Chci to e-mailem</button>
+    </form>
+    <div class="email-ok" id="email-ok" style="display:none;">Díky, posíláme vám to na e-mail.</div>
+  </div>
+
+  <div id="plyvani"></div>
+  <div id="insights"></div>
+
+  <!-- PRO CTA -->
+  <div class="pro-cta">
+    <h3>Chcete měřit bez omezení?</h3>
+    <p>Přejděte na Měřič plýtvání Pro a získejte plný přístup ke všem funkcím.</p>
+    <div class="pro-cta-features">
+      <span>Vlastní operace pro váš konkrétní proces</span>
+      <span>Neomezený počet cyklů a měření</span>
+      <span>Porovnání cyklů mezi sebou</span>
+      <span>Export CSV a PDF / tisk</span>
+      <span>Analýza zakázky a výpočet ztráty v Kč</span>
+      <span>Spaghetti diagram Pro (roční balíček)</span>
+    </div>
+    <a href="https://gabrielatomickova.cz/kde-mi-mizi-cas.html" class="btn-pro">Chci Měřič plýtvání Pro</a>
+  </div>
+
+  <button class="btn-znovu" onclick="zacitZnovu()">Začít znovu</button>
+</div>
+
+<footer>
+  <div class="footer-brand">Gabriela <span>Tomíčková</span></div>
+  <div class="footer-legal"><a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></div>
+</footer>
+
+<script>
+const KAT = ['prace','presun','hledani','cekani','papiry','priprava','kontrola'];
+const KAT_NAZVY = {prace:'Práce',presun:'Přesun',hledani:'Hledání',cekani:'Čekání',papiry:'Administrativa',priprava:'Příprava',kontrola:'Kontrola'};
+const KAT_BARVY = {prace:'#2a7a4f',presun:'#1a6aaa',hledani:'#d97706',cekani:'#c0392b',papiry:'#7c3aed',priprava:'#545454',kontrola:'#0891b2'};
+const PLYTVANI = ['presun','hledani','cekani','papiry','priprava','kontrola'];
+const MAX_CYKLY = 3;
+const HODINOVA_SAZBA = 250;
+
+
+let nazev = '';
+let posledniPlytvaniPct = '';
+let posledniPrumerCyklus = '';
+let posledniPlytvaniKcRok = '';
+let cykly = [], aktCyklus = null, aktivniKat = null;
+let timerInt = null, katInt = null, cyklusStart = null;
+let mereniSpusteno = false;
+
+function zobrazProTooltip(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function prejitKMereni() {
+  nazev = document.getElementById('inp-nazev').value.trim() || 'Proces';
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('mereni').style.display = 'block';
+  document.getElementById('m-nazev').textContent = nazev;
+  document.getElementById('m-cykly').textContent = 'Cyklus 1 / ' + MAX_CYKLY;
+  mereniSpusteno = true;
+  zacitNovyCyklus();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function zacitNovyCyklus() {
+  const cas = {};
+  KAT.forEach(k => cas[k] = 0);
+  aktCyklus = {start: null, cas, celkem: 0};
+  aktivniKat = null;
+  cyklusStart = null;
+  clearInterval(timerInt);
+  clearInterval(katInt);
+  KAT.forEach(k => {
+    const el = document.getElementById('k-'+k);
+    if (el) el.textContent = '0:00';
+  });
+  document.querySelectorAll('.kat-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('btn-stop').style.display = 'block';
+  document.getElementById('btn-novy').style.display = 'none';
+  document.getElementById('btn-konec').style.display = 'none';
+  document.getElementById('m-cykly').textContent = 'Cyklus ' + (cykly.length + 1) + ' / ' + MAX_CYKLY;
+  document.getElementById('timer').textContent = '00:00';
+  document.getElementById('timer').style.color = 'var(--dark)';
+  document.getElementById('timer-kat').textContent = 'Klikněte na první činnost';
+  document.getElementById('timer-kat').style.background = 'var(--light)';
+}
+
+function setKat(kat, nazevKat, barva) {
+  if (!aktCyklus || !mereniSpusteno) return;
+  if (!cyklusStart) {
+    cyklusStart = Date.now();
+    clearInterval(timerInt);
+    timerInt = setInterval(updateTimer, 100);
+    clearInterval(katInt);
+    katInt = setInterval(updateKat, 100);
+  }
+  document.querySelectorAll('.kat-btn').forEach(b => b.classList.remove('on'));
+  const btn = document.querySelector('.k-'+kat);
+  if (btn) btn.classList.add('on');
+  aktivniKat = kat;
+  document.getElementById('timer-kat').textContent = nazevKat;
+  document.getElementById('timer-kat').style.background = barva;
+  document.getElementById('timer').style.color = barva;
+}
+
+function updateTimer() {
+  if (!cyklusStart) return;
+  const e = Math.floor((Date.now() - cyklusStart) / 1000);
+  document.getElementById('timer').textContent = pad(Math.floor(e/60)) + ':' + pad(e%60);
+}
+
+function updateKat() {
+  if (!aktCyklus || !aktivniKat) return;
+  aktCyklus.cas[aktivniKat] = (aktCyklus.cas[aktivniKat] || 0) + 0.1;
+  const s = Math.floor(aktCyklus.cas[aktivniKat]);
+  const el = document.getElementById('k-'+aktivniKat);
+  if (el) el.textContent = pad(Math.floor(s/60)) + ':' + pad(s%60);
+}
+
+function stopCyklus() {
+  if (!cyklusStart) {
+    alert('Nejdřív klikněte na některou činnost, pak můžete cyklus ukončit.');
+    return;
+  }
+  clearInterval(timerInt); clearInterval(katInt);
+  document.querySelectorAll('.kat-btn').forEach(b => b.classList.remove('on'));
+  aktivniKat = null;
+  aktCyklus.celkem = (Date.now() - cyklusStart) / 1000;
+  cykly.push({...aktCyklus, cas: {...aktCyklus.cas}});
+  pridatRadek(cykly.length, aktCyklus);
+  document.getElementById('ulozene').style.display = 'block';
+  document.getElementById('btn-stop').style.display = 'none';
+  if (cykly.length < MAX_CYKLY) {
+    document.getElementById('btn-novy').style.display = 'block';
+  }
+  document.getElementById('btn-konec').style.display = 'block';
+  document.getElementById('timer-kat').textContent = 'Zastaven';
+  document.getElementById('timer-kat').style.background = '#888';
+}
+
+function novyCyklus() { aktCyklus = null; zacitNovyCyklus(); }
+
+function pridatRadek(n, c) {
+  const list = document.getElementById('uloz-list');
+  const row = document.createElement('div');
+  row.className = 'c-row';
+  const m = Math.floor(c.celkem/60), s = Math.floor(c.celkem%60);
+  const barHTML = KAT.map(k => {
+    const w = c.celkem > 0 ? (c.cas[k]||0) / c.celkem * 100 : 0;
+    return `<div style="width:${w.toFixed(1)}%;background:${KAT_BARVY[k]};height:100%"></div>`;
+  }).join('');
+  row.innerHTML = `<div class="c-num">${n}</div><div class="c-cas">${pad(m)}:${pad(s)}</div><div class="c-bar">${barHTML}</div>`;
+  list.appendChild(row);
+}
+
+function ukoncit() {
+  clearInterval(timerInt); clearInterval(katInt);
+  document.getElementById('mereni').style.display = 'none';
+  document.getElementById('souhrn').style.display = 'block';
+
+  const n = cykly.length;
+  const avg = {};
+  KAT.forEach(k => avg[k] = cykly.reduce((s,c) => s+(c.cas[k]||0),0)/n);
+  const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
+  const minC = Math.min(...cykly.map(c=>c.celkem));
+  const maxC = Math.max(...cykly.map(c=>c.celkem));
+  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+
+  document.getElementById('s-nazev').textContent = nazev;
+  document.getElementById('s-meta').textContent = n + ' cyklů · ' + new Date().toLocaleDateString('cs-CZ');
+
+  // Tabulka
+  const tbl = document.getElementById('tbl');
+  let h = '<tr><th>C.</th>' + KAT.map(k=>`<th>${KAT_NAZVY[k]}</th>`).join('') + '<th>Celk.</th></tr>';
+  cykly.forEach((c,i) => {
+    h += `<tr><td>${i+1}</td>` + KAT.map(k=>`<td>${fmtC(c.cas[k]||0)}</td>`).join('') + `<td>${fmtC(c.celkem)}</td></tr>`;
+  });
+  h += '<tr class="avg"><td>Průměr</td>' + KAT.map(k=>`<td>${fmtC(avg[k])}</td>`).join('') + `<td>${fmtC(avgC)}</td></tr>`;
+  const plyVals = '<tr class="ply"><td>Plý.</td>' + KAT.map(k=>`<td>${PLYTVANI.includes(k)?fmtC(avg[k]):'-'}</td>`).join('') + `<td>${fmtC(plyC)} (${plyPct}%)</td></tr>`;
+  tbl.innerHTML = h + plyVals;
+
+  // Graf
+  const graf = document.getElementById('graf');
+  graf.innerHTML = KAT.map(k => {
+    const pct = avgC > 0 ? (avg[k]/avgC*100).toFixed(1) : 0;
+    return `<div class="g-row">
+      <div class="g-lbl" style="color:${KAT_BARVY[k]};font-size:11px;">${KAT_NAZVY[k]}</div>
+      <div class="g-bg"><div class="g-bar" style="width:${pct}%;background:${KAT_BARVY[k]}"></div></div>
+      <div class="g-val">${fmtC(avg[k])} (${pct}%)</div>
+    </div>`;
+  }).join('');
+
+  // Plyvani + kalkulace v Kc
+  const plyEl = document.getElementById('plyvani');
+  // Vypocet kusu za smenu a rocnich nakladu
+  const SMENA_SEK = 7.5 * 3600; // 7,5h v sekundach
+  const kusyZaSmenu = avgC > 0 ? Math.floor(SMENA_SEK / avgC) : 0;
+  const kusyRocne = kusyZaSmenu * 250;
+  // Plytvaní na kus v Kc
+  const plySekNaKus = plyC; // sekundy plyvani na jeden kus
+  const plyHodNaKus = plySekNaKus / 3600;
+  const plyKcNaKus = plyHodNaKus * HODINOVA_SAZBA;
+  const plyKcRok = Math.round(plyKcNaKus * kusyRocne);
+  const idealniCyklus = avgC - plyC; // teoreticky cas bez plyvani
+  const idealniKusy = idealniCyklus > 0 ? Math.floor(SMENA_SEK / idealniCyklus) : 0;
+  const rozdilKusu = idealniKusy - kusyZaSmenu;
+
+  posledniPlytvaniPct = String(plyPct);
+  posledniPrumerCyklus = fmtC(avgC);
+  posledniPlytvaniKcRok = plyKcRok.toLocaleString('cs-CZ');
+
+  let cls = plyPct > 40 ? 'alert' : plyPct > 20 ? 'warning' : 'ok';
+  const barvaBox = cls==='ok'?'#2a7a4f':cls==='warning'?'#b45309':'#c0392b';
+  const bgBox = cls==='ok'?'#e8f5ee':cls==='warning'?'#fff3e0':'#fee2e2';
+  plyEl.innerHTML = `
+    <div class="insight-box" style="background:${bgBox};border:1px solid ${barvaBox}33;margin-bottom:10px;">
+      <div class="insight-title" style="color:${barvaBox}">Čas mimo přímou práci tvoří ${plyPct}%</div>
+      <div class="insight-text">
+        Průměrný cyklus trvá <strong>${fmtC(avgC)}</strong>. Z toho ${fmtC(plyC)} (${plyPct}%) je plýtvání.<br><br>
+        Při 7,5h směně stihnete <strong>${kusyZaSmenu} kusů</strong>. Bez plýtvání by to bylo <strong>${idealniKusy} kusů</strong> — o ${rozdilKusu} kusů více za směnu.<br><br>
+        Ročně (250 dní × ${kusyZaSmenu} ks) vyrobíte <strong>${kusyRocne.toLocaleString('cs-CZ')} kusů</strong>. Hodnota času mimo přímou práci: přibližně <strong>${plyKcRok.toLocaleString('cs-CZ')} Kč/rok</strong>.<br>
+        <span style="font-size:11px;color:var(--light);">Orientační výpočet: 7,5h směna · 250 dní · 250 Kč/h. Ne vše lze odstranit — cílem je určit, která část je skutečně zbytečná.</span>
+      </div>
+    </div>
+    <div class="insight-box" style="background:var(--white);border:1px solid var(--border);margin-bottom:10px;">
+      <div class="insight-title" style="color:var(--mid)">Variabilita cyklů</div>
+      <div class="insight-text">Nejdelší: ${fmtC(maxC)}, nejkratší: ${fmtC(minC)}. ${n < 3 ? 'Pro přesnější výsledek doměřte zbývající cykly.' : 'Velká odchylka naznačuje nestabilní proces.'}</div>
+    </div>
+    <div class="insight-box" style="background:var(--paper);border:1px solid var(--border);margin-bottom:10px;">
+      <div class="insight-title" style="color:var(--mid);font-size:10px;">Jak číst výsledky</div>
+      <div class="insight-text" style="font-size:12px;color:var(--light);">Vše mimo kategorii Práce appka počítá jako čas mimo přímou práci. V praxi hodnoty nikdy nedosáhnou nuly — přesun, příprava nebo kontrola budou vždy zčásti nutné. Cílem je razantní snížení té části, která je skutečně zbytečná, ne dokonalost.</div>
+    </div>`;
+
+  // Insights
+  const ins = document.getElementById('insights');
+  const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
+  const TIPY = {
+    presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. Zkuste spaghetti diagram - nakreslete pohyb pracovníka do plánku a uvidíte kde se trasy kříží a opakují.`,
+    hledani:`Hledání tvoří ${Math.round(avg.hledani/avgC*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
+    cekani:`Čekání tvoří ${Math.round(avg.cekani/avgC*100)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
+    papiry:`Administrativa tvoří ${Math.round(avg.papiry/avgC*100)}% času. Kolik z toho je nutné? Tady je prostor pro digitalizaci nebo zjednodušení.`,
+    priprava:`Příprava tvoří ${Math.round(avg.priprava/avgC*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
+    kontrola:`Kontrola tvoří ${Math.round(avg.kontrola/avgC*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
+  };
+  let insHtml = '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;">Kde začít</div>';
+  let maNeco = false;
+  Object.keys(PRAHY).forEach(k => {
+    const pct = avgC > 0 ? Math.round(avg[k]/avgC*100) : 0;
+    if (pct >= PRAHY[k]) {
+      maNeco = true;
+      insHtml += `<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:700;color:${KAT_BARVY[k]};margin-bottom:5px;">${KAT_NAZVY[k]} — ${pct}%</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.7;">${TIPY[k]}</div>
+      </div>`;
+    }
+  });
+  if (!maNeco) insHtml = '';
+  ins.innerHTML = insHtml;
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function odeslatEmail(e) {
+  const email = document.getElementById('inp-email').value.trim();
+  if (!email) { e.preventDefault(); return false; }
+  document.getElementById('hid-proces').value = nazev;
+  document.getElementById('hid-plytvani-pct').value = posledniPlytvaniPct;
+  document.getElementById('hid-prumer-cyklus').value = posledniPrumerCyklus;
+  document.getElementById('hid-plytvani-kc').value = posledniPlytvaniKcRok;
+  document.getElementById('email-form').style.display = 'none';
+  document.getElementById('email-ok').style.display = 'block';
+  if (typeof gtag === 'function') { gtag('event', 'lead_email_submit', { source: 'meric_plytvani_free' }); }
+  return true;
+}
+
+function zacitZnovu() {
+  cykly = []; aktCyklus = null; aktivniKat = null; mereniSpusteno = false;
+  document.getElementById('uloz-list').innerHTML = '';
+  document.getElementById('souhrn').style.display = 'none';
+  document.getElementById('setup').style.display = 'block';
+  document.getElementById('timer').textContent = '00:00';
+  document.getElementById('timer').style.color = 'var(--dark)';
+  document.getElementById('timer-kat').textContent = 'Klikněte na první činnost';
+  document.getElementById('timer-kat').style.background = 'var(--light)';
+  document.getElementById('email-form').style.display = 'flex';
+  document.getElementById('email-ok').style.display = 'none';
+  document.getElementById('inp-email').value = '';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
+function fmtC(s) { return pad(Math.floor(s/60)) + ':' + pad(Math.floor(s%60)); }
+</script>
+
+<script>
+(function(){
+  var s = localStorage.getItem('cookies_souhlas');
+  if (s === 'ano') {
+    spustitGA();
+  } else if (s === null) {
+    document.getElementById('cookies-bar').style.display = 'flex';
+  }
+})();
+
+function spustitGA() {
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-JBFDH4G4VP';
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', 'G-JBFDH4G4VP');
+}
+
+function cookiesSouhlasit() {
+  localStorage.setItem('cookies_souhlas', 'ano');
+  document.getElementById('cookies-bar').style.display = 'none';
+  spustitGA();
+}
+
+function cookiesOdmitnout() {
+  localStorage.setItem('cookies_souhlas', 'ne');
+  document.getElementById('cookies-bar').style.display = 'none';
+}
+</script>
+</body>
+</html>

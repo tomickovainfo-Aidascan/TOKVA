@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5x Proč, AI kouč pro analýzu příčin | Gabriela Tomíčková</title>
+<meta name="description" content="Metoda 5x Proč odhalí skutečnou příčinu problému, ne jen příznaky. AI kouč vás provede analýzou krok za krokem a dostane se přes výmluvy k tomu co problém opravdu způsobuje.">
+<meta name="author" content="Gabriela Tomíčková">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="5x Proč, AI kouč pro analýzu kořenových příčin">
+<meta property="og:description" content="Místo hašení příznaků zjistíte co problém opravdu způsobuje. AI vás provede metodou 5x Proč krok za krokem.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="5x Proč, AI kouč pro analýzu kořenových příčin">
+<meta name="twitter:description" content="Místo hašení příznaků zjistíte co problém opravdu způsobuje. AI vás provede metodou 5x Proč krok za krokem.">
+<link rel="canonical" href="https://5x-proc.gabrielatomickova.cz/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "5x Proč, AI kouč",
+  "description": "AI průvodce metodou 5x Proč pro analýzu kořenových příčin v provozu, skladu a výrobě. Vede uživatele strukturovanými otázkami k odhalení skutečné příčiny opakujících se problémů.",
+  "url": "https://5x-proc.gabrielatomickova.cz",
+  "applicationCategory": "BusinessApplication",
+  "author": { "@type": "Person", "name": "Gabriela Tomíčková" },
+  "inLanguage": "cs"
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b;
+  --gold-dark: #c48e10;
+  --gold-light: #fdf3d9;
+  --dark: #0e0e0e;
+  --surface: #161616;
+  --surface2: #1e1e1e;
+  --border: rgba(255,255,255,.08);
+  --mid: #545454;
+  --light: #888;
+  --white: #fff;
+  --green: #2a7a4f;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--dark);
+  color: var(--white);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* NAV */
+nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav-brand {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+}
+.nav-brand span { color: var(--gold); }
+.nav-sub { font-size: 11px; color: var(--light); }
+
+.nav-reset {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--light);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all .2s;
+}
+.nav-reset:hover { border-color: var(--gold); color: var(--gold); }
+
+/* CHAT */
+.chat-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 680px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Zprávy */
+.msg {
+  display: flex;
+  gap: 10px;
+  animation: fadeUp .3s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user { flex-direction: row-reverse; }
+
+.msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.msg.ai .msg-avatar {
+  background: var(--gold);
+  color: var(--dark);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 900;
+  font-size: 11px;
+}
+
+.msg.user .msg-avatar {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.msg-bubble {
+  max-width: 82%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.msg.ai .msg-bubble {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-top-left-radius: 4px;
+  color: rgba(255,255,255,.88);
+}
+
+.msg.user .msg-bubble {
+  background: var(--gold);
+  color: var(--dark);
+  border-top-right-radius: 4px;
+  font-weight: 500;
+}
+
+/* Typing indicator */
+.typing {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 4px;
+  padding: 14px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  border-top-left-radius: 4px;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--light);
+  animation: dot 1.2s infinite;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: .2s; }
+.typing-dots span:nth-child(3) { animation-delay: .4s; }
+
+@keyframes dot {
+  0%, 60%, 100% { opacity: .3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-4px); }
+}
+
+/* Výstup */
+.output-card {
+  background: var(--surface2);
+  border: 1px solid rgba(233,169,27,.25);
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 8px;
+}
+
+.output-card h3 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.output-section {
+  margin-bottom: 12px;
+}
+
+.output-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--light);
+  margin-bottom: 4px;
+}
+
+.output-section-text {
+  font-size: 13px;
+  color: rgba(255,255,255,.8);
+  line-height: 1.7;
+}
+
+.output-highlight {
+  background: rgba(233,169,27,.1);
+  border-left: 3px solid var(--gold);
+  padding: 8px 12px;
+  border-radius: 0 6px 6px 0;
+  font-size: 13px;
+  color: rgba(255,255,255,.9);
+  line-height: 1.6;
+  margin-top: 4px;
+}
+
+.export-output {
+  margin-top: 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--light);
+  font-size: 12px;
+  padding: 7px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all .2s;
+}
+.export-output:hover { border-color: var(--gold); color: var(--gold); }
+
+/* INPUT */
+.input-wrap {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 14px 16px;
+  flex-shrink: 0;
+}
+
+.input-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.input-field {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--white);
+  outline: none;
+  resize: none;
+  min-height: 48px;
+  max-height: 120px;
+  line-height: 1.5;
+  transition: border .2s;
+}
+
+.input-field::placeholder { color: rgba(255,255,255,.2); }
+.input-field:focus { border-color: rgba(233,169,27,.4); }
+
+.send-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: none;
+  background: var(--gold);
+  color: var(--dark);
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.send-btn:hover { background: var(--gold-dark); }
+.send-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+.mic-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--light);
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mic-btn:hover { border-color: var(--gold); color: var(--gold); }
+.mic-btn.recording {
+  background: #e74c3c;
+  border-color: #e74c3c;
+  color: white;
+  animation: pulse 1.2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(231,76,60,.5); }
+  70% { box-shadow: 0 0 0 10px rgba(231,76,60,0); }
+  100% { box-shadow: 0 0 0 0 rgba(231,76,60,0); }
+}
+
+.input-hint {
+  font-size: 11px;
+  color: rgba(255,255,255,.2);
+  text-align: center;
+  margin-top: 6px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* LOGIN OVERLAY */
+.login-overlay {
+  position: fixed;
+  inset: 0;
+  background: #0e0e0e;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.login-box {
+  background: #161616;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 14px;
+  padding: 36px 28px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+.login-brand {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 24px;
+}
+.login-brand span { color: #e9a91b; }
+.login-box h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 8px;
+}
+.login-box p {
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.login-input {
+  width: 100%;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  letter-spacing: 2px;
+  outline: none;
+  margin-bottom: 12px;
+  transition: border .2s;
+}
+.login-input:focus { border-color: #e9a91b; }
+.login-btn {
+  width: 100%;
+  background: #e9a91b;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 13px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all .2s;
+  margin-bottom: 12px;
+}
+.login-btn:hover { background: #c48e10; color: white; }
+.login-btn:disabled { background: #333; color: #666; cursor: default; }
+.login-err {
+  font-size: 12px;
+  color: #e74c3c;
+  min-height: 18px;
+  margin-bottom: 8px;
+}
+.login-link {
+  font-size: 12px;
+  color: rgba(255,255,255,.3);
+}
+.login-link a { color: #e9a91b; text-decoration: none; }
+
+</style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-box">
+    <div class="login-brand">Gabriela <span>Tomíčková</span></div>
+    <h1 style="font-family:'Poppins',sans-serif;font-size:22px;font-weight:900;color:var(--white);margin-bottom:8px;line-height:1.2;">5x Proč, AI kouč</h1>
+    <p style="font-size:13px;color:var(--light);margin-bottom:14px;line-height:1.6;">Strukturovaná analýza kořenové příčiny pro vedoucí skladu a výroby.</p>
+    <p style="font-size:13px;color:var(--light);margin-bottom:10px;line-height:1.7;">Metoda 5x Proč vám pomůže dostat se od příznaku k příčině. Problém se opakuje? Lidi nestíhají? Zboží se ztrácí? Místo hašení zjistíte proč to vzniká a kde v procesu to má kořen.</p>
+    <p style="font-size:13px;color:var(--light);margin-bottom:20px;line-height:1.7;">Nástroj vás vede otázkami krok za krokem. Odhalí výmluvy, emoce a první dojmy, které jinak zastíní skutečnou příčinu. Výsledkem není viník, ale konkrétní místo v procesu kde problém vzniká.</p>
+    <div id="zdarma-blok">
+      <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Vyzkoušejte si 1 kompletní analýzu zdarma. Stačí e-mail, nic dalšího.</p>
+      <input class="login-input" id="zdarma-email" type="email" placeholder="vas@email.cz" style="letter-spacing:normal;"
+        onkeydown="if(event.key==='Enter') spustitZdarma()">
+      <div class="login-err" id="zdarma-err"></div>
+      <button class="login-btn" id="zdarma-btn" onclick="spustitZdarma()">Chci spustit analýzu zdarma</button>
+      <div class="login-link"><a href="javascript:void(0)" onclick="prepnoutKodBlok()">Mám už přístupový kód Pro</a></div>
+    </div>
+    <div id="kod-blok" style="display:none;">
+      <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Zadejte přístupový kód z emailu po zakoupení.</p>
+      <input class="login-input" id="login-kod" type="text" placeholder="XXXXXX" maxlength="20"
+        onkeydown="if(event.key==='Enter') zkontrolovatPristup()">
+      <div class="login-err" id="login-err"></div>
+      <button class="login-btn" id="login-btn" onclick="zkontrolovatPristup()">Chci vstoupit</button>
+      <div class="login-link">Nemáte kód? <a href="https://gabrielatomickova.cz/objednavka-provoz.html">Objednejte zde</a> · <a href="javascript:void(0)" onclick="prepnoutKodBlok()">Zpět na analýzu zdarma</a></div>
+    </div>
+  </div>
+</div>
+
+
+<nav>
+  <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;color:inherit;">Gabriela <span>Tomíčková</span></a>
+  <button class="nav-reset" onclick="resetChat()">Nová analýza</button>
+</nav>
+
+<div class="chat-wrap" id="chat"></div>
+
+<div class="input-wrap">
+  <div class="input-inner">
+    <textarea class="input-field" id="input" placeholder="Napište co vás trápí..."
+      rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();odeslat();}"
+      oninput="autoResize(this)"></textarea>
+    <button class="mic-btn" id="mic-btn" onclick="toggleMic()" title="Mluvit místo psaní">🎤</button>
+    <button class="send-btn" id="send-btn" onclick="odeslat()">➤</button>
+  </div>
+  <div class="input-hint" id="input-hint">Enter = odeslat &nbsp;·&nbsp; Shift+Enter = nový řádek &nbsp;·&nbsp; 🎤 = mluvit</div>
+</div>
+
+<script>
+const SYSTEM_PROMPT = `Jsi zkušený facilitátor metody 5× proč, kouč pro řešení problémů a empatický průvodce analýzou kořenové příčiny.
+
+Tvým cílem není rychle najít viníka, ale pomoci uživateli pochopit skutečný důvod problému. Vedeš rozhovor klidně, věcně, bezpečně a lidsky. Nepodsouváš závěry, nekritizuješ, nesoudíš a nehledáš chybu v člověku, pokud nejde o jasný systémový nebo procesní kontext.
+
+Chovej se jako kombinace:
+- zkušeného kaizen / lean konzultanta,
+- empatického kouče,
+- psychologicky bezpečného facilitátora,
+- analytika, který hledá fakta, opakující se vzorce a systémové příčiny.
+
+DŮLEŽITÉ ZÁSADY:
+1. Neptej se mechanicky jen „proč?".
+2. Každou otázku formuluj přirozeně, lidsky a konkrétně.
+3. Po každé odpovědi krátce shrň, co uživatel řekl, a ověř, zda tomu rozumíš správně.
+4. Rozlišuj fakta, domněnky a emoce.
+5. Pokud uživatel odpovídá obecně, doptávej se na konkrétní situaci, příklad, čas, místo, osoby, proces, vstupy a následky.
+6. Nehledej viníka. Hledej příčinu v procesu, systému, komunikaci, nastavení, chybějícím standardu, kapacitě, prioritách, prostředí nebo nejasném očekávání.
+7. Pokud se analýza stáčí k obviňování člověka, jemně ji vrať k otázce: „Co v systému umožnilo, že se to stalo?"
+8. Pokud se objeví více možných větví příčin, pojmenuj je a nech uživatele vybrat, kterou chce zkoumat první.
+9. Pokud je problém emocionální nebo mezilidský, reaguj empaticky a bezpečně. Neposkytuj diagnózy ani terapeutické rady. Pomoz pojmenovat potřeby, očekávání, komunikaci a opakující se vzorce.
+10. Výsledkem má být srozumitelná analýza, ne jen seznam pěti odpovědí.
+
+POSTUP:
+Nejdříve pomoz uživateli přesně formulovat problém:
+- Co se stalo?
+- Kdy a kde se to stalo?
+- Koho nebo čeho se to týká?
+- Jaký je dopad?
+- Jak poznáme, že je to problém?
+- Jak by měl vypadat správný stav?
+
+Potom veď analýzu 5× proč:
+- Vždy polož jen jednu otázku.
+- Otázka má navazovat na předchozí odpověď.
+- Nepokračuj dál, dokud odpověď není dostatečně konkrétní.
+- Pokud odpověď obsahuje domněnku, zeptej se, z čeho to uživatel usuzuje.
+- Pokud odpověď obsahuje emoci, nejdříve ji uznej, potom se vrať k faktům.
+
+Při každém kroku si interně hlídej:
+- Je to skutečná příčina, nebo jen další symptom?
+- Je odpověď ověřitelná?
+- Je příčina v systému/procesu, nebo jen v osobě?
+- Dá se s tím něco prakticky udělat?
+- Nechybí nám data?
+
+Až dospějeme ke kořenové příčině, řekni uživateli že jste u konce analýzy a vytvoř výstup ve struktuře (používej přesně tato označení oddílů):
+
+===VÝSTUP===
+1. PŮVODNÍ PROBLÉM: ...
+2. UPŘESNĚNÝ PROBLÉM: ...
+3. ŘETĚZEC 5× PROČ: ...
+4. KOŘENOVÁ PŘÍČINA: ...
+5. PŘISPÍVAJÍCÍ FAKTORY: ...
+6. FAKTA VS. DOMNĚNKY: ...
+7. DOPORUČENÉ OPATŘENÍ: ...
+8. PRVNÍ KROK DO 24 HODIN: ...
+9. JAK OVĚŘIT VÝSLEDEK: ...
+10. OTEVŘENÉ OTÁZKY: ...
+===KONEC===
+
+Styl komunikace:
+- mluv česky,
+- buď klidný, lidský a podporující,
+- používej jednoduchý jazyk,
+- nepůsob jako formulář,
+- nebuď přehnaně pozitivní,
+- buď konkrétní a praktický,
+- při citlivých tématech buď velmi opatrný a empatický,
+- NIKDY nepoužívej dlouhé pomlčky (–). Místo nich použij čárku, tečku nebo rozděl větu na dvě.
+
+Začni tím, že uživatele přivítáš, stručně vysvětlíš co spolu budete dělat a požádáš ho o popis problému.`;
+
+let history = [];
+let isLoading = false;
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function addMsg(role, text) {
+  const chat = document.getElementById('chat');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+
+  const avatar = document.createElement('div');
+  avatar.className = 'msg-avatar';
+  avatar.textContent = role === 'ai' ? 'AI' : '👤';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  // Detekce výstupu
+  if (role === 'ai' && text.includes('===VÝSTUP===')) {
+    const before = text.split('===VÝSTUP===')[0].trim();
+    const outputRaw = text.split('===VÝSTUP===')[1].split('===KONEC===')[0].trim();
+
+    if (before) {
+      bubble.innerHTML = formatText(before);
+      div.appendChild(avatar);
+      div.appendChild(bubble);
+      chat.appendChild(div);
+    }
+
+    renderOutput(outputRaw);
+    return;
+  }
+
+  bubble.innerHTML = formatText(text);
+  div.appendChild(avatar);
+  div.appendChild(bubble);
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function formatText(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+}
+
+function renderOutput(raw) {
+  const chat = document.getElementById('chat');
+  const card = document.createElement('div');
+  card.className = 'output-card msg ai';
+  card.style.flexDirection = 'column';
+
+  const title = document.createElement('h3');
+  title.innerHTML = '📋 Výsledek analýzy';
+  card.appendChild(title);
+
+  const labels = {
+    '1. PŮVODNÍ PROBLÉM': 'Původní problém',
+    '2. UPŘESNĚNÝ PROBLÉM': 'Upřesněný problém',
+    '3. ŘETĚZEC 5× PROČ': 'Řetězec 5× Proč',
+    '4. KOŘENOVÁ PŘÍČINA': 'Kořenová příčina',
+    '5. PŘISPÍVAJÍCÍ FAKTORY': 'Přispívající faktory',
+    '6. FAKTA VS. DOMNĚNKY': 'Fakta vs. domněnky',
+    '7. DOPORUČENÉ OPATŘENÍ': 'Doporučené opatření',
+    '8. PRVNÍ KROK DO 24 HODIN': 'První krok do 24 hodin',
+    '9. JAK OVĚŘIT VÝSLEDEK': 'Jak ověřit výsledek',
+    '10. OTEVŘENÉ OTÁZKY': 'Otevřené otázky',
+  };
+
+  const highlight = ['4. KOŘENOVÁ PŘÍČINA', '8. PRVNÍ KROK DO 24 HODIN'];
+
+  const lines = raw.split('\n');
+  let currentKey = null;
+  let currentText = [];
+
+  function flush() {
+    if (!currentKey) return;
+    const sec = document.createElement('div');
+    sec.className = 'output-section';
+    const t = document.createElement('div');
+    t.className = 'output-section-title';
+    t.textContent = labels[currentKey] || currentKey;
+    sec.appendChild(t);
+    const content = currentText.join('\n').trim();
+    const v = document.createElement('div');
+    if (highlight.includes(currentKey)) {
+      v.className = 'output-highlight';
+    } else {
+      v.className = 'output-section-text';
+    }
+    v.innerHTML = formatText(content);
+    sec.appendChild(v);
+    card.appendChild(sec);
+    currentText = [];
+  }
+
+  lines.forEach(line => {
+    const matchedKey = Object.keys(labels).find(k => line.startsWith(k));
+    if (matchedKey) {
+      flush();
+      currentKey = matchedKey;
+      const rest = line.slice(matchedKey.length).replace(/^:\s*/, '');
+      if (rest) currentText.push(rest);
+    } else if (currentKey) {
+      currentText.push(line);
+    }
+  });
+  flush();
+
+  const exportBtn = document.createElement('button');
+  exportBtn.className = 'export-output';
+  exportBtn.textContent = 'Stáhnout jako TXT';
+  exportBtn.onclick = () => exportTxt(raw);
+  card.appendChild(exportBtn);
+
+  chat.appendChild(card);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function exportTxt(raw) {
+  const blob = new Blob([raw], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '5x-proc-analyza-' + new Date().toISOString().slice(0, 10) + '.txt';
+  a.click();
+}
+
+function showTyping() {
+  const chat = document.getElementById('chat');
+  const div = document.createElement('div');
+  div.className = 'typing';
+  div.id = 'typing';
+  div.innerHTML = `<div class="msg-avatar" style="width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--dark);display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:900;font-size:11px;flex-shrink:0;">AI</div>
+    <div class="typing-dots"><span></span><span></span><span></span></div>`;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function hideTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+async function odeslat() {
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  if (!text || isLoading) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  addMsg('user', text);
+  history.push({ role: 'user', content: text });
+
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  showTyping();
+
+  try {
+    const url = 'https://script.google.com/macros/s/AKfycbyP2l58OvGi5mzk-PXMaGNRZoMj4E8C3vn7o4Ib89DVhqdePdj90OWUUHXC1hYiQ5pC/exec?action=ai&messages=' + encodeURIComponent(JSON.stringify(history));
+    const res = await fetch(url);
+
+    const data = await res.json();
+    hideTyping();
+
+    const reply = data.content?.[0]?.text || 'Omlouvám se, něco se pokazilo.';
+    history.push({ role: 'assistant', content: reply });
+    addMsg('ai', reply);
+
+  } catch (e) {
+    hideTyping();
+    console.error('Chyba odeslat:', e);
+    addMsg('ai', 'Nepodařilo se spojit se serverem. Zkuste to znovu.');
+  }
+
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('input').focus();
+}
+
+// HLASOVÉ OVLÁDÁNÍ (Web Speech API)
+let recognition = null;
+let isRecording = false;
+let micTextBase = '';
+
+function initRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return null;
+
+  const r = new SpeechRecognition();
+  r.lang = 'cs-CZ';
+  r.continuous = true;
+  r.interimResults = true;
+
+  r.onresult = (e) => {
+    let finalText = '';
+    let interimText = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const chunk = e.results[i][0].transcript;
+      if (e.results[i].isFinal) finalText += chunk;
+      else interimText += chunk;
+    }
+    if (finalText) micTextBase = (micTextBase + ' ' + finalText).trim();
+    const input = document.getElementById('input');
+    input.value = (micTextBase + ' ' + interimText).trim();
+    autoResize(input);
+  };
+
+  r.onerror = (e) => {
+    console.error('Chyba rozpoznávání řeči:', e.error);
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      alert('Nemám povolení k mikrofonu. Povolte mikrofon v nastavení prohlížeče.');
+    }
+    stopRecording();
+  };
+
+  r.onend = () => {
+    stopRecording();
+  };
+
+  return r;
+}
+
+function toggleMic() {
+  if (isRecording) {
+    recognition.stop();
+    return;
+  }
+
+  if (!recognition) {
+    recognition = initRecognition();
+    if (!recognition) {
+      alert('Hlasové ovládání není v tomto prohlížeči podporováno. Zkuste Chrome nebo Edge.');
+      return;
+    }
+  }
+
+  const input = document.getElementById('input');
+  micTextBase = input.value.trim();
+  isRecording = true;
+  document.getElementById('mic-btn').classList.add('recording');
+  document.getElementById('input-hint').textContent = 'Poslouchám... klikněte na 🎤 pro ukončení';
+
+  try {
+    recognition.start();
+  } catch (e) {
+    stopRecording();
+  }
+}
+
+function stopRecording() {
+  isRecording = false;
+  const micBtn = document.getElementById('mic-btn');
+  if (micBtn) micBtn.classList.remove('recording');
+  const hint = document.getElementById('input-hint');
+  if (hint) hint.innerHTML = 'Enter = odeslat &nbsp;·&nbsp; Shift+Enter = nový řádek &nbsp;·&nbsp; 🎤 = mluvit';
+}
+
+// Skrýt mikrofon, pokud ho prohlížeč vůbec nepodporuje
+window.addEventListener('DOMContentLoaded', () => {
+  const supported = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!supported) {
+    const micBtn = document.getElementById('mic-btn');
+    if (micBtn) micBtn.style.display = 'none';
+  }
+});
+
+function resetChat() {
+  if (!confirm('Začít novou analýzu? Aktuální konverzace bude smazána.')) return;
+  history = [];
+  document.getElementById('chat').innerHTML = '';
+  start();
+}
+
+async function start() {
+  isLoading = true;
+  showTyping();
+
+  try {
+    const url = 'https://script.google.com/macros/s/AKfycbyP2l58OvGi5mzk-PXMaGNRZoMj4E8C3vn7o4Ib89DVhqdePdj90OWUUHXC1hYiQ5pC/exec?action=ai&messages=' + encodeURIComponent(JSON.stringify([{ role: 'user', content: 'Začni.' }]));
+    const res = await fetch(url);
+
+    const data = await res.json();
+    hideTyping();
+    const reply = data.content?.[0]?.text || '';
+    history.push({ role: 'user', content: 'Začni.' });
+    history.push({ role: 'assistant', content: reply });
+    addMsg('ai', reply);
+
+  } catch (e) {
+    hideTyping();
+    console.error('Chyba start:', e);
+    addMsg('ai', 'Nepodařilo se načíst. Obnovte stránku.');
+  }
+
+  isLoading = false;
+}
+
+
+// PŘIHLAŠOVÁNÍ
+const LOGIN_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyP2l58OvGi5mzk-PXMaGNRZoMj4E8C3vn7o4Ib89DVhqdePdj90OWUUHXC1hYiQ5pC/exec';
+
+function prepnoutKodBlok() {
+  const zdarma = document.getElementById('zdarma-blok');
+  const kod = document.getElementById('kod-blok');
+  const zobrazitKod = kod.style.display === 'none';
+  zdarma.style.display = zobrazitKod ? 'none' : 'block';
+  kod.style.display = zobrazitKod ? 'block' : 'none';
+}
+
+// Free = 1 živá analýza na e-mail. Kontrola duplicit (jestli tenhle e-mail
+// uz analyzu vyzkousel) bezi na strane Apps Scriptu (Google Sheet), ne jen
+// tady v prohlizeci - klientska brana jde jinak snadno obejit.
+async function spustitZdarma() {
+  const email = document.getElementById('zdarma-email').value.trim();
+  const err = document.getElementById('zdarma-err');
+  const btn = document.getElementById('zdarma-btn');
+
+  err.textContent = '';
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    err.textContent = 'Zadejte platný e-mail.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Ověřuji...';
+
+  try {
+    const res = await fetch(LOGIN_SCRIPT_URL + '?action=zdarma&email=' + encodeURIComponent(email));
+    const data = await res.json();
+
+    if (data.ok) {
+      sessionStorage.setItem('pristup_ok', '1');
+      document.getElementById('login-overlay').style.display = 'none';
+      start();
+    } else {
+      err.textContent = data.zprava || 'Tenhle e-mail už jednu analýzu zdarma vyzkoušel. Napište mi na tomickova.info@gmail.com ohledně přístupu Pro.';
+      btn.disabled = false;
+      btn.textContent = 'Chci spustit analýzu zdarma';
+    }
+  } catch(e) {
+    err.textContent = 'Nepodařilo se to ověřit. Zkuste to znovu.';
+    btn.disabled = false;
+    btn.textContent = 'Chci spustit analýzu zdarma';
+  }
+}
+
+async function zkontrolovatPristup() {
+  const kod = document.getElementById('login-kod').value.trim().toUpperCase();
+  const err = document.getElementById('login-err');
+  const btn = document.getElementById('login-btn');
+
+  if (!kod) {
+    err.textContent = 'Zadejte přístupový kód.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Kontroluji...';
+  err.textContent = '';
+
+  try {
+    const res = await fetch(LOGIN_SCRIPT_URL + '?action=check&kod=' + encodeURIComponent(kod));
+    const data = await res.json();
+
+    if (data.ok) {
+      sessionStorage.setItem('pristup_ok', '1');
+      document.getElementById('login-overlay').style.display = 'none';
+      start();
+    } else {
+      err.textContent = data.zprava || 'Neplatný kód.';
+      btn.disabled = false;
+      btn.textContent = 'Chci vstoupit';
+    }
+  } catch(e) {
+    err.textContent = 'Nepodařilo se ověřit kód. Zkuste znovu.';
+    btn.disabled = false;
+    btn.textContent = 'Chci vstoupit';
+  }
+}
+
+// Pokud už byl ověřen v této session
+if (sessionStorage.getItem('pristup_ok') === '1') {
+  document.getElementById('login-overlay').style.display = 'none';
+  start();
+}
+
+</script>
+</body>
+</html>

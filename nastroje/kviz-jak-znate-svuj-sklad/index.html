@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jak dobře znáte svůj sklad? | Gabriela Tomíčková</title>
+<meta name="description" content="10 otázek které odhalí slepá místa ve vašem skladu. Víte kolik vás stojí chyba, fluktuace nebo zbytečný přepis? Za 5 minut víte kde máte mezery.">
+<meta name="keywords" content="audit skladu, řízení skladu, optimalizace skladu, vedoucí skladu, sklad náklady, KAIZEN sklad">
+<meta name="author" content="Gabriela Tomíčková">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Jak dobře znáte svůj sklad? | Gabriela Tomíčková">
+<meta property="og:description" content="10 otázek které odhalí slepá místa ve vašem skladu. Za 5 minut víte kde máte mezery v přehledu a rozhodování.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jak dobře znáte svůj sklad? | Gabriela Tomíčková">
+<meta name="twitter:description" content="10 otázek které odhalí slepá místa ve vašem skladu. Za 5 minut víte kde máte mezery.">
+<link rel="canonical" href="https://kviz.gabrielatomickova.cz/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Quiz",
+  "name": "Jak dobře znáte svůj sklad?",
+  "description": "10 otázek pro vedoucí skladu a výroby. Odhalí slepá místa v přehledu o nákladech, procesech a výkonu provozu.",
+  "url": "https://kviz.gabrielatomickova.cz",
+  "educationalLevel": "beginner",
+  "author": { "@type": "Person", "name": "Gabriela Tomíčková" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CZK" }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#e9a91b; --gold-dark:#c48e10; --gold-light:#fdf3d9;
+  --black:#000; --dark:#111; --mid:#545454; --light:#a8a6a6;
+  --white:#fff; --paper:#f5f4f0; --border:#e2e2e2;
+  --green:#2a7a4f; --green-light:#e8f5ee;
+  --amber:#d97706; --amber-light:#fef3c7;
+  --red:#b91c1c; --red-light:#fee2e2;
+  --blue:#1a6aaa; --blue-light:#e3f0fa;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--dark);line-height:1.7;}
+
+nav{background:var(--white);border-bottom:2px solid var(--gold);padding:13px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--black);}
+.nav-brand span{color:var(--gold);}
+.nav-web{font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:4px;transition:all .2s;}
+.nav-web:hover{border-color:var(--gold);color:var(--gold-dark);}
+
+.hero{background:var(--black);padding:52px 24px 44px;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;border:70px solid rgba(233,169,27,.07);pointer-events:none;}
+.hero-inner{max-width:1040px;margin:0 auto;position:relative;z-index:1;}
+.badge{display:inline-block;background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:18px;}
+.hero h1{font-family:"Poppins",sans-serif;font-size:clamp(22px,4vw,36px);font-weight:900;color:white;line-height:1.15;letter-spacing:-.5px;margin-bottom:14px;}
+.hero h1 em{color:var(--gold);font-style:normal;}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.5);max-width:520px;line-height:1.75;margin-bottom:22px;font-weight:300;}
+.hero-meta{display:flex;gap:18px;flex-wrap:wrap;}
+.hero-meta span{font-size:12px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:6px;}
+.hero-meta span::before{content:"●";color:var(--gold);font-size:7px;}
+
+.progress-nav{background:var(--white);border-bottom:1px solid var(--border);padding:14px 24px;}
+.progress-nav-inner{max-width:660px;margin:0 auto;display:flex;align-items:center;gap:12px;}
+.progress-nav-label{font-size:12px;color:var(--light);white-space:nowrap;}
+.progress-nav-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.progress-nav-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease;width:0%;}
+.progress-nav-count{font-family:"DM Mono",monospace;font-size:12px;color:var(--gold);white-space:nowrap;}
+
+.main{max-width:660px;margin:0 auto;padding:32px 20px 80px;}
+
+/* EMAIL BRANA */
+.email-brana{animation:slideIn .3s ease;}
+.email-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:32px 28px;text-align:center;}
+.email-card h2{font-family:"Poppins",sans-serif;font-size:22px;font-weight:800;color:var(--black);margin-bottom:10px;line-height:1.25;}
+.email-card p{font-size:15px;color:var(--mid);margin-bottom:24px;line-height:1.75;max-width:460px;margin-left:auto;margin-right:auto;}
+.btn-spustit{background:var(--gold);color:var(--black);border:none;font-family:"DM Sans",sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:6px;cursor:pointer;transition:all .2s;width:100%;max-width:400px;}
+.btn-spustit:hover{background:var(--gold-dark);color:white;}
+.email-note{font-size:11px;color:var(--light);margin-top:10px;}
+
+/* OTAZKY */
+.otazka-wrap{display:none;animation:slideIn .3s ease;}
+.otazka-wrap.active{display:block;}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+
+.otazka-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:26px 24px;margin-bottom:14px;}
+.otazka-num{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.otazka-text{font-family:"Poppins",sans-serif;font-size:clamp(15px,2.5vw,19px);font-weight:700;color:var(--black);line-height:1.35;margin-bottom:6px;}
+.otazka-kontext{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:18px;font-style:italic;}
+
+.moznosti{display:flex;flex-direction:column;gap:8px;}
+.moznost{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;background:var(--paper);}
+.moznost:hover{border-color:var(--gold);background:var(--gold-light);}
+.moznost.selected{border-color:var(--gold);background:var(--gold-light);}
+.moznost-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px;}
+.moznost.selected .moznost-dot{background:var(--gold);border-color:var(--gold);}
+.moznost.selected .moznost-dot::after{content:"";width:8px;height:8px;border-radius:50%;background:white;display:block;}
+.moznost-text{font-size:14px;color:var(--dark);line-height:1.5;flex:1;}
+.moznost-text strong{display:block;font-weight:600;margin-bottom:1px;}
+
+.otazka-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.btn-zpet{background:transparent;border:1px solid var(--border);color:var(--mid);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:500;padding:10px 18px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.btn-zpet:hover{border-color:var(--mid);color:var(--dark);}
+.btn-dal{background:var(--gold);color:var(--black);border:none;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;padding:11px 26px;border-radius:6px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.btn-dal:hover{background:var(--gold-dark);color:white;}
+.btn-dal:disabled{background:var(--border);color:var(--light);cursor:default;}
+.btn-dal .arrow{display:inline-block;width:16px;height:10px;background:currentColor;clip-path:polygon(0 0,65% 0,100% 50%,65% 100%,0 100%);}
+
+/* VYSLEDKY */
+.vysledky-wrap{display:none;animation:slideIn .3s ease;}
+.vysledky-wrap.active{display:block;}
+
+.skore-hero{border-radius:12px;padding:28px 24px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden;}
+.skore-hero::after{content:"";position:absolute;bottom:-30px;right:-30px;width:160px;height:160px;border-radius:50%;border:30px solid rgba(255,255,255,.1);}
+.skore-cislo{font-family:"Poppins",sans-serif;font-size:60px;font-weight:900;color:white;line-height:1;margin-bottom:8px;}
+.skore-max{font-size:20px;opacity:.6;}
+.skore-label{font-family:"Poppins",sans-serif;font-size:18px;font-weight:700;color:white;margin-bottom:8px;}
+.skore-popis{font-size:14px;color:rgba(255,255,255,.75);max-width:440px;margin:0 auto;line-height:1.75;}
+
+.detail-panel{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px;}
+.detail-header{padding:13px 18px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);}
+.detail-row{display:flex;align-items:flex-start;gap:12px;padding:11px 18px;border-bottom:1px solid #f5f5f5;}
+.detail-row:last-child{border-bottom:none;}
+.detail-arr{width:18px;height:11px;flex-shrink:0;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);margin-top:3px;}
+.detail-text{flex:1;}
+.detail-text strong{font-size:13px;font-weight:600;color:var(--dark);display:block;margin-bottom:2px;}
+.detail-text span{font-size:11px;color:var(--light);}
+.detail-body{font-family:"DM Mono",monospace;font-size:11px;font-weight:500;padding:2px 8px;border-radius:3px;white-space:nowrap;}
+
+.cta-final{background:var(--black);border-radius:12px;padding:28px 24px;}
+.cta-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.cta-final h2{font-family:"Poppins",sans-serif;font-size:clamp(17px,2.5vw,22px);font-weight:800;color:white;line-height:1.25;margin-bottom:12px;}
+.cta-final p{font-size:14px;color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:20px;max-width:460px;}
+.btn-diagnostika{display:inline-block;background:var(--gold);color:var(--black);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;padding:13px 24px;border-radius:4px;text-decoration:none;transition:all .2s;margin-right:10px;margin-bottom:8px;}
+.btn-diagnostika:hover{background:var(--gold-dark);color:white;}
+.btn-znovu{background:transparent;color:rgba(255,255,255,.4);font-family:"DM Sans",sans-serif;font-size:13px;padding:13px 18px;border-radius:4px;border:1px solid rgba(255,255,255,.15);cursor:pointer;transition:all .2s;}
+.btn-znovu:hover{color:var(--gold);border-color:var(--gold);}
+
+footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:40px;}
+.footer-brand{font-family:"Poppins",sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,.35);}
+.footer-brand span{color:var(--gold);}
+.footer-legal{font-size:11px;color:rgba(255,255,255,.2);}
+.footer-legal a{color:rgba(255,255,255,.2);text-decoration:none;}
+.footer-legal a:hover{color:var(--gold);}
+
+@media(max-width:600px){
+  nav,.progress-nav,.main{padding-left:16px;padding-right:16px;}
+  .hero{padding:36px 16px 32px;}
+  footer{padding:16px;flex-direction:column;text-align:center;}
+}
+</style>
+
+<style id="cookies-css">
+.cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
+.cookies-bar p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin:0;flex:1;min-width:200px;}
+.cookies-bar a{color:#e9a91b;text-decoration:none;}
+.cookies-bar a:hover{text-decoration:underline;}
+.cookies-btns{display:flex;gap:8px;flex-shrink:0;}
+.cookies-ok{background:#e9a91b;color:#000;border:none;border-radius:4px;padding:8px 18px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.cookies-ok:hover{background:#c48e10;}
+.cookies-no{background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:8px 14px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;}
+.cookies-no:hover{color:rgba(255,255,255,.7);}
+/* CONTENT BLOCK */
+.content-block{background:var(--white);border-bottom:1px solid var(--border);padding:40px;}
+.content-inner{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px;}
+.story-block{background:var(--paper);border-radius:12px;padding:28px 32px;border-left:4px solid var(--gold);}
+.story-title{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--dark);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;}
+.story-block p{font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;}
+.story-block p:last-of-type{margin-bottom:0;}
+.trust-line{font-size:13px;color:var(--light);font-style:italic;border-top:1px solid var(--border);margin-top:16px;padding-top:14px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.content-card{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:24px;}
+.content-card-title{font-family:"Poppins",sans-serif;font-size:12px;font-weight:700;color:var(--dark);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.check-list li{font-size:14px;color:var(--mid);display:flex;gap:10px;align-items:flex-start;line-height:1.6;}
+.check-list li::before{content:"→";color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;}
+.steps-list{display:flex;flex-direction:column;gap:12px;}
+.step-item{display:flex;gap:12px;align-items:flex-start;}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--gold);color:#1a1000;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.step-item>div:last-child{font-size:13px;color:var(--mid);line-height:1.65;}
+.no-need-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.no-need-item{font-size:14px;color:var(--mid);display:flex;gap:8px;align-items:center;}
+.no-need-item::before{content:"✕";color:var(--light);font-size:11px;}
+.time-note{font-size:14px;color:var(--dark);font-weight:600;}
+/* POST SEKCE */
+.post-kviz{background:var(--white);border-top:1px solid var(--border);padding:40px;}
+.post-kviz-inner{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px;}
+.faq-item{border-bottom:1px solid var(--border);padding:16px 0;}
+.faq-item:first-child{padding-top:0;}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:6px;}
+.faq-a{font-size:13px;color:var(--mid);line-height:1.7;}
+.tools-tip{background:var(--gold-light);border:1px solid rgba(233,169,27,0.3);border-radius:12px;padding:24px;}
+.tools-tip strong{font-family:"Poppins",sans-serif;font-size:14px;font-weight:700;color:var(--dark);display:block;margin-bottom:12px;}
+.tools-tip-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13px;color:var(--mid);line-height:1.6;}
+.tools-tip-row::before{content:"→";color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;}
+.tools-tip-row:last-child{margin-bottom:0;}
+@media(max-width:700px){
+  .two-col{grid-template-columns:1fr;}
+  .no-need-grid{grid-template-columns:1fr;}
+  .content-block,.post-kviz{padding:24px 20px;}
+}
+</style>
+<body>
+
+<div class="cookies-bar" id="cookies-bar" style="display:none;">
+  <p>Tento web používá analytické cookies (Google Analytics) pro měření návštěvnosti. <a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></p>
+  <div class="cookies-btns">
+    <button class="cookies-no" onclick="cookiesOdmitnout()">Odmítnout</button>
+    <button class="cookies-ok" onclick="cookiesSouhlasit()">Souhlasím</button>
+  </div>
+</div>
+
+<nav>
+  <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;">Gabriela <span>Tomíčková</span></a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="badge">Pro vedoucí skladu a výroby s týmem 3 až 50 lidí</div>
+    <h1>Jak dobře znáte<br><em>svůj sklad?</em></h1>
+    <p class="hero-sub">10 otázek které odhalí slepá místa ve vašem provozu. Nejde o znalosti, jde o to jestli máte čísla a přehled který potřebujete k rozhodování.</p>
+    <div class="hero-meta">
+      <span>10 otázek</span>
+      <span>5 minut</span>
+      <span>Výsledek ihned</span>
+    </div>
+  </div>
+</div>
+
+<div class="content-block">
+  <div class="content-inner">
+
+    <div class="story-block">
+      <div class="story-title">Jak to vypadá v praxi?</div>
+      <p>Vedoucí skladu, 15 lidí, firma fungovala. Na papíře v pohodě. Přišel kvíz.</p>
+      <p>Neznal náklady na metr čtvereční. Nevedl statistiku chyb. Nevěděl kolik ho stojí odchod jednoho člověka. Tři procesy závisely na jednom skladníkovi, který byl u firmy 11 let. Kdyby odešel, nikdo by nevěděl jak to dělá.</p>
+      <p>Každou z těchto věcí věděl, že nějak fungují. Ale číslo k žádné z nich neměl.</p>
+      <p>Kvíz nezjistil co nefunguje. Zjistil co neví. A to byl první krok k tomu, aby to začal řídit.</p>
+      <div class="trust-line">Otázky vycházejí z věcí, na které narážím v reálných provozech. Slepá místa která mají vedoucí skladu nejčastěji společná.</div>
+    </div>
+
+    <div class="two-col">
+      <div class="content-card">
+        <div class="content-card-title">Hodí se vám to, pokud:</div>
+        <ul class="check-list">
+          <li>Vedete sklad nebo výrobu a chcete vědět jestli máte přehled, který potřebujete</li>
+          <li>Tušíte, že někde jsou slepá místa, ale nevíte přesně kde</li>
+          <li>Chystáte se na změnu a chcete vědět co o svém provozu nevíte</li>
+          <li>Chcete argument pro vedení: kde chybí data a proč to vadí</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <div class="content-card-title">Tři kroky, žádná věda:</div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div>Spustíte kvíz rovnou, bez e-mailu. Žádná příprava, žádné podklady.</div></div>
+          <div class="step-item"><div class="step-num">2</div><div>Odpovíte na 10 otázek ze svého provozu. Tři možnosti, jedno kliknutí.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div>Dostanete výsledek a konkrétní tipy co sledovat jako první.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="content-card-title">Co k tomu nepotřebujete:</div>
+      <div class="no-need-grid">
+        <div class="no-need-item">Konzultanta ani poradce</div>
+        <div class="no-need-item">Přípravu ani podklady</div>
+        <div class="no-need-item">Přesná čísla ze systému</div>
+        <div class="no-need-item">Zkušenosti s KAIZEN</div>
+      </div>
+      <div class="time-note">Stačí 5 minut a ochota odpovědět upřímně.</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="progress-nav">
+  <div class="progress-nav-inner">
+    <span class="progress-nav-label">Postup</span>
+    <div class="progress-nav-bar"><div class="progress-nav-fill" id="progress-fill"></div></div>
+    <span class="progress-nav-count" id="progress-count">0 / 10</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- START, ZADNY EMAIL -->
+  <div class="email-brana" id="email-brana">
+    <div class="email-card">
+      <h2>Spusťte kvíz</h2>
+      <p>10 otázek, 5 minut. Výsledek s konkrétními tipy ihned na stránce.</p>
+      <button class="btn-spustit" onclick="spustitKviz()">Spustit kvíz zdarma</button>
+    </div>
+  </div>
+
+  <!-- OTAZKY -->
+  <div class="otazka-wrap" id="q1">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 1 z 10</div>
+      <div class="otazka-text">Kolik vás stojí metr čtvereční vašeho skladu?</div>
+      <div class="otazka-kontext">Nájem nebo odpisy budovy, energie, pojištění. Podívejte se na místa kde leží zboží které se nehýbe měsíce. Víte kolik vás to stojí?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyber(this,1,0)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Vím přesně.</strong> Mám spočítáno co stojí metr čtvereční za měsíc.</div></div>
+        <div class="moznost" onclick="vyber(this,1,1)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Přibližně vím.</strong> Dokážu odhadnout ale přesné číslo nemám.</div></div>
+        <div class="moznost" onclick="vyber(this,1,2)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Nikdy jsem to nepočítal.</strong> O tom jsem nepřemýšlel.</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav"><div></div><button class="btn-dal" id="dal1" disabled onclick="dal(1)">Další <span class="arrow"></span></button></div>
+  </div>
+
+  <div class="otazka-wrap" id="q2">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 2 z 10</div>
+      <div class="otazka-text">Kdy jste naposledy sledovali co vaši lidé reálně dělají?</div>
+      <div class="otazka-kontext">Ne kontrola - zvědavost. Co se skutečně děje mezi zadáním a výsledkem? Kolik z toho je přidaná hodnota a kolik je přesuny, hledání a čekání?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyber(this,2,0)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Děláme to pravidelně.</strong> Měříme časy a víme kde jsou rezervy.</div></div>
+        <div class="moznost" onclick="vyber(this,2,1)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Párkrát jsem to zkusil.</strong> Ale systematicky to nesledujeme.</div></div>
+        <div class="moznost" onclick="vyber(this,2,2)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Nikdy jsem to takhle neřešil.</strong> Chodím po provozu ale vidím ho svýma očima.</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav"><button class="btn-zpet" onclick="zpet(2)">Zpět</button><button class="btn-dal" id="dal2" disabled onclick="dal(2)">Další <span class="arrow"></span></button></div>
+  </div>
+
+  <div class="otazka-wrap" id="q3">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 3 z 10</div>
+      <div class="otazka-text">Kolik hodin týdně tráví vaši lidé přepisováním dat?</div>
+      <div class="otazka-kontext">Z dodacích listů do systému, ze systému do tabulky, z tabulky do emailu. Stejná informace zadaná třikrát na různá místa.</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyber(this,3,0)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Máme to zmapované.</strong> Víme kde se přepisuje a aktivně to řešíme.</div></div>
+        <div class="moznost" onclick="vyber(this,3,1)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Tuším že hodně.</strong> Ale přesně jsem to nikdy nepočítal.</div></div>
+        <div class="moznost" onclick="vyber(this,3,2)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Nikdy jsem o tom takhle nepřemýšlel.</strong> Je to prostě součást práce.</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav"><button class="btn-zpet" onclick="zpet(3)">Zpět</button><button class="btn-dal" id="dal3" disabled onclick="dal(3)">Další <span class="arrow"></span></button></div>
+  </div>
+
+  <div class="otazka-wrap" id="q4">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 4 z 10</div>
+      <div class="otazka-text">Víte kolik vás stojí zaškolení jednoho nového pracovníka?</div>
+      <div class="otazka-kontext">Čas zkušených lidí, chyby nováčka, nižší výkon během zapracování, inzerce, výběrko. Celý součet od odchodu starého po plný výkon nového.</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyber(this,4,0)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Máme propočítáno.</strong> Víme přesně co nás stojí každý odchod.</div></div>
+        <div class="moznost" onclick="vyber(this,4,1)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Odhaduji.</strong> Ale celý součet jsem nikdy nepočítal přesně.</div></div>
+        <div class="moznost" onclick="vyber(this,4,2)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Nikdy jsem to nepočítal.</strong> Lidi se mění, nějak to zvládneme.</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav"><button class="btn-zpet" onclick="zpet(4)">Zpět</button><button class="btn-dal" id="dal4" disabled onclick="dal(4)">Další <span class="arrow"></span></button></div>
+  </div>
+
+  <div class="otazka-wrap" id="q5">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 5 z 10</div>
+      <div class="otazka-text">Kolik vás stojí jedna chyba od začátku do konce?</div>
+      <div class="otazka-kontext">Odhalení, oprava, komunikace se zákazníkem, případná reklamace, ztracený čas. Počítali jste to někdy celé?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyber(this,5,0)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Evidujeme a počítáme.</strong> Sledujeme náklady na chyby a reklamace.</div></div>
+        <div class="moznost" onclick="vyber(this,5,1)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Přibližně víme.</strong> Ale úplný součet jsme nikdy nepočítali.</div></div>
+        <div class="moznost" onclick="vyber(this,5,2)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Chyby se řeší operativně.</strong> Náklady na ně jsme nikdy nesčítali.</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav"><button class="btn-zpet" onclick="zpet(5)">Zpět</button><button class="btn-dal" id="dal5" disabled onclick="dal(5)">Další <span class="arrow"></span></button></div>
+  </div>
+
+  <div class="otazka-wrap" id="q6">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 6 z 10</div>
+      <div class="otazka-text">Co u vás funguje jen proto že to tak dělal někdo před deseti lety?</div>
+      <div class="otazka-kontext">Každá firma má postupy které nikdo nezpochybňuje. Prostě se to tak dělá. Víte o takových věcech u vás?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyber(this,6,0)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Pravidelně procesy přehodnocujeme.</strong> Ptáme se proč a měníme co nedává smysl.</div></div>
+        <div class="moznost" onclick="vyber(this,6,1)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Pár věcí mě napadá.</strong> Ale zatím jsme je neřešili.</div></div>
+        <div class="moznost" onclick="vyber(this,6,2)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Určitě takové věci máme.</strong> Ale jsme v tom tak ponořeni že je nevidíme.</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav"><button class="btn-zpet" onclick="zpet(6)">Zpět</button><button class="btn-dal" id="dal6" disabled onclick="dal(6)">Další <span class="arrow"></span></button></div>
+  </div>
+
+  <div class="otazka-wrap" id="q7">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 7 z 10</div>
+      <div class="otazka-text">Kdyby váš nejzkušenější člověk zítra odešel - co by se stalo?</div>
+      <div class="otazka-kontext">Ne kdy odejde - ale kdyby odešel zítra. Jak dlouho byste to přežili bez něj? Jsou jeho vědomosti někde sepsané?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyber(this,7,0)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Máme zastupitelnost vyřešenou.</strong> Postupy jsou zdokumentované, nový člověk se zaučí rychle.</div></div>
+        <div class="moznost" onclick="vyber(this,7,1)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Pár týdnů by to trvalo.</strong> Část věcí závisí na konkrétních lidech.</div></div>
+        <div class="moznost" onclick="vyber(this,7,2)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Byl by to velký problém.</strong> Sklad závisí na klíčových lidech a jejich paměti.</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav"><button class="btn-zpet" onclick="zpet(7)">Zpět</button><button class="btn-dal" id="dal7" disabled onclick="dal(7)">Další <span class="arrow"></span></button></div>
+  </div>
+
+  <div class="otazka-wrap" id="q8">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 8 z 10</div>
+      <div class="otazka-text">Kdy jste naposledy prošli celý proces vlastníma nohama?</div>
+      <div class="otazka-kontext">Ne v tabulce nebo z kanceláře - fyzicky. Krok za krokem jak to dělá váš pracovník každý den. Od příjmu po expedici.</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyber(this,8,0)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Dělám to pravidelně.</strong> Chodím do provozu a sleduji jak věci reálně fungují.</div></div>
+        <div class="moznost" onclick="vyber(this,8,1)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Občas.</strong> Ale ne systematicky a ne celý proces.</div></div>
+        <div class="moznost" onclick="vyber(this,8,2)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Dávno nebo nikdy.</strong> Vím jak to funguje z hlavy ale fyzicky jsem to neprošel.</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav"><button class="btn-zpet" onclick="zpet(8)">Zpět</button><button class="btn-dal" id="dal8" disabled onclick="dal(8)">Další <span class="arrow"></span></button></div>
+  </div>
+
+  <div class="otazka-wrap" id="q9">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 9 z 10</div>
+      <div class="otazka-text">Měříte výkon skladu, nebo jen řešíte že se nestíhá?</div>
+      <div class="otazka-kontext">Počet objednávek, chybovost, čas příjmu, čas vychystání, zpoždění. Máte čísla, nebo jen pocity?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyber(this,9,0)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Sledujeme klíčové ukazatele.</strong> Rozhodujeme se podle dat.</div></div>
+        <div class="moznost" onclick="vyber(this,9,1)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Pár čísel máme.</strong> Ale ne systematicky a ne pravidelně.</div></div>
+        <div class="moznost" onclick="vyber(this,9,2)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Jedeme na pocit.</strong> Výkon neměříme, řešíme že se nestíhá.</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav"><button class="btn-zpet" onclick="zpet(9)">Zpět</button><button class="btn-dal" id="dal9" disabled onclick="dal(9)">Další <span class="arrow"></span></button></div>
+  </div>
+
+  <div class="otazka-wrap" id="q10">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 10 z 10</div>
+      <div class="otazka-text">Kolik lidí u vás "hasí" každý den místo aby pracovali?</div>
+      <div class="otazka-kontext">Řeší výjimky, hledají informace, opravují chyby, komunikují co chybí. Je to jeden člověk? Tři? Víte to?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyber(this,10,0)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Víme to přesně.</strong> Hašení jsme zmapovali a aktivně ho snižujeme.</div></div>
+        <div class="moznost" onclick="vyber(this,10,1)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Přibližně tuším.</strong> Ale nikdy jsme to systematicky nesledovali.</div></div>
+        <div class="moznost" onclick="vyber(this,10,2)"><div class="moznost-dot"></div><div class="moznost-text"><strong>Je to tak nějak normální.</strong> Vždy bylo co řešit, považuji to za součást provozu.</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav"><button class="btn-zpet" onclick="zpet(10)">Zpět</button><button class="btn-dal" id="dal10" disabled onclick="zobrazVysledky()">Zobrazit výsledky <span class="arrow"></span></button></div>
+  </div>
+
+  <!-- VYSLEDKY -->
+  <div class="vysledky-wrap" id="vysledky">
+
+    <div class="skore-hero" id="skore-hero">
+      <div class="skore-cislo" id="skore-cislo">0<span class="skore-max">/20</span></div>
+      <div class="skore-label" id="skore-label"></div>
+      <div class="skore-popis" id="skore-popis"></div>
+    </div>
+
+    <div class="detail-panel">
+      <div class="detail-header">Co výsledky říkají</div>
+      <div id="detail-rows"></div>
+    </div>
+
+    <div class="detail-panel" id="co-dal-panel">
+      <div class="detail-header">Co s tím</div>
+      <div id="co-dal"></div>
+    </div>
+
+    <div class="cta-final">
+      <div class="cta-label">Další krok</div>
+      <h2>Výsledek vás překvapil?</h2>
+      <p>Pošlete mi ho a podíváme se na něj spolu. 30 minut, zdarma, bez závazku. Řekneme si co má smysl řešit jako první.</p>
+      <a href="https://calendly.com/tomickova-info/30min" target="_blank" class="btn-diagnostika">Chci 30min hovor zdarma</a>
+      <button class="btn-znovu" onclick="zacitZnovu()">Vyplnit znovu</button>
+      <a href="https://2f524664.sibforms.com/serve/MUIFAM4Y0lqN-wXuHDGgsTLu6pdCfwYzGU4Tt-ANbGBhyZ5fPtShiKTZSnH1HBmpIcGpAUfjnyeQy7EaXod7ob8DPGAf2tTaa2qdKd2du0luk3dyAedCW-AjUBjZr0HFOUz9yW0_lpRP8O7IvVHQtCJO96JXSAAG5UdGAgbpk-lpQW6-nRNpO-pjUhBV8quq9mdT7Kn_3Y_L6_EQ_Q==" target="_blank" class="btn-znovu">Poslat výsledek e-mailem</a>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="post-kviz">
+  <div class="post-kviz-inner">
+
+    <div class="tools-tip">
+      <strong>Chcete jít hlouběji?</strong>
+      <div class="tools-tip-row"><strong>Mini audit skladu:</strong>&nbsp;10 otázek které ukážou kde konkrétně ve skladu vznikají ztráty. <a href="https://audit.gabrielatomickova.cz" style="color:var(--gold-dark);font-weight:600;text-decoration:none;">&nbsp;Spustit audit</a></div>
+      <div class="tools-tip-row"><strong>Kalkulačka ztrát:</strong>&nbsp;zadejte 5 čísel a za 30 vteřin víte, kolik vás ztráty stojí v korunách. <a href="https://kalkulacka.gabrielatomickova.cz" style="color:var(--gold-dark);font-weight:600;text-decoration:none;">&nbsp;Spustit kalkulačku</a></div>
+    </div>
+
+    <div>
+      <div style="font-family:Poppins,sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dark);margin-bottom:16px;">Časté otázky</div>
+      <div class="faq-item">
+        <div class="faq-q">Musím zadat e-mail?</div>
+        <div class="faq-a">Ne. Kvíz je zdarma a spustíte ho rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Jaký je rozdíl mezi kvízem a mini auditem skladu?</div>
+        <div class="faq-a">Kvíz odhaluje slepá místa v přehledu: co nevíte, co neměříte, kde chybí čísla. Mini audit skladu hledá kde konkrétně vznikají ztráty v procesech.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Musím projít celý kvíz najednou?</div>
+        <div class="faq-a">Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte. 5 minut najdete vždy.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">Gabriela <span>Tomíčková</span>, AI a Procesní konzultant</div>
+  <div class="footer-legal">Příčná 49, Vrchlabí, IČO: 75905311 &nbsp;·&nbsp; <a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></div>
+</footer>
+
+<script>
+const BREVO_URL = 'https://2f524664.sibforms.com/serve/MUIFAM4Y0lqN-wXuHDGgsTLu6pdCfwYzGU4Tt-ANbGBhyZ5fPtShiKTZSnH1HBmpIcGpAUfjnyeQy7EaXod7ob8DPGAf2tTaa2qdKd2du0luk3dyAedCW-AjUBjZr0HFOUz9yW0_lpRP8O7IvVHQtCJO96JXSAAG5UdGAgbpk-lpQW6-nRNpO-pjUhBV8quq9mdT7Kn_3Y_L6_EQ_Q==';
+
+const OTAZKY_NAZVY = [
+  'Náklady na metr čtvereční',
+  'Sledování reálné práce',
+  'Přepisování dat',
+  'Náklady fluktuace',
+  'Náklady na chybu',
+  'Zastaralé postupy',
+  'Zastupitelnost lidí',
+  'Procházení procesu osobně',
+  'Měření výkonu',
+  'Hašení místo práce'
+];
+
+const TIPY = [
+  'Spočítejte co stojí metr čtvereční za měsíc. Pak se podívejte na místa kde leží zboží které se nehýbe. Každý nevyužitý metr je náklad který platíte každý měsíc.',
+  'Vyhraďte si jednou za čas půl hodiny a jen sledujte - bez telefonu, bez zasahování. Uvidíte věci které z kanceláře nikdy neuvidíte.',
+  'Zmapujte jeden den a vypište každý přepis dat. U každého se zeptejte - musí to dělat člověk? Jedno propojení dvou nástrojů může uvolnit hodiny týdně.',
+  'Spočítejte celý součet: inzerce + výběrko + čas zapracování + chyby nováčka + nižší výkon prvních měsíců. Číslo většinou překvapí a změní pohled na fluktuaci.',
+  'Zkuste si jednou sečíst náklady na jednu konkrétní chybu od začátku do konce. Čas, oprava, komunikace se zákazníkem. Výsledek změní priority.',
+  'Vyberte jeden postup který "se tak dělá" a zeptejte se proč. Pokud nikdo nezná odpověď, možná je čas se zamyslet jestli to má stále smysl.',
+  'Klíčoví lidé jsou vaše největší skryté riziko. Začněte s jedním procesem - popište ho tak aby ho zvládl nový člověk bez ptaní.',
+  'Projděte jeden celý proces fyzicky - od začátku do konce jak to dělá váš pracovník. Uvidíte místa která na papíře nevypadají jako problém.',
+  'Začněte s jedním ukazatelem - třeba počtem vychystaných objednávek za hodinu. Jen jedno číslo sledované pravidelně změní způsob rozhodování.',
+  'Spočítejte kolik hodin týdně strávíte vy nebo vaši vedoucí hašením. Pak se zeptejte co způsobuje že se stále stejné věci opakují.'
+];
+
+// Proc na tom zalezi - kratky manazersky kontext k tipu, index 0-9 = otazka 1-10
+const PROC_ZALEZI = [
+  'Bez tohoto čísla nepoznáte, jestli se vyplatí zmenšit sklad, přestavět ho, nebo nechat věci tak, jak jsou.',
+  'Bez pozorování snadno uvěříte, že provoz funguje, jak si myslíte, ne jak doopravdy vypadá.',
+  'Každý ruční přepis je čas navíc a riziko chyby, a většinou jde jednoduše propojit.',
+  'Bez tohoto čísla těžko rozhodnete, kolik se vyplatí investovat do zaučení, retence nebo zlepšení pracovních podmínek.',
+  'Dokud nevíte, kolik jedna chyba stojí, těžko poznáte, kolik se vyplatí investovat do jejího předcházení.',
+  'Postupy, které nikdo nezpochybňuje, jsou nejčastější místo, kde se ztrácí čas beze stopy.',
+  'Závislost na jednom člověku je riziko, které se projeví vždy v tu nejhorší možnou chvíli.',
+  'Z kanceláře nebo z tabulky vidíte jiný proces, než jaký doopravdy probíhá v provozu.',
+  'Bez čísel se rozhoduje podle pocitu, a pocit se těžko obhajuje před vedením i před sebou.',
+  'Dokud nevíte, kolik času hašení stojí, nepoznáte, jestli se vyplatí řešit příčinu, nebo dál hasit.'
+];
+
+// Kde uz dnes jde konkretni oblast zjistit v jinem zdarma nastroji Nastrojovny.
+// Jen nastroje s zivou verejnou adresou - 5x Proc, 5S, Casova studie a Kalkulacka m2
+// zatim vlastni domenu nemaji, proto tu zamerne nejsou.
+const CO_DAL_ODKAZY = {
+  2: { nazev: 'Měřič plýtvání Free', url: 'https://meric-plytvani-free.gabrielatomickova.cz' },
+  5: { nazev: 'Kalkulačka neviditelných ztrát', url: 'https://kalkulacka.gabrielatomickova.cz' },
+  7: { nazev: 'Montážní checklist', url: 'https://montaz.gabrielatomickova.cz' },
+  8: { nazev: 'Spaghetti diagram', url: 'https://spaghetti.gabrielatomickova.cz' }
+};
+
+const odpovedi = {};
+
+// Kviz se spusti rovnou, zadny email pred prvni otazkou.
+function spustitKviz() {
+  document.getElementById('email-brana').style.display = 'none';
+  document.getElementById('q1').classList.add('active');
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function vyber(el, q, body) {
+  el.closest('.moznosti').querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+  odpovedi[q] = body;
+  document.getElementById('dal' + q).disabled = false;
+  updateProgress();
+}
+
+function dal(q) {
+  document.getElementById('q' + q).classList.remove('active');
+  const next = document.getElementById('q' + (q + 1));
+  next.classList.add('active');
+  setTimeout(() => next.scrollIntoView({behavior:'smooth',block:'start'}), 50);
+  updateProgress();
+}
+
+function zpet(q) {
+  document.getElementById('q' + q).classList.remove('active');
+  const prev = document.getElementById('q' + (q - 1));
+  prev.classList.add('active');
+  setTimeout(() => prev.scrollIntoView({behavior:'smooth',block:'start'}), 50);
+}
+
+function updateProgress() {
+  const count = Object.keys(odpovedi).length;
+  document.getElementById('progress-fill').style.width = (count / 10 * 100) + '%';
+  document.getElementById('progress-count').textContent = count + ' / 10';
+}
+
+function zobrazVysledky() {
+  document.getElementById('q10').classList.remove('active');
+
+  const skore = Object.values(odpovedi).reduce((a,b) => a + b, 0);
+  const hero = document.getElementById('skore-hero');
+  const cislo = document.getElementById('skore-cislo');
+  const label = document.getElementById('skore-label');
+  const popis = document.getElementById('skore-popis');
+
+  cislo.innerHTML = skore + '<span class="skore-max">/20</span>';
+
+  if (skore <= 4) {
+    hero.style.background = '#2a7a4f';
+    label.textContent = 'Výborný přehled';
+    popis.textContent = 'Máte data a systémy. Vždy je prostor na zlepšení - ale základ je solid.';
+  } else if (skore <= 9) {
+    hero.style.background = '#d97706';
+    label.textContent = 'Přehled je, ale mezery jsou vidět';
+    popis.textContent = 'Část věcí sledujete, část jede na pocit. Systematičtější přístup by odhalil kde přesně vznikají ztráty.';
+  } else if (skore <= 14) {
+    hero.style.background = '#b45309';
+    label.textContent = 'Provoz funguje, přehled chybí';
+    popis.textContent = 'Firma jede - ale bez čísel a přehledu rozhodujete naslepo. Ztráty existují, jen je zatím nevidíte.';
+  } else {
+    hero.style.background = '#b91c1c';
+    label.textContent = 'Provoz řídí vás, ne vy provoz';
+    popis.textContent = 'Chybí přehled, měření i dokumentace. To co nevíte vás stojí čas a peníze každý den.';
+  }
+
+  // Detail radky
+  const rows = document.getElementById('detail-rows');
+  rows.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const b = odpovedi[i] || 0;
+    const barvy = ['#2a7a4f','#d97706','#b91c1c'];
+    const popisky = ['Máte přehled','Částečný přehled','Chybí přehled'];
+    const row = document.createElement('div');
+    row.className = 'detail-row';
+    row.innerHTML = `
+      <div class="detail-arr" style="background:${barvy[b]}"></div>
+      <div class="detail-text">
+        <strong>${OTAZKY_NAZVY[i-1]}</strong>
+        <span>${popisky[b]}</span>
+      </div>
+      <div class="detail-body" style="background:${barvy[b]}22;color:${barvy[b]}">${b === 0 ? '✓' : b === 1 ? '~' : '!'}</div>
+    `;
+    rows.appendChild(row);
+  }
+
+  // Co dal - tipy pro oblasti kde chybí přehled
+  const coDal = document.getElementById('co-dal');
+  const oblasti = [];
+  for (let i = 1; i <= 10; i++) {
+    if ((odpovedi[i] || 0) >= 1) {
+      oblasti.push({i, b: odpovedi[i]});
+    }
+  }
+  oblasti.sort((a,b) => b.b - a.b);
+  const top = oblasti.slice(0, 3);
+
+  if (top.length === 0) {
+    coDal.innerHTML = '<div style="padding:14px 18px;font-size:14px;color:var(--mid);">Všechny oblasti vypadají dobře. Hledejte rezervy v detailech a v pravidelném přehodnocování postupů.</div>';
+  } else {
+    coDal.innerHTML = top.map(({i}) => {
+      const odkaz = CO_DAL_ODKAZY[i];
+      const tlacitko = odkaz
+        ? `<a href="${odkaz.url}" target="_blank" style="display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:var(--gold-dark);text-decoration:none;">Zjistit teď: ${odkaz.nazev} →</a>`
+        : '';
+      return `
+      <div style="padding:14px 18px;border-bottom:1px solid #f5f5f5;">
+        <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:5px;">Zjistit: ${OTAZKY_NAZVY[i-1]}</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.7;">${TIPY[i-1]}</div>
+        <div style="font-size:12px;color:var(--light);line-height:1.6;margin-top:8px;"><strong style="color:var(--mid);">Proč na tom záleží:</strong> ${PROC_ZALEZI[i-1]}</div>
+        ${tlacitko}
+      </div>
+    `;
+    }).join('') + '<div style="padding:12px 18px;font-size:12px;color:var(--light);">Tipy pro vaše největší rezervy.</div>';
+  }
+
+  document.getElementById('vysledky').classList.add('active');
+  setTimeout(() => document.getElementById('vysledky').scrollIntoView({behavior:'smooth',block:'start'}), 50);
+}
+
+function zacitZnovu() {
+  Object.keys(odpovedi).forEach(k => delete odpovedi[k]);
+  document.querySelectorAll('.otazka-wrap,.vysledky-wrap').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
+  document.querySelectorAll('[id^=dal]').forEach(b => b.disabled = true);
+  document.getElementById('email-brana').style.display = 'block';
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+updateProgress();
+</script>
+
+<script>
+(function(){
+  var s = localStorage.getItem('cookies_souhlas');
+  if (s === 'ano') {
+    spustitGA();
+  } else if (s === null) {
+    document.getElementById('cookies-bar').style.display = 'flex';
+  }
+})();
+
+function spustitGA() {
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-JBFDH4G4VP';
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', 'G-JBFDH4G4VP');
+}
+
+function cookiesSouhlasit() {
+  localStorage.setItem('cookies_souhlas', 'ano');
+  document.getElementById('cookies-bar').style.display = 'none';
+  spustitGA();
+}
+
+function cookiesOdmitnout() {
+  localStorage.setItem('cookies_souhlas', 'ne');
+  document.getElementById('cookies-bar').style.display = 'none';
+}
+</script>
+</body>
+</html>
