@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+
+<meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini audit skladu, 10 otázek, 5 minut | Gabriela Tomíčková</title>
+  <meta name="description" content="10 otázek o vašem skladu. Za 5 minut víte, kde vám utíká čas a kapacita. Konkrétní tipy ihned na stránce, zdarma a bez e-mailu.">
+  <meta name="keywords" content="audit skladu, checklist sklad, optimalizace skladu, procesní audit zdarma, sklad kontrola, KAIZEN sklad">
+  <meta name="author" content="Gabriela Tomíčková">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Mini audit skladu, 10 otázek, 5 minut | Gabriela Tomíčková">
+  <meta property="og:description" content="10 otázek o vašem skladu. Za 5 minut víte, kde vám utíká čas a kapacita. Konkrétní tipy ihned na stránce.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="cs_CZ">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Mini audit skladu, 10 otázek, 5 minut | Gabriela Tomíčková">
+  <meta name="twitter:description" content="10 otázek o vašem skladu. Za 5 minut víte, kde vám utíká čas a kapacita. Konkrétní tipy ihned na stránce.">
+  <link rel="canonical" href="https://audit.gabrielatomickova.cz/">
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "Quiz",
+      "name": "Mini audit skladu, 10 otázek, 5 minut",
+      "description": "10 otázek pro rychlé odhalení slabých míst ve skladu. Konkrétní tipy pro 3 nejkritičtější oblasti ihned na stránce.",
+      "url": "https://audit.gabrielatomickova.cz",
+      "educationalLevel": "beginner",
+      "author": { "@type": "Person", "name": "Gabriela Tomíčková" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CZK" }
+    }
+  </script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b;
+  --gold-dark: #c48e10;
+  --gold-light: #fdf3d9;
+  --black: #000;
+  --dark: #111;
+  --mid: #545454;
+  --light: #a8a6a6;
+  --white: #fff;
+  --paper: #f5f4f0;
+  --border: #e2e2e2;
+  --green: #2a7a4f;
+  --green-light: #e8f5ee;
+  --amber: #d97706;
+  --amber-light: #fef3c7;
+  --red: #b91c1c;
+  --red-light: #fee2e2;
+  --blue: #2f6fed;
+  --blue-light: #eaf1fe;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:"DM Sans",sans-serif; background:var(--paper); color:var(--dark); line-height:1.7; }
+
+nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+.nav-brand { font-family:"Poppins",sans-serif; font-size:14px; font-weight:800; color:var(--black); }
+.nav-brand span { color:var(--gold); }
+.nav-cta { background:var(--gold); color:var(--black); font-size:13px; font-weight:600; padding:8px 20px; border-radius:4px; text-decoration:none; }
+.nav-cta:hover { background:var(--gold-dark); color:white; }
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{background:transparent;border:1px solid var(--border);color:var(--mid);font-size:12px;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9998;align-items:center;justify-content:center;padding:20px;}
+.modal-box{background:var(--white);border-radius:12px;max-width:420px;width:100%;padding:26px 24px;position:relative;}
+.modal-box-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.modal-box-head h3{font-family:"Poppins",sans-serif;font-size:18px;font-weight:800;color:var(--black);}
+.modal-box-close{background:none;border:none;font-size:22px;color:var(--light);cursor:pointer;line-height:1;padding:0 0 0 12px;}
+.modal-box-close:hover{color:var(--dark);}
+.modal-box p{font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:16px;}
+.modal-err{font-size:12px;min-height:16px;margin-bottom:8px;}
+.modal-box-link{font-size:12px;color:var(--light);text-align:center;margin-top:12px;}
+.modal-box-link a{color:var(--gold-dark);font-weight:600;text-decoration:none;}
+.btn-gold{background:var(--gold);color:var(--black);border:none;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;padding:12px 20px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.btn-gold:hover{background:var(--gold-dark);color:white;}
+
+/* HERO */
+.hero { background:var(--black); padding:56px 40px 48px; position:relative; overflow:hidden; }
+.hero::before { content:""; position:absolute; top:-80px; right:-80px; width:400px; height:400px; border-radius:50%; border:70px solid rgba(233,169,27,0.07); pointer-events:none; }
+.hero-inner { max-width:700px; margin:0 auto; position:relative; z-index:1; }
+.tool-badge { display:inline-block; background:rgba(233,169,27,0.15); border:1px solid rgba(233,169,27,0.3); color:var(--gold); font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:4px 12px; border-radius:2px; margin-bottom:20px; }
+.hero h1 { font-family:"Poppins",sans-serif; font-size:clamp(24px,4vw,40px); font-weight:900; color:var(--white); line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+.hero h1 em { color:var(--gold); font-style:normal; }
+.hero-sub { font-size:16px; color:rgba(255,255,255,0.55); max-width:560px; line-height:1.75; margin-bottom:24px; font-weight:300; }
+.hero-meta { display:flex; gap:20px; flex-wrap:wrap; }
+.hero-meta span { font-size:12px; color:rgba(255,255,255,0.35); display:flex; align-items:center; gap:6px; }
+.hero-meta span::before { content:"●"; color:var(--gold); font-size:7px; }
+
+/* PROGRESS NAV */
+.progress-nav { background:var(--white); border-bottom:1px solid var(--border); padding:16px 40px; }
+.progress-nav-inner { max-width:700px; margin:0 auto; display:flex; align-items:center; gap:12px; }
+.progress-nav-label { font-size:12px; color:var(--light); white-space:nowrap; }
+.progress-nav-bar { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.progress-nav-fill { height:100%; background:var(--gold); border-radius:2px; transition:width 0.4s ease; width:0%; }
+.progress-nav-count { font-family:"DM Mono",monospace; font-size:12px; color:var(--gold); white-space:nowrap; }
+
+/* MAIN */
+.main { max-width:700px; margin:0 auto; padding:40px 40px 80px; }
+
+/* OTAZKA */
+.otazka-wrap { display:none; animation:slideIn 0.3s ease; }
+.otazka-wrap.active { display:block; }
+@keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+
+.otazka-card { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px; margin-bottom:16px; }
+.otazka-num { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+.otazka-text { font-family:"Poppins",sans-serif; font-size:clamp(16px,2.5vw,20px); font-weight:700; color:var(--black); line-height:1.35; margin-bottom:8px; }
+.otazka-popis { font-size:14px; color:var(--mid); line-height:1.7; margin-bottom:20px; }
+
+.moznosti { display:flex; flex-direction:column; gap:8px; }
+.moznost {
+  display:flex; align-items:center; gap:14px;
+  padding:12px 16px;
+  border:2px solid var(--border);
+  border-radius:8px;
+  cursor:pointer;
+  transition:all 0.15s;
+  background:var(--paper);
+}
+.moznost:hover { border-color:var(--gold); background:var(--gold-light); }
+.moznost.selected { border-color:var(--gold); background:var(--gold-light); }
+.moznost-dot {
+  width:20px; height:20px; border-radius:50%;
+  border:2px solid var(--border);
+  flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.15s;
+}
+.moznost.selected .moznost-dot { background:var(--gold); border-color:var(--gold); }
+.moznost.selected .moznost-dot::after { content:""; width:8px; height:8px; border-radius:50%; background:white; display:block; }
+.moznost-label { font-size:14px; color:var(--dark); flex:1; }
+.moznost-body { font-weight:600; }
+.moznost-score {
+  font-family:"DM Mono",monospace;
+  font-size:11px; color:var(--light);
+  background:var(--border);
+  padding:2px 7px; border-radius:10px;
+  flex-shrink:0;
+}
+.moznost.selected .moznost-score { background:rgba(233,169,27,0.2); color:var(--gold-dark); }
+.moznost-nevim { border-style:dashed; }
+.moznost-nevim:hover { border-color:var(--blue); background:var(--blue-light); }
+.moznost-nevim.selected { border-color:var(--blue); background:var(--blue-light); }
+.moznost-nevim.selected .moznost-dot { background:var(--blue); border-color:var(--blue); }
+.moznost-nevim.selected .moznost-score { background:rgba(47,111,237,0.15); color:var(--blue); }
+
+.otazka-nav { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.btn-zpet { background:transparent; border:1px solid var(--border); color:var(--mid); font-family:"DM Sans",sans-serif; font-size:13px; font-weight:500; padding:11px 20px; border-radius:6px; cursor:pointer; transition:all 0.2s; }
+.btn-zpet:hover { border-color:var(--mid); color:var(--dark); }
+.btn-dal {
+  background:var(--gold); color:var(--black);
+  border:none; font-family:"DM Sans",sans-serif;
+  font-size:14px; font-weight:700;
+  padding:11px 28px; border-radius:6px;
+  cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; gap:8px;
+}
+.btn-dal:hover { background:var(--gold-dark); color:white; }
+.btn-dal:disabled { background:var(--border); color:var(--light); cursor:default; }
+.btn-dal .arrow { display:inline-block; width:16px; height:10px; background:currentColor; clip-path:polygon(0 0, 65% 0, 100% 50%, 65% 100%, 0 100%); }
+
+/* EMAIL BRANA */
+.email-brana { display:none; animation:slideIn 0.3s ease; }
+.email-brana.active { display:block; }
+.email-card { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:32px 28px; text-align:center; }
+.email-card h2 { font-family:"Poppins",sans-serif; font-size:22px; font-weight:800; color:var(--black); margin-bottom:10px; line-height:1.25; }
+.email-card p { font-size:15px; color:var(--mid); margin-bottom:24px; line-height:1.75; max-width:460px; margin-left:auto; margin-right:auto; }
+.email-input-row { display:flex; gap:10px; max-width:440px; margin:0 auto 10px; }
+.email-input {
+  flex:1; border:2px solid var(--border); border-radius:6px;
+  padding:12px 16px; font-family:"DM Sans",sans-serif;
+  font-size:14px; color:var(--dark); outline:none;
+  transition:border 0.2s; background:var(--paper);
+}
+.email-input:focus { border-color:var(--gold); background:white; }
+.btn-vysledky {
+  background:var(--gold); color:var(--black);
+  border:none; font-family:"DM Sans",sans-serif;
+  font-size:14px; font-weight:700;
+  padding:12px 22px; border-radius:6px;
+  cursor:pointer; transition:all 0.2s; white-space:nowrap;
+}
+.btn-vysledky:hover { background:var(--gold-dark); color:white; }
+.email-note { font-size:11px; color:var(--light); margin-top:8px; }
+.email-warn { font-size:12px; color:var(--red); margin-top:6px; display:none; }
+.email-warn.visible { display:block; }
+.email-loading { font-size:13px; color:var(--mid); margin-top:10px; display:none; }
+.email-loading.visible { display:block; }
+
+/* VYSLEDKY */
+.vysledky-wrap { display:none; animation:slideIn 0.3s ease; }
+.vysledky-wrap.active { display:block; }
+
+.skore-hero {
+  border-radius:12px; padding:32px 28px; text-align:center; margin-bottom:20px;
+  position:relative; overflow:hidden;
+}
+.skore-hero.zelena { background:var(--green); }
+.skore-hero.zluta { background:var(--amber); }
+.skore-hero.oranzova { background:#b45309; }
+.skore-hero.cervena { background:var(--red); }
+.skore-hero::after { content:""; position:absolute; bottom:-30px; right:-30px; width:160px; height:160px; border-radius:50%; border:30px solid rgba(255,255,255,0.1); }
+.skore-cislo { font-family:"Poppins",sans-serif; font-size:64px; font-weight:900; color:white; line-height:1; margin-bottom:8px; }
+.skore-max { font-size:18px; opacity:0.6; }
+.skore-label { font-family:"Poppins",sans-serif; font-size:18px; font-weight:700; color:white; margin-bottom:8px; }
+.skore-popis { font-size:14px; color:rgba(255,255,255,0.75); max-width:420px; margin:0 auto; line-height:1.7; }
+
+.vysledky-detail { background:var(--white); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:20px; }
+.vysledky-detail-header { padding:14px 20px; border-bottom:1px solid var(--border); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--mid); }
+.vysledek-row { display:flex; align-items:center; gap:12px; padding:12px 20px; border-bottom:1px solid #f5f5f5; }
+.vysledek-row:last-child { border-bottom:none; }
+.vysledek-arrow { width:20px; height:13px; background:var(--gold); clip-path:polygon(0 0, 62% 0, 100% 50%, 62% 100%, 0 100%); flex-shrink:0; }
+.vysledek-arrow.cervena { background:var(--red); }
+.vysledek-arrow.zluta { background:var(--amber); }
+.vysledek-arrow.zelena { background:var(--green); }
+.vysledek-text { flex:1; font-size:13px; color:var(--dark); line-height:1.5; }
+.vysledek-text strong { display:block; font-weight:600; margin-bottom:1px; }
+.vysledek-text span { font-size:11px; color:var(--light); }
+.vysledek-body { font-family:"DM Mono",monospace; font-size:12px; font-weight:500; }
+.vysledek-body.b0 { color:var(--green); }
+.vysledek-body.b1 { color:var(--amber); }
+.vysledek-body.b2 { color:#b45309; }
+.vysledek-body.b3 { color:var(--red); }
+.vysledek-arrow.modra { background:var(--blue); }
+.vysledek-body.bx { color:var(--blue); }
+
+/* CTA FINAL */
+.cta-final { background:var(--black); border-radius:12px; padding:32px 28px; }
+.cta-final-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+.cta-final h2 { font-family:"Poppins",sans-serif; font-size:clamp(18px,2.5vw,24px); font-weight:800; color:white; line-height:1.25; margin-bottom:14px; }
+.cta-final p { font-size:14px; color:rgba(255,255,255,0.55); line-height:1.75; margin-bottom:20px; max-width:480px; }
+.cta-final-btns { display:flex; gap:12px; flex-wrap:wrap; }
+.btn-diagnostika {
+  background:var(--gold); color:var(--black);
+  font-family:"DM Sans",sans-serif; font-size:14px; font-weight:700;
+  padding:13px 24px; border-radius:4px; text-decoration:none;
+  transition:all 0.2s; display:inline-block;
+}
+.btn-diagnostika:hover { background:var(--gold-dark); color:white; }
+.btn-znovu { background:transparent; color:rgba(255,255,255,0.5); font-family:"DM Sans",sans-serif; font-size:13px; font-weight:500; padding:13px 20px; border-radius:4px; border:1px solid rgba(255,255,255,0.15); cursor:pointer; transition:all 0.2s; }
+.btn-znovu:hover { color:var(--gold); border-color:var(--gold); }
+
+footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:60px; }
+.footer-brand { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:rgba(255,255,255,0.4); }
+.footer-brand span { color:var(--gold); }
+.footer-legal { font-size:11px; color:rgba(255,255,255,0.2); }
+.footer-legal a { color:rgba(255,255,255,0.2); text-decoration:none; }
+.footer-legal a:hover { color:var(--gold); }
+
+@media (max-width:600px) {
+  nav, .progress-nav, .main { padding-left:20px; padding-right:20px; }
+  .hero { padding:40px 20px 36px; }
+  .email-input-row { flex-direction:column; }
+  footer { padding:20px; flex-direction:column; text-align:center; }
+}
+
+.top3-sekce { background:var(--white); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:20px; }
+.top3-header { padding:14px 20px; border-bottom:1px solid var(--border); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--mid); display:flex; align-items:center; gap:8px; }
+.top3-header .kat-arrow-small { display:inline-block; width:16px; height:10px; background:var(--red); clip-path:polygon(0 0, 62% 0, 100% 50%, 62% 100%, 0 100%); flex-shrink:0; }
+.tip-row { padding:16px 20px; border-bottom:1px solid #f5f5f5; }
+.tip-row:last-child { border-bottom:none; }
+.tip-row-top { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
+.tip-cislo { font-family:"DM Mono",monospace; font-size:11px; font-weight:500; color:var(--white); background:var(--red); padding:2px 7px; border-radius:3px; flex-shrink:0; margin-top:1px; }
+.tip-otazka { font-size:13px; font-weight:600; color:var(--dark); line-height:1.4; }
+.tip-text { font-size:13px; color:var(--mid); line-height:1.75; padding-left:30px; }
+.tip-first-step { font-size:13px; color:var(--dark); line-height:1.6; padding-left:30px; margin-top:8px; }
+.tip-first-step strong { color:var(--gold-dark); }
+
+/* NEMERENO */
+.nemereno-sekce { background:var(--white); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:20px; }
+.nemereno-header { padding:14px 20px; border-bottom:1px solid var(--border); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--mid); display:flex; align-items:center; gap:8px; }
+.nemereno-header .kat-arrow-small.modra { background:var(--blue); }
+.nemereno-row { padding:16px 20px; border-bottom:1px solid #f5f5f5; }
+.nemereno-row:last-child { border-bottom:none; }
+.nemereno-row-top { display:flex; align-items:flex-start; gap:10px; margin-bottom:6px; }
+.nemereno-znacka { font-family:"DM Mono",monospace; font-size:11px; font-weight:500; color:white; background:var(--blue); padding:2px 7px; border-radius:3px; flex-shrink:0; margin-top:1px; }
+.nemereno-otazka { font-size:13px; font-weight:600; color:var(--dark); line-height:1.4; }
+.nemereno-text { font-size:13px; color:var(--mid); line-height:1.7; padding-left:30px; }
+.nemereno-text strong { color:var(--blue); }
+
+
+@media print {
+  nav, .hero, .otazky-wrap, .cta-final-btns, .cookies-bar { display:none !important; }
+  body { background:white; }
+  .vysledky-wrap { display:block !important; }
+  .skore-hero { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .vysledky-detail { break-inside:avoid; }
+  @page { margin:20mm; }
+}
+
+/* CONTENT BLOCK - příběh, pro koho, jak funguje */
+.content-block { background:var(--white); border-bottom:1px solid var(--border); padding:40px; }
+.content-inner { max-width:700px; margin:0 auto; display:flex; flex-direction:column; gap:28px; }
+.story-block { background:var(--paper); border-radius:12px; padding:28px 32px; border-left:4px solid var(--gold); }
+.story-title { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:var(--dark); margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
+.story-block p { font-size:14px; color:var(--mid); line-height:1.75; margin-bottom:10px; }
+.story-block p:last-of-type { margin-bottom:0; }
+.trust-line { font-size:13px; color:var(--light); font-style:italic; border-top:1px solid var(--border); margin-top:16px; padding-top:14px; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.content-card { background:var(--paper); border:1px solid var(--border); border-radius:12px; padding:24px; }
+.content-card-title { font-family:"Poppins",sans-serif; font-size:12px; font-weight:700; color:var(--dark); margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
+.check-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.check-list li { font-size:14px; color:var(--mid); display:flex; gap:10px; align-items:flex-start; line-height:1.6; }
+.check-list li::before { content:"→"; color:var(--gold); font-weight:700; flex-shrink:0; margin-top:1px; }
+.steps-list { display:flex; flex-direction:column; gap:12px; }
+.step-item { display:flex; gap:12px; align-items:flex-start; }
+.step-num { width:22px; height:22px; border-radius:50%; background:var(--gold); color:#1a1000; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+.step-item > div:last-child { font-size:13px; color:var(--mid); line-height:1.65; }
+.no-need-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.no-need-item { font-size:14px; color:var(--mid); display:flex; gap:8px; align-items:center; }
+.no-need-item::before { content:"✕"; color:var(--light); font-size:11px; }
+.time-note { font-size:14px; color:var(--dark); font-weight:600; }
+
+/* POST SEKCE - FAQ, další nástroje */
+.post-audit { background:var(--white); border-top:1px solid var(--border); padding:40px; }
+.post-audit-inner { max-width:700px; margin:0 auto; display:flex; flex-direction:column; gap:28px; }
+.faq-block {}
+.faq-item { border-bottom:1px solid var(--border); padding:16px 0; }
+.faq-item:first-child { padding-top:0; }
+.faq-item:last-child { border-bottom:none; }
+.faq-q { font-size:14px; font-weight:600; color:var(--dark); margin-bottom:6px; }
+.faq-a { font-size:13px; color:var(--mid); line-height:1.7; }
+.tools-tip { background:var(--gold-light); border:1px solid rgba(233,169,27,0.3); border-radius:12px; padding:24px; }
+.tools-tip strong { font-family:"Poppins",sans-serif; font-size:14px; font-weight:700; color:var(--dark); display:block; margin-bottom:12px; }
+.tools-tip-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; font-size:13px; color:var(--mid); line-height:1.6; }
+.tools-tip-row::before { content:"→"; color:var(--gold); font-weight:700; flex-shrink:0; margin-top:1px; }
+.tools-tip-row:last-child { margin-bottom:0; }
+
+@media (max-width:600px) {
+  .two-col { grid-template-columns:1fr; }
+  .no-need-grid { grid-template-columns:1fr; }
+  .content-block, .post-audit { padding:24px 20px; }
+}
+</style>
+
+<style id="cookies-css">
+.cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
+.cookies-bar p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin:0;flex:1;min-width:200px;}
+.cookies-bar a{color:#e9a91b;text-decoration:none;}
+.cookies-bar a:hover{text-decoration:underline;}
+.cookies-btns{display:flex;gap:8px;flex-shrink:0;}
+.cookies-ok{background:#e9a91b;color:#000;border:none;border-radius:4px;padding:8px 18px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.cookies-ok:hover{background:#c48e10;}
+.cookies-no{background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:8px 14px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;}
+.cookies-no:hover{color:rgba(255,255,255,.7);}
+</style>
+</head>
+<body>
+
+<div class="cookies-bar" id="cookies-bar" style="display:none;">
+  <p>Tento web používá analytické cookies (Google Analytics) pro měření návštěvnosti. <a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></p>
+  <div class="cookies-btns">
+    <button class="cookies-no" onclick="cookiesOdmitnout()">Odmítnout</button>
+    <button class="cookies-ok" onclick="cookiesSouhlasit()">Souhlasím</button>
+  </div>
+</div>
+
+<nav>
+  <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;">Gabriela <span>Tomíčková</span></a>
+  <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+  </div>
+</nav>
+
+<div class="modal-overlay" id="modal-pro">
+  <div class="modal-box">
+    <div class="modal-box-head">
+      <h3>Odemknout Pro</h3>
+      <button class="modal-box-close" onclick="zavritModalPro()">×</button>
+    </div>
+    <p>Pro verze uloží tenhle výsledek do vašeho účtu. Audit pak stačí za čas zopakovat a hned uvidíte, jestli se stav skladu zlepšuje, nebo je stejný. Samotný audit zůstává navždy zdarma, bez přihlášení.</p>
+    <div class="modal-err" id="pro-err" style="color:var(--mid);"></div>
+    <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
+    <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc</a></div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="tool-badge">Pro vedoucí skladu s týmem 3 až 30 lidí</div>
+    <h1>Za 5 minut víte, kde váš sklad<br><em>ztrácí čas, lidi a kapacitu.</em></h1>
+    <p class="hero-sub">10 otázek ze skutečného provozu. Bez teorie, bez přípravy. Konkrétní tipy pro 3 nejkritičtější oblasti ihned na stránce.</p>
+    <div class="hero-meta">
+      <span>10 otázek</span>
+      <span>5 minut</span>
+      <span>Výsledek ihned</span>
+    </div>
+  </div>
+</div>
+
+<div class="content-block">
+  <div class="content-inner">
+
+    <div class="story-block">
+      <div class="story-title">Jak to vypadá v praxi?</div>
+      <p>Petr vedl sklad v Hradci. 12 lidí, příjem zboží každý den, dva až tři kamiony týdně. Stěžoval si, že lidi nestíhají. Uvažoval o posilách.</p>
+      <p>Audit odhalil dva problémy. Při příjmu kamionu nebylo jasné, kdo kontroluje zboží a kdo ho zaskladňuje. V praxi to dělal vždy ten, kdo byl zrovna volný. Zboží proto čekalo na zaskladnění průměrně 2,5 hodiny po vyložení, leželo na rampě a blokovalo provoz.</p>
+      <p>Druhý problém: výjimky. Poškozené zboží, chybějící položky, nesouhlasící množství. Žádný postup, každý to řešil jinak.</p>
+      <p>Jedno pravidlo pro příjem zkrátilo dobu příjmu kamionu ze 3 hodin na 55 minut. Dva lidé, každý kamion, úspora skoro 2 hodiny práce. Při 10 kamiónech za měsíc to dělá 480 hodin ročně, při 300 Kč nákladu na osobu za hodinu skoro 145 000 Kč. Tři měsíce práce jednoho člověka, které sklad každý rok ztrácel na chaotickém příjmu.</p>
+      <p>Posily nepřišly. Čas se našel jinde.</p>
+      <div class="trust-line">Otázky v auditu vycházejí z kontrolních bodů, které jsem procházela ručně ve skladech různého charakteru. Nic vymyšleného, jen to, co v provozu skutečně bolí.</div>
+    </div>
+
+    <div class="two-col">
+      <div class="content-card">
+        <div class="content-card-title">Hodí se vám to, pokud:</div>
+        <ul class="check-list">
+          <li>Máte pocit, že někde ztrácíte čas, ale nevíte přesně kde</li>
+          <li>Lidi jsou v napětí, každý řeší věci jinak, pořád se na něco ptají nebo čekají na rozhodnutí</li>
+          <li>Chcete přijít za vedením nebo majitelem s konkrétním zjištěním, ne s pocitem</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <div class="content-card-title">Tři kroky, žádná věda:</div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div>Spustíte audit rovnou, e-mail je nepovinný. Žádná příprava, žádné podklady.</div></div>
+          <div class="step-item"><div class="step-num">2</div><div>Odpovíte na 10 otázek ze svého provozu. Většinou jedno kliknutí.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div>Dostanete skóre a konkrétní tipy pro 3 oblasti, kde to bolí nejvíc.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <div class="content-card-title">Co k tomu nepotřebujete:</div>
+      <div class="no-need-grid">
+        <div class="no-need-item">Konzultanta ani poradce</div>
+        <div class="no-need-item">Přípravu ani podklady</div>
+        <div class="no-need-item">Přesná data ze systému</div>
+        <div class="no-need-item">Zkušenosti s KAIZEN</div>
+      </div>
+      <div class="time-note">Stačí znát svůj sklad a 5 minut klidu.</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="progress-nav">
+  <div class="progress-nav-inner">
+    <span class="progress-nav-label">Postup</span>
+    <div class="progress-nav-bar"><div class="progress-nav-fill" id="progress-fill"></div></div>
+    <span class="progress-nav-count" id="progress-count">0 / 10</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- OTAZKY -->
+  <!-- KROK 0: JEDNO TLACITKO, ZADNY EMAIL -->
+  <div class="otazka-wrap active" id="q0">
+    <div class="otazka-card" style="text-align:center;padding:36px 28px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:12px;">Než začneme</div>
+      <h2 style="font-family:Poppins,sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--black);margin-bottom:12px;line-height:1.25;">Spusťte audit</h2>
+      <p style="font-size:15px;color:var(--mid);margin-bottom:28px;line-height:1.75;max-width:420px;margin-left:auto;margin-right:auto;">10 otázek, 5 minut. Výsledek s konkrétními tipy uvidíte hned na stránce.</p>
+      <div style="max-width:420px;margin:0 auto;">
+        <button onclick="spustitAudit()" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:var(--black);font-family:Poppins,sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:6px;border:none;cursor:pointer;width:100%;">
+          Začít audit zdarma
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="otazka-wrap" id="q1">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 1 z 10</div>
+      <div class="otazka-text">Víte, kde přesně zboží leží?</div>
+      <div class="otazka-popis">Sedí systém s realitou? Nebo existují "dočasná" odkládací místa a zboží se občas hledá?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyberMoznost(this,1,0)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Máme pod kontrolou.</span> Systém sedí, zboží se nehledá.</div><div class="moznost-score">0 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,1,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Občas problém.</span> Někdy se něco nenajde nebo nesedí.</div><div class="moznost-score">1 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,1,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Častý problém.</span> Odkládací místa existují, zmatek občas.</div><div class="moznost-score">2 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,1,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Bolí nás to každý týden.</span> Hledání zboží je běžná situace.</div><div class="moznost-score">3 b</div></div>
+        <div class="moznost moznost-nevim" onclick="vyberNevim(this,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Nevím / nemáme data.</span> Tohle se dnes vůbec nesleduje.</div><div class="moznost-score">?</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav">
+      <div></div>
+      <button class="btn-dal" id="dal1" disabled onclick="dalsiOtazka(1)">Další <span class="arrow"></span></button>
+    </div>
+  </div>
+
+  <div class="otazka-wrap" id="q2">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 2 z 10</div>
+      <div class="otazka-text">Nechodí lidé ve skladu zbytečně kilometry navíc?</div>
+      <div class="otazka-popis">Je zboží rozmístěno rozumně? Nebo lidé při vychystávání objednávek zbytečně pěšky kříží celý sklad?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyberMoznost(this,2,0)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Máme pod kontrolou.</span> Rozmístění odpovídá obrátce, trasy jsou krátké.</div><div class="moznost-score">0 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,2,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Občas problém.</span> Někdy zbytečná chůze, ale není to velké téma.</div><div class="moznost-score">1 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,2,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Častý problém.</span> Rozmístění je historické, ne praktické.</div><div class="moznost-score">2 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,2,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Bolí nás to každý týden.</span> Lidé chodí zbytečně hodně, je to vidět.</div><div class="moznost-score">3 b</div></div>
+        <div class="moznost moznost-nevim" onclick="vyberNevim(this,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Nevím / nemáme data.</span> Tohle se dnes vůbec nesleduje.</div><div class="moznost-score">?</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav">
+      <button class="btn-zpet" onclick="zpetOtazka(2)">Zpět</button>
+      <button class="btn-dal" id="dal2" disabled onclick="dalsiOtazka(2)">Další <span class="arrow"></span></button>
+    </div>
+  </div>
+
+  <div class="otazka-wrap" id="q3">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 3 z 10</div>
+      <div class="otazka-text">Funguje příjem zboží bez chaosu?</div>
+      <div class="otazka-popis">Kontrola dodávek, zaskladnění, chyby na vstupu. Nebo zboží leží na příjmu a blokuje provoz?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyberMoznost(this,3,0)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Máme pod kontrolou.</span> Příjem je rychlý, zboží jde ihned na místo.</div><div class="moznost-score">0 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,3,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Občas problém.</span> Někdy se zboží zpožděně zaskladní nebo se chyba přehlédne.</div><div class="moznost-score">1 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,3,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Častý problém.</span> Příjem bývá pomalý nebo chaotický.</div><div class="moznost-score">2 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,3,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Bolí nás to každý týden.</span> Chyby na vstupu se pak řeší celý týden.</div><div class="moznost-score">3 b</div></div>
+        <div class="moznost moznost-nevim" onclick="vyberNevim(this,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Nevím / nemáme data.</span> Tohle se dnes vůbec nesleduje.</div><div class="moznost-score">?</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav">
+      <button class="btn-zpet" onclick="zpetOtazka(3)">Zpět</button>
+      <button class="btn-dal" id="dal3" disabled onclick="dalsiOtazka(3)">Další <span class="arrow"></span></button>
+    </div>
+  </div>
+
+  <div class="otazka-wrap" id="q4">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 4 z 10</div>
+      <div class="otazka-text">Kolik chyb vzniká při vychystávání?</div>
+      <div class="otazka-popis">Záměny položek, špatné počty, chybějící kontrola před balením. Jak často se to stává?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyberMoznost(this,4,0)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Máme pod kontrolou.</span> Chyby jsou výjimečné a rychle se vyřeší.</div><div class="moznost-score">0 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,4,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Občas problém.</span> Chyba jednou za čas, zákazník si občas stěžuje.</div><div class="moznost-score">1 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,4,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Častý problém.</span> Chyby se řeší pravidelně, přepracování je běžné.</div><div class="moznost-score">2 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,4,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Bolí nás to každý týden.</span> Chyby ve vychystávání jsou velké téma.</div><div class="moznost-score">3 b</div></div>
+        <div class="moznost moznost-nevim" onclick="vyberNevim(this,4)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Nevím / nemáme data.</span> Tohle se dnes vůbec nesleduje.</div><div class="moznost-score">?</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav">
+      <button class="btn-zpet" onclick="zpetOtazka(4)">Zpět</button>
+      <button class="btn-dal" id="dal4" disabled onclick="dalsiOtazka(4)">Další <span class="arrow"></span></button>
+    </div>
+  </div>
+
+  <div class="otazka-wrap" id="q5">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 5 z 10</div>
+      <div class="otazka-text">Nečeká se zbytečně mezi kroky?</div>
+      <div class="otazka-popis">Zboží čeká na příjem, skladník čeká na informaci, expedice čeká na štítek nebo fakturu. Jak moc čekáte?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyberMoznost(this,5,0)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Máme pod kontrolou.</span> Tok práce plyne, čekání je minimum.</div><div class="moznost-score">0 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,5,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Občas problém.</span> Někdy se čeká, ale jde to řešit.</div><div class="moznost-score">1 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,5,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Častý problém.</span> Čekání mezi kroky se opakuje pravidelně.</div><div class="moznost-score">2 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,5,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Bolí nás to každý týden.</span> Prostoje a čekání jsou viditelná ztráta každý den.</div><div class="moznost-score">3 b</div></div>
+        <div class="moznost moznost-nevim" onclick="vyberNevim(this,5)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Nevím / nemáme data.</span> Tohle se dnes vůbec nesleduje.</div><div class="moznost-score">?</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav">
+      <button class="btn-zpet" onclick="zpetOtazka(5)">Zpět</button>
+      <button class="btn-dal" id="dal5" disabled onclick="dalsiOtazka(5)">Další <span class="arrow"></span></button>
+    </div>
+  </div>
+
+  <div class="otazka-wrap" id="q6">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 6 z 10</div>
+      <div class="otazka-text">Přepisují se stejná data vícekrát?</div>
+      <div class="otazka-popis">Objednávky, faktury, dodací listy, tabulky. Kolikrát se stejná informace zadá ručně na různá místa?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyberMoznost(this,6,0)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Máme pod kontrolou.</span> Data tečou systémem, ruční přepisy jsou minimum.</div><div class="moznost-score">0 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,6,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Občas problém.</span> Někde se ještě přepisuje, ale není to velká zátěž.</div><div class="moznost-score">1 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,6,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Častý problém.</span> Ruční přepisy jsou součástí denní rutiny.</div><div class="moznost-score">2 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,6,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Bolí nás to každý týden.</span> Přepisování bere hodiny týdně a chyby jsou časté.</div><div class="moznost-score">3 b</div></div>
+        <div class="moznost moznost-nevim" onclick="vyberNevim(this,6)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Nevím / nemáme data.</span> Tohle se dnes vůbec nesleduje.</div><div class="moznost-score">?</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav">
+      <button class="btn-zpet" onclick="zpetOtazka(6)">Zpět</button>
+      <button class="btn-dal" id="dal6" disabled onclick="dalsiOtazka(6)">Další <span class="arrow"></span></button>
+    </div>
+  </div>
+
+  <div class="otazka-wrap" id="q7">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 7 z 10</div>
+      <div class="otazka-text">Máte jasná pravidla pro výjimky?</div>
+      <div class="otazka-popis">Co se stane, když něco chybí, přijde poškozené, nesedí počet nebo zákazník chce expres dodávku?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyberMoznost(this,7,0)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Máme pod kontrolou.</span> Postupy pro výjimky existují a lidé je znají.</div><div class="moznost-score">0 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,7,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Občas problém.</span> Postupy jsou, ale ne vždy se dodržují.</div><div class="moznost-score">1 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,7,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Častý problém.</span> Výjimky se řeší improvizací, každý to dělá jinak.</div><div class="moznost-score">2 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,7,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Bolí nás to každý týden.</span> Výjimky vždy končí u vedení nebo způsobí chaos.</div><div class="moznost-score">3 b</div></div>
+        <div class="moznost moznost-nevim" onclick="vyberNevim(this,7)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Nevím / nemáme data.</span> Tohle se dnes vůbec nesleduje.</div><div class="moznost-score">?</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav">
+      <button class="btn-zpet" onclick="zpetOtazka(7)">Zpět</button>
+      <button class="btn-dal" id="dal7" disabled onclick="dalsiOtazka(7)">Další <span class="arrow"></span></button>
+    </div>
+  </div>
+
+  <div class="otazka-wrap" id="q8">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 8 z 10</div>
+      <div class="otazka-text">Víte, kde vznikají reklamace a opravy?</div>
+      <div class="otazka-popis">Chyby se jen hasí, nebo se hledá jejich příčina? Víte kde a proč vznikají nejčastěji?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyberMoznost(this,8,0)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Máme pod kontrolou.</span> Sledujeme příčiny a systematicky je odstraňujeme.</div><div class="moznost-score">0 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,8,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Občas problém.</span> Víme přibližně kde, ale řešení bývá spíš hasící.</div><div class="moznost-score">1 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,8,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Častý problém.</span> Reklamace řešíme operativně, příčiny moc nehledáme.</div><div class="moznost-score">2 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,8,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Bolí nás to každý týden.</span> Reklamace jsou velká zátěž a neustále se opakují.</div><div class="moznost-score">3 b</div></div>
+        <div class="moznost moznost-nevim" onclick="vyberNevim(this,8)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Nevím / nemáme data.</span> Tohle se dnes vůbec nesleduje.</div><div class="moznost-score">?</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav">
+      <button class="btn-zpet" onclick="zpetOtazka(8)">Zpět</button>
+      <button class="btn-dal" id="dal8" disabled onclick="dalsiOtazka(8)">Další <span class="arrow"></span></button>
+    </div>
+  </div>
+
+  <div class="otazka-wrap" id="q9">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 9 z 10</div>
+      <div class="otazka-text">Jsou postupy jasné i bez "starých mazáků"?</div>
+      <div class="otazka-popis">Funguje sklad podle systému, nebo podle paměti zkušených lidí? Co by se stalo, kdyby odešli?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyberMoznost(this,9,0)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Máme pod kontrolou.</span> Postupy jsou zdokumentované, nový člověk se zaučí rychle.</div><div class="moznost-score">0 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,9,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Občas problém.</span> Většina věcí je jasná, ale pár věcí závisí na konkrétních lidech.</div><div class="moznost-score">1 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,9,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Častý problém.</span> Hodně věcí je jen v hlavách lidí, předání trvá měsíce.</div><div class="moznost-score">2 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,9,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Bolí nás to každý týden.</span> Sklad by se bez klíčových lidí zastavil.</div><div class="moznost-score">3 b</div></div>
+        <div class="moznost moznost-nevim" onclick="vyberNevim(this,9)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Nevím / nemáme data.</span> Tohle se dnes vůbec nesleduje.</div><div class="moznost-score">?</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav">
+      <button class="btn-zpet" onclick="zpetOtazka(9)">Zpět</button>
+      <button class="btn-dal" id="dal9" disabled onclick="dalsiOtazka(9)">Další <span class="arrow"></span></button>
+    </div>
+  </div>
+
+  <div class="otazka-wrap" id="q10">
+    <div class="otazka-card">
+      <div class="otazka-num">Otázka 10 z 10</div>
+      <div class="otazka-text">Měříte výkon skladu, nebo jen řešíte "že se to nestíhá"?</div>
+      <div class="otazka-popis">Počet objednávek, chyby, čas příjmu, čas vychystání, zpoždění. Máte čísla, nebo jen pocity?</div>
+      <div class="moznosti">
+        <div class="moznost" onclick="vyberMoznost(this,10,0)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Máme pod kontrolou.</span> Sledujeme klíčové ukazatele a rozhodujeme se podle dat.</div><div class="moznost-score">0 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,10,1)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Občas problém.</span> Pár čísel máme, ale ne systematicky.</div><div class="moznost-score">1 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,10,2)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Častý problém.</span> Výkon skoro neměříme, jede se na pocit.</div><div class="moznost-score">2 b</div></div>
+        <div class="moznost" onclick="vyberMoznost(this,10,3)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Bolí nás to každý týden.</span> Nevíme co přesně haváríme, jen že se nestíhá.</div><div class="moznost-score">3 b</div></div>
+        <div class="moznost moznost-nevim" onclick="vyberNevim(this,10)"><div class="moznost-dot"></div><div class="moznost-label"><span class="moznost-body">Nevím / nemáme data.</span> Tohle se dnes vůbec nesleduje.</div><div class="moznost-score">?</div></div>
+      </div>
+    </div>
+    <div class="otazka-nav">
+      <button class="btn-zpet" onclick="zpetOtazka(10)">Zpět</button>
+      <button class="btn-dal" id="dal10" disabled onclick="zobrazVysledkyFinale()">Zobrazit výsledky <span class="arrow"></span></button>
+    </div>
+  </div>
+
+  <!-- VYSLEDKY -->
+  <div class="vysledky-wrap" id="vysledky">
+    <div class="skore-hero" id="skore-hero">
+      <div class="skore-cislo" id="skore-cislo">0<span class="skore-max">/30</span></div>
+      <div class="skore-label" id="skore-label"></div>
+      <div class="skore-popis" id="skore-popis"></div>
+    </div>
+
+    <div class="vysledky-detail">
+      <div class="vysledky-detail-header">Přehled odpovědí</div>
+      <div id="vysledky-rows"></div>
+    </div>
+
+    <div class="top3-sekce" id="top3-wrap" style="display:none;">
+      <div class="top3-header">
+        <span class="kat-arrow-small"></span>
+        Kde ztrácíte nejvíc - konkrétní tipy
+      </div>
+      <div id="top3-rows"></div>
+    </div>
+
+    <div class="nemereno-sekce" id="nemereno-wrap" style="display:none;">
+      <div class="nemereno-header">
+        <span class="kat-arrow-small modra"></span>
+        Nevíte a chcete zjistit
+      </div>
+      <div id="nemereno-rows"></div>
+    </div>
+
+    <div class="vysledky-detail" id="historie-panel">
+      <div class="vysledky-detail-header">Historie auditů</div>
+      <div id="historie-zamceno" style="padding:18px 20px;">
+        <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Pro verze uloží tenhle výsledek do vašeho účtu. Audit stačí za čas zopakovat a uvidíte, jestli se stav skladu zlepšuje.</p>
+        <button class="btn-gold" style="width:100%;" onclick="otevritModalPro()">Odemknout Pro</button>
+      </div>
+      <div id="historie-obsah" style="display:none;"></div>
+    </div>
+
+    <div class="cta-final">
+      <div class="cta-final-label">Další krok</div>
+      <h2>Výsledek vás překvapil?</h2>
+      <p>Pošlete mi skóre a podíváme se na něj spolu. 30 minut, zdarma, bez závazku. Řekneme si, co má smysl řešit jako první a jak na to.</p>
+      <div class="cta-final-btns">
+        <a href="https://calendly.com/tomickova-info/30min" target="_blank" class="btn-diagnostika">Chci 30min hovor zdarma</a>
+        <button class="btn-znovu" onclick="window.print()">Vytisknout výsledky</button>
+        <button class="btn-znovu" onclick="zacitZnovu()">Vyplnit znovu</button>
+        <a href="https://2f524664.sibforms.com/serve/MUIFADBV1wG0TwfPwo6aLvF8QiCGo6beKuaY7Y_J9UVHScSZonk4OYFHztETmh9gsYuOHXybCcbEGGzyxTIa5yCZkR8flFL4CLi0Sqi54gkoIVUm_ujs_E6IKWgLrOKsiBoTzxNHFerZooLnOvEDiTR7fC1KbJEDem4IEeXMXM7Sd83jRtyVsfvj8IveWheVJkdNZlwGM3kSdOw-sw==" target="_blank" class="btn-znovu">Poslat výsledek e-mailem</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="post-audit">
+  <div class="post-audit-inner">
+
+    <div class="tools-tip">
+      <strong>Chcete jít hlouběji?</strong>
+      <div class="tools-tip-row"><strong>Kalkulačka ztrát:</strong>&nbsp;zadejte 5 čísel a za 30 vteřin víte, kolik vás ztráty stojí v korunách. <a href="https://kalkulacka.gabrielatomickova.cz" style="color:var(--gold-dark);font-weight:600;text-decoration:none;">&nbsp;Spustit kalkulačku</a></div>
+      <div class="tools-tip-row"><strong>Měřič plýtvání Pro:</strong>&nbsp;změřte ztráty přímo v provozu, za jednu směnu víte přesně kde a kolik. <a href="https://gabrielatomickova.cz" style="color:var(--gold-dark);font-weight:600;text-decoration:none;">&nbsp;Zjistit více</a></div>
+    </div>
+
+    <div class="faq-block">
+      <div class="content-card-title" style="font-family:Poppins,sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Časté otázky</div>
+      <div class="faq-item">
+        <div class="faq-q">Musím zadat e-mail?</div>
+        <div class="faq-a">Ne. Audit je zdarma a spustíte ho rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Co když nevím odpověď na některou otázku?</div>
+        <div class="faq-a">Zvolte "Nevím / nemáme data". Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku - protože nevědět je samo o sobě důležité zjištění, ne totéž co "nemáme problém".</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Musím projít celý audit najednou?</div>
+        <div class="faq-a">Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte. 5 minut najdete vždy.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
+        <div class="faq-a">Pro uloží výsledek do vašeho účtu. Audit zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se stav skladu zlepšuje, nebo je pořád stejný. Samotný audit je pořád celý zdarma, Pro jen přidává historii.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">Gabriela <span>Tomíčková</span>, AI a Procesní konzultant</div>
+  <div class="footer-legal">Příčná 49, Vrchlabí, IČO: 75905311 &nbsp;·&nbsp; <a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/supabase-client.js"></script>
+<script src="/auth.js"></script>
+<script>
+const TIPY = {
+  1: "Má každá položka svoji přesnou pozici v systému i fyzicky ve skladu? Je místo viditelně označené? Sedí to, co systém říká, s tím, co tam reálně leží? Zkuste se na chvíli vcítit do nového skladníka první den v práci. Chápe váš systém bez vysvětlování? Dává mu logiku a smysl? Nebo se zorientuje jen ten, kdo tam pracuje roky?",
+  2: "Vezměte plánek skladu, zapněte krokoměr na mobilu a půl hodiny sledujte skladníka při vychystávání. Tužkou zakreslujte každou jeho cestu do plánku - tato metoda se jmenuje spaghetti diagram. Na konci uvidíte, kudy chodí nejčastěji, kde se trasy zbytečně kříží a kolik metrů ujde na jednu zakázku. Opakujte u více zakázek a výsledky si zapisujte. Čísla bývají překvapivá.",
+  3: "Zamyslete se nad těmito otázkami: Kdo konkrétně dělá příjem a jak ho kontroluje - ručně podle dodacího listu, nebo pomocí čteček? Má dostatek prostoru na rozložení zboží bez toho, aby blokoval ostatní provoz? Kam a jak daleko nosí potvrzené dodací listy? Čím více kroků příjem má, tím více míst kde může vzniknout chyba.",
+  4: "Vedete statistiku chyb? Které typy se opakují nejčastěji - záměna podobně pojmenovaného zboží, jiná velikost balení, jiná značka? Když chyba nastane, zjišťujete kdo, kdy, za jakých podmínek a jestli jde o opakující se vzor? Chybuje stále jeden člověk, nebo se to střídá? Čím více dat máte, tím snáze najdete příčinu. A ta bývá překvapivě jednoduchá - jiný název položky v systému, barevné odlišení balení, změna umístění.",
+  5: "Čekání je jeden z nejméně viditelných druhů plýtvání, přestože je doslova na očích. Zkuste si rozepsat celý proces do malých kroků a u každého si poznamenat, co se s ním děje, když na něj není zrovna člověk. Kde zboží leží a čeká? Kde skladník stojí a čeká na informaci? Kde expedice čeká na doklad? Teprve když to vidíte černé na bílém, začnete to řešit.",
+  6: "Zmapujte jeden běžný pracovní den a vypište každý moment, kdy někdo přepisuje nebo kopíruje data z jednoho místa na druhé. Objednávka do systému, systém do tabulky, tabulka do emailu, email do faktury. U každého přepisu si položte jednu otázku: musí to dělat člověk, nebo by to šlo automaticky propojit? Jedno jednoduché napojení dvou nástrojů může uvolnit hodiny práce týdně.",
+  7: "Víte vůbec, jaké výjimky se ve vašem provozu pravidelně opakují? Soupis situací a jejich řešení nemusí být složitý dokument - stačí jednoduchý přehled: situace, co udělat, kdo rozhoduje. Bez toho se každá výjimka řeší znovu od začátku, improvizací a telefonem na vedení. A vždy ji řeší ten samý člověk, protože ostatní nevědí jak.",
+  8: "Vedete evidenci reklamací - co, proč, kdo, kdy a po kolikáté? Nebo se každá řeší operativně a pak se zapomene? Bez záznamu není vzor, bez vzoru není příčina, bez příčiny se nic nezmění. Přitom analýza deseti reklamací za měsíc vám může ukázat, že 80 % pochází ze stejného zdroje.",
+  9: "Máte ve skladu lidi, za kterými ostatní chodí, protože to jinak nikdo neumí? Jsou jejich zkušenosti a postupy někde sepsané a dostupné pro celý tým? Jednoduchý test: kdyby tento člověk zítra onemocněl na tři měsíce a vypnul telefon, co by se stalo? Závislost na konkrétních lidech je skryté riziko, které se projeví vždy v nejhorší možný moment.",
+  10: "Evidujete klíčová čísla - počty objednávek, časy vychystání, chyby, reklamace, náklady na přepracování? Nebo řídíte sklad podle pocitu, že se nestíhá? Pokud máte dojem, že firma neustále potřebuje více lidí, ale zisk zůstává stejný, problém není v počtu pracovníků. Je v tom, jak pracují.",
+};
+
+// Kratky, konkretni prvni krok pro kazdou oblast - pouziva se u TOP 3 ("Udelejte zitra")
+// i u nevim/nemereno oblasti ("Jak to zjistit")
+const PRVNI_KROK = {
+  1: "Vyberte 5 nejčastěji hledaných položek a zkontrolujte, jestli systém sedí s realitou na místě.",
+  2: "Změřte jednu běžnou vychystávací trasu.",
+  3: "Zaznamenejte čas od vyložení kamionu do zaskladnění posledního kusu, u jednoho příjmu.",
+  4: "Týden si zapisujte každou chybu při vychystávání - co, kdy, kdo si všiml.",
+  5: "Vyberte jeden proces a zapište, kde v něm věc nebo člověk čeká - a jak dlouho.",
+  6: "Spočítejte, kolikrát se dnes jedna objednávka ručně přepíše, než skončí u zákazníka.",
+  7: "Sepište 5 nejčastějších výjimek z posledního měsíce.",
+  8: "Vypište posledních 10 reklamací a zkuste u nich najít společnou příčinu.",
+  9: "Napište, co by se zítra nestihlo, kdyby jeden konkrétní člověk byl na 3 měsíce pryč.",
+  10: "Zvolte 3 čísla, která začnete od pondělí zapisovat.",
+};
+
+// Stav kvízu
+const odpovedi = {};
+const nevimSet = new Set();
+const OTAZKY = [
+  "Víte, kde přesně zboží leží?",
+  "Nechodí lidé zbytečně kilometry navíc?",
+  "Funguje příjem zboží bez chaosu?",
+  "Kolik chyb vzniká při vychystávání?",
+  "Nečeká se zbytečně mezi kroky?",
+  "Přepisují se stejná data vícekrát?",
+  "Máte jasná pravidla pro výjimky?",
+  "Víte, kde vznikají reklamace a opravy?",
+  "Jsou postupy jasné i bez starých mazáků?",
+  "Měříte výkon skladu?"
+];
+const MOZNOSTI = ["Máme pod kontrolou", "Občas problém", "Častý problém", "Bolí nás to každý týden"];
+
+
+function vypocitejSkore() {
+  return Object.values(odpovedi).reduce((a, b) => a + b, 0);
+}
+
+function maxSkore() {
+  return 3 * (10 - nevimSet.size);
+}
+
+function vyberMoznost(el, q, body) {
+  el.closest('.moznosti').querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+  odpovedi[q] = body;
+  nevimSet.delete(q);
+  document.getElementById('dal' + q).disabled = false;
+  updateProgress();
+}
+
+function vyberNevim(el, q) {
+  el.closest('.moznosti').querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
+  el.classList.add('selected');
+  delete odpovedi[q];
+  nevimSet.add(q);
+  document.getElementById('dal' + q).disabled = false;
+  updateProgress();
+}
+
+function dalsiOtazka(q) {
+  document.getElementById('q' + q).classList.remove('active');
+  const next = document.getElementById('q' + (q + 1));
+  next.classList.add('active');
+  setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  updateProgress();
+}
+
+function zpetOtazka(q) {
+  document.getElementById('q' + q).classList.remove('active');
+  const prev = document.getElementById('q' + (q - 1));
+  prev.classList.add('active');
+  setTimeout(() => prev.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  updateProgress();
+}
+
+function updateProgress() {
+  const count = Object.keys(odpovedi).length;
+  document.getElementById('progress-fill').style.width = (count / 10 * 100) + '%';
+  document.getElementById('progress-count').textContent = count + ' / 10';
+}
+
+
+function zobrazVysledkyFinale() {
+  try {
+    document.getElementById('q10').classList.remove('active');
+    zobrazVysledky();
+  } catch(e) {
+    alert('Chyba: ' + e.message);
+  }
+}
+
+function zobrazVysledky() {
+  try {
+  const skore = vypocitejSkore();
+  const maxS = maxSkore();
+  const hero = document.getElementById('skore-hero');
+  const cislo = document.getElementById('skore-cislo');
+  const label = document.getElementById('skore-label');
+  const popis = document.getElementById('skore-popis');
+
+  cislo.innerHTML = skore + '<span class="skore-max">/' + maxS + '</span>';
+
+  // Prahy pocitane z puvodni skaly 0-30, prevedene na aktualni maxS,
+  // aby "nevim" odpovedi skore nezredily ani nenafoukly
+  const pomer = maxS > 0 ? skore / maxS : 0;
+
+  if (pomer <= 7/30) {
+    hero.className = 'skore-hero zelena';
+    label.textContent = 'Sklad je v zásadě pod kontrolou';
+    popis.textContent = 'Výsledek naznačuje, že provoz funguje celkem dobře. Vždy je ale prostor na zlepšení a preventivní audit se vyplatí dřív, než problémy narostou.';
+  } else if (pomer <= 15/30) {
+    hero.className = 'skore-hero zluta';
+    label.textContent = 'Ztráty už vznikají, jen je zatím tolik nevidíte';
+    popis.textContent = 'Vidíte příležitosti ke zlepšení. Problémy jsou zvládnutelné, ale pokud se neřeší, budou s růstem firmy narůstat.';
+  } else if (pomer <= 23/30) {
+    hero.className = 'skore-hero oranzova';
+    label.textContent = 'Provoz funguje hlavně díky zkušeným lidem a hašení';
+    popis.textContent = 'Firma závisí na zkušených lidech a improvizaci. Systémové změny by uvolnily kapacitu a snížily každodenní tlak na vedení i pracovníky.';
+  } else {
+    hero.className = 'skore-hero cervena';
+    label.textContent = 'Firma ztrácí významnou kapacitu každý týden';
+    popis.textContent = 'Výsledek ukazuje na systémové problémy, které stojí čas, peníze a energii. Provozní diagnostika by rychle odhalila kde začít.';
+  }
+
+  if (nevimSet.size > 0) {
+    popis.textContent += ' Skóre je orientační: ' + nevimSet.size + ' ' + (nevimSet.size === 1 ? 'oblast jste' : 'oblasti jste') + ' označili jako "nevím", to je samo o sobě důležité zjištění, viz níž.';
+  }
+
+  // Radky s odpovedi
+  const rows = document.getElementById('vysledky-rows');
+  rows.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const row = document.createElement('div');
+    row.className = 'vysledek-row';
+    if (nevimSet.has(i)) {
+      row.innerHTML = `
+        <div class="vysledek-arrow modra"></div>
+        <div class="vysledek-text">
+          <strong>${OTAZKY[i-1]}</strong>
+          <span>Nevím / nemáme data</span>
+        </div>
+        <div class="vysledek-body bx">?</div>
+      `;
+    } else {
+      const b = odpovedi[i] || 0;
+      const colors = ['zelena', 'zluta', 'zluta', 'cervena'];
+      row.innerHTML = `
+        <div class="vysledek-arrow ${colors[b]}"></div>
+        <div class="vysledek-text">
+          <strong>${OTAZKY[i-1]}</strong>
+          <span>${MOZNOSTI[b]}</span>
+        </div>
+        <div class="vysledek-body b${b}">${b} b</div>
+      `;
+    }
+    rows.appendChild(row);
+  }
+
+
+  // Top 3 nejhorsich otazek (nevim mezi nimi nikdy neni, neni v odpovedi)
+  const serazene = Object.entries(odpovedi)
+    .sort((a, b) => b[1] - a[1])
+    .filter(([_, b]) => b >= 2)
+    .slice(0, 3);
+
+  const top3wrap = document.getElementById('top3-wrap');
+  if (serazene.length > 0) {
+    top3wrap.style.display = 'block';
+    const top3rows = document.getElementById('top3-rows');
+    top3rows.innerHTML = '';
+    serazene.forEach(([q, b]) => {
+      const row = document.createElement('div');
+      row.className = 'tip-row';
+      row.innerHTML = `
+        <div class="tip-row-top">
+          <span class="tip-cislo">${b} b</span>
+          <span class="tip-otazka">${OTAZKY[q-1]}</span>
+        </div>
+        <div class="tip-text">${TIPY[q]}</div>
+        <div class="tip-first-step"><strong>Udělejte zítra:</strong> ${PRVNI_KROK[q]}</div>
+      `;
+      top3rows.appendChild(row);
+    });
+  } else {
+    top3wrap.style.display = 'none';
+  }
+
+  // Nemereno sekce - oblasti oznacene "nevim"
+  const nemerenoWrap = document.getElementById('nemereno-wrap');
+  if (nevimSet.size > 0) {
+    nemerenoWrap.style.display = 'block';
+    const nemerenoRows = document.getElementById('nemereno-rows');
+    nemerenoRows.innerHTML = '';
+    Array.from(nevimSet).sort((a, b) => a - b).forEach(q => {
+      const row = document.createElement('div');
+      row.className = 'nemereno-row';
+      row.innerHTML = `
+        <div class="nemereno-row-top">
+          <span class="nemereno-znacka">?</span>
+          <span class="nemereno-otazka">${OTAZKY[q-1]}</span>
+        </div>
+        <div class="nemereno-text"><strong>Jak to zjistit:</strong> ${PRVNI_KROK[q]}</div>
+      `;
+      nemerenoRows.appendChild(row);
+    });
+  } else {
+    nemerenoWrap.style.display = 'none';
+  }
+
+  const v = document.getElementById('vysledky');
+  v.classList.add('active');
+  setTimeout(() => v.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+
+  vysledekUlozen = false;
+  ulozitVysledekDoSupabase(skore, maxS).then(renderHistorie);
+  renderHistorie();
+  } catch(e) { alert('Chyba zobrazVysledky: ' + e.message); }
+}
+
+function zkontrolovatStart() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('start') === '1') {
+    document.getElementById('q0').classList.remove('active');
+    const q1 = document.getElementById('q1');
+    q1.classList.add('active');
+    setTimeout(() => q1.scrollIntoView({behavior:'smooth',block:'start'}), 50);
+    updateProgress();
+  }
+}
+
+function spustitAudit() {
+  document.getElementById('q0').classList.remove('active');
+  const q1 = document.getElementById('q1');
+  q1.classList.add('active');
+  setTimeout(() => q1.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  updateProgress();
+}
+
+function zacitZnovu() {
+  Object.keys(odpovedi).forEach(k => delete odpovedi[k]);
+  nevimSet.clear();
+  document.querySelectorAll('.otazka-wrap, .email-brana, .vysledky-wrap').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
+  document.querySelectorAll('.btn-dal').forEach(b => b.disabled = true);
+  const q0 = document.getElementById('q0');
+  q0.classList.add('active');
+  updateProgress();
+  setTimeout(() => q0.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+}
+
+let session = null;
+let clenstvi = null;
+let jePro = false;
+let vysledekUlozen = false;
+
+async function nacistPrihlaseniStav() {
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací vrstva se nepodařila načíst, appka jede jako nepřihlášená.', e);
+    session = null; clenstvi = null; jePro = false;
+  }
+  renderUcetNav();
+}
+
+function renderUcetNav() {
+  const info = document.getElementById('nav-ucet-info');
+  const btn = document.getElementById('nav-ucet-btn');
+  if (session && clenstvi) {
+    info.style.display = 'inline-block';
+    info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    btn.textContent = 'Odhlásit';
+  } else {
+    info.style.display = 'none';
+    btn.textContent = 'Přihlásit se';
+  }
+}
+
+async function klikNaUcet() {
+  if (session) {
+    try { await odhlasit(); } catch (e) { console.warn('Odhlášení se nepodařilo.', e); }
+    session = null; clenstvi = null; jePro = false;
+    renderUcetNav();
+    vysledekUlozen = false;
+    if (document.getElementById('vysledky').classList.contains('active')) renderHistorie();
+  } else {
+    try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
+  }
+}
+
+async function klikVModaluPro() {
+  const err = document.getElementById('pro-err');
+  err.textContent = '';
+  if (!session) {
+    try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
+    return;
+  }
+  if (!jePro) {
+    err.textContent = 'K tomuhle účtu zatím není aktivní Pro.';
+    return;
+  }
+  zavritModalPro();
+}
+
+function otevritModalPro() {
+  document.getElementById('pro-err').textContent = '';
+  document.getElementById('modal-pro').style.display = 'flex';
+}
+function zavritModalPro() {
+  document.getElementById('modal-pro').style.display = 'none';
+}
+document.addEventListener('click', function (e) {
+  if (e.target === document.getElementById('modal-pro')) zavritModalPro();
+});
+
+async function ulozitVysledekDoSupabase(skore, maxS) {
+  if (!jePro || !clenstvi || vysledekUlozen) return;
+  try {
+    const nejhorsi = Object.entries(odpovedi)
+      .sort((a, b) => b[1] - a[1])
+      .filter(([_, b]) => b >= 2)
+      .slice(0, 3)
+      .map(([q]) => OTAZKY[q - 1]);
+    const { error } = await supabaseClient.from('tool_runs').insert({
+      organization_id: clenstvi.organization_id,
+      nastroj: 'mini-audit-skladu',
+      nazev: 'Mini audit skladu',
+      shrnuti: skore + '/' + maxS + ' bodů' + (nejhorsi.length ? ', nejhorší: ' + nejhorsi.join(', ') : ''),
+      hlavni_hodnota_cislo: skore,
+      hlavni_hodnota_jednotka: 'z ' + maxS + ' bodů',
+      hlavni_hodnota_typ: 'skore',
+      data: { odpovedi: Object.assign({}, odpovedi), nevim: Array.from(nevimSet), nejhorsi_oblasti: nejhorsi }
+    });
+    if (error) throw error;
+    vysledekUlozen = true;
+  } catch (e) {
+    console.warn('Výsledek se nepodařilo uložit do Supabase, zůstává aspoň na téhle stránce.', e);
+  }
+}
+
+async function renderHistorie() {
+  const zamceno = document.getElementById('historie-zamceno');
+  const obsah = document.getElementById('historie-obsah');
+  if (!jePro || !clenstvi) {
+    zamceno.style.display = 'block';
+    obsah.style.display = 'none';
+    return;
+  }
+  zamceno.style.display = 'none';
+  obsah.style.display = 'block';
+  obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--light);">Načítám historii…</div>';
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('*')
+      .eq('nastroj', 'mini-audit-skladu')
+      .order('created_at', { ascending: false })
+      .limit(10);
+    if (error) throw error;
+    if (!data || !data.length) {
+      obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--mid);">Zatím žádná historie, tenhle výsledek je první uložený.</div>';
+      return;
+    }
+    obsah.innerHTML = data.map(r => {
+      const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
+      const s = r.hlavni_hodnota_cislo;
+      const jednotka = r.hlavni_hodnota_jednotka || '';
+      const max = parseInt((jednotka.match(/\d+/) || [30])[0], 10);
+      const pomer = max > 0 ? s / max : 0;
+      const barva = pomer <= 7/30 ? '#2a7a4f' : pomer <= 15/30 ? '#d97706' : pomer <= 23/30 ? '#b45309' : '#b91c1c';
+      return '<div class="vysledek-row">' +
+        '<div class="vysledek-arrow" style="background:' + barva + '"></div>' +
+        '<div class="vysledek-text"><strong>' + datum + '</strong><span>' + s + ' ' + jednotka + '</span></div>' +
+        '</div>';
+    }).join('');
+  } catch (e) {
+    console.warn('Historii se nepodařilo načíst.', e);
+    obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--mid);">Historii se teď nepodařilo načíst.</div>';
+  }
+}
+
+updateProgress();
+zkontrolovatStart();
+nacistPrihlaseniStav();
+</script>
+
+<script>
+(function(){
+  var s = localStorage.getItem('cookies_souhlas');
+  if (s === 'ano') {
+    spustitGA();
+  } else if (s === null) {
+    document.getElementById('cookies-bar').style.display = 'flex';
+  }
+})();
+
+function spustitGA() {
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-JBFDH4G4VP';
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', 'G-JBFDH4G4VP');
+}
+
+function cookiesSouhlasit() {
+  localStorage.setItem('cookies_souhlas', 'ano');
+  document.getElementById('cookies-bar').style.display = 'none';
+  spustitGA();
+}
+
+function cookiesOdmitnout() {
+  localStorage.setItem('cookies_souhlas', 'ne');
+  document.getElementById('cookies-bar').style.display = 'none';
+}
+</script>
+</body>
+</html>

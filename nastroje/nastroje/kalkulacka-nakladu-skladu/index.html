@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulačka nákladů provozu skladu na m² | Gabriela Tomíčková</title>
+<meta name="description" content="Zjistěte, kolik vás reálně stojí 1 m² skladu za měsíc. Kalkulačka zahrnuje nájem nebo odpisy budovy, energie, povinné revize, pojištění a odpisy vybavení. Výsledek ihned, zdarma.">
+<meta name="keywords" content="náklady skladu na m2, cena provozu skladu, kalkulačka nákladů skladu, kolik stojí sklad na metr čtvereční, provozní náklady skladu kalkulačka">
+<meta name="author" content="Gabriela Tomíčková">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Kalkulačka nákladů provozu skladu na m² | Gabriela Tomíčková">
+<meta property="og:description" content="Zjistěte, kolik vás reálně stojí 1 m² skladu za měsíc – vč. energií, revizí, pojištění a odpisů vybavení.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kalkulačka nákladů skladu na m² | Gabriela Tomíčková">
+<meta name="twitter:description" content="Kolik vás reálně stojí 1 m² skladu? Kalkulačka zahrnuje všechny náklady budovy.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Kalkulačka nákladů provozu skladu na m²",
+  "description": "Interaktivní kalkulačka pro výpočet celkových nákladů provozu skladu na 1 m² za měsíc – vč. nájmu, energií, revizí, pojištění a odpisů vybavení.",
+  "url": "https://gabrielatomickova.cz/kalkulacka-nakladu-skladu",
+  "applicationCategory": "BusinessApplication",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CZK"},
+  "author": {"@type": "Person", "name": "Gabriela Tomíčková"}
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b; --gold-dark: #c48e10; --gold-light: #fdf3d9;
+  --black: #000; --dark: #111; --mid: #545454; --light: #a8a6a6;
+  --white: #fff; --paper: #f5f4f0; --border: #e2e2e2;
+  --green: #2a7a4f; --green-light: #e8f5ee;
+  --orange: #d4630f; --red: #d63c3c;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:"DM Sans",sans-serif; background:var(--paper); color:var(--dark); line-height:1.6; }
+
+nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
+.nav-brand { font-family:"Poppins",sans-serif; font-size:14px; font-weight:800; color:var(--black); text-decoration:none; }
+.nav-brand span { color:var(--gold); }
+.nav-cta { background:var(--gold); color:var(--black); font-size:13px; font-weight:600; padding:8px 20px; border-radius:4px; text-decoration:none; transition:background 0.2s; white-space:nowrap; }
+.nav-cta:hover { background:var(--gold-dark); color:white; }
+
+/* NAV ÚČET (Moje Nástrojovna) */
+.nav-right { display:flex; align-items:center; gap:12px; }
+.nav-btn { background:transparent; border:1px solid var(--border); color:var(--mid); font-size:12px; padding:7px 14px; border-radius:4px; cursor:pointer; font-family:"DM Sans",sans-serif; transition:all .2s; white-space:nowrap; }
+.nav-btn:hover { border-color:var(--gold); color:var(--gold-dark); }
+
+.hero { background:var(--black); padding:56px 40px 48px; position:relative; overflow:hidden; }
+.hero::before { content:""; position:absolute; top:-80px; right:-80px; width:400px; height:400px; border-radius:50%; border:70px solid rgba(233,169,27,0.07); pointer-events:none; }
+.hero-inner { max-width:1040px; margin:0 auto; position:relative; z-index:1; }
+.tool-badge { display:inline-block; background:rgba(233,169,27,0.15); border:1px solid rgba(233,169,27,0.3); color:var(--gold); font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; padding:4px 12px; border-radius:2px; margin-bottom:20px; }
+.hero h1 { font-family:"Poppins",sans-serif; font-size:clamp(24px,4vw,42px); font-weight:900; color:var(--white); line-height:1.15; letter-spacing:-0.5px; margin-bottom:16px; }
+.hero h1 em { color:var(--gold); font-style:normal; }
+.hero p { font-size:16px; color:rgba(255,255,255,0.55); max-width:600px; line-height:1.75; font-weight:300; }
+.hero p + p { margin-top:8px; }
+
+.main { max-width:1040px; margin:0 auto; padding:40px 40px 80px; }
+.calc-grid { display:grid; grid-template-columns:400px 1fr; gap:28px; align-items:start; }
+
+/* ── INPUT PANEL ── */
+.panel { background:var(--white); border:1px solid var(--border); border-radius:12px; overflow:hidden; position:sticky; top:80px; }
+.panel-section { border-bottom:1px solid var(--border); padding:18px 24px; }
+.panel-section:last-child { border-bottom:none; }
+.panel-section.collapsible { padding:0; }
+
+.panel-section-title { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--light); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.panel-section-title svg { color:var(--gold); }
+
+.section-header { cursor:pointer; display:flex; justify-content:space-between; align-items:center; padding:18px 24px; user-select:none; transition:background 0.15s; }
+.section-header:hover { background:var(--paper); }
+.section-header .panel-section-title { margin-bottom:0; }
+.chevron { width:14px; height:14px; stroke:var(--light); fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; transition:transform 0.2s; flex-shrink:0; }
+.section-header.open .chevron { transform:rotate(90deg); }
+.section-body { padding:0 24px 18px; }
+.section-body.hidden { display:none; }
+
+/* Toggle najem/vlastni */
+.toggle-group { display:flex; gap:0; border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-top:2px; }
+.toggle-btn { flex:1; padding:9px 12px; font-family:"DM Sans",sans-serif; font-size:13px; font-weight:600; cursor:pointer; border:none; background:var(--paper); color:var(--mid); transition:all 0.15s; }
+.toggle-btn.active { background:var(--gold); color:var(--black); }
+.toggle-btn:hover:not(.active) { background:var(--border); }
+
+.input-group { margin-bottom:14px; }
+.input-group:last-child { margin-bottom:0; }
+.input-label { font-size:13px; font-weight:600; color:var(--dark); display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+.input-hint { font-size:11px; font-weight:400; color:var(--light); }
+.input-row { display:flex; align-items:center; gap:10px; }
+.input-note { font-size:11px; color:var(--light); margin-top:4px; font-style:italic; }
+input[type=range] { flex:1; -webkit-appearance:none; height:3px; border-radius:2px; background:var(--border); outline:none; cursor:pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--gold); border:2px solid var(--white); box-shadow:0 1px 4px rgba(233,169,27,0.5); cursor:pointer; transition:transform 0.15s; }
+input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
+.input-val { font-family:"DM Mono",monospace; font-size:12px; font-weight:500; color:var(--gold-dark); min-width:56px; text-align:right; background:var(--gold-light); padding:3px 7px; border-radius:3px; white-space:nowrap; }
+.input-val-lg { min-width:80px; }
+.input-val-xl { min-width:96px; }
+
+/* ── RESULTS ── */
+.results { display:flex; flex-direction:column; gap:20px; }
+.result-hero { background:var(--black); border-radius:12px; padding:28px; position:relative; overflow:hidden; }
+.result-hero::after { content:""; position:absolute; bottom:-50px; right:-50px; width:220px; height:220px; border-radius:50%; border:50px solid rgba(233,169,27,0.1); }
+.result-hero-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:8px; }
+.result-hero-num { font-family:"Poppins",sans-serif; font-size:clamp(32px,4vw,52px); font-weight:900; color:var(--gold); line-height:1; margin-bottom:6px; transition:all 0.4s; }
+.result-hero-unit { font-family:"Poppins",sans-serif; font-size:18px; font-weight:700; color:rgba(255,255,255,0.4); }
+.result-hero-sub { font-size:13px; color:rgba(255,255,255,0.35); margin-top:6px; }
+
+.result-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.result-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:16px 18px; transition:transform 0.2s, box-shadow 0.2s; }
+.result-card:hover { transform:translateY(-2px); box-shadow:0 4px 14px rgba(0,0,0,0.06); }
+.result-card-icon { margin-bottom:10px; }
+.result-card-icon svg { width:20px; height:20px; stroke:var(--gold); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.result-card-num { font-family:"Poppins",sans-serif; font-size:20px; font-weight:800; color:var(--dark); line-height:1.1; transition:all 0.4s; margin-bottom:4px; }
+.result-card-label { font-size:12px; color:var(--light); line-height:1.4; }
+
+/* ── BREAKDOWN ── */
+.breakdown { background:var(--white); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+.breakdown-title { padding:14px 20px; border-bottom:1px solid var(--border); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--mid); display:flex; align-items:center; gap:8px; }
+.breakdown-title svg { stroke:var(--gold); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.breakdown-row { display:flex; align-items:center; gap:12px; padding:12px 20px; border-bottom:1px solid #f5f5f5; transition:background 0.15s; }
+.breakdown-row:last-child { border-bottom:none; }
+.breakdown-row:hover { background:#fafafa; }
+.breakdown-icon-box { width:28px; height:38px; flex-shrink:0; clip-path:polygon(0 0,6px 0,100% 50%,6px 100%,0 100%); background:var(--gold); }
+.breakdown-text { flex:1; min-width:0; }
+.breakdown-name { font-size:12px; font-weight:600; color:var(--dark); }
+.breakdown-desc { font-size:10px; color:var(--light); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.breakdown-bar-wrap { width:70px; flex-shrink:0; }
+.breakdown-bar-bg { height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+.breakdown-bar { height:100%; background:var(--gold); border-radius:2px; transition:width 0.5s ease; }
+.breakdown-val { font-family:"DM Mono",monospace; font-size:11px; font-weight:500; color:var(--mid); min-width:60px; text-align:right; flex-shrink:0; }
+
+/* ── CTA ── */
+.cta-box { background:var(--gold-light); border:1px solid rgba(233,169,27,0.3); border-radius:12px; padding:22px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.cta-box-text strong { font-size:14px; font-weight:700; color:var(--dark); display:block; margin-bottom:3px; }
+.cta-box-text span { font-size:13px; color:var(--mid); }
+.cta-box a { background:var(--black); color:var(--white); font-size:13px; font-weight:600; padding:10px 20px; border-radius:6px; text-decoration:none; white-space:nowrap; transition:background 0.2s; flex-shrink:0; }
+.cta-box a:hover { background:var(--gold); color:var(--black); }
+
+/* ── RYCHLÝ VÝPOČET VS. ZPŘESNĚNÍ ── */
+.rychly-box { background:var(--gold-light); border-bottom:1px solid var(--border); padding:16px 24px; }
+.rychly-box p { font-size:12.5px; color:var(--mid); line-height:1.6; margin-bottom:10px; }
+.rychly-box button {
+  width:100%; background:var(--black); border:none; color:var(--white);
+  font-size:12.5px; font-weight:600; padding:10px 14px; border-radius:6px; cursor:pointer; transition:background .2s;
+}
+.rychly-box button:hover { background:var(--gold-dark); }
+
+/* ── PŘESNOST VÝSLEDKU: vaše číslo vs. odhad ── */
+.presnost-vysledku { font-size:11.5px; color:rgba(255,255,255,0.35); margin-top:10px; line-height:1.5; }
+.input-val::after { content:" ≈ odhad"; font-size:9px; font-weight:400; opacity:.6; margin-left:3px; }
+.input-val.zadano::after { content:" ✓ vaše"; color:var(--green); opacity:1; }
+#plocha-val::after { content:none; }
+
+/* ── PRO: uložené výpočty ── */
+.ulozit-row { display:flex; gap:10px; margin-bottom:2px; flex-wrap:wrap; }
+.btn-outline { background:var(--white); border:1px solid var(--border); color:var(--dark); font-size:13px; font-weight:600; padding:10px 16px; border-radius:6px; cursor:pointer; transition:all .15s; }
+.btn-outline:hover { border-color:var(--gold); color:var(--gold-dark); }
+.btn-gold { background:var(--gold); border:none; color:var(--black); font-size:13px; font-weight:700; padding:10px 16px; border-radius:6px; cursor:pointer; transition:background .15s; }
+.btn-gold:hover { background:var(--gold-dark); color:white; }
+.pro-lock-badge { display:inline-flex; align-items:center; font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--gold-dark); background:var(--gold-light); padding:2px 8px; border-radius:10px; margin-left:8px; }
+.ulozeny-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+.ulozeny-item:last-child { border-bottom:none; }
+.ulozeny-name { font-weight:600; font-size:13px; color:var(--dark); }
+.ulozeny-meta { font-size:11px; color:var(--light); margin-top:1px; }
+.ulozeny-num { font-family:"DM Mono",monospace; font-size:13px; color:var(--gold-dark); font-weight:600; min-width:80px; text-align:right; flex-shrink:0; }
+.ulozeny-del { background:transparent; border:none; color:var(--light); font-size:17px; cursor:pointer; padding:2px 6px; flex-shrink:0; }
+.ulozeny-del:hover { color:var(--red); }
+.empty-note { font-size:12px; color:var(--light); padding:4px 0 8px; }
+.ulozene-export { padding:4px 20px 16px; }
+.trend-insight { background:var(--gold-light); border:1px solid rgba(233,169,27,.3); border-radius:8px; padding:10px 14px; font-size:12.5px; color:var(--mid); margin-top:10px; }
+
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
+.modal-box { background:var(--white); border-radius:14px; padding:28px; max-width:420px; width:100%; }
+.modal-box-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; }
+.modal-box h3 { font-family:"Poppins",sans-serif; font-size:17px; font-weight:800; color:var(--dark); }
+.modal-box-close { background:none; border:none; font-size:20px; color:var(--light); cursor:pointer; line-height:1; }
+.modal-box p { font-size:13px; color:var(--mid); line-height:1.65; margin-bottom:16px; }
+.modal-box input { width:100%; border:1px solid var(--border); border-radius:8px; padding:11px 14px; font-family:"DM Mono",monospace; font-size:14px; margin-bottom:8px; outline:none; }
+.modal-box input:focus { border-color:var(--gold); }
+.modal-err { font-size:12px; color:var(--red); min-height:16px; margin-bottom:6px; }
+.modal-box-link { font-size:12px; color:var(--light); margin-top:12px; text-align:center; }
+.modal-box-link a { color:var(--gold-dark); text-decoration:none; }
+
+/* ── CONTENT BLOCK ── */
+.content-block { background:var(--white); border-bottom:1px solid var(--border); padding:40px; }
+.content-inner { max-width:1040px; margin:0 auto; display:flex; flex-direction:column; gap:32px; }
+.story-block { background:var(--paper); border-radius:12px; padding:28px 32px; border-left:4px solid var(--gold); }
+.story-title { font-family:"Poppins",sans-serif; font-size:14px; font-weight:700; color:var(--dark); margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
+.story-block p { font-size:14px; color:var(--mid); line-height:1.75; margin-bottom:10px; }
+.story-block p:last-of-type { margin-bottom:0; }
+.trust-line { font-size:13px; color:var(--light); font-style:italic; border-top:1px solid var(--border); margin-top:16px; padding-top:14px; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.content-card { background:var(--paper); border:1px solid var(--border); border-radius:12px; padding:24px; }
+.content-card-title { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:var(--dark); margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
+.check-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.check-list li { font-size:14px; color:var(--mid); display:flex; gap:10px; align-items:flex-start; line-height:1.6; }
+.check-list li::before { content:"→"; color:var(--gold); font-weight:700; flex-shrink:0; margin-top:1px; }
+
+/* ── POST-CALC ── */
+.post-calc { background:var(--white); border-top:1px solid var(--border); padding:40px; }
+.post-calc-inner { max-width:1040px; margin:0 auto; }
+.post-calc-grid { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+.faq-block {}
+.faq-item { border-bottom:1px solid var(--border); padding:16px 0; }
+.faq-item:first-child { padding-top:0; }
+.faq-item:last-child { border-bottom:none; }
+.faq-q { font-size:14px; font-weight:600; color:var(--dark); margin-bottom:6px; }
+.faq-a { font-size:13px; color:var(--mid); line-height:1.7; }
+.tip-box { background:var(--gold-light); border:1px solid rgba(233,169,27,0.3); border-radius:12px; padding:24px; }
+.tip-box strong { font-family:"Poppins",sans-serif; font-size:14px; font-weight:700; color:var(--dark); display:block; margin-bottom:8px; }
+.tip-box p { font-size:13px; color:var(--mid); line-height:1.7; margin-bottom:14px; }
+.tip-box a { display:inline-block; background:var(--black); color:var(--white); font-size:13px; font-weight:600; padding:9px 18px; border-radius:4px; text-decoration:none; transition:background 0.2s; }
+.tip-box a:hover { background:var(--gold); color:var(--black); }
+
+/* ── FOOTER ── */
+footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+.footer-brand { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:rgba(255,255,255,0.4); }
+.footer-brand span { color:var(--gold); }
+.footer-legal { font-size:11px; color:rgba(255,255,255,0.2); }
+.footer-legal a { color:rgba(255,255,255,0.35); text-decoration:none; transition:color 0.2s; }
+.footer-legal a:hover { color:var(--gold); }
+
+/* ── COOKIES ── */
+.cookies-bar { position:fixed; bottom:0; left:0; right:0; background:#111; border-top:2px solid #e9a91b; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; z-index:9999; font-family:"DM Sans",sans-serif; }
+.cookies-bar p { font-size:13px; color:rgba(255,255,255,.6); line-height:1.6; margin:0; flex:1; min-width:200px; }
+.cookies-bar a { color:#e9a91b; text-decoration:none; }
+.cookies-bar a:hover { text-decoration:underline; }
+.cookies-btns { display:flex; gap:8px; flex-shrink:0; }
+.cookies-ok { background:#e9a91b; color:#000; border:none; border-radius:4px; padding:8px 18px; font-family:"DM Sans",sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
+.cookies-ok:hover { background:#c48e10; }
+.cookies-no { background:transparent; color:rgba(255,255,255,.4); border:1px solid rgba(255,255,255,.15); border-radius:4px; padding:8px 14px; font-family:"DM Sans",sans-serif; font-size:13px; cursor:pointer; }
+.cookies-no:hover { color:rgba(255,255,255,.7); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:900px) {
+  .calc-grid { grid-template-columns:1fr; }
+  .panel { position:static; }
+  .main { padding:24px 20px 60px; }
+  nav, .hero { padding-left:20px; padding-right:20px; }
+  .result-grid { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:640px) {
+  .two-col, .post-calc-grid { grid-template-columns:1fr; }
+  .content-block, .post-calc { padding:24px 20px; }
+  footer { padding:20px; flex-direction:column; text-align:center; }
+  .result-grid { grid-template-columns:1fr; }
+  .nav-cta { display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── COOKIES ── -->
+<div id="cookies-bar" class="cookies-bar" style="display:none;">
+  <p>Tato stránka používá analytické cookies pro sledování návštěvnosti. <a href="https://gdpr.gabrielatomickova.cz" target="_blank">Zásady ochrany osobních údajů</a></p>
+  <div class="cookies-btns">
+    <button class="cookies-ok" onclick="cookiesSouhlasit()">Souhlasím</button>
+    <button class="cookies-no" onclick="cookiesOdmitnout()">Odmítnout</button>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="https://gabrielatomickova.cz" class="nav-brand">Gabriela <span>Tomíčková</span></a>
+  <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+    <a href="https://calendly.com/tomickova-info/30min" target="_blank" class="nav-cta">Chci 30min hovor zdarma</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="tool-badge">Pro vedoucí skladu a provozní manažery</div>
+    <h1>Kolik vás <em>reálně</em> stojí<br>1 m² vašeho skladu?</h1>
+    <p>Zadejte čísla ze svého provozu. Kalkulačka zahrne nájem nebo odpisy, energie, povinné revize, pojištění i odpisy vybavení – a ukáže celkový náklad na metr čtvereční za měsíc.</p>
+    <p style="font-size:13px;color:rgba(255,255,255,0.3);margin-top:10px;">Počítá pouze náklady na budovu a její provoz. Mzdové náklady a mobilní technika (VZV) nejsou součástí.</p>
+  </div>
+</div>
+
+<!-- ── INTRO ── -->
+<div class="content-block">
+  <div class="content-inner">
+    <div class="story-block">
+      <div class="story-title">Proč to vůbec počítat?</div>
+      <p>Většina majitelů skladů zná nájem. Málokdo ví, kolik k tomu přidají energie, revize, pojištění a opotřebení rackingu. Čísla co jsem viděla v praxi? Reálné náklady bývají 1,5 až 2× vyšší než samotný nájem.</p>
+      <p>Pokud fakturujete skladování zákazníkům, nebo se rozhodujete mezi pronájmem a vlastní budovou – tohle číslo potřebujete znát.</p>
+      <div class="trust-line">Kategorie nákladů vycházejí z českých právních předpisů: zákon 586/1992 Sb. o daních, NV 378/2001 Sb. o zdvihacích zařízeních, ČSN 33 1500 pro elektrorevize a další.</div>
+    </div>
+    <div class="two-col">
+      <div class="content-card">
+        <div class="content-card-title">Hodí se vám to, pokud:</div>
+        <ul class="check-list">
+          <li>Chcete vědět, kolik vás skutečně stojí 1 m² – ne jen nájem</li>
+          <li>Zvažujete pronájem vs. vlastní budovu a chcete srovnání</li>
+          <li>Fakturujete skladování jiným firmám a potřebujete správně nastavit cenu</li>
+          <li>Hledáte, kde ušetřit na provozních nákladech budovy</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <div class="content-card-title">Co kalkulačka zahrnuje:</div>
+        <ul class="check-list">
+          <li>Nájem nebo ekonomický odpis vlastní budovy</li>
+          <li>Energie: elektřina, vytápění, voda</li>
+          <li>Povinné revize (EPS, EZS, elektro, zdvihací zařízení...)</li>
+          <li>Pojištění, daň z nemovitosti</li>
+          <li>Odpisy fixního vybavení: racking, vrata, LED osvětlení</li>
+          <li>Provozní služby: úklid, ostraha, odvoz odpadu</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN CALC ── -->
+<div class="main">
+  <div class="calc-grid">
+
+    <!-- ══ INPUT PANEL ══ -->
+    <div class="panel">
+
+      <!-- Rychlý výpočet vs. zpřesnění -->
+      <div class="rychly-box">
+        <p><strong>Rychlý odhad:</strong> vyplňte, co znáte (plocha, nájem). Zbytek necháme na orientačních hodnotách níž – u každé uvidíte, jestli je vaše, nebo odhad.</p>
+        <button type="button" onclick="otevritVsechnySekce()">Chci zpřesnit výsledek – otevřít všechny kategorie</button>
+      </div>
+
+      <!-- Toggle: najem / vlastni -->
+      <div class="panel-section">
+        <div class="panel-section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          Typ nemovitosti
+        </div>
+        <div class="toggle-group">
+          <button id="btn-najem" class="toggle-btn active" onclick="setMode('najem')">Pronájem</button>
+          <button id="btn-vlastni" class="toggle-btn" onclick="setMode('vlastni')">Vlastní budova</button>
+        </div>
+      </div>
+
+      <!-- Sekce 1: Základní parametry (always open) -->
+      <div class="panel-section">
+        <div class="panel-section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Základní parametry
+        </div>
+        <div class="input-group">
+          <div class="input-label">Celková plocha skladu <span class="input-hint">hrubá podlahová plocha</span></div>
+          <div class="input-row">
+            <input type="range" id="plocha" min="100" max="5000" value="600" step="50" oninput="update()">
+            <span class="input-val" id="plocha-val">600 m²</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sekce 2A: Pronájem (always open, toggle-controlled) -->
+      <div class="panel-section" id="sekce-najem">
+        <div class="panel-section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Náklady na pronájem
+        </div>
+        <div class="input-group">
+          <div class="input-label">Měsíční nájemné <span class="input-hint">Kč/měsíc</span></div>
+          <div class="input-row">
+            <input type="range" id="najemne" min="20000" max="400000" value="60000" step="5000" oninput="update()">
+            <span class="input-val input-val-xl" id="najemne-val">60 000 Kč</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-label">Správa / zálohy nad nájemné <span class="input-hint">Kč/měsíc</span></div>
+          <div class="input-row">
+            <input type="range" id="sprava" min="0" max="30000" value="3000" step="500" oninput="update()">
+            <span class="input-val input-val-xl" id="sprava-val">3 000 Kč</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sekce 2B: Vlastní budova (toggle-controlled, hidden by default) -->
+      <div class="panel-section" id="sekce-vlastni" style="display:none;">
+        <div class="panel-section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Vlastní budova – odpisy
+        </div>
+        <div class="input-group">
+          <div class="input-label">Pořizovací hodnota budovy <span class="input-hint">bez pozemku</span></div>
+          <div class="input-row">
+            <input type="range" id="budova" min="1000000" max="30000000" value="6000000" step="100000" oninput="update()">
+            <span class="input-val input-val-xl" id="budova-val">6,0 mil. Kč</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-label">Doba odepisování budovy <span class="input-hint">zákon 586/1992 Sb.</span></div>
+          <div class="input-row">
+            <input type="range" id="odpis_budova" min="20" max="50" value="30" step="10" oninput="update()">
+            <span class="input-val" id="odpis_budova-val">30 let</span>
+          </div>
+          <div class="input-note">Haly a průmyslové budovy zpravidla 30 let (třída 5)</div>
+        </div>
+        <div class="input-group">
+          <div class="input-label">Hodnota pozemku <span class="input-hint">oportunitní náklad</span></div>
+          <div class="input-row">
+            <input type="range" id="pozemek" min="0" max="10000000" value="1500000" step="100000" oninput="update()">
+            <span class="input-val input-val-xl" id="pozemek-val">1,5 mil. Kč</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-label">Oportunitní náklad kapitálu <span class="input-hint">% p.a.</span></div>
+          <div class="input-row">
+            <input type="range" id="urok" min="0" max="8" value="4" step="0.5" oninput="update()">
+            <span class="input-val" id="urok-val">4,0 %</span>
+          </div>
+          <div class="input-note">Kolik by jinak vydělaly peníze vázané v nemovitosti</div>
+        </div>
+      </div>
+
+      <!-- Sekce 3: Energie (collapsible, collapsed) -->
+      <div class="panel-section collapsible">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="panel-section-title" style="margin-bottom:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Energie a média
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="section-body hidden">
+          <div class="input-group">
+            <div class="input-label">Elektřina <span class="input-hint">Kč/měsíc průměr</span></div>
+            <div class="input-row">
+              <input type="range" id="elektrina" min="3000" max="80000" value="12000" step="1000" oninput="update()">
+              <span class="input-val input-val-xl" id="elektrina-val">12 000 Kč</span>
+            </div>
+            <div class="input-note">Osvětlení, nabíjení VZV, vrata, alarm, IT</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Vytápění / chlazení <span class="input-hint">Kč/měsíc průměr za rok</span></div>
+            <div class="input-row">
+              <input type="range" id="vytapeni" min="0" max="60000" value="8000" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="vytapeni-val">8 000 Kč</span>
+            </div>
+            <div class="input-note">Průměr: v létě nižší, v zimě vyšší. Nevytápěný sklad = 0.</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Voda a kanalizace <span class="input-hint">Kč/měsíc</span></div>
+            <div class="input-row">
+              <input type="range" id="voda" min="200" max="8000" value="1200" step="100" oninput="update()">
+              <span class="input-val input-val-xl" id="voda-val">1 200 Kč</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sekce 4: Daně a pojištění (collapsible, collapsed) -->
+      <div class="panel-section collapsible">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="panel-section-title" style="margin-bottom:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Daně a pojištění
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="section-body hidden">
+          <div class="input-group">
+            <div class="input-label">Daň z nemovitosti <span class="input-hint">Kč/rok</span></div>
+            <div class="input-row">
+              <input type="range" id="dan" min="0" max="30000" value="0" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="dan-val">0 Kč</span>
+            </div>
+            <div class="input-note">Nájemci zpravidla 0 – platí majitel budovy. Zákon 338/1992 Sb.</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Pojištění budovy <span class="input-hint">Kč/rok</span></div>
+            <div class="input-row">
+              <input type="range" id="poj_budova" min="0" max="80000" value="0" step="1000" oninput="update()">
+              <span class="input-val input-val-xl" id="poj_budova-val">0 Kč</span>
+            </div>
+            <div class="input-note">Nájemci pojišťují obsah, ne stavbu. Majitelé zadají roční pojistné.</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Pojištění odpovědnosti <span class="input-hint">Kč/rok</span></div>
+            <div class="input-row">
+              <input type="range" id="poj_odp" min="0" max="30000" value="8000" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="poj_odp-val">8 000 Kč</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sekce 5: Údržba a revize (collapsible, collapsed) -->
+      <div class="panel-section collapsible">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="panel-section-title" style="margin-bottom:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            Údržba a povinné revize
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="section-body hidden">
+          <div class="input-group">
+            <div class="input-label">Běžná údržba a opravy <span class="input-hint">Kč/měsíc</span></div>
+            <div class="input-row">
+              <input type="range" id="udrzba" min="0" max="25000" value="3000" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="udrzba-val">3 000 Kč</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Elektrorevize <span class="input-hint">Kč/rok</span></div>
+            <div class="input-row">
+              <input type="range" id="elektrorevize" min="0" max="15000" value="5000" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="elektrorevize-val">5 000 Kč</span>
+            </div>
+            <div class="input-note">ČSN 33 1500 – každé 3–5 let, zadejte roční průměr</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Revize EPS <span class="input-hint">Kč/rok</span></div>
+            <div class="input-row">
+              <input type="range" id="eps" min="0" max="12000" value="4000" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="eps-val">4 000 Kč</span>
+            </div>
+            <div class="input-note">Elektrická požární signalizace – ČSN EN 54-14, 1× ročně</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Revize EZS <span class="input-hint">Kč/rok</span></div>
+            <div class="input-row">
+              <input type="range" id="ezs" min="0" max="10000" value="3000" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="ezs-val">3 000 Kč</span>
+            </div>
+            <div class="input-note">Elektrické zabezpečovací systémy – ČSN P CLC/TS 50131-7</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Revize zdvihacích zařízení <span class="input-hint">Kč/rok</span></div>
+            <div class="input-row">
+              <input type="range" id="zdvihaci" min="0" max="20000" value="5000" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="zdvihaci-val">5 000 Kč</span>
+            </div>
+            <div class="input-note">Nakládací rampy, plošiny, sekční vrata – NV 378/2001 Sb., 1× ročně</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Revize hasicích přístrojů <span class="input-hint">Kč/rok</span></div>
+            <div class="input-row">
+              <input type="range" id="hasici" min="0" max="8000" value="3000" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="hasici-val">3 000 Kč</span>
+            </div>
+            <div class="input-note">Vyhl. 246/2001 Sb. – 1× ročně</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Revize plynových zařízení <span class="input-hint">Kč/rok</span></div>
+            <div class="input-row">
+              <input type="range" id="plyn" min="0" max="8000" value="0" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="plyn-val">0 Kč</span>
+            </div>
+            <div class="input-note">Pouze pokud máte plynové topení nebo technologii</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Ostatní revize a zkoušky <span class="input-hint">Kč/rok</span></div>
+            <div class="input-row">
+              <input type="range" id="ostatni_rev" min="0" max="10000" value="1500" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="ostatni_rev-val">1 500 Kč</span>
+            </div>
+            <div class="input-note">Hromosvod, regálové inspekce, tlakové nádoby, vzduchotechnika</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sekce 6: Provozní služby (collapsible, collapsed) -->
+      <div class="panel-section collapsible">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="panel-section-title" style="margin-bottom:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Provozní služby
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="section-body hidden">
+          <div class="input-group">
+            <div class="input-label">Úklid a čištění <span class="input-hint">Kč/měsíc</span></div>
+            <div class="input-row">
+              <input type="range" id="uklid" min="0" max="15000" value="3500" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="uklid-val">3 500 Kč</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Ostraha / bezpečnostní systém <span class="input-hint">Kč/měsíc</span></div>
+            <div class="input-row">
+              <input type="range" id="ostraha" min="0" max="20000" value="2000" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="ostraha-val">2 000 Kč</span>
+            </div>
+            <div class="input-note">Monitoring poplachového systému nebo fyzická ostraha</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Odvoz odpadu <span class="input-hint">Kč/měsíc</span></div>
+            <div class="input-row">
+              <input type="range" id="odpad" min="0" max="8000" value="1600" step="200" oninput="update()">
+              <span class="input-val input-val-xl" id="odpad-val">1 600 Kč</span>
+            </div>
+            <div class="input-note">Komunální, karton, průmyslový odpad</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Správa budovy / facility management <span class="input-hint">Kč/měsíc</span></div>
+            <div class="input-row">
+              <input type="range" id="facility" min="0" max="15000" value="0" step="500" oninput="update()">
+              <span class="input-val input-val-xl" id="facility-val">0 Kč</span>
+            </div>
+            <div class="input-note">Jen pokud je outsourcováno externě</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Deratizace a dezinsekce <span class="input-hint">Kč/měsíc</span></div>
+            <div class="input-row">
+              <input type="range" id="deratizace" min="0" max="5000" value="500" step="100" oninput="update()">
+              <span class="input-val input-val-xl" id="deratizace-val">500 Kč</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sekce 7: Odpisy vybavení (collapsible, collapsed) -->
+      <div class="panel-section collapsible">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="panel-section-title" style="margin-bottom:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Odpisy fixního vybavení
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="section-body hidden">
+          <div class="input-group">
+            <div class="input-label">Regálový systém – pořizovací cena <span class="input-hint">Kč</span></div>
+            <div class="input-row">
+              <input type="range" id="regaly" min="0" max="1500000" value="250000" step="10000" oninput="update()">
+              <span class="input-val input-val-xl" id="regaly-val">250 tis. Kč</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Doba odepisování regálů <span class="input-hint">let</span></div>
+            <div class="input-row">
+              <input type="range" id="odpis_regaly" min="10" max="20" value="15" step="5" oninput="update()">
+              <span class="input-val" id="odpis_regaly-val">15 let</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Dokovací technika (rampy, plošiny) <span class="input-hint">Kč</span></div>
+            <div class="input-row">
+              <input type="range" id="dok_technika" min="0" max="500000" value="60000" step="5000" oninput="update()">
+              <span class="input-val input-val-xl" id="dok_technika-val">60 tis. Kč</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">LED osvětlení – instalace <span class="input-hint">Kč</span></div>
+            <div class="input-row">
+              <input type="range" id="led" min="0" max="300000" value="50000" step="5000" oninput="update()">
+              <span class="input-val input-val-xl" id="led-val">50 tis. Kč</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Průmyslová vrata a sekční dveře <span class="input-hint">Kč</span></div>
+            <div class="input-row">
+              <input type="range" id="vrata" min="0" max="300000" value="40000" step="5000" oninput="update()">
+              <span class="input-val input-val-xl" id="vrata-val">40 tis. Kč</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Ostatní fixní vybavení <span class="input-hint">Kč</span></div>
+            <div class="input-row">
+              <input type="range" id="ostatni_vyb" min="0" max="300000" value="20000" step="5000" oninput="update()">
+              <span class="input-val input-val-xl" id="ostatni_vyb-val">20 tis. Kč</span>
+            </div>
+            <div class="input-note">Nabíjecí stanice, příčky, vzduchotechnika, ostatní</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Doba odepisování vybavení <span class="input-hint">let (mimo regály)</span></div>
+            <div class="input-row">
+              <input type="range" id="odpis_vybaveni" min="5" max="20" value="12" step="1" oninput="update()">
+              <span class="input-val" id="odpis_vybaveni-val">12 let</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sekce 8: Ostatní (collapsible, collapsed) -->
+      <div class="panel-section collapsible" style="border-bottom:none;">
+        <div class="section-header" onclick="toggleSection(this)">
+          <div class="panel-section-title" style="margin-bottom:0;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            Ostatní fixní náklady
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="section-body hidden">
+          <div class="input-group">
+            <div class="input-label">Internet a telekomunikace <span class="input-hint">Kč/měsíc</span></div>
+            <div class="input-row">
+              <input type="range" id="internet" min="0" max="5000" value="1200" step="100" oninput="update()">
+              <span class="input-val input-val-xl" id="internet-val">1 200 Kč</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Certifikace a licence <span class="input-hint">Kč/měsíc průměr</span></div>
+            <div class="input-row">
+              <input type="range" id="certifikace" min="0" max="8000" value="500" step="100" oninput="update()">
+              <span class="input-val input-val-xl" id="certifikace-val">500 Kč</span>
+            </div>
+            <div class="input-note">ISO, ADR, potravinová certifikace – roční poplatek ÷ 12</div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">Rezerva na nepředvídané náklady <span class="input-hint">% z celku</span></div>
+            <div class="input-row">
+              <input type="range" id="rezerva" min="0" max="15" value="5" step="1" oninput="update()">
+              <span class="input-val" id="rezerva-val">5 %</span>
+            </div>
+            <div class="input-note">Doporučeno 3–7 %. Zahrnuje neplánované opravy a výpadky.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- ══ / INPUT PANEL ══ -->
+
+    <!-- ══ RESULTS ══ -->
+    <div class="results">
+
+      <!-- Pro: uložit / export -->
+      <div class="ulozit-row">
+        <button class="btn-gold" onclick="ulozitVypocet()">💾 Uložit tento výpočet</button>
+        <button class="btn-outline" onclick="exportCSV()">⬇ Export CSV</button>
+      </div>
+
+      <!-- Hero: náklady na 1 m² za měsíc -->
+      <div class="result-hero">
+        <div class="result-hero-label">Náklady na 1 m² za měsíc</div>
+        <div>
+          <span class="result-hero-num" id="res-m2-mesic">178</span>
+          <span class="result-hero-unit"> Kč/m²</span>
+        </div>
+        <div class="result-hero-sub" id="res-hero-sub">celkové roční náklady budovy: 1 278 000 Kč</div>
+        <div class="presnost-vysledku" id="presnost-vysledku"></div>
+      </div>
+
+      <!-- 4 karty -->
+      <div class="result-grid">
+        <div class="result-card">
+          <div class="result-card-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="result-card-num" id="res-mesic">0</div>
+          <div class="result-card-label">Kč celkem za měsíc</div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="result-card-num" id="res-rok">0</div>
+          <div class="result-card-label">Kč celkem za rok</div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div class="result-card-num" id="res-m2-rok">0</div>
+          <div class="result-card-label">Kč/m² za rok</div>
+        </div>
+        <div class="result-card">
+          <div class="result-card-icon">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="result-card-num" id="res-podil">0 %</div>
+          <div class="result-card-label">podíl základního nájmu/odpisu</div>
+        </div>
+      </div>
+
+      <!-- Breakdown -->
+      <div class="breakdown">
+        <div class="breakdown-title">
+          <svg width="14" height="14" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Rozpad nákladů
+        </div>
+        <div class="breakdown-row">
+          <div class="breakdown-icon-box"></div>
+          <div class="breakdown-text">
+            <div class="breakdown-name" id="bd-zakladni-name">Základní náklady</div>
+            <div class="breakdown-desc">nájem nebo odpis budovy a pozemku</div>
+          </div>
+          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-zakladni" style="width:0%"></div></div></div>
+          <div class="breakdown-val" id="val-zakladni">0 Kč</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="breakdown-icon-box"></div>
+          <div class="breakdown-text">
+            <div class="breakdown-name">Energie a média</div>
+            <div class="breakdown-desc">elektřina, vytápění, voda</div>
+          </div>
+          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-energie" style="width:0%"></div></div></div>
+          <div class="breakdown-val" id="val-energie">0 Kč</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="breakdown-icon-box"></div>
+          <div class="breakdown-text">
+            <div class="breakdown-name">Daně a pojištění</div>
+            <div class="breakdown-desc">daň z nemovitosti, pojistné</div>
+          </div>
+          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-pojisteni" style="width:0%"></div></div></div>
+          <div class="breakdown-val" id="val-pojisteni">0 Kč</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="breakdown-icon-box"></div>
+          <div class="breakdown-text">
+            <div class="breakdown-name">Údržba a revize</div>
+            <div class="breakdown-desc">opravy, EPS, EZS, elektro, rampy...</div>
+          </div>
+          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-revize" style="width:0%"></div></div></div>
+          <div class="breakdown-val" id="val-revize">0 Kč</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="breakdown-icon-box"></div>
+          <div class="breakdown-text">
+            <div class="breakdown-name">Provozní služby</div>
+            <div class="breakdown-desc">úklid, ostraha, odpad, deratizace</div>
+          </div>
+          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-provoz" style="width:0%"></div></div></div>
+          <div class="breakdown-val" id="val-provoz">0 Kč</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="breakdown-icon-box"></div>
+          <div class="breakdown-text">
+            <div class="breakdown-name">Odpisy vybavení</div>
+            <div class="breakdown-desc">racking, vrata, LED, rampy</div>
+          </div>
+          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-odpisy" style="width:0%"></div></div></div>
+          <div class="breakdown-val" id="val-odpisy">0 Kč</div>
+        </div>
+        <div class="breakdown-row">
+          <div class="breakdown-icon-box"></div>
+          <div class="breakdown-text">
+            <div class="breakdown-name">Ostatní a rezerva</div>
+            <div class="breakdown-desc">telekomunikace, certifikace, rezerva</div>
+          </div>
+          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-ostatni" style="width:0%"></div></div></div>
+          <div class="breakdown-val" id="val-ostatni">0 Kč</div>
+        </div>
+      </div>
+
+      <!-- Uložené výpočty (Pro) -->
+      <div class="breakdown" id="ulozene-box" style="display:none;">
+        <div class="breakdown-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18"/></svg>
+          Uložené výpočty <span class="pro-lock-badge">Pro</span>
+        </div>
+        <div id="ulozene-seznam" style="padding:8px 20px 4px;"></div>
+        <div class="ulozene-export">
+          <button class="btn-outline" style="width:100%;" onclick="exportCSV()">⬇ Export CSV (porovnání)</button>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-box">
+        <div class="cta-box-text">
+          <strong>Chcete snížit náklady na budovu?</strong>
+          <span>Domluvte si 30min hovor zdarma. Podíváme se na čísla spolu.</span>
+        </div>
+        <a href="https://calendly.com/tomickova-info/30min" target="_blank">Chci 30min hovor zdarma</a>
+      </div>
+
+    </div>
+    <!-- ══ / RESULTS ══ -->
+
+  </div>
+</div>
+
+<!-- ── POST-CALC ── -->
+<div class="post-calc">
+  <div class="post-calc-inner">
+    <div class="post-calc-grid">
+      <div>
+        <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</div>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Překvapilo vás číslo? Nebo potvrdilo, co jste tušili?</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Podívejte se na rozpad – která kategorie tvoří největší podíl. Tam se dá nejrychleji ušetřit. Energie? Zkontrolujte tarif a izolaci. Revize? Srovnejte nabídky. Odpisy? Přehodnoťte, co opravdu potřebujete.</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;">Chcete druhý pohled? Domluvte si 30 minut zdarma.</p>
+        <div class="faq-block" style="margin-top:24px;">
+          <div class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</div>
+          <div class="faq-item">
+            <div class="faq-q">Je výsledek přesný?</div>
+            <div class="faq-a">Přesnost záleží na tom, co zadáte. Použijte skutečné číslice z faktur a smluv – pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Proč jsou tam odpisy vybavení?</div>
+            <div class="faq-a">Racking za 250 000 Kč rozložený na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad – jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Co je oportunitní náklad kapitálu u vlastní budovy?</div>
+            <div class="faq-a">Peníze vázané v nemovitosti mohly být investovány jinam. Oportunitní náklad ukazuje, co "stojí" vlastnit budovu oproti pronájmu – i když reálně žádné nájemné neplatíte.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Neznám přesné výše revizí. Co mám zadat?</div>
+            <div class="faq-a">Výchozí hodnoty jsou orientační průměry z regionálních provozů (300–800 m²). Pro první orientaci je klidně nechte tak, jak jsou. Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) ale použijte skutečná čísla ze svých smluv a faktur – u každé položky uvidíte, jestli počítáte s vaším číslem, nebo s odhadem.</div>
+          </div>
+        </div>
+      </div>
+      <div class="tip-box">
+        <strong>Tušíte, kde plýtváte, ale nevíte kde začít?</strong>
+        <p>Kalkulačka vám říká, kolik vás sklad stojí. Pokud chcete vědět, kde přesně odchází čas a kde zlepšení dá největší výsledek – na to je Měřič plýtvání.</p>
+        <a href="https://gabrielatomickova.cz/meric-plytvani-prodejni-str.html">Vyzkoušet měřič plýtvání →</a>
+        <p style="margin-top:14px;margin-bottom:0;">Nebo si rovnou domluvte procesní audit – přijdu se podívat přímo do provozu.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-brand">Gabriela <span>Tomíčková</span> – AI a Procesní konzultant</div>
+  <div class="footer-legal">Příčná 49, Vrchlabí – IČO: 75905311 &nbsp;·&nbsp; <a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></div>
+</footer>
+
+<!-- Modal Pro odemčení -->
+<div class="modal-overlay" id="modal-pro" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-box-head">
+      <h3>Odemknout Pro</h3>
+      <button class="modal-box-close" onclick="zavritModalPro()">×</button>
+    </div>
+    <p>Pro verze umí uložit víc výpočtů (různé sklady nebo období), porovnat je vedle sebe a exportovat do CSV. Samotný výpočet zůstává navždy zdarma, bez přihlášení.</p>
+    <div class="modal-err" id="pro-err" style="color:var(--mid);"></div>
+    <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
+    <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc</a></div>
+  </div>
+</div>
+
+<!-- ── SCRIPTS ── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/supabase-client.js"></script>
+<script src="/auth.js"></script>
+<script>
+let mode = 'najem';
+let posledniVysledek = {};
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('btn-najem').classList.toggle('active', m === 'najem');
+  document.getElementById('btn-vlastni').classList.toggle('active', m === 'vlastni');
+  document.getElementById('sekce-najem').style.display = m === 'najem' ? 'block' : 'none';
+  document.getElementById('sekce-vlastni').style.display = m === 'vlastni' ? 'block' : 'none';
+  update();
+}
+
+function toggleSection(header) {
+  header.classList.toggle('open');
+  header.nextElementSibling.classList.toggle('hidden');
+}
+
+function otevritVsechnySekce() {
+  document.querySelectorAll('.section-header').forEach(function (header) {
+    header.classList.add('open');
+    header.nextElementSibling.classList.remove('hidden');
+  });
+}
+
+// ── Přesnost výsledku: která čísla jsou vaše, která jsou orientační odhad ──
+// Porovnává aktuální hodnotu vstupu s jeho výchozí hodnotou (input.defaultValue,
+// ta se nemění, i když uživatel hodnotu upraví).
+const SLEDOVANE_VSTUPY = [
+  'najemne', 'sprava', 'budova', 'odpis_budova', 'pozemek', 'urok',
+  'elektrina', 'vytapeni', 'voda',
+  'dan', 'poj_budova', 'poj_odp',
+  'udrzba', 'elektrorevize', 'eps', 'ezs', 'zdvihaci', 'hasici', 'plyn', 'ostatni_rev',
+  'uklid', 'ostraha', 'odpad', 'facility', 'deratizace',
+  'regaly', 'odpis_regaly', 'dok_technika', 'led', 'vrata', 'ostatni_vyb', 'odpis_vybaveni',
+  'internet', 'certifikace', 'rezerva'
+];
+
+function oznacitPresnost() {
+  let vasich = 0, celkem = 0;
+  SLEDOVANE_VSTUPY.forEach(function (id) {
+    if (mode === 'najem' && (id === 'budova' || id === 'odpis_budova' || id === 'pozemek' || id === 'urok')) return;
+    if (mode === 'vlastni' && (id === 'najemne' || id === 'sprava')) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    celkem++;
+    const jeVase = +el.value !== +el.defaultValue;
+    if (jeVase) vasich++;
+    const valEl = document.getElementById(id + '-val');
+    if (valEl) valEl.classList.toggle('zadano', jeVase);
+  });
+
+  const presnostEl = document.getElementById('presnost-vysledku');
+  if (!presnostEl) return;
+  presnostEl.textContent = vasich === 0
+    ? 'Zatím počítáte jen s ' + celkem + ' orientačními odhady. Pro rozhodování zadejte skutečná čísla ze smluv a faktur.'
+    : 'Přesnost výsledku: ' + vasich + ' z ' + celkem + ' hodnot je vašich skutečných údajů, ' + (celkem - vasich) + ' používá orientační odhad.';
+}
+
+function getVal(id) { return +document.getElementById(id).value; }
+
+function fmt(n) { return Math.round(n).toLocaleString("cs-CZ"); }
+
+function fmtKc(n) { return fmt(n) + " Kč"; }
+
+function fmtMil(n) {
+  if (n === 0) return "0 Kč";
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace('.', ',') + " mil. Kč";
+  if (n >= 1000) return Math.round(n / 1000) + " tis. Kč";
+  return fmt(n) + " Kč";
+}
+
+function fmtTis(n) {
+  if (n === 0) return "0 Kč";
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace('.', ',') + " mil. Kč";
+  if (n >= 1000) return Math.round(n / 1000) + " tis. Kč";
+  return fmt(n) + " Kč";
+}
+
+function update() {
+  const plocha = Math.max(1, getVal("plocha"));
+
+  // Update display values
+  document.getElementById("plocha-val").textContent = fmt(plocha) + " m²";
+
+  // Sekce 2A
+  const najemne = getVal("najemne");
+  const sprava  = getVal("sprava");
+  document.getElementById("najemne-val").textContent = fmtKc(najemne);
+  document.getElementById("sprava-val").textContent  = fmtKc(sprava);
+
+  // Sekce 2B
+  const budova       = getVal("budova");
+  const odpisBudova  = Math.max(1, getVal("odpis_budova"));
+  const pozemek      = getVal("pozemek");
+  const urok         = getVal("urok");
+  document.getElementById("budova-val").textContent       = fmtMil(budova);
+  document.getElementById("odpis_budova-val").textContent = odpisBudova + " let";
+  document.getElementById("pozemek-val").textContent      = fmtMil(pozemek);
+  document.getElementById("urok-val").textContent         = urok.toFixed(1) + " %";
+
+  // Sekce 3
+  const elektrina = getVal("elektrina");
+  const vytapeni  = getVal("vytapeni");
+  const voda      = getVal("voda");
+  document.getElementById("elektrina-val").textContent = fmtKc(elektrina);
+  document.getElementById("vytapeni-val").textContent  = fmtKc(vytapeni);
+  document.getElementById("voda-val").textContent      = fmtKc(voda);
+
+  // Sekce 4
+  const dan       = getVal("dan");
+  const pojBudova = getVal("poj_budova");
+  const pojOdp    = getVal("poj_odp");
+  document.getElementById("dan-val").textContent       = fmtKc(dan);
+  document.getElementById("poj_budova-val").textContent = fmtKc(pojBudova);
+  document.getElementById("poj_odp-val").textContent   = fmtKc(pojOdp);
+
+  // Sekce 5
+  const udrzba     = getVal("udrzba");
+  const elektrorev = getVal("elektrorevize");
+  const eps        = getVal("eps");
+  const ezs        = getVal("ezs");
+  const zdvihaci   = getVal("zdvihaci");
+  const hasici     = getVal("hasici");
+  const plyn       = getVal("plyn");
+  const ostatniRev = getVal("ostatni_rev");
+  document.getElementById("udrzba-val").textContent       = fmtKc(udrzba);
+  document.getElementById("elektrorevize-val").textContent = fmtKc(elektrorev);
+  document.getElementById("eps-val").textContent          = fmtKc(eps);
+  document.getElementById("ezs-val").textContent          = fmtKc(ezs);
+  document.getElementById("zdvihaci-val").textContent     = fmtKc(zdvihaci);
+  document.getElementById("hasici-val").textContent       = fmtKc(hasici);
+  document.getElementById("plyn-val").textContent         = fmtKc(plyn);
+  document.getElementById("ostatni_rev-val").textContent  = fmtKc(ostatniRev);
+
+  // Sekce 6
+  const uklid      = getVal("uklid");
+  const ostraha    = getVal("ostraha");
+  const odpad      = getVal("odpad");
+  const facility   = getVal("facility");
+  const deratizace = getVal("deratizace");
+  document.getElementById("uklid-val").textContent      = fmtKc(uklid);
+  document.getElementById("ostraha-val").textContent    = fmtKc(ostraha);
+  document.getElementById("odpad-val").textContent      = fmtKc(odpad);
+  document.getElementById("facility-val").textContent   = fmtKc(facility);
+  document.getElementById("deratizace-val").textContent = fmtKc(deratizace);
+
+  // Sekce 7
+  const regaly        = getVal("regaly");
+  const odpisRegaly   = Math.max(1, getVal("odpis_regaly"));
+  const dokTechnika   = getVal("dok_technika");
+  const led           = getVal("led");
+  const vrata         = getVal("vrata");
+  const ostatniVyb    = getVal("ostatni_vyb");
+  const odpisVybaveni = Math.max(1, getVal("odpis_vybaveni"));
+  document.getElementById("regaly-val").textContent        = fmtTis(regaly);
+  document.getElementById("odpis_regaly-val").textContent  = odpisRegaly + " let";
+  document.getElementById("dok_technika-val").textContent  = fmtTis(dokTechnika);
+  document.getElementById("led-val").textContent           = fmtTis(led);
+  document.getElementById("vrata-val").textContent         = fmtTis(vrata);
+  document.getElementById("ostatni_vyb-val").textContent   = fmtTis(ostatniVyb);
+  document.getElementById("odpis_vybaveni-val").textContent = odpisVybaveni + " let";
+
+  // Sekce 8
+  const internet    = getVal("internet");
+  const certifikace = getVal("certifikace");
+  const rezervaPct  = getVal("rezerva");
+  document.getElementById("internet-val").textContent    = fmtKc(internet);
+  document.getElementById("certifikace-val").textContent = fmtKc(certifikace);
+  document.getElementById("rezerva-val").textContent     = rezervaPct + " %";
+
+  // ── Výpočet ──
+  let zakladni;
+  if (mode === 'najem') {
+    zakladni = najemne + sprava;
+    document.getElementById("bd-zakladni-name").textContent = "Nájem";
+  } else {
+    zakladni = (budova / (odpisBudova * 12)) + ((budova + pozemek) * urok / 100 / 12);
+    document.getElementById("bd-zakladni-name").textContent = "Odpis budovy a pozemku";
+  }
+
+  const energie   = elektrina + vytapeni + voda;
+  const pojisteni = (dan + pojBudova + pojOdp) / 12;
+  const revize    = udrzba + (elektrorev + eps + ezs + zdvihaci + hasici + plyn + ostatniRev) / 12;
+  const provoz    = uklid + ostraha + odpad + facility + deratizace;
+  const odpisy    = (regaly / (odpisRegaly * 12))
+                  + (dokTechnika + led + vrata + ostatniVyb) / (odpisVybaveni * 12);
+  const ostatni   = internet + certifikace;
+
+  const subtotal = zakladni + energie + pojisteni + revize + provoz + odpisy + ostatni;
+  const rezerva  = subtotal * rezervaPct / 100;
+  const celkem   = subtotal + rezerva;
+  const ostatniPlusRezervaMesic = ostatni + rezerva;
+
+  const m2Mesic  = celkem / plocha;
+  const m2Rok    = m2Mesic * 12;
+  const podil    = celkem > 0 ? Math.round(zakladni / celkem * 100) : 0;
+
+  // ── Výstupy ──
+  document.getElementById("res-m2-mesic").textContent  = fmt(m2Mesic);
+  document.getElementById("res-hero-sub").textContent  = "celkové roční náklady budovy: " + fmt(celkem * 12) + " Kč";
+  document.getElementById("res-mesic").textContent     = fmt(celkem);
+  document.getElementById("res-rok").textContent       = fmt(celkem * 12);
+  document.getElementById("res-m2-rok").textContent    = fmt(m2Rok);
+  document.getElementById("res-podil").textContent     = podil + " %";
+
+  // ── Breakdown ──
+  const cats = [zakladni, energie, pojisteni, revize, provoz, odpisy, ostatniPlusRezervaMesic];
+  const barIds = ["bar-zakladni","bar-energie","bar-pojisteni","bar-revize","bar-provoz","bar-odpisy","bar-ostatni"];
+  const valIds = ["val-zakladni","val-energie","val-pojisteni","val-revize","val-provoz","val-odpisy","val-ostatni"];
+  const total  = Math.max(1, celkem);
+  cats.forEach(function(v, i) {
+    document.getElementById(barIds[i]).style.width = (Math.max(0, v) / total * 100).toFixed(1) + "%";
+    document.getElementById(valIds[i]).textContent = fmt(v) + " Kč";
+  });
+
+  // ── Pro: zapamatovat poslední výsledek pro uložení (vč. rozpadu kategorií pro trend) ──
+  posledniVysledek = {
+    m2Mesic: m2Mesic, celkem: celkem, celkemRok: celkem * 12, m2Rok: m2Rok, plocha: plocha, mode: mode,
+    kategorie: { zakladni: zakladni, energie: energie, pojisteni: pojisteni, revize: revize, provoz: provoz, odpisy: odpisy, ostatni: ostatniPlusRezervaMesic }
+  };
+
+  // ── Přesnost výsledku: kolik hodnot je vašich, kolik jsou orientační odhady ──
+  oznacitPresnost();
+}
+
+// ── Cookie consent ──
+(function() {
+  var s = localStorage.getItem('cookies_souhlas');
+  if (s === 'ano') spustitGA();
+  else if (!s) document.getElementById('cookies-bar').style.display = 'flex';
+})();
+
+function spustitGA() {
+  if (window.__gaLoaded) return;
+  window.__gaLoaded = true;
+  var sc = document.createElement('script');
+  sc.async = true;
+  sc.src = 'https://www.googletagmanager.com/gtag/js?id=G-JBFDH4G4VP';
+  document.head.appendChild(sc);
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', 'G-JBFDH4G4VP');
+}
+
+function cookiesSouhlasit() {
+  localStorage.setItem('cookies_souhlas', 'ano');
+  document.getElementById('cookies-bar').style.display = 'none';
+  spustitGA();
+}
+
+function cookiesOdmitnout() {
+  localStorage.setItem('cookies_souhlas', 'ne');
+  document.getElementById('cookies-bar').style.display = 'none';
+}
+
+// ── Pro: uložení víc výpočtů, porovnání, export ──
+// Appka je jinak celá zdarma bez omezení (viz koncept-realizace-jeden-nastroj.md).
+// Od 26.8.2026 appka Pro neodemyká přístupovým kódem, ale sdíleným přihlášením
+// do Moje Nástrojovna (Supabase, viz auth.js/supabase-client.js) - stejný vzorec
+// jako 5S a Časová studie. Uložené výpočty zůstávají primárně v localStorage
+// (appka je odolná i offline/bez Supabase, uložené výpočty se nikam neztratí),
+// Pro navíc, best-effort, každý uložený výpočet pošle i do Supabase
+// (tool_runs/measurements), aby šel číst napříč nástroji a v budoucím Akčním
+// plánu.
+
+let session = null;
+let clenstvi = null;
+let jePro = false;
+let ulozene = JSON.parse(localStorage.getItem('kalk_ulozene') || '[]');
+
+async function nacistPrihlaseniStav() {
+  // Zabaleno v try/catch schválně: appka je pořád zdarma použitelná i offline,
+  // nebo když se z jakéhokoli důvodu nenačte Supabase/auth.js (výpadek, adblock,
+  // firemní firewall v provozu). Bez tohohle by pád přihlašovací vrstvy shodil
+  // úplně celou appku, i tu zdarma část.
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál jako nepřihlášená (zdarma).', e);
+    session = null;
+    clenstvi = null;
+    jePro = false;
+  }
+  renderUcetNav();
+  renderUlozene();
+}
+
+function renderUcetNav() {
+  const btn = document.getElementById('nav-ucet-btn');
+  const info = document.getElementById('nav-ucet-info');
+  if (!session) {
+    btn.textContent = 'Přihlásit se';
+    btn.style.display = '';
+    info.style.display = 'none';
+    return;
+  }
+  btn.textContent = 'Odhlásit';
+  btn.style.display = '';
+  info.style.display = '';
+  const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
+  info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
+}
+
+async function klikNaUcet() {
+  try {
+    if (session) {
+      await odhlasit();
+      session = null; clenstvi = null; jePro = false;
+      renderUcetNav();
+      renderUlozene();
+      return;
+    }
+    await vyzadovatPrihlaseni();
+  } catch (e) {
+    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    console.warn('Přihlášení/odhlášení se nepovedlo.', e);
+  }
+}
+
+// Tlačítko v modalu "Odemknout Pro": podle stavu buď pošle na přihlášení,
+// nebo (už přihlášený, ale bez Pro plánu) jen vysvětlí.
+async function klikVModaluPro() {
+  try {
+    if (!session) { await vyzadovatPrihlaseni(); return; }
+  } catch (e) {
+    document.getElementById('pro-err').textContent = 'Přihlašování teď není dostupné. Zkuste to prosím později.';
+    console.warn('Přihlášení se nepovedlo.', e);
+    return;
+  }
+  document.getElementById('pro-err').textContent =
+    'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro.';
+}
+
+function otevritModalPro() {
+  document.getElementById('pro-err').textContent = '';
+  document.getElementById('modal-pro').style.display = 'flex';
+}
+function zavritModalPro() { document.getElementById('modal-pro').style.display = 'none'; }
+
+document.addEventListener('click', function(e) {
+  var overlay = document.getElementById('modal-pro');
+  if (e.target === overlay) zavritModalPro();
+});
+
+function ulozitVypocet() {
+  if (!jePro) { otevritModalPro(); return; }
+  var navrh = (posledniVysledek.mode === 'najem' ? 'Sklad – pronájem' : 'Sklad – vlastní budova') + ', ' + fmt(posledniVysledek.plocha) + ' m²';
+  var nazev = prompt('Název výpočtu (např. "Vrchlabí – hlavní sklad" nebo "Leden 2026"):', navrh);
+  if (nazev === null) return;
+  nazev = nazev.trim() || navrh;
+  var polozka = {
+    id: 'v_' + Date.now(),
+    nazev: nazev,
+    datum: new Date().toLocaleDateString('cs-CZ'),
+    plocha: posledniVysledek.plocha,
+    mode: posledniVysledek.mode,
+    m2mesic: Math.round(posledniVysledek.m2Mesic),
+    mesic: Math.round(posledniVysledek.celkem),
+    rok: Math.round(posledniVysledek.celkemRok),
+    m2rok: Math.round(posledniVysledek.m2Rok),
+    kategorie: posledniVysledek.kategorie
+  };
+  ulozene.push(polozka);
+  localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
+  renderUlozene();
+  odeslatVypocetDoSupabase(polozka);
+}
+
+// Uloží uložený výpočet i do Supabase (tool_runs + measurements) - jen pro Pro
+// a jen best-effort, appka bez tohohle dál normálně funguje, výpočet jen
+// nezůstane vidět napříč zařízeními. localStorage (viz výš) je pořád to, co
+// appka reálně vykresluje - tohle appku o nic nepřipraví, ani při výpadku.
+async function odeslatVypocetDoSupabase(polozka) {
+  if (!jePro || !clenstvi) return;
+  try {
+    const { data: run, error: errRun } = await supabaseClient.from('tool_runs').insert({
+      organization_id: clenstvi.organization_id,
+      nastroj: 'kalkulacka-m2',
+      nazev: polozka.nazev,
+      shrnuti: fmt(polozka.m2mesic) + ' Kč/m²/měsíc (' + (polozka.mode === 'najem' ? 'pronájem' : 'vlastní budova') + ', ' + fmt(polozka.plocha) + ' m²)',
+      hlavni_hodnota_cislo: polozka.m2mesic,
+      hlavni_hodnota_jednotka: 'Kč/m²/měsíc',
+      hlavni_hodnota_typ: 'naklady_kc',
+      data: {
+        plocha: polozka.plocha,
+        mode: polozka.mode,
+        mesic: polozka.mesic,
+        rok: polozka.rok,
+        m2rok: polozka.m2rok,
+        kategorie: polozka.kategorie
+      }
+    }).select().single();
+    if (errRun) throw errRun;
+    await supabaseClient.from('measurements').insert({
+      organization_id: clenstvi.organization_id,
+      tool_run_id: run ? run.id : null,
+      metric_name: 'kalk_m2_kc_mesic',
+      metric_value: polozka.m2mesic,
+      unit: 'Kč/m²/měsíc'
+    });
+  } catch (e) {
+    console.warn('Výpočet se nepodařilo uložit do Supabase, zůstává aspoň lokálně.', e);
+  }
+}
+
+function smazatUlozeny(id) {
+  if (!confirm('Smazat tento uložený výpočet?')) return;
+  ulozene = ulozene.filter(function (u) { return u.id !== id; });
+  localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
+  renderUlozene();
+}
+
+function renderUlozene() {
+  var box = document.getElementById('ulozene-box');
+  if (!jePro) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  var wrap = document.getElementById('ulozene-seznam');
+  if (ulozene.length === 0) {
+    wrap.innerHTML = '<p class="empty-note">Zatím nemáte žádný uložený výpočet. Nahoře klikněte na „Uložit tento výpočet".</p>';
+    return;
+  }
+  wrap.innerHTML = ulozene.map(function (u) {
+    return '<div class="ulozeny-item">' +
+      '<div style="flex:1;min-width:0;">' +
+      '<div class="ulozeny-name">' + u.nazev + '</div>' +
+      '<div class="ulozeny-meta">' + u.datum + ' · ' + fmt(u.plocha) + ' m² · ' + (u.mode === 'najem' ? 'pronájem' : 'vlastní budova') + '</div>' +
+      '</div>' +
+      '<div class="ulozeny-num">' + fmt(u.m2mesic) + ' Kč/m²</div>' +
+      '<button class="ulozeny-del" onclick="smazatUlozeny(\'' + u.id + '\')" title="Smazat">×</button>' +
+      '</div>';
+  }).join('') + trendInsightHtml();
+}
+
+// Jednoduché porovnání posledních dvou uložených výpočtů (v pořadí, jak byly uloženy –
+// appka nepozná, jestli jde o stejný sklad, jen ukáže, co se změnilo od minule).
+function trendInsightHtml() {
+  if (ulozene.length < 2) return '';
+  const posl = ulozene[ulozene.length - 1];
+  const pred = ulozene[ulozene.length - 2];
+  if (!posl.kategorie || !pred.kategorie || !pred.m2mesic) return '';
+
+  const zmenaPct = Math.round((posl.m2mesic - pred.m2mesic) / pred.m2mesic * 1000) / 10;
+  if (zmenaPct === 0) return '';
+  const smer = zmenaPct > 0 ? 'vzrostly' : 'klesly';
+
+  const nazvyKat = { zakladni: 'základní náklad', energie: 'energie', pojisteni: 'daně a pojištění', revize: 'údržba a revize', provoz: 'provozní služby', odpisy: 'odpisy vybavení', ostatni: 'ostatní a rezerva' };
+  let maxKlic = null, maxRozdil = 0;
+  Object.keys(nazvyKat).forEach(function (k) {
+    const rozdil = (posl.kategorie[k] || 0) - (pred.kategorie[k] || 0);
+    if (Math.abs(rozdil) > Math.abs(maxRozdil)) { maxRozdil = rozdil; maxKlic = k; }
+  });
+
+  const zmenaPctText = Math.abs(zmenaPct).toString().replace('.', ',');
+  return '<div class="trend-insight">📈 Náklady na m² ' + smer + ' o ' + zmenaPctText + ' % oproti výpočtu „' + pred.nazev + '"' +
+    (maxKlic ? '. Největší ' + (maxRozdil > 0 ? 'nárůst' : 'pokles') + ': ' + nazvyKat[maxKlic] + '.' : '.') + '</div>';
+}
+
+function exportCSV() {
+  if (!jePro) { otevritModalPro(); return; }
+  if (ulozene.length === 0) {
+    alert('Zatím nemáte žádný uložený výpočet k exportu. Nejdřív nějaký uložte tlačítkem „Uložit tento výpočet".');
+    return;
+  }
+  var radky = [['Název', 'Datum', 'Plocha (m²)', 'Typ', 'Kč/m²/měsíc', 'Kč/měsíc celkem', 'Kč/rok celkem', 'Kč/m²/rok']];
+  ulozene.forEach(function (u) {
+    radky.push([u.nazev, u.datum, u.plocha, u.mode === 'najem' ? 'Pronájem' : 'Vlastní budova', u.m2mesic, u.mesic, u.rok, u.m2rok]);
+  });
+  var csv = radky.map(function (r) {
+    return r.map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(';');
+  }).join('\r\n');
+  var blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'kalkulacka-naklady-skladu.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Init
+update();
+renderUlozene();
+nacistPrihlaseniStav();
+</script>
+</body>
+</html>

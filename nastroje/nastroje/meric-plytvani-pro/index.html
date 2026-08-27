@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Měřič plýtvání Pro | Gabriela Tomíčková</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#e9a91b; --gold-dark:#c48e10; --gold-light:#fdf3d9;
+  --black:#000; --dark:#111; --mid:#545454; --light:#a8a6a6;
+  --white:#fff; --paper:#f5f4f0; --border:#e2e2e2;
+  --green:#2a7a4f; --green-light:#e8f5ee;
+  --prace:#2a7a4f; --presun:#1a6aaa; --hledani:#d97706;
+  --cekani:#c0392b; --papiry:#7c3aed; --priprava:#545454; --kontrola:#0891b2;
+  --pro:#8b5cf6;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--dark);min-height:100vh;line-height:1.6;}
+
+nav{background:var(--black);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:white;}
+.nav-brand span{color:var(--gold);}
+.nav-badge{font-size:10px;font-weight:700;color:var(--pro);background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);padding:3px 8px;border-radius:3px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{background:transparent;border:1px solid var(--border);color:var(--mid);font-size:12px;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
+
+.page-header{background:var(--black);padding:24px 20px 20px;position:relative;overflow:hidden;}
+.page-header::before{content:"";position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:50px solid rgba(233,169,27,.07);pointer-events:none;}
+.page-header-inner{max-width:560px;margin:0 auto;position:relative;z-index:1;}
+.page-header h1{font-family:"Poppins",sans-serif;font-size:clamp(20px,4vw,28px);font-weight:900;color:white;line-height:1.2;margin-bottom:6px;}
+.page-header h1 em{color:var(--gold);font-style:normal;}
+.page-header p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;}
+
+/* PRIHLASENI */
+.prihlaseni{max-width:420px;margin:40px auto;padding:0 16px;}
+.prih-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 24px;text-align:center;}
+.prih-card h2{font-family:"Poppins",sans-serif;font-size:18px;font-weight:800;color:var(--dark);margin-bottom:8px;}
+.prih-card p{font-size:13px;color:var(--mid);margin-bottom:20px;line-height:1.7;}
+.prih-input{width:100%;border:2px solid var(--border);border-radius:8px;padding:12px 16px;font-family:"DM Mono",monospace;font-size:16px;text-align:center;letter-spacing:3px;outline:none;transition:border .2s;}
+.prih-input:focus{border-color:var(--gold);}
+.prih-err{font-size:12px;color:var(--cekani);margin-top:8px;display:none;}
+.prih-btn{width:100%;background:var(--gold);color:var(--black);border:none;border-radius:8px;padding:13px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-top:12px;transition:all .2s;}
+.prih-btn:hover{background:var(--gold-dark);color:white;}
+
+.main{max-width:560px;margin:0 auto;padding:20px 16px 80px;}
+
+/* SETUP */
+.setup-krok{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;}
+.krok-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.krok-title{font-family:"Poppins",sans-serif;font-size:14px;font-weight:700;color:var(--dark);margin-bottom:10px;}
+
+.field label{font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:5px;}
+.field input,.field select{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
+.field input:focus,.field select:focus{border-color:var(--gold);background:white;}
+.field+.field{margin-top:10px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* OPERACE */
+.operace-sekce{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;}
+.operace-title{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:4px;}
+.operace-sub{font-size:12px;color:var(--light);margin-bottom:10px;line-height:1.6;}
+.operace-list{display:flex;flex-direction:column;gap:7px;margin-bottom:8px;}
+.operace-row{display:flex;gap:8px;align-items:center;}
+.operace-row input{flex:1;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-family:"DM Sans",sans-serif;font-size:13px;outline:none;}
+.operace-row input:focus{border-color:var(--gold);}
+.operace-barva{width:30px;height:30px;border-radius:6px;border:2px solid var(--border);cursor:pointer;flex-shrink:0;}
+.operace-smazat{background:transparent;border:none;color:var(--light);font-size:18px;cursor:pointer;padding:0 4px;}
+.operace-smazat:hover{color:var(--cekani);}
+.btn-pridat{background:transparent;border:1px dashed var(--border);border-radius:6px;padding:8px;width:100%;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--light);cursor:pointer;transition:all .2s;}
+.btn-pridat:hover{border-color:var(--gold);color:var(--gold-dark);}
+
+/* SMENA SELECT */
+.smena-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;}
+.smena-btn{background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:8px 4px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--mid);cursor:pointer;text-align:center;transition:all .15s;}
+.smena-btn.on{background:var(--gold-light);border-color:var(--gold);color:var(--gold-dark);}
+.smena-vlastni{display:none;margin-top:6px;}
+.smena-vlastni input{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:"DM Sans",sans-serif;font-size:13px;outline:none;}
+.smena-vlastni input:focus{border-color:var(--gold);}
+
+.btn-spustit{width:100%;background:var(--gold);color:var(--black);border:none;border-radius:10px;padding:14px;font-family:"Poppins",sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;}
+.btn-spustit:hover{background:var(--gold-dark);color:white;}
+.btn-spustit .arr{width:16px;height:10px;background:currentColor;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);}
+
+/* MERENI */
+.mereni{display:none;max-width:560px;margin:0 auto;padding:14px 16px 80px;}
+.m-header{background:var(--black);border-radius:12px;padding:13px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.m-nazev{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:white;}
+.m-cykly{font-family:"DM Mono",monospace;font-size:11px;color:rgba(255,255,255,.4);}
+
+.instrukce{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:8px;padding:11px 14px;margin-bottom:10px;font-size:13px;color:var(--dark);line-height:1.65;}
+.instrukce strong{color:var(--gold-dark);}
+
+.timer-box{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;text-align:center;}
+.timer-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--light);margin-bottom:4px;}
+.timer{font-family:"DM Mono",monospace;font-size:44px;font-weight:500;color:var(--dark);line-height:1;margin-bottom:5px;transition:color .3s;}
+.timer-kat{font-size:12px;font-weight:600;color:white;padding:3px 12px;border-radius:20px;display:inline-block;background:var(--light);}
+
+.kat-sekce-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--light);margin-bottom:6px;margin-top:8px;}
+.kat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.kat-btn{border:none;border-radius:10px;padding:11px 10px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:flex-start;gap:3px;}
+.kat-btn:active{transform:scale(.97);}
+.kat-btn.on{box-shadow:0 4px 16px rgba(0,0,0,.2);transform:scale(1.02);}
+.kat-arr{width:18px;height:11px;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);margin-bottom:1px;}
+.kat-cas{font-family:"DM Mono",monospace;font-size:13px;font-weight:500;}
+
+.k-prace{background:#e8f5ee;color:var(--prace);} .k-prace .kat-arr{background:var(--prace);} .k-prace.on{background:var(--prace);color:white;} .k-prace.on .kat-arr{background:white;}
+.k-presun{background:#e3f0fa;color:var(--presun);} .k-presun .kat-arr{background:var(--presun);} .k-presun.on{background:var(--presun);color:white;} .k-presun.on .kat-arr{background:white;}
+.k-hledani{background:#fef3c7;color:var(--hledani);} .k-hledani .kat-arr{background:var(--hledani);} .k-hledani.on{background:var(--hledani);color:white;} .k-hledani.on .kat-arr{background:white;}
+.k-cekani{background:#fee2e2;color:var(--cekani);} .k-cekani .kat-arr{background:var(--cekani);} .k-cekani.on{background:var(--cekani);color:white;} .k-cekani.on .kat-arr{background:white;}
+.k-papiry{background:#ede9fe;color:var(--papiry);} .k-papiry .kat-arr{background:var(--papiry);} .k-papiry.on{background:var(--papiry);color:white;} .k-papiry.on .kat-arr{background:white;}
+.k-priprava{background:#f0f0f0;color:var(--priprava);} .k-priprava .kat-arr{background:var(--priprava);} .k-priprava.on{background:var(--priprava);color:white;} .k-priprava.on .kat-arr{background:white;}
+.k-kontrola{background:#e0f2fe;color:var(--kontrola);} .k-kontrola .kat-arr{background:var(--kontrola);} .k-kontrola.on{background:var(--kontrola);color:white;} .k-kontrola.on .kat-arr{background:white;}
+.k-vlastni{background:#f0fdf4;color:#166534;} .k-vlastni .kat-arr{background:#166534;} .k-vlastni.on{color:white;} .k-vlastni.on .kat-arr{background:white;}
+
+.ovladani{display:flex;gap:8px;margin-top:8px;}
+.btn-stop{flex:1;background:var(--cekani);color:white;border:none;border-radius:10px;padding:12px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;cursor:pointer;}
+.btn-novy{flex:1;background:var(--dark);color:white;border:none;border-radius:10px;padding:12px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:none;}
+.btn-konec{flex:1;background:var(--gold);color:var(--black);border:none;border-radius:10px;padding:12px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;cursor:pointer;display:none;}
+
+.ulozene{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:10px;display:none;}
+.uloz-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:8px;}
+.c-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #f5f5f5;font-size:12px;}
+.c-row:last-child{border-bottom:none;}
+.c-num{font-family:"DM Mono",monospace;font-size:11px;color:var(--light);width:16px;}
+.c-cas{font-family:"DM Mono",monospace;font-weight:500;color:var(--dark);width:40px;}
+.c-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;display:flex;}
+
+/* SOUHRN */
+.souhrn{display:none;max-width:620px;margin:0 auto;padding:18px 16px 80px;}
+.s-header{background:var(--black);border-radius:12px;padding:16px;margin-bottom:12px;}
+.s-nazev{font-family:"Poppins",sans-serif;font-size:16px;font-weight:800;color:white;margin-bottom:3px;}
+.s-meta{font-size:11px;color:rgba(255,255,255,.4);}
+.s-logo{font-family:"Poppins",sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.25);margin-top:8px;}
+.s-logo span{color:var(--gold);}
+
+.tbl-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:auto;margin-bottom:12px;}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.tbl th{background:var(--dark);color:white;padding:7px 8px;text-align:left;font-weight:600;font-size:10px;white-space:nowrap;}
+.tbl td{padding:6px 8px;border-bottom:1px solid #f5f5f5;font-family:"DM Mono",monospace;font-size:10px;white-space:nowrap;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr.avg td{background:var(--gold-light);font-weight:700;}
+.tbl tr.ply td{background:#fee2e2;}
+
+.porovnani-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
+.porov-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;}
+.porov-bars{display:flex;flex-direction:column;gap:8px;}
+.porov-row{display:flex;align-items:center;gap:8px;}
+.porov-lbl{font-family:"DM Mono",monospace;font-size:11px;color:var(--mid);width:30px;flex-shrink:0;}
+.porov-bg{flex:1;height:20px;background:var(--border);border-radius:3px;overflow:hidden;}
+.porov-bar{height:100%;border-radius:3px;transition:width .4s ease;}
+.porov-val{font-family:"DM Mono",monospace;font-size:10px;color:var(--mid);width:50px;text-align:right;flex-shrink:0;}
+
+.graf-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
+.graf-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;}
+.g-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.g-lbl{font-size:11px;font-weight:600;width:90px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;}
+.g-bg{flex:1;height:16px;background:var(--border);border-radius:3px;overflow:hidden;}
+.g-bar{height:100%;border-radius:3px;}
+.g-val{font-family:"DM Mono",monospace;font-size:10px;color:var(--mid);width:70px;text-align:right;flex-shrink:0;}
+
+.insight-box{border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.insight-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;}
+.insight-text{font-size:13px;line-height:1.7;color:var(--mid);}
+.ins-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
+.ins-arr{width:14px;height:9px;background:var(--gold);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:4px;}
+
+/* HISTORIE */
+.historie-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
+.hist-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;}
+.hist-list{display:flex;flex-direction:column;gap:6px;}
+.hist-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--paper);border-radius:6px;cursor:pointer;transition:background .15s;}
+.hist-row:hover{background:var(--gold-light);}
+.hist-del{font-size:14px;color:var(--light);cursor:pointer;padding:0 2px;flex-shrink:0;line-height:1;transition:color .15s;}
+.hist-del:hover{color:#c0392b;}
+.hist-nazev{font-size:12px;font-weight:600;color:var(--dark);flex:1;}
+.hist-meta{font-size:11px;color:var(--light);}
+.hist-ply{font-family:"DM Mono",monospace;font-size:11px;font-weight:600;}
+.hist-check{flex-shrink:0;width:16px;height:16px;cursor:pointer;}
+.btn-porovnat{width:100%;background:var(--pro);color:white;border:none;border-radius:6px;padding:9px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;opacity:.5;}
+.btn-porovnat.active{opacity:1;}
+.pred-po-box{background:#f5f0ff;border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:14px;margin-bottom:12px;}
+.pred-po-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--pro);margin-bottom:10px;}
+.pred-po-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;}
+.pp-col{text-align:center;}
+.pp-col-lbl{font-size:10px;color:var(--light);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.pp-col-nazev{font-size:11px;color:var(--mid);margin-bottom:6px;}
+.pp-val{font-family:"DM Mono",monospace;font-size:20px;font-weight:700;color:var(--dark);}
+.pp-sub{font-size:10px;color:var(--light);margin-top:2px;}
+.pp-arrow{font-size:18px;color:var(--pro);text-align:center;}
+.pp-delta{grid-column:1/-1;text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(139,92,246,.2);font-size:13px;color:var(--dark);}
+.pp-delta strong{color:var(--pro);}
+
+/* CYKLUS: poznamky a anomalie */
+.c-row-wrap{border-bottom:1px solid #f5f5f5;padding-bottom:4px;margin-bottom:2px;}
+.c-row-wrap .c-row{border-bottom:none;padding-bottom:0;}
+.c-pozn-btn{background:transparent;border:none;color:var(--light);font-size:13px;cursor:pointer;padding:0 4px;flex-shrink:0;}
+.c-pozn-btn:hover{color:var(--pro);}
+.c-anomalie{font-size:11px;color:#b45309;background:#fff3e0;border-radius:5px;padding:5px 8px;margin:4px 0;}
+.c-pozn-wrap{margin:4px 0 6px;}
+.c-pozn-input{width:100%;border:1px solid var(--border);border-radius:5px;padding:6px 9px;font-family:"DM Sans",sans-serif;font-size:12px;outline:none;}
+.c-pozn-input:focus{border-color:var(--pro);}
+.poznamky-box{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
+.poznamky-row{font-size:12px;color:var(--mid);padding:5px 0;border-bottom:1px solid #f5f5f5;}
+.poznamky-row:last-child{border-bottom:none;}
+.poznamky-row strong{color:var(--dark);}
+
+.btn-row{display:flex;gap:8px;margin-bottom:8px;}
+.btn-akce{flex:1;border:none;border-radius:8px;padding:12px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-gmail{background:var(--gold);color:var(--black);}
+.btn-gmail:hover{background:var(--gold-dark);color:white;}
+.btn-csv{background:var(--green);color:white;}
+.btn-csv:hover{background:#1e5c3a;}
+.btn-kopir{background:var(--mid);color:white;}
+.btn-znovu{width:100%;background:transparent;color:var(--mid);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;}
+
+/* ZAKÁZKA BOX */
+.zakazka-box{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;}
+.zak-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;}
+.zak-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.zak-item{background:var(--paper);border-radius:6px;padding:10px 12px;text-align:center;}
+.zak-val{font-family:"DM Mono",monospace;font-size:18px;font-weight:500;color:var(--dark);}
+.zak-lbl{font-size:11px;color:var(--light);margin-top:2px;}
+.zak-highlight{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);}
+.zak-highlight .zak-val{color:var(--gold-dark);font-size:20px;font-weight:700;}
+
+footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:40px;}
+.footer-brand{font-family:"Poppins",sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.3);}
+.footer-brand span{color:var(--gold);}
+.footer-legal{font-size:10px;color:rgba(255,255,255,.15);}
+.footer-legal a{color:rgba(255,255,255,.15);text-decoration:none;}
+
+@media(max-width:560px){
+  nav,.main,.mereni,.souhrn{padding-left:14px;padding-right:14px;}
+  .page-header{padding:20px 14px 16px;}
+  .btn-row{flex-wrap:wrap;}
+  .zak-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+
+<style id="cookies-css">
+.cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
+.cookies-bar p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin:0;flex:1;min-width:200px;}
+.cookies-bar a{color:#e9a91b;text-decoration:none;}
+.cookies-bar a:hover{text-decoration:underline;}
+.cookies-btns{display:flex;gap:8px;flex-shrink:0;}
+.cookies-ok{background:#e9a91b;color:#000;border:none;border-radius:4px;padding:8px 18px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.cookies-ok:hover{background:#c48e10;}
+.cookies-no{background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:8px 14px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;}
+.cookies-no:hover{color:rgba(255,255,255,.7);}
+</style>
+</head>
+<body>
+
+<div class="cookies-bar" id="cookies-bar" style="display:none;">
+  <p>Tento web používá analytické cookies (Google Analytics) pro měření návštěvnosti. <a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></p>
+  <div class="cookies-btns">
+    <button class="cookies-no" onclick="cookiesOdmitnout()">Odmítnout</button>
+    <button class="cookies-ok" onclick="cookiesSouhlasit()">Souhlasím</button>
+  </div>
+</div>
+
+<nav>
+  <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;">Gabriela <span>Tomíčková</span></a>
+  <div class="nav-right">
+    <span class="nav-badge">Pro verze</span>
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1>Měřič plýtvání <em>Pro</em></h1>
+    <p>Profesionální časová studie procesu s neomezenými funkcemi.</p>
+  </div>
+</div>
+
+<!-- PŘIHLÁŠENÍ -->
+<div id="prihlaseni" class="prihlaseni">
+  <div class="prih-card">
+    <h2 id="prih-nadpis">Přihlaste se ke svému účtu</h2>
+    <p id="prih-text">Měřič plýtvání Pro je součástí vašeho předplatného Moje Nástrojovna. Přihlaste se účtem, který jste dostali po zakoupení.</p>
+    <div class="prih-err" id="prih-err" style="display:none;">Přihlášení se nepodařilo. Zkuste to znovu nebo napište na tomickova.info@gmail.com</div>
+    <button class="prih-btn" id="prih-btn" onclick="klikNaPrihlaseni()">Přihlásit se</button>
+    <p style="margin-top:16px;font-size:12px;color:var(--light);">Nemáte přístup? <a href="kde-mi-mizi-cas.html" style="color:var(--gold);text-decoration:none;font-weight:700;">Zjistit více o Měřiči plýtvání Pro</a></p>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div class="main" id="setup" style="display:none;">
+
+  <div class="setup-krok">
+    <div class="krok-num">Krok 1 — Proces</div>
+    <div class="krok-title">Základní nastavení</div>
+    <div class="field"><label>Název procesu</label>
+      <input type="text" id="inp-nazev" placeholder="např. Montáž konektoru"></div>
+
+  </div>
+
+  <div class="setup-krok">
+    <div class="krok-num">Krok 2 — Jak fungují tlačítka měření</div>
+    <div class="krok-title">Klikněte vždy na začátku dané činnosti</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;">
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
+        <div style="width:12px;height:8px;background:var(--prace);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
+        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Práce</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Čistá přidaná hodnota - skutečná výrobní nebo manipulační činnost</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
+        <div style="width:12px;height:8px;background:var(--presun);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
+        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Přesun</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Chůze, transport materiálu nebo výrobku z místa na místo</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
+        <div style="width:12px;height:8px;background:var(--hledani);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
+        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Hledání</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Hledání nářadí, materiálu, informace nebo místa</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
+        <div style="width:12px;height:8px;background:var(--cekani);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
+        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Čekání</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Čekání na materiál, informaci, stroj nebo rozhodnutí</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
+        <div style="width:12px;height:8px;background:var(--papiry);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
+        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Administrativa</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Vypisování, přepisování, skenování, evidence</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
+        <div style="width:12px;height:8px;background:var(--kontrola);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
+        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Kontrola</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Vizuální nebo fyzická kontrola kvality výrobku</div></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);grid-column:span 2;">
+        <div style="width:12px;height:8px;background:var(--priprava);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
+        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Příprava</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Příprava pracoviště, nástrojů nebo materiálu před operací</div></div>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--light);margin-top:8px;line-height:1.6;">Vlastní operace přidáte v kroku 4 - zobrazí se jako zelená tlačítka vedle Práce.</p>
+  </div>
+
+  <div class="setup-krok">
+    <div class="krok-num">Krok 3 — Směna a náklady</div>
+    <div class="krok-title">Vyberte délku směny a náklad práce</div>
+    <div class="smena-grid">
+      <button class="smena-btn" onclick="nastavSmenu(6, this)">6 hod</button>
+      <button class="smena-btn on" onclick="nastavSmenu(7.5, this)">7,5 hod</button>
+      <button class="smena-btn" onclick="nastavSmenu(8, this)">8 hod</button>
+      <button class="smena-btn" onclick="nastavSmenu(12, this)">12 hod</button>
+    </div>
+    <div class="smena-vlastni" id="smena-vlastni-wrap">
+      <input type="number" id="inp-smena-vlastni" placeholder="Vlastní délka v hodinách (např. 9.5)" min="1" max="24" step="0.5" oninput="delkaSmeny=parseFloat(this.value)||7.5">
+    </div>
+    <button class="btn-pridat" style="margin-top:8px;" onclick="toggleVlastniSmena()">Vlastní délka směny</button>
+    <div class="field-row" style="margin-top:12px;">
+      <div class="field"><label>Náklad pracovníka na hodinu (Kč/h)</label>
+        <input type="number" id="inp-sazba" value="250" min="0" step="10"></div>
+      <div class="field"><label>Počet pracovníků v procesu</label>
+        <input type="number" id="inp-pocet-pracovniku" value="1" min="1" step="1"></div>
+    </div>
+    <p style="font-size:12px;color:var(--light);margin-top:6px;line-height:1.6;">Výchozích 250 Kč/h je orientační odhad celkových nákladů na pracovníka (mzda + odvody). Zadejte vlastní číslo pro přesnější výsledek. Počet pracovníků násobí dopad — čeká-li na materiál víc lidí najednou, ztráta je vyšší než u jednoho člověka.</p>
+  </div>
+
+  <div class="setup-krok">
+    <div class="krok-num">Krok 4 — Objem zakázky (volitelné)</div>
+    <div class="krok-title">Zadejte počet kusů v zakázce pro výpočet taktu</div>
+    <div class="field"><label>Počet kusů v zakázce</label>
+      <input type="number" id="inp-zakazka" placeholder="např. 500" min="1"></div>
+    <p style="font-size:12px;color:var(--light);margin-top:6px;line-height:1.6;">Aplikace spočítá takt zakázky, jak dlouho potrvá bez plýtvání a co ušetříte snížením plýtvání.</p>
+  </div>
+
+  <div class="operace-sekce">
+    <div class="operace-title">Krok 5 — Vlastní operace (volitelné)</div>
+    <div class="operace-sub">Přidejte konkrétní kroky vašeho procesu. Zobrazí se jako zelená tlačítka vedle Práce.</div>
+    <div class="operace-list" id="operace-list"></div>
+    <button class="btn-pridat" onclick="pridatOperaci()">+ Přidat vlastní operaci</button>
+  </div>
+
+  <div class="setup-krok">
+    <div class="krok-num">Krok 6 — Počet cyklů</div>
+    <div class="krok-title">Kolik cyklů chcete změřit?</div>
+    <div class="field">
+      <input type="number" id="inp-cykly" value="10" min="1" max="50">
+    </div>
+    <p style="font-size:12px;color:var(--light);margin-top:6px;">Doporučujeme 5-10 cyklů pro statisticky spolehlivý výsledek.</p>
+  </div>
+
+  <button class="btn-spustit" onclick="spustit()">
+    <span class="arr"></span> Rozumím, přejít k měření
+  </button>
+
+</div>
+
+<!-- MERENI -->
+<div class="mereni" id="mereni">
+  <div class="m-header">
+    <div class="m-nazev" id="m-nazev">-</div>
+    <div class="m-cykly" id="m-cykly">Cyklus 1</div>
+  </div>
+
+  <div class="instrukce">
+    <strong>Jak měřit:</strong> Klikněte na tlačítko vždy na <strong>začátku</strong> dané činnosti. Časomíra se spustí prvním kliknutím. Aplikace automaticky ukončí předchozí a začne měřit novou. Až cyklus skončí, klikněte STOP.
+  </div>
+
+  <div class="timer-box">
+    <div class="timer-lbl">Čas cyklu</div>
+    <div class="timer" id="timer">00:00</div>
+    <div class="timer-kat" id="timer-kat">Klikněte na první činnost</div>
+  </div>
+
+  <div id="tlacitka-wrap">
+    <div class="kat-sekce-title">Přidaná hodnota</div>
+    <div class="kat-grid" id="grid-hodnota">
+      <button class="kat-btn k-prace" onclick="setKat('prace','Práce','#2a7a4f')">
+        <div class="kat-arr"></div><div>Práce</div><div class="kat-cas" id="k-prace">0:00</div>
+      </button>
+    </div>
+
+    <div class="kat-sekce-title" style="margin-top:8px;">Plýtvání</div>
+    <div class="kat-grid tri" style="grid-template-columns:1fr 1fr 1fr;">
+      <button class="kat-btn k-presun" onclick="setKat('presun','Přesun','#1a6aaa')"><div class="kat-arr"></div><div>Přesun</div><div class="kat-cas" id="k-presun">0:00</div></button>
+      <button class="kat-btn k-hledani" onclick="setKat('hledani','Hledání','#d97706')"><div class="kat-arr"></div><div>Hledání</div><div class="kat-cas" id="k-hledani">0:00</div></button>
+      <button class="kat-btn k-cekani" onclick="setKat('cekani','Čekání','#c0392b')"><div class="kat-arr"></div><div>Čekání</div><div class="kat-cas" id="k-cekani">0:00</div></button>
+      <button class="kat-btn k-papiry" onclick="setKat('papiry','Administrativa','#7c3aed')"><div class="kat-arr"></div><div>Administrativa</div><div class="kat-cas" id="k-papiry">0:00</div></button>
+      <button class="kat-btn k-priprava" onclick="setKat('priprava','Příprava','#545454')"><div class="kat-arr"></div><div>Příprava</div><div class="kat-cas" id="k-priprava">0:00</div></button>
+      <button class="kat-btn k-kontrola" onclick="setKat('kontrola','Kontrola','#0891b2')"><div class="kat-arr"></div><div>Kontrola</div><div class="kat-cas" id="k-kontrola">0:00</div></button>
+    </div>
+
+    <div class="ovladani">
+      <button class="btn-stop" id="btn-stop" onclick="stopCyklus()">STOP</button>
+      <button class="btn-novy" id="btn-novy" onclick="novyCyklus()">NOVÝ CYKLUS</button>
+      <button class="btn-konec" id="btn-konec" onclick="ukoncit()">UKONČIT</button>
+    </div>
+
+    <div class="ulozene" id="ulozene">
+      <div class="uloz-title">Uložené cykly</div>
+      <div id="uloz-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SOUHRN -->
+<div class="souhrn" id="souhrn">
+  <div class="s-header">
+    <div class="s-nazev" id="s-nazev">-</div>
+    <div class="s-meta" id="s-meta">-</div>
+    <div class="s-logo">Gabriela <span>Tomíčková</span> — Měřič plýtvání Pro</div>
+  </div>
+
+  <!-- TABULKA -->
+  <div class="tbl-wrap"><table class="tbl" id="tbl"></table></div>
+
+  <!-- POROVNANI CYKLU -->
+  <div class="porovnani-wrap">
+    <div class="porov-title">Porovnání cyklů</div>
+    <div class="porov-bars" id="porov-bars"></div>
+  </div>
+
+  <!-- GRAF -->
+  <div class="graf-wrap"><div class="graf-title">Průměrné rozložení času</div><div id="graf"></div></div>
+
+  <!-- ZAKAZKA -->
+  <div class="zakazka-box" id="zakazka-box" style="display:none;">
+    <div class="zak-title">Analýza zakázky</div>
+    <div class="zak-grid" id="zak-grid"></div>
+  </div>
+
+  <!-- PLYVANI -->
+  <div id="plyvani"></div>
+
+  <!-- INSIGHTS -->
+  <div id="insights"></div>
+
+  <!-- AKCE -->
+  <div class="btn-row">
+    <button class="btn-akce btn-gmail" onclick="tiskReport()">Tisk / PDF</button>
+    <button class="btn-akce btn-csv" onclick="stahnoutCSV()">Stáhnout CSV</button>
+    <button class="btn-akce btn-kopir" id="btn-kop" onclick="kopirovat()">Kopírovat</button>
+  </div>
+  <button class="btn-znovu" onclick="zacitZnovu()">Začít znovu</button>
+</div>
+
+<footer>
+  <div class="footer-brand">Gabriela <span>Tomíčková</span></div>
+  <div class="footer-legal"><a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/supabase-client.js"></script>
+<script src="/auth.js"></script>
+<script>
+// =============================================
+// PŘIHLAŠOVÁNÍ - Moje Nástrojovna (Supabase), celá appka je Pro
+// =============================================
+let session = null;
+let clenstvi = null;
+let jePro = false;
+
+async function nacistPrihlaseniStav() {
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
+    session = null; clenstvi = null; jePro = false;
+  }
+  renderUcetNav();
+  renderPrihlaseniStav();
+}
+
+function renderUcetNav() {
+  const info = document.getElementById('nav-ucet-info');
+  const btn = document.getElementById('nav-ucet-btn');
+  if (session && clenstvi) {
+    info.style.display = 'inline-block';
+    info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    btn.textContent = 'Odhlásit';
+  } else {
+    info.style.display = 'none';
+    btn.textContent = 'Přihlásit se';
+  }
+}
+
+async function klikNaUcet() {
+  if (session) {
+    try { await odhlasit(); } catch (e) { console.warn('Odhlášení se nepodařilo.', e); }
+    location.reload();
+  } else {
+    try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
+  }
+}
+
+async function klikNaPrihlaseni() {
+  const err = document.getElementById('prih-err');
+  err.style.display = 'none';
+  try { await vyzadovatPrihlaseni(); } catch (e) {
+    console.warn('Přihlášení se nepodařilo spustit.', e);
+    err.style.display = 'block';
+  }
+}
+
+function renderPrihlaseniStav() {
+  if (jePro) {
+    vstoupitDoAplikace();
+    return;
+  }
+  document.getElementById('prihlaseni').style.display = 'block';
+  document.getElementById('setup').style.display = 'none';
+  const nadpis = document.getElementById('prih-nadpis');
+  const text = document.getElementById('prih-text');
+  const btn = document.getElementById('prih-btn');
+  if (session) {
+    nadpis.textContent = 'K tomuto účtu není aktivní Pro';
+    text.textContent = 'Jste přihlášeni jako ' + (clenstvi ? clenstvi.organizations.name : 'váš účet') + ', ale Měřič plýtvání Pro k tomuhle účtu zatím není aktivní.';
+    btn.style.display = 'none';
+  } else {
+    nadpis.textContent = 'Přihlaste se ke svému účtu';
+    text.textContent = 'Měřič plýtvání Pro je součástí vašeho předplatného Moje Nástrojovna. Přihlaste se účtem, který jste dostali po zakoupení.';
+    btn.style.display = 'block';
+    btn.textContent = 'Přihlásit se';
+  }
+}
+
+function vstoupitDoAplikace() {
+  document.getElementById('prihlaseni').style.display = 'none';
+  document.getElementById('setup').style.display = 'block';
+  nacistHistorii();
+  synchronizovatHistoriiSeSupabase();
+}
+
+// =============================================
+// KONFIGURACE
+// =============================================
+const STD = ['prace','presun','hledani','cekani','papiry','priprava','kontrola'];
+const STD_NAZVY = {prace:'Práce',presun:'Přesun',hledani:'Hledání',cekani:'Čekání',papiry:'Administrativa',priprava:'Příprava',kontrola:'Kontrola'};
+const STD_BARVY = {prace:'#2a7a4f',presun:'#1a6aaa',hledani:'#d97706',cekani:'#c0392b',papiry:'#7c3aed',priprava:'#545454',kontrola:'#0891b2'};
+const PLYTVANI = ['presun','hledani','cekani','papiry','priprava','kontrola'];
+const VLASTNI_BARVY = ['#166534','#1e40af','#92400e','#6b21a8','#9f1239','#065f46','#1d4ed8','#b45309'];
+
+let vlastniOp = [];
+let vsechnyKat = [];
+let delkaSmeny = 7.5;
+let hodinovaSazba = 250;
+let pocetPracovniku = 1;
+let nazev = '', maxCyklu = 10, pocetKusu = 0;
+let cykly = [], aktCyklus = null, aktivniKat = null;
+let timerInt = null, katInt = null, cyklusStart = null;
+
+// =============================================
+// SETUP
+// =============================================
+function nastavSmenu(hod, btn) {
+  delkaSmeny = hod;
+  document.querySelectorAll('.smena-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('smena-vlastni-wrap').style.display = 'none';
+}
+
+function toggleVlastniSmena() {
+  const wrap = document.getElementById('smena-vlastni-wrap');
+  wrap.style.display = wrap.style.display === 'block' ? 'none' : 'block';
+  document.querySelectorAll('.smena-btn').forEach(b => b.classList.remove('on'));
+}
+
+function pridatOperaci() {
+  const id = 'op_' + Date.now();
+  const barva = VLASTNI_BARVY[vlastniOp.length % VLASTNI_BARVY.length];
+  vlastniOp.push({id, nazev:'', barva});
+  renderOperace();
+}
+
+function renderOperace() {
+  const list = document.getElementById('operace-list');
+  list.innerHTML = '';
+  vlastniOp.forEach((op, i) => {
+    const row = document.createElement('div');
+    row.className = 'operace-row';
+    row.innerHTML = `<input type="text" placeholder="Název operace" value="${op.nazev}" oninput="vlastniOp[${i}].nazev=this.value">
+      <div class="operace-barva" style="background:${op.barva}" onclick="zmenitBarvu(${i}, this)"></div>
+      <button class="operace-smazat" onclick="smazatOp(${i})">×</button>`;
+    list.appendChild(row);
+  });
+}
+
+function smazatOp(i) { vlastniOp.splice(i, 1); renderOperace(); }
+function zmenitBarvu(i, el) {
+  const idx = VLASTNI_BARVY.indexOf(vlastniOp[i].barva);
+  vlastniOp[i].barva = VLASTNI_BARVY[(idx + 1) % VLASTNI_BARVY.length];
+  el.style.background = vlastniOp[i].barva;
+}
+
+function spustit() {
+  nazev = document.getElementById('inp-nazev').value.trim() || 'Proces';
+  maxCyklu = parseInt(document.getElementById('inp-cykly').value) || 10;
+  pocetKusu = parseInt(document.getElementById('inp-zakazka').value) || 0;
+  hodinovaSazba = parseFloat(document.getElementById('inp-sazba').value) || 250;
+  pocetPracovniku = parseInt(document.getElementById('inp-pocet-pracovniku').value) || 1;
+
+  vsechnyKat = [...STD];
+  vlastniOp.filter(o => o.nazev.trim()).forEach(o => vsechnyKat.push(o.id));
+
+  const grid = document.getElementById('grid-hodnota');
+  vlastniOp.filter(o => o.nazev.trim()).forEach(op => {
+    const btn = document.createElement('button');
+    btn.className = 'kat-btn k-vlastni';
+    btn.id = 'btn-' + op.id;
+    btn.style.background = op.barva + '22';
+    btn.style.color = op.barva;
+    btn.innerHTML = `<div class="kat-arr" style="background:${op.barva}"></div><div>${op.nazev}</div><div class="kat-cas" id="k-${op.id}">0:00</div>`;
+    btn.onclick = () => setKat(op.id, op.nazev, op.barva);
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('mereni').style.display = 'block';
+  document.getElementById('m-nazev').textContent = nazev;
+  zacitNovyCyklus();
+}
+
+// =============================================
+// MĚŘENÍ
+// =============================================
+function zacitNovyCyklus() {
+  const cas = {};
+  vsechnyKat.forEach(k => cas[k] = 0);
+  aktCyklus = {start: Date.now(), cas, celkem: 0, poznamka: ''};
+  aktivniKat = null;
+  cyklusStart = null;
+  vsechnyKat.forEach(k => { const el = document.getElementById('k-'+k); if(el) el.textContent = '0:00'; });
+  document.querySelectorAll('.kat-btn').forEach(b => { b.classList.remove('on'); if(b.classList.contains('k-vlastni')){b.style.background='';b.style.color='';} });
+  document.getElementById('btn-stop').style.display = 'block';
+  document.getElementById('btn-novy').style.display = 'none';
+  document.getElementById('btn-konec').style.display = 'none';
+  document.getElementById('m-cykly').textContent = 'Cyklus ' + (cykly.length + 1) + ' / ' + maxCyklu;
+  document.getElementById('timer').textContent = '00:00';
+  document.getElementById('timer').style.color = 'var(--dark)';
+  document.getElementById('timer-kat').textContent = 'Klikněte na první činnost';
+  document.getElementById('timer-kat').style.background = 'var(--light)';
+  clearInterval(timerInt);
+  clearInterval(katInt);
+}
+
+function setKat(kat, nazevKat, barva) {
+  if (!aktCyklus) return;
+  if (!cyklusStart) {
+    cyklusStart = Date.now();
+    clearInterval(timerInt); timerInt = setInterval(updateTimer, 100);
+    clearInterval(katInt); katInt = setInterval(updateKat, 100);
+  }
+  document.querySelectorAll('.kat-btn').forEach(b => { b.classList.remove('on'); if(b.classList.contains('k-vlastni')){b.style.background='';b.style.color='';} });
+  const btn = document.getElementById('btn-'+kat) || document.querySelector('.k-'+kat);
+  if (btn) { btn.classList.add('on'); if(kat.startsWith('op_')){btn.style.background=barva;btn.style.color='white';} }
+  aktivniKat = kat;
+  document.getElementById('timer-kat').textContent = nazevKat;
+  document.getElementById('timer-kat').style.background = barva;
+  document.getElementById('timer').style.color = barva;
+}
+
+function updateTimer() {
+  if (!cyklusStart) return;
+  const e = Math.floor((Date.now() - cyklusStart) / 1000);
+  document.getElementById('timer').textContent = pad(Math.floor(e/60)) + ':' + pad(e%60);
+}
+
+function updateKat() {
+  if (!aktCyklus || !aktivniKat) return;
+  aktCyklus.cas[aktivniKat] = (aktCyklus.cas[aktivniKat] || 0) + 0.1;
+  const s = Math.floor(aktCyklus.cas[aktivniKat]);
+  const el = document.getElementById('k-'+aktivniKat);
+  if (el) el.textContent = pad(Math.floor(s/60)) + ':' + pad(s%60);
+}
+
+function stopCyklus() {
+  if (!cyklusStart) { alert('Nejdřív klikněte na některou činnost, pak můžete cyklus ukončit.'); return; }
+  clearInterval(timerInt); clearInterval(katInt);
+  document.querySelectorAll('.kat-btn').forEach(b => { b.classList.remove('on'); if(b.classList.contains('k-vlastni')){b.style.background='';b.style.color='';} });
+  aktivniKat = null;
+  aktCyklus.celkem = (Date.now() - cyklusStart) / 1000;
+  cykly.push({...aktCyklus, cas: {...aktCyklus.cas}});
+  pridatRadek(cykly.length, aktCyklus);
+  document.getElementById('ulozene').style.display = 'block';
+  document.getElementById('btn-stop').style.display = 'none';
+  if (cykly.length < maxCyklu) document.getElementById('btn-novy').style.display = 'block';
+  document.getElementById('btn-konec').style.display = 'block';
+  document.getElementById('timer-kat').textContent = 'Zastaven';
+  document.getElementById('timer-kat').style.background = '#888';
+}
+
+function novyCyklus() { aktCyklus = null; zacitNovyCyklus(); }
+
+function pridatRadek(n, c) {
+  const list = document.getElementById('uloz-list');
+  const row = document.createElement('div');
+  row.className = 'c-row-wrap';
+  const m = Math.floor(c.celkem/60), s = Math.floor(c.celkem%60);
+  const barHTML = vsechnyKat.map(k => {
+    const w = c.celkem > 0 ? (c.cas[k]||0)/c.celkem*100 : 0;
+    const barva = STD_BARVY[k] || (vlastniOp.find(o=>o.id===k)||{}).barva || '#2a7a4f';
+    return `<div style="width:${w.toFixed(1)}%;background:${barva};height:100%"></div>`;
+  }).join('');
+
+  // Anomálie: porovnání s průměrem PŘEDCHOZÍCH cyklů (bez tohoto)
+  let anomalie = false, anomProc = 0;
+  if (cykly.length > 1) {
+    const predchozi = cykly.slice(0, cykly.length - 1);
+    const prumerPred = predchozi.reduce((s,x) => s + x.celkem, 0) / predchozi.length;
+    if (prumerPred > 0 && c.celkem > prumerPred * 1.3) {
+      anomalie = true;
+      anomProc = Math.round((c.celkem / prumerPred - 1) * 100);
+    }
+  }
+  const idx = n - 1;
+
+  row.innerHTML = `
+    <div class="c-row"><div class="c-num">${n}</div><div class="c-cas">${pad(m)}:${pad(s)}</div><div class="c-bar">${barHTML}</div>
+      <button class="c-pozn-btn" onclick="togglePoznamka(${idx})" title="Přidat poznámku">✎</button></div>
+    ${anomalie ? `<div class="c-anomalie">Cyklus ${n} je o ${anomProc}% delší než průměr předchozích. Co se stalo?</div>` : ''}
+    <div class="c-pozn-wrap" id="pozn-wrap-${idx}" style="display:${anomalie ? 'block' : 'none'};">
+      <input type="text" class="c-pozn-input" id="pozn-input-${idx}" placeholder="Poznámka (např. čekal na VZV, chyběl štítek...)" oninput="cykly[${idx}].poznamka=this.value">
+    </div>`;
+  list.appendChild(row);
+}
+
+function togglePoznamka(idx) {
+  const wrap = document.getElementById('pozn-wrap-' + idx);
+  if (!wrap) return;
+  wrap.style.display = wrap.style.display === 'block' ? 'none' : 'block';
+  if (wrap.style.display === 'block') document.getElementById('pozn-input-' + idx).focus();
+}
+
+// =============================================
+// SOUHRN
+// =============================================
+function ukoncit() {
+  clearInterval(timerInt); clearInterval(katInt);
+  document.getElementById('mereni').style.display = 'none';
+  document.getElementById('souhrn').style.display = 'block';
+
+  const n = cykly.length;
+  const avg = {};
+  vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
+  const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
+  const minC = Math.min(...cykly.map(c=>c.celkem));
+  const maxC = Math.max(...cykly.map(c=>c.celkem));
+  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+
+  document.getElementById('s-nazev').textContent = nazev;
+  document.getElementById('s-meta').textContent = n + ' cyklů · ' + new Date().toLocaleDateString('cs-CZ') + ' · směna ' + delkaSmeny + 'h';
+
+  // Tabulka
+  const tbl = document.getElementById('tbl');
+  let h = '<tr><th>C.</th>' + vsechnyKat.map(k=>`<th>${getNazev(k)}</th>`).join('') + '<th>Celk.</th></tr>';
+  cykly.forEach((c,i) => {
+    h += `<tr><td>${i+1}</td>` + vsechnyKat.map(k=>`<td>${fmtC(c.cas[k]||0)}</td>`).join('') + `<td>${fmtC(c.celkem)}</td></tr>`;
+  });
+  h += '<tr class="avg"><td>Průměr</td>' + vsechnyKat.map(k=>`<td>${fmtC(avg[k])}</td>`).join('') + `<td>${fmtC(avgC)}</td></tr>`;
+  h += '<tr class="ply"><td>Plý.</td>' + vsechnyKat.map(k=>`<td>${PLYTVANI.includes(k)?fmtC(avg[k]):'-'}</td>`).join('') + `<td>${fmtC(plyC)} (${plyPct}%)</td></tr>`;
+  tbl.innerHTML = h;
+
+  // Porovnani cyklu
+  const porov = document.getElementById('porov-bars');
+  const maxCelkem = Math.max(...cykly.map(c=>c.celkem));
+  porov.innerHTML = cykly.map((c,i) => {
+    const pct = maxCelkem > 0 ? (c.celkem/maxCelkem*100).toFixed(1) : 0;
+    const plyPctC = c.celkem > 0 ? (PLYTVANI.reduce((s,k)=>s+(c.cas[k]||0),0)/c.celkem*100).toFixed(0) : 0;
+    const isMin = c.celkem === minC;
+    const isMax = c.celkem === maxC;
+    return `<div class="porov-row">
+      <div class="porov-lbl">${i+1}</div>
+      <div class="porov-bg"><div class="porov-bar" style="width:${pct}%;background:${isMin?'#2a7a4f':isMax?'#c0392b':'#1a6aaa'}"></div></div>
+      <div class="porov-val">${fmtC(c.celkem)} <span style="color:${plyPctC>40?'#c0392b':plyPctC>20?'#d97706':'#2a7a4f'}">(${plyPctC}%)</span></div>
+    </div>`;
+  }).join('');
+
+  // Graf
+  const graf = document.getElementById('graf');
+  graf.innerHTML = vsechnyKat.map(k => {
+    const pct = avgC > 0 ? (avg[k]/avgC*100).toFixed(1) : 0;
+    const barva = STD_BARVY[k] || (vlastniOp.find(o=>o.id===k)||{}).barva || '#2a7a4f';
+    return `<div class="g-row">
+      <div class="g-lbl" style="color:${barva};font-size:11px;">${getNazev(k)}</div>
+      <div class="g-bg"><div class="g-bar" style="width:${pct}%;background:${barva}"></div></div>
+      <div class="g-val">${fmtC(avg[k])} (${pct}%)</div>
+    </div>`;
+  }).join('');
+
+  // Analýza zakázky
+  const SMENA_SEK = delkaSmeny * 3600;
+  const kusyZaSmenu = avgC > 0 ? Math.floor(SMENA_SEK / avgC) : 0;
+  const kusyRocne = kusyZaSmenu * 250;
+  const idealniCyklus = avgC - plyC;
+  const idealniKusy = idealniCyklus > 0 ? Math.floor(SMENA_SEK / idealniCyklus) : 0;
+  const rozdilKusu = idealniKusy - kusyZaSmenu;
+  const plyKcRok = Math.round((plyC/avgC) * hodinovaSazba * delkaSmeny * 250 * pocetPracovniku);
+
+  const zakBox = document.getElementById('zakazka-box');
+  const zakGrid = document.getElementById('zak-grid');
+  zakBox.style.display = 'block';
+
+  let zakItems = `
+    <div class="zak-item"><div class="zak-val">${fmtC(avgC)}</div><div class="zak-lbl">Průměrný cyklus</div></div>
+    <div class="zak-item"><div class="zak-val">${kusyZaSmenu}</div><div class="zak-lbl">Kusů za směnu (${delkaSmeny}h)</div></div>
+    <div class="zak-item"><div class="zak-val">${idealniKusy}</div><div class="zak-lbl">Kusů bez plýtvání</div></div>
+    <div class="zak-item zak-highlight"><div class="zak-val">+${rozdilKusu}</div><div class="zak-lbl">Kusů navíc bez plýtvání</div></div>
+    <div class="zak-item" style="grid-column:span 2;"><div class="zak-val">${hodinovaSazba} Kč/h × ${pocetPracovniku} ${pocetPracovniku===1?'pracovník':'pracovníků'}</div><div class="zak-lbl">Zadaný náklad práce</div></div>`;
+
+  if (pocetKusu > 0) {
+    const aktualniCas = pocetKusu * avgC;
+    const idealniCasZak = pocetKusu * idealniCyklus;
+    const usporaMin = Math.round((aktualniCas - idealniCasZak) / 60);
+    const takt = avgC.toFixed(1);
+    zakItems += `
+    <div class="zak-item"><div class="zak-val">${pocetKusu}</div><div class="zak-lbl">Kusů v zakázce</div></div>
+    <div class="zak-item"><div class="zak-val">${takt}s</div><div class="zak-lbl">Takt zakázky</div></div>
+    <div class="zak-item"><div class="zak-val">${fmtC(aktualniCas)}</div><div class="zak-lbl">Zakázka aktuálně</div></div>
+    <div class="zak-item zak-highlight"><div class="zak-val">${fmtC(idealniCasZak)}</div><div class="zak-lbl">Zakázka bez plýtvání</div></div>
+    <div class="zak-item" style="grid-column:span 2;background:var(--green-light);border:1px solid rgba(42,122,79,.2);">
+      <div class="zak-val" style="color:var(--green);font-size:16px;">Úspora ${usporaMin} minut na zakázce</div>
+      <div class="zak-lbl">Při eliminaci plýtvání</div>
+    </div>`;
+  }
+
+  zakGrid.innerHTML = zakItems;
+
+  // Plývání box
+  const plyEl = document.getElementById('plyvani');
+  const plyKcRokFmt = plyKcRok.toLocaleString('cs-CZ');
+  let cls = plyPct > 40 ? 'alert' : plyPct > 20 ? 'warning' : 'ok';
+  const barvaBox = cls==='ok'?'#2a7a4f':cls==='warning'?'#b45309':'#c0392b';
+  const bgBox = cls==='ok'?'#e8f5ee':cls==='warning'?'#fff3e0':'#fee2e2';
+  const nejdel = cykly.indexOf(cykly.reduce((a,b)=>a.celkem>b.celkem?a:b))+1;
+  const nejkrat = cykly.indexOf(cykly.reduce((a,b)=>a.celkem<b.celkem?a:b))+1;
+  const odch = avgC > 0 ? ((maxC-minC)/avgC*100).toFixed(0) : 0;
+
+  plyEl.innerHTML = `
+    <div class="insight-box" style="background:${bgBox};border:1px solid ${barvaBox}33;margin-bottom:10px;">
+      <div class="insight-title" style="color:${barvaBox}">Čas mimo přímou práci tvoří ${plyPct}%</div>
+      <div class="insight-text">Průměrný cyklus <strong>${fmtC(avgC)}</strong>, z toho ${fmtC(plyC)} mimo přímou práci.<br>
+      Hodnota času mimo přímou práci ročně (${delkaSmeny}h/den × 250 dní × ${pocetPracovniku} ${pocetPracovniku===1?'pracovník':'pracovníků'}): přibližně <strong>${plyKcRokFmt} Kč</strong>.<br>
+      <span style="font-size:11px;color:var(--light);">Výpočet vychází z vámi zadané sazby ${hodinovaSazba} Kč/h. Ne vše lze odstranit — cílem je určit, která část je skutečně zbytečná, ne celé číslo brát jako "ušetřené peníze".</span></div>
+      <div style="margin-top:8px;padding-top:8px;border-top:1px solid ${barvaBox}22;font-size:11px;color:var(--mid);line-height:1.65;">Vše mimo kategorii <strong>Práce</strong> a vámi zadanou operaci appka počítá jako čas mimo přímou práci. V praxi nelze hodnoty dostat na nulu — přesun, příprava nebo kontrola budou vždy zčásti nutné. Cílem je razantní snížení té části, která zbytečná skutečně je, ne dokonalost.</div>
+    </div>
+    <div class="insight-box" style="background:var(--white);border:1px solid var(--border);margin-bottom:10px;">
+      <div class="insight-title" style="color:var(--mid)">Variabilita cyklů</div>
+      <div class="insight-text">Nejdelší: č.${nejdel} (${fmtC(maxC)}), nejkratší: č.${nejkrat} (${fmtC(minC)}). Odchylka ${odch}% — ${odch > 30 ? 'velká variabilita, nestabilní proces.' : 'proces je relativně stabilní.'}</div>
+    </div>`;
+
+  const poznamkyBox = document.getElementById('poznamky-box-wrap');
+  const cyklyPoznamky = cykly.map((c,i) => ({i, poznamka: (c.poznamka||'').trim()})).filter(x => x.poznamka);
+  if (poznamkyBox) poznamkyBox.remove();
+  if (cyklyPoznamky.length) {
+    const box = document.createElement('div');
+    box.className = 'poznamky-box';
+    box.id = 'poznamky-box-wrap';
+    box.innerHTML = `<div class="graf-title">Poznámky k cyklům</div>` +
+      cyklyPoznamky.map(x => `<div class="poznamky-row"><strong>Cyklus ${x.i+1}</strong> (${fmtC(cykly[x.i].celkem)}): ${x.poznamka}</div>`).join('');
+    document.getElementById('plyvani').insertAdjacentElement('afterend', box);
+  }
+
+  // Insights tipy
+  const ins = document.getElementById('insights');
+  const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
+  const TIPY_URL = 'https://spaghetti.gabrielatomickova.cz';
+  const TIPY_PRO = {
+    // TODO: až bude spaghetti-vyroba.html napojená na stejný kód jako Měřič Pro, přidat zpět odkaz: <a href="https://spaghetti.gabrielatomickova.cz/vyroba">spaghetti diagram →</a>
+    presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. Nakreslete spaghetti diagram a vizuálně uvidíte kde se trasy kříží a opakují.`,
+    hledani:`Hledání tvoří ${Math.round(avg.hledani/avgC*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
+    cekani:`Čekání tvoří ${Math.round(avg.cekani/avgC*100)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
+    papiry:`Administrativa tvoří ${Math.round(avg.papiry/avgC*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
+    priprava:`Příprava tvoří ${Math.round(avg.priprava/avgC*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
+    kontrola:`Kontrola tvoří ${Math.round(avg.kontrola/avgC*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
+  };
+
+  let insHtml = '';
+  let maNeco = false;
+  Object.keys(PRAHY).forEach(k => {
+    if (!avg[k]) return;
+    const pct = avgC > 0 ? Math.round(avg[k]/avgC*100) : 0;
+    if (pct >= PRAHY[k]) {
+      maNeco = true;
+      insHtml += `<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;">
+        <div style="font-size:11px;font-weight:700;color:${STD_BARVY[k]};text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">${STD_NAZVY[k]} — ${pct}%</div>
+        <div style="font-size:13px;color:var(--mid);line-height:1.75;">${TIPY_PRO[k]}</div>
+      </div>`;
+    }
+  });
+  if (maNeco) {
+    ins.innerHTML = '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;">Kde začít</div>' + insHtml;
+  }
+
+  // Uložit do localStorage (historie)
+  ulozitDoHistorie();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// =============================================
+// HISTORIE
+// =============================================
+function ulozitDoHistorie() {
+  const n = cykly.length;
+  const avg = {};
+  vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
+  const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
+  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+  const plyKcRok = avgC > 0 ? Math.round((plyC/avgC) * hodinovaSazba * delkaSmeny * 250 * pocetPracovniku) : 0;
+
+  const zaznam = {
+    id: Date.now(),
+    nazev, datum: new Date().toLocaleDateString('cs-CZ'),
+    cyklu: n, avgC, plyPct,
+    smena: delkaSmeny,
+    plyKcRok
+  };
+
+  let hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+  hist.unshift(zaznam);
+  if (hist.length > 20) hist = hist.slice(0, 20);
+  localStorage.setItem('meric_pro_hist', JSON.stringify(hist));
+
+  ulozitDoSupabase(zaznam, plyKcRok);
+}
+
+// Best-effort zápis do účtu, aby historie šla vidět i z jiného zařízení.
+// Místní historie (výš) je pořád ta, na které appka jede — tohle je jen doplněk.
+async function ulozitDoSupabase(zaznam, plyKcRok) {
+  if (!jePro || !clenstvi) return;
+  try {
+    await supabaseClient.from('tool_runs').insert({
+      organization_id: clenstvi.organization_id,
+      nastroj: 'meric-plytvani-pro',
+      nazev: 'Měřič plýtvání Pro — ' + zaznam.nazev,
+      shrnuti: zaznam.plyPct + '% mimo přímou práci, přibližně ' + plyKcRok.toLocaleString('cs-CZ') + ' Kč/rok',
+      hlavni_hodnota_cislo: plyKcRok,
+      hlavni_hodnota_jednotka: 'Kč/rok',
+      hlavni_hodnota_typ: 'potencial_kc',
+      data: zaznam
+    });
+  } catch (e) {
+    console.warn('Uložení do účtu se nepodařilo, měření zůstává uložené v appce.', e);
+  }
+}
+
+// Doplní místní historii o měření uložená z jiných zařízení pod stejným účtem.
+async function synchronizovatHistoriiSeSupabase() {
+  if (!jePro || !clenstvi) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('data')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'meric-plytvani-pro')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (error || !data) return;
+
+    let hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+    const zname = new Set(hist.map(z => z.id));
+    let pribylo = false;
+    data.forEach(radek => {
+      const z = radek.data;
+      if (z && z.id && !zname.has(z.id)) {
+        hist.push(z);
+        zname.add(z.id);
+        pribylo = true;
+      }
+    });
+    if (!pribylo) return;
+
+    hist.sort((a, b) => b.id - a.id);
+    if (hist.length > 20) hist = hist.slice(0, 20);
+    localStorage.setItem('meric_pro_hist', JSON.stringify(hist));
+    nacistHistorii();
+  } catch (e) {
+    console.warn('Historie z účtu se nenačetla, appka jede z místní historie.', e);
+  }
+}
+
+function smazatHistorii(index, e) {
+  e.stopPropagation();
+  let hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+  hist.splice(index, 1);
+  localStorage.setItem('meric_pro_hist', JSON.stringify(hist));
+  // Překreslit historii
+  const wrap = document.getElementById('historie-wrap');
+  if (wrap) wrap.remove();
+  nacistHistorii();
+}
+
+let vybraneProPorovnani = [];
+
+function nacistHistorii() {
+  vybraneProPorovnani = [];
+  const existujici = document.getElementById('historie-wrap');
+  if (existujici) existujici.remove();
+  const hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+  if (hist.length === 0) return;
+
+  const setup = document.getElementById('setup');
+  const histWrap = document.createElement('div');
+  histWrap.className = 'setup-krok';
+  histWrap.id = 'historie-wrap';
+  histWrap.innerHTML = `
+    <div class="krok-num">Historie měření</div>
+    <div class="krok-title">Poslední měření</div>
+    <p style="font-size:12px;color:var(--light);line-height:1.6;margin-bottom:10px;">Historie ukládá pouze základní přehled. Kompletní výsledky si po každém měření uložte do PC nebo stáhněte do CSV. Zaškrtněte dvě měření stejného procesu a porovnejte je jako PŘED × PO.</p>
+    <div id="pred-po-vysledek"></div>
+    <div class="hist-list">${hist.slice(0,8).map((z, i) => `
+      <div class="hist-row">
+        <input type="checkbox" class="hist-check" id="hist-check-${i}" onchange="prepnoutVyber(${i})">
+        <div class="hist-nazev">${z.nazev}</div>
+        <div class="hist-meta">${z.datum} · ${z.cyklu} cyklů</div>
+        <div class="hist-ply" style="color:${z.plyPct>40?'#c0392b':z.plyPct>20?'#d97706':'#2a7a4f'}">${z.plyPct}%</div>
+        <div class="hist-del" onclick="smazatHistorii(${i}, event)" title="Smazat">×</div>
+      </div>`).join('')}
+    </div>
+    <button class="btn-porovnat" id="btn-porovnat" onclick="porovnatVybrane()">Porovnat vybraná měření (PŘED × PO)</button>`;
+  setup.insertBefore(histWrap, setup.firstChild);
+}
+
+function prepnoutVyber(i) {
+  const checked = document.getElementById('hist-check-' + i).checked;
+  if (checked) {
+    if (vybraneProPorovnani.length >= 2) {
+      // zrušit nejstarší výběr, aby zůstaly max 2
+      const stary = vybraneProPorovnani.shift();
+      const el = document.getElementById('hist-check-' + stary);
+      if (el) el.checked = false;
+    }
+    vybraneProPorovnani.push(i);
+  } else {
+    vybraneProPorovnani = vybraneProPorovnani.filter(x => x !== i);
+  }
+  const btn = document.getElementById('btn-porovnat');
+  btn.classList.toggle('active', vybraneProPorovnani.length === 2);
+}
+
+function porovnatVybrane() {
+  if (vybraneProPorovnani.length !== 2) {
+    alert('Zaškrtněte přesně dvě měření, která chcete porovnat.');
+    return;
+  }
+  const hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+  // vyšší index v historii = starší záznam = PŘED, nižší index = novější = PO
+  const [a, b] = vybraneProPorovnani;
+  const predIdx = Math.max(a, b), poIdx = Math.min(a, b);
+  const pred = hist[predIdx], po = hist[poIdx];
+
+  const kapacita = (z) => {
+    const SMENA_SEK = (z.smena || 7.5) * 3600;
+    return z.avgC > 0 ? Math.floor(SMENA_SEK / z.avgC) : 0;
+  };
+  const kapPred = kapacita(pred), kapPo = kapacita(po);
+  const deltaPct = Math.round(po.plyPct - pred.plyPct);
+  const deltaKap = kapPo - kapPred;
+
+  const box = document.createElement('div');
+  box.className = 'pred-po-box';
+  box.innerHTML = `
+    <div class="pred-po-title">Porovnání PŘED × PO</div>
+    <div class="pred-po-grid">
+      <div class="pp-col">
+        <div class="pp-col-lbl">Před</div>
+        <div class="pp-col-nazev">${pred.nazev} · ${pred.datum}</div>
+        <div class="pp-val">${pred.plyPct}%</div>
+        <div class="pp-sub">mimo přímou práci</div>
+        <div class="pp-sub">Cyklus ${fmtC(pred.avgC)} · ${kapPred} ks/směna</div>
+      </div>
+      <div class="pp-arrow">→</div>
+      <div class="pp-col">
+        <div class="pp-col-lbl">Po</div>
+        <div class="pp-col-nazev">${po.nazev} · ${po.datum}</div>
+        <div class="pp-val">${po.plyPct}%</div>
+        <div class="pp-sub">mimo přímou práci</div>
+        <div class="pp-sub">Cyklus ${fmtC(po.avgC)} · ${kapPo} ks/směna</div>
+      </div>
+      <div class="pp-delta">Rozdíl: <strong>${deltaPct > 0 ? '+' : ''}${deltaPct} p. b.</strong> čas mimo přímou práci, <strong>${deltaKap > 0 ? '+' : ''}${deltaKap} ks/směna</strong> kapacity.</div>
+    </div>`;
+  const cil = document.getElementById('pred-po-vysledek');
+  cil.innerHTML = '';
+  cil.appendChild(box);
+  box.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// =============================================
+// EXPORT
+// =============================================
+function sestavit() {
+  const n = cykly.length;
+  const avg = {};
+  vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
+  const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
+  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+
+  let body = 'CASOVA STUDIE PRO: ' + nazev.toUpperCase() + '\n';
+  body += 'Datum: ' + new Date().toLocaleDateString('cs-CZ') + '  |  Cyklu: ' + n + '  |  Smena: ' + delkaSmeny + 'h\n\n';
+  body += 'Cyklus\t' + vsechnyKat.map(k=>getNazev(k)).join('\t') + '\tCelkem\n';
+  cykly.forEach((c,i) => {
+    body += (i+1) + '\t' + vsechnyKat.map(k=>fmtC(c.cas[k]||0)).join('\t') + '\t' + fmtC(c.celkem) + '\n';
+  });
+  body += 'PRUMER\t' + vsechnyKat.map(k=>fmtC(avg[k])).join('\t') + '\t' + fmtC(avgC) + '\n\n';
+  body += 'PLYTVANI: ' + fmtC(plyC) + ' = ' + plyPct + '% z celkoveho casu\n';
+  body += '---\ngabriela tomickova | gabrielatomickova.cz\n';
+  return body;
+}
+
+function stahnoutCSV() {
+  const n = cykly.length;
+  const avg = {};
+  vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
+  const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
+  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+
+  let csv = 'Casova studie Pro;' + nazev + '\n';
+  csv += 'Datum;' + new Date().toLocaleDateString('cs-CZ') + '\n';
+  csv += 'Pocet cyklu;' + n + '\n';
+  csv += 'Delka smeny;' + delkaSmeny + 'h\n\n';
+  csv += 'Cyklus;' + vsechnyKat.map(k=>getNazev(k)).join(';') + ';Celkem\n';
+  cykly.forEach((c,i) => {
+    csv += (i+1) + ';' + vsechnyKat.map(k=>fmtC(c.cas[k]||0)).join(';') + ';' + fmtC(c.celkem) + '\n';
+  });
+  csv += 'Prumer;' + vsechnyKat.map(k=>fmtC(avg[k])).join(';') + ';' + fmtC(avgC) + '\n\n';
+  csv += 'Plytvani;;' + fmtC(plyC) + ';;' + plyPct + '%\n';
+
+  const blob = new Blob(['﻿' + csv], {type: 'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'meric-pro-' + nazev.toLowerCase().replace(/\s+/g,'-') + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function tiskReport() {
+  const n = cykly.length;
+  const avg = {};
+  vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
+  const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
+  const minC = Math.min(...cykly.map(c=>c.celkem));
+  const maxC = Math.max(...cykly.map(c=>c.celkem));
+  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+  const SMENA_SEK = delkaSmeny * 3600;
+  const kusyZaSmenu = avgC > 0 ? Math.floor(SMENA_SEK / avgC) : 0;
+  const idealniCyklus = avgC - plyC;
+  const idealniKusy = idealniCyklus > 0 ? Math.floor(SMENA_SEK / idealniCyklus) : 0;
+  const rozdilKusu = idealniKusy - kusyZaSmenu;
+  const plyKcRok = Math.round((plyC/avgC) * hodinovaSazba * delkaSmeny * 250 * pocetPracovniku);
+  const plyKcRokFmt = plyKcRok.toLocaleString('cs-CZ');
+  const datum = new Date().toLocaleDateString('cs-CZ');
+
+  // Tabulka cyklů
+  let tblRows = '';
+  cykly.forEach((c,i) => {
+    tblRows += `<tr>${vsechnyKat.map(k=>`<td>${fmtC(c.cas[k]||0)}</td>`).join('')}<td><strong>${fmtC(c.celkem)}</strong></td></tr>`;
+  });
+  const avgRow = vsechnyKat.map(k=>`<td>${fmtC(avg[k])}</td>`).join('') + `<td><strong>${fmtC(avgC)}</strong></td>`;
+  const plyRow = vsechnyKat.map(k=>`<td>${PLYTVANI.includes(k)?fmtC(avg[k]):'-'}</td>`).join('') + `<td><strong>${fmtC(plyC)} (${plyPct}%)</strong></td>`;
+
+  // Graf rozložení
+  let grafRows = '';
+  vsechnyKat.forEach(k => {
+    const pct = avgC > 0 ? (avg[k]/avgC*100).toFixed(1) : 0;
+    const barva = STD_BARVY[k] || '#2a7a4f';
+    if (avg[k] > 0) {
+      grafRows += `<tr>
+        <td style="font-size:11px;font-weight:600;color:${barva};width:90px;">${getNazev(k)}</td>
+        <td><div style="background:#eee;border-radius:3px;height:12px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:${barva};border-radius:3px;"></div></div></td>
+        <td style="font-size:11px;color:#545454;text-align:right;white-space:nowrap;padding-left:8px;">${fmtC(avg[k])} (${pct}%)</td>
+      </tr>`;
+    }
+  });
+
+  // Doporučení
+  const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
+  const TIPY_TISK = {
+    presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. Nakreslete spaghetti diagram a vizuálně uvidíte kde se trasy kříží a opakují.`,
+    hledani:`Hledání tvoří ${Math.round(avg.hledani/avgC*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
+    cekani:`Čekání tvoří ${Math.round(avg.cekani/avgC*100)}% času. Hledejte příčinu — chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
+    papiry:`Administrativa tvoří ${Math.round(avg.papiry/avgC*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
+    priprava:`Příprava tvoří ${Math.round(avg.priprava/avgC*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
+    kontrola:`Kontrola tvoří ${Math.round(avg.kontrola/avgC*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
+  };
+  let doporuceni = '';
+  Object.keys(PRAHY).forEach(k => {
+    if (!avg[k]) return;
+    const pct = avgC > 0 ? Math.round(avg[k]/avgC*100) : 0;
+    if (pct >= PRAHY[k]) {
+      const barva = STD_BARVY[k] || '#545454';
+      doporuceni += `<tr>
+        <td style="font-size:11px;font-weight:700;color:${barva};white-space:nowrap;padding-right:12px;">${getNazev(k)} — ${pct}%</td>
+        <td style="font-size:12px;color:#545454;line-height:1.6;">${TIPY_TISK[k]}</td>
+      </tr>`;
+    }
+  });
+
+  const html = `<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Měřič plýtvání Pro — ${nazev}</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,sans-serif;font-size:13px;color:#111;max-width:800px;margin:0 auto;padding:32px;}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:16px;border-bottom:3px solid #e9a91b;}
+.brand{font-size:20px;font-weight:900;color:#000;}
+.brand span{color:#e9a91b;}
+.report-info{text-align:right;}
+.report-info h1{font-size:17px;font-weight:900;margin:0 0 4px;}
+.report-info p{font-size:11px;color:#666;margin:2px 0;}
+h2{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;margin:20px 0 8px;}
+table{width:100%;border-collapse:collapse;margin-bottom:4px;}
+th{background:#111;color:white;padding:7px 10px;text-align:left;font-size:10px;font-weight:700;}
+td{padding:6px 10px;border-bottom:1px solid #f0f0f0;font-size:11px;font-family:monospace;}
+tr.avg td{background:#fdf3d9;font-weight:700;}
+tr.ply td{background:#fee2e2;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.stat{background:#f5f4f0;border-radius:6px;padding:10px 12px;text-align:center;}
+.stat-val{font-size:18px;font-weight:700;color:#111;font-family:monospace;}
+.stat-lbl{font-size:10px;color:#999;margin-top:2px;}
+.stat-gold{background:#fdf3d9;}
+.stat-gold .stat-val{color:#c48e10;}
+.zak-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+.zak-item{background:#f5f4f0;border-radius:6px;padding:8px 10px;text-align:center;}
+.zak-val{font-size:16px;font-weight:700;color:#111;font-family:monospace;}
+.zak-lbl{font-size:10px;color:#999;margin-top:2px;}
+.zak-highlight{background:#fdf3d9;}
+.zak-highlight .zak-val{color:#c48e10;}
+.zak-uspora{grid-column:span 4;background:#e8f5ee;border:1px solid rgba(42,122,79,.2);text-align:center;padding:10px;}
+.zak-uspora .zak-val{color:#2a7a4f;}
+.alert-box{border-radius:6px;padding:12px 14px;margin-bottom:16px;}
+.note{font-size:11px;color:#666;line-height:1.65;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,.08);}
+.graf-table td{border:none;padding:3px 6px;vertical-align:middle;}
+.tip-table td{border:none;padding:5px 0;vertical-align:top;}
+footer{margin-top:32px;padding-top:12px;border-top:1px solid #eee;font-size:10px;color:#aaa;text-align:center;}
+@media print{body{padding:16px;}button{display:none;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="brand">Gabriela <span>Tomíčková</span></div>
+  <div class="report-info">
+    <h1>Měřič plýtvání Pro</h1>
+    <p>${nazev}</p>
+    <p>${n} cyklů · ${datum} · směna ${delkaSmeny}h</p>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-val">${fmtC(avgC)}</div><div class="stat-lbl">Průměrný cyklus</div></div>
+  <div class="stat stat-gold"><div class="stat-val">${plyPct}%</div><div class="stat-lbl">Čas mimo přímou práci</div></div>
+  <div class="stat"><div class="stat-val">+${rozdilKusu}</div><div class="stat-lbl">Kusů navíc bez plýtvání</div></div>
+  <div class="stat stat-gold"><div class="stat-val">${plyKcRokFmt} Kč</div><div class="stat-lbl">Hodnota času/rok</div></div>
+</div>
+
+<h2>Tabulka cyklů</h2>
+<table>
+  <thead><tr><th>#</th>${vsechnyKat.map(k=>`<th>${getNazev(k)}</th>`).join('')}<th>Celkem</th></tr></thead>
+  <tbody>
+    ${cykly.map((c,i)=>`<tr><td>${i+1}</td>${vsechnyKat.map(k=>`<td>${fmtC(c.cas[k]||0)}</td>`).join('')}<td><strong>${fmtC(c.celkem)}</strong></td></tr>`).join('')}
+    <tr class="avg"><td>Průměr</td>${avgRow}</tr>
+    <tr class="ply"><td>Plý.</td>${plyRow}</tr>
+  </tbody>
+</table>
+
+<h2>Průměrné rozložení času</h2>
+<table class="graf-table"><tbody>${grafRows}</tbody></table>
+
+${pocetKusu > 0 ? `
+<h2>Analýza zakázky</h2>
+<div class="zak-grid">
+  <div class="zak-item"><div class="zak-val">${fmtC(avgC)}</div><div class="zak-lbl">Průměrný cyklus</div></div>
+  <div class="zak-item"><div class="zak-val">${kusyZaSmenu}</div><div class="zak-lbl">Kusů za směnu (${delkaSmeny}h)</div></div>
+  <div class="zak-item"><div class="zak-val">${idealniKusy}</div><div class="zak-lbl">Kusů bez plýtvání</div></div>
+  <div class="zak-item zak-highlight"><div class="zak-val">+${rozdilKusu}</div><div class="zak-lbl">Kusů navíc bez plýtvání</div></div>
+  <div class="zak-item"><div class="zak-val">${pocetKusu}</div><div class="zak-lbl">Kusů v zakázce</div></div>
+  <div class="zak-item"><div class="zak-val">${(avgC).toFixed(1)}s</div><div class="zak-lbl">Takt zakázky</div></div>
+  <div class="zak-item"><div class="zak-val">${fmtC(pocetKusu * avgC)}</div><div class="zak-lbl">Zakázka aktuálně</div></div>
+  <div class="zak-item zak-highlight"><div class="zak-val">${fmtC(pocetKusu * idealniCyklus)}</div><div class="zak-lbl">Zakázka bez plýtvání</div></div>
+  <div class="zak-item zak-uspora"><div class="zak-val">Úspora ${Math.round((pocetKusu * avgC - pocetKusu * idealniCyklus) / 60)} minut na zakázce</div><div class="zak-lbl">Při eliminaci plýtvání</div></div>
+</div>` : `
+<h2>Analýza zakázky</h2>
+<div class="zak-grid">
+  <div class="zak-item"><div class="zak-val">${fmtC(avgC)}</div><div class="zak-lbl">Průměrný cyklus</div></div>
+  <div class="zak-item"><div class="zak-val">${kusyZaSmenu}</div><div class="zak-lbl">Kusů za směnu (${delkaSmeny}h)</div></div>
+  <div class="zak-item"><div class="zak-val">${idealniKusy}</div><div class="zak-lbl">Kusů bez plýtvání</div></div>
+  <div class="zak-item zak-highlight"><div class="zak-val">+${rozdilKusu}</div><div class="zak-lbl">Kusů navíc bez plýtvání</div></div>
+</div>`}
+
+<div class="alert-box" style="background:${plyPct>40?'#fee2e2':plyPct>20?'#fff3e0':'#e8f5ee'};border:1px solid ${plyPct>40?'#c0392b33':plyPct>20?'#b4530933':'#2a7a4f33'};margin-top:16px;">
+  <strong style="color:${plyPct>40?'#c0392b':plyPct>20?'#b45309':'#2a7a4f'}">Čas mimo přímou práci tvoří ${plyPct}%</strong><br>
+  <span style="font-size:12px;color:#545454;">Průměrný cyklus ${fmtC(avgC)}, z toho ${fmtC(plyC)} mimo přímou práci. Hodnota času ročně (${delkaSmeny}h/den × 250 dní × ${pocetPracovniku} ${pocetPracovniku===1?'pracovník':'pracovníků'} × ${hodinovaSazba} Kč/h): přibližně <strong>${plyKcRokFmt} Kč</strong>.</span>
+  <div class="note">Vše mimo kategorii Práce a zadanou operaci appka počítá jako čas mimo přímou práci. V praxi nelze hodnoty dostat na nulu — přesun, příprava nebo kontrola budou vždy zčásti nutné. Ne vše lze odstranit — cílem je určit, která část je skutečně zbytečná, ne dokonalost.</div>
+</div>
+
+${doporuceni ? `<h2>Kde začít</h2><table class="tip-table"><tbody>${doporuceni}</tbody></table>` : ''}
+
+<footer>Gabriela Tomíčková · gabrielatomickova.cz · IČO: 75905311</footer>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(() => win.print(), 500);
+}
+
+function kopirovat() {
+  const text = sestavit();
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('btn-kop');
+    btn.textContent = 'Zkopírováno!';
+    btn.style.background = '#2a7a4f';
+    setTimeout(() => { btn.textContent = 'Kopírovat'; btn.style.background = 'var(--mid)'; }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    const btn = document.getElementById('btn-kop');
+    btn.textContent = 'Zkopírováno!';
+    setTimeout(() => { btn.textContent = 'Kopírovat'; }, 2000);
+  });
+}
+
+function zacitZnovu() {
+  cykly = []; aktCyklus = null; aktivniKat = null; cyklusStart = null;
+  vlastniOp = []; vsechnyKat = [];
+  document.getElementById('grid-hodnota').innerHTML = `
+    <button class="kat-btn k-prace" onclick="setKat('prace','Práce','#2a7a4f')">
+      <div class="kat-arr"></div><div>Práce</div><div class="kat-cas" id="k-prace">0:00</div>
+    </button>`;
+  document.getElementById('uloz-list').innerHTML = '';
+  document.getElementById('operace-list').innerHTML = '';
+  document.getElementById('souhrn').style.display = 'none';
+  document.getElementById('setup').style.display = 'block';
+  document.getElementById('timer').textContent = '00:00';
+  document.getElementById('timer').style.color = 'var(--dark)';
+  document.getElementById('timer-kat').textContent = 'Klikněte na první činnost';
+  document.getElementById('timer-kat').style.background = 'var(--light)';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function getNazev(k) { return STD_NAZVY[k] || (vlastniOp.find(o=>o.id===k)||{nazev:k}).nazev; }
+function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
+function fmtC(s) { return pad(Math.floor(s/60)) + ':' + pad(Math.floor(s%60)); }
+
+nacistPrihlaseniStav();
+</script>
+
+<script>
+(function(){
+  var s = localStorage.getItem('cookies_souhlas');
+  if (s === 'ano') {
+    spustitGA();
+  } else if (s === null) {
+    document.getElementById('cookies-bar').style.display = 'flex';
+  }
+})();
+
+function spustitGA() {
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=G-JBFDH4G4VP';
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', 'G-JBFDH4G4VP');
+}
+
+function cookiesSouhlasit() {
+  localStorage.setItem('cookies_souhlas', 'ano');
+  document.getElementById('cookies-bar').style.display = 'none';
+  spustitGA();
+}
+
+function cookiesOdmitnout() {
+  localStorage.setItem('cookies_souhlas', 'ne');
+  document.getElementById('cookies-bar').style.display = 'none';
+}
+</script>
+</body>
+</html>
