@@ -335,7 +335,7 @@ const TOOLS = [
   { id:"meric-free", group:"free", name:"Měřič plýtvání Free", krok:2, oblasti:["sklad","vyroba"], benefit:"Změříte, kolik času vaši lidé skutečně tráví prací, a kolik chozením a čekáním.",
     popis:"Máte pocit, že vaši zaměstnanci víc nachodí, než vyrobí? Nebo že půlku pracovní doby vyplňují papíry? To jste tady správně.\n\nMěřič plýtvání vám pomůže objevit místa, kde ztrácíte nejvíc.\n\nZvolíte si proces, který chcete změřit, pozorujete pracovníka přímo při práci a klikáte na tlačítka podle toho, co zrovna dělá.\n\nAppka sama spočítá, kolik času padá na práci, přesun, hledání, čekání, administrativu, kontrolu a přípravu. Tři cykly zdarma, bez registrace.",
     proKoho:"Majitel nebo manažer výroby či skladu, co tuší, že se někde ztrácí čas, ale nemá to podložené čísly.",
-    url:"nastroje/meric-plytvani-free/", souvisejici:["meric-pro","kalkulacka","kviz-komunikace"],
+    url:"nastroje/meric-plytvani-free/?start=1", souvisejici:["meric-pro","kalkulacka","kviz-komunikace"],
     metaTitle:"Výpočet produktivity práce zdarma | Gabriela Tomíčková",
     metaDescription:"Zjistěte výpočet produktivity práce ve vaší firmě za 10 minut. Bez stopek a papíru, zdarma online, výsledek na e-mail.",
     ucelMetoda:"Měřič plýtvání Free je jednoduchá časová studie jednoho konkrétního procesu. Místo stopek a papíru klikáte na tlačítko podle toho, co zrovna pracovník dělá, appka sama měří, jak dlouho která činnost trvá. Na konci uvidíte, kolik času padá na skutečnou práci, a kolik na chození, hledání, čekání, papírování nebo kontrolu.\n\nKdo zná metodu KAIZEN, pozná v těch kategoriích klasické druhy plýtvání, takzvané muda. Znát ji ale vůbec nemusíte, appka funguje stejně dobře i bez toho.",
@@ -397,7 +397,7 @@ const TOOLS = [
   { id:"kalkulacka", group:"free", name:"Kalkulačka neviditelných ztrát", krok:2, oblasti:["sklad","vyroba"], benefit:"Zjistíte v korunách, kolik vás ročně stojí obyčejná rutina ve skladu nebo výrobě.",
     popis:"Tušíte, že vám ve skladu nebo ve výrobě někde uniká čas a peníze, ale nemáte to podložené číslem? Tady ho zjistíte za pár minut.\n\nZadáte pár čísel o svém provozu, kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje, a kalkulačka to spočítá na hodiny, kilometry a koruny za rok.\n\nVýsledek je orientační, ne audit na korunu přesně. Ale vychází z reálných měření, ne z odhadu od stolu.",
     proKoho:"Vedoucí skladu nebo výroby, co chce první rychlé číslo, ne jen pocit, že něco vázne. Ideální pro tým 5 až 50 lidí.",
-    url:"nastroje/kalkulacka-ztrat/", souvisejici:["mini-audit","meric-free","kviz-komunikace"],
+    url:"nastroje/kalkulacka-ztrat/?start=1", souvisejici:["mini-audit","meric-free","kviz-komunikace"],
     kdyPouzit:{
       otazky:[
         "Tušíte, že vám někde uniká čas, ale netušíte o jakém celkovém čísle je vlastně řeč?",
@@ -502,7 +502,7 @@ const TOOLS = [
   { id:"kviz-sklad", group:"free", name:"Kvíz: Jak dobře znáte svůj sklad", krok:1, oblasti:["sklad"], benefit:"Zjistíte, co o svém skladu vlastně nevíte, ale měli byste.",
     popis:"10 otázek, které odhalí slepá místa ve vašem provozu.\n\nNejde o znalosti, jde o to, jestli máte čísla a přehled, který potřebujete k rozhodování.",
     proKoho:"Vedoucí skladu nebo výroby s týmem 3 až 50 lidí.",
-    url:"nastroje/kviz-jak-znate-svuj-sklad/", souvisejici:["mini-audit","kalkulacka"],
+    url:"nastroje/kviz-jak-znate-svuj-sklad/?start=1", souvisejici:["mini-audit","kalkulacka"],
     kdyPouzit:{
       otazky:[
         "Vedete sklad nebo výrobu a nejste si jistí, jestli máte přehled, který byste měli mít?",
@@ -554,7 +554,7 @@ const TOOLS = [
   { id:"kviz-komunikace", group:"free", name:"Kvíz komunikačního chaosu", krok:1, oblasti:["lide"], benefit:"Zjistíte, na které ze 4 úrovní komunikačního chaosu vaše firma je.",
     popis:"Rychlý test komunikace ve firmě, 11 otázek o tom, jak si předáváte informace. Podle bodů zjistíte, na které ze 4 úrovní komunikačního chaosu jste, a která z 6 oblastí vás nejvíc brzdí.",
     proKoho:"Majitel nebo manažer, kde lidi dělají věci jinak, než bylo domluveno, a nikdo přesně neví proč.",
-    url:"nastroje/kviz-komunikacniho-chaosu/", souvisejici:["kalkulacka","meric-free","casova-studie"],
+    url:"nastroje/kviz-komunikacniho-chaosu/?start=1", souvisejici:["kalkulacka","meric-free","casova-studie"],
     kdyPouzit:{
       otazky:[
         "Běží k jedné zakázce informace přes e-mail, WhatsApp, papírový lístek i telefon, a nikdo si není jistý, co platí naposled?",
@@ -667,7 +667,7 @@ const TOOLS = [
   { id:"spaghetti-sklad", group:"free", name:"Spaghetti diagram", krok:2, oblasti:["sklad","vyroba"], benefit:"Uvidíte na plánku skladu nebo výroby, kolik lidé reálně nachodí.",
     popis:"Nahrajete plánek skladu nebo výroby, zaklikáte trasu pohybu, nástroj spočítá počet bodů, délku trasy a celkovou vzdálenost na zakázku.",
     proKoho:"Vedoucí skladu nebo výroby, co chce vidět, kolik lidí reálně nachodí, ne odhadovat.",
-    url:"nastroje/spaghetti-free/", souvisejici:["spaghetti-vyroba","meric-free"],
+    url:"nastroje/spaghetti-free/?start=1", souvisejici:["spaghetti-vyroba","meric-free"],
     kdyPouzit:{
       otazky:[
         "Máte pocit, že lidé ve skladu chodí víc, než by museli, ale nevíte přesně o kolik?",

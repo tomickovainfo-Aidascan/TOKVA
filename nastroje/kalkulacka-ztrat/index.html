@@ -635,5 +635,16 @@ function cookiesOdmitnout() {
   document.getElementById('cookies-bar').style.display = 'none';
 }
 </script>
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('start') === '1') {
+    setTimeout(function(){
+      var el = document.querySelector('.calc-grid');
+      if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 300);
+  }
+})();
+</script>
 </body>
 </html>

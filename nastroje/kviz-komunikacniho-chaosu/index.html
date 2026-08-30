@@ -1186,5 +1186,15 @@ function cookiesOdmitnout() {
   document.getElementById('cookies-bar').style.display = 'none';
 }
 </script>
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('start') === '1') {
+    setTimeout(function(){
+      if (typeof spustitKviz === 'function') spustitKviz();
+    }, 300);
+  }
+})();
+</script>
 </body>
 </html>
