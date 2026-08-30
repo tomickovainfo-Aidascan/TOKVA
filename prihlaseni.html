@@ -85,6 +85,7 @@ input:focus { border-color:var(--gold); }
   <div id="krok-firma" class="krok">
     <h1>Vítejte v Tokvě</h1>
     <p class="podnadpis">Ještě potřebujeme založit vaši firmu nebo provoz – pod ní se budou ukládat všechny vaše výsledky a projekty.</p>
+    <p class="podnadpis" id="prihlaseny-jako" style="margin-top:-14px;"></p>
 
     <label for="nazev-firmy">Název firmy nebo provozu</label>
     <input id="nazev-firmy" type="text" placeholder="např. Novák s.r.o. – sklad Vrchlabí">
@@ -92,6 +93,8 @@ input:focus { border-color:var(--gold); }
     <button class="btn-gold" id="btn-firma" onclick="odeslatZalozeniFirmy()">Chci pokračovat</button>
 
     <div class="zprava" id="zprava-firma"></div>
+
+    <a class="zpatky-link" href="#" onclick="odhlasitAZkusitJinak(event)">Nejste to vy? Odhlásit se a zkusit jiný účet</a>
   </div>
 
   <a class="zpatky-link" href="index.html">← Zpět na přehled nástrojů</a>
@@ -158,9 +161,24 @@ async function poPrihlaseni() {
   if (organizace) {
     presmerovatPoPrihlaseni();
   } else {
+    const session = await ziskatSession();
+    const info = document.getElementById('prihlaseny-jako');
+    if (info && session) info.textContent = 'Přihlášeni jako ' + session.user.email;
     document.getElementById('krok-ucet').classList.remove('aktivni');
     document.getElementById('krok-firma').classList.add('aktivni');
   }
+}
+
+// Umožní se odhlásit rovnou z kroku "založení firmy", kdyby appka omylem
+// přeskočila na účet, který uživatel nechtěl (starší přihlášení v prohlížeči).
+async function odhlasitAZkusitJinak(e) {
+  e.preventDefault();
+  try { await supabaseClient.auth.signOut(); } catch (err) { console.warn('Odhlášení se nepovedlo.', err); }
+  document.getElementById('krok-firma').classList.remove('aktivni');
+  document.getElementById('krok-ucet').classList.add('aktivni');
+  document.getElementById('email').value = '';
+  document.getElementById('heslo').value = '';
+  prepnoutTab('prihlasit');
 }
 
 async function odeslatZalozeniFirmy() {
