@@ -301,7 +301,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 <div class="prihlaseni" id="prihlaseni">
   <div class="prih-card">
     <h2 id="prih-nadpis">Přihlaste se ke svému účtu</h2>
-    <p id="prih-text">Spaghetti diagram Pro je součástí vašeho předplatného Moje Nástrojovna. Přihlaste se účtem, který jste dostali po zakoupení.</p>
+    <p id="prih-text">Spaghetti diagram Pro je součástí vašeho předplatného Tokva Pro. Přihlaste se účtem, který jste dostali po zakoupení.</p>
     <div class="prih-err" id="prih-err" style="display:none;">Přihlášení se nepodařilo. Zkuste to znovu nebo napište na tomickova.info@gmail.com</div>
     <button class="prih-btn" id="prih-btn" onclick="klikNaPrihlaseni()">Přihlásit se</button>
     <p style="margin-top:16px;font-size:12px;color:var(--light);">
@@ -2359,7 +2359,7 @@ function resetovat() {
 <script src="../../auth.js"></script>
 <script>
 // =============================================
-// PŘIHLAŠOVÁNÍ - Moje Nástrojovna (Supabase), celá appka je Pro
+// PŘIHLAŠOVÁNÍ - Tokva Pro (Supabase), celá appka je Pro
 // =============================================
 let session = null;
 let clenstvi = null;
@@ -2425,7 +2425,7 @@ function renderPrihlaseniStav() {
     btn.style.display = 'none';
   } else {
     nadpis.textContent = 'Přihlaste se ke svému účtu';
-    text.textContent = 'Spaghetti diagram Pro je součástí vašeho předplatného Moje Nástrojovna. Přihlaste se účtem, který jste dostali po zakoupení.';
+    text.textContent = 'Spaghetti diagram Pro je součástí vašeho předplatného Tokva Pro. Přihlaste se účtem, který jste dostali po zakoupení.';
     btn.style.display = 'block';
     btn.textContent = 'Přihlásit se';
   }

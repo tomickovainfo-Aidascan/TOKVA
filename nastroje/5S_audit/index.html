@@ -836,7 +836,7 @@ nav {
     <p style="font-size:13px;color:var(--light);margin-bottom:14px;">Pro verze odemyká víc míst najednou, standard s fotkou cílového stavu, pravidelné kontroly se skóre a trendem, úkoly pro tým a přehledný tisk reportu.</p>
     <p class="login-err" id="pro-err" style="color:rgba(255,255,255,.5);"></p>
     <button class="modal-save" id="pro-btn" onclick="klikVModaluPro()">Přihlásit se</button>
-    <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc o balíčku Provoz pod kontrolou</a></div>
+    <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Tokva Pro? <a href="https://tokva.cz">Zjistit víc o Tokva Pro</a></div>
   </div>
 </div>
 
@@ -889,7 +889,7 @@ function aktualizovatProBtn() {
   if (session && !jePro) {
     proBtn.textContent = 'Zavřít';
     proBtn.onclick = function () { zavritModal('modal-pro'); };
-    if (proErr) proErr.textContent = 'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí balíčku Provoz pod kontrolou.';
+    if (proErr) proErr.textContent = 'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí Tokva Pro.';
   } else if (session && jePro) {
     proBtn.textContent = 'Pokračovat';
     proBtn.onclick = function () { zavritModal('modal-pro'); };
@@ -938,7 +938,7 @@ async function klikVModaluPro() {
     return;
   }
   document.getElementById('pro-err').textContent =
-    'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí balíčku Provoz pod kontrolou.';
+    'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí Tokva Pro.';
 }
 
 const S_DATA = [

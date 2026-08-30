@@ -538,7 +538,7 @@ nav {
       <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Pro má neomezené analýzy, ukládá historii a založí navazující úkoly. Přihlaste se účtem Nástrojovny.</p>
       <div class="login-err" id="login-err"></div>
       <button class="login-btn" id="login-btn" onclick="klikProLogin()">Přihlásit se</button>
-      <div class="login-link">Nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc o balíčku Provoz pod kontrolou</a> · <a href="javascript:void(0)" onclick="prepnoutKodBlok()">Zpět na analýzu zdarma</a></div>
+      <div class="login-link">Nemáte Tokva Pro? <a href="https://tokva.cz">Zjistit víc o Tokva Pro</a> · <a href="javascript:void(0)" onclick="prepnoutKodBlok()">Zpět na analýzu zdarma</a></div>
     </div>
   </div>
 </div>
@@ -730,7 +730,7 @@ async function klikProLogin() {
     return;
   }
   if (s && !jePro) {
-    err.textContent = 'Jste přihlášeni jako ' + s.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí balíčku Provoz pod kontrolou.';
+    err.textContent = 'Jste přihlášeni jako ' + s.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí Tokva Pro.';
   }
 }
 

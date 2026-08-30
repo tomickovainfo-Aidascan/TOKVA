@@ -1180,7 +1180,7 @@ function aktualizovatProBtn() {
   if (session && !jePro) {
     proBtn.textContent = 'Zavřít';
     proBtn.onclick = zavritModalPro;
-    if (proErr) proErr.textContent = 'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí balíčku Provoz pod kontrolou.';
+    if (proErr) proErr.textContent = 'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí Tokva Pro.';
   } else if (session && jePro) {
     proBtn.textContent = 'Pokračovat';
     proBtn.onclick = zavritModalPro;
@@ -1235,7 +1235,7 @@ async function klikVModaluPro() {
     return;
   }
   document.getElementById('pro-err').textContent =
-    'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí balíčku Provoz pod kontrolou.';
+    'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí Tokva Pro.';
 }
 
 function otevritModalPro() { document.getElementById('modal-pro').style.display = 'flex'; }
@@ -2118,7 +2118,7 @@ nacistPrihlaseniStav();
     <p style="font-size:13px;color:var(--mid);margin-bottom:14px;line-height:1.7;">Jeden den zůstává navždy zdarma, přesně jako dnes. Pro navíc po přihlášení uloží každý uzavřený den do vašeho účtu a ukáže trend produktivní práce napříč dny.</p>
     <p class="login-err" id="pro-err" style="color:var(--mid);"></p>
     <button class="modal-save" id="pro-btn" onclick="klikVModaluPro()">Přihlásit se</button>
-    <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc o balíčku Provoz pod kontrolou</a></div>
+    <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Tokva Pro? <a href="https://tokva.cz">Zjistit víc o Tokva Pro</a></div>
   </div>
 </div>
 
