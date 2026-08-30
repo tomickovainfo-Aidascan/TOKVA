@@ -62,6 +62,22 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .nav-brand span { color:var(--gold); }
 .nav-cta { background:var(--gold); color:var(--black); font-size:13px; font-weight:600; padding:8px 20px; border-radius:4px; text-decoration:none; }
 .nav-cta:hover { background:var(--gold-dark); color:white; }
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{background:transparent;border:1px solid var(--border);color:var(--mid);font-size:12px;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9998;align-items:center;justify-content:center;padding:20px;}
+.modal-box{background:var(--white);border-radius:12px;max-width:420px;width:100%;padding:26px 24px;position:relative;}
+.modal-box-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.modal-box-head h3{font-family:"Poppins",sans-serif;font-size:18px;font-weight:800;color:var(--black);}
+.modal-box-close{background:none;border:none;font-size:22px;color:var(--light);cursor:pointer;line-height:1;padding:0 0 0 12px;}
+.modal-box-close:hover{color:var(--dark);}
+.modal-box p{font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:16px;}
+.modal-err{font-size:12px;min-height:16px;margin-bottom:8px;}
+.modal-box-link{font-size:12px;color:var(--light);text-align:center;margin-top:12px;}
+.modal-box-link a{color:var(--gold-dark);font-weight:600;text-decoration:none;}
+.btn-gold{background:var(--gold);color:var(--black);border:none;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;padding:12px 20px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.btn-gold:hover{background:var(--gold-dark);color:white;}
 
 /* HERO */
 .hero { background:var(--black); padding:56px 40px 48px; position:relative; overflow:hidden; }
@@ -311,9 +327,15 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 .faq-a { font-size:13px; color:var(--mid); line-height:1.7; }
 .tools-tip { background:var(--gold-light); border:1px solid rgba(233,169,27,0.3); border-radius:12px; padding:24px; }
 .tools-tip strong { font-family:"Poppins",sans-serif; font-size:14px; font-weight:700; color:var(--dark); display:block; margin-bottom:12px; }
-.tools-tip-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; font-size:13px; color:var(--mid); line-height:1.6; }
-.tools-tip-row::before { content:"→"; color:var(--gold); font-weight:700; flex-shrink:0; margin-top:1px; }
-.tools-tip-row:last-child { margin-bottom:0; }
+.tools-tip-grid { display:grid; grid-template-columns:16px minmax(150px,190px) 1fr; column-gap:12px; row-gap:10px; align-items:baseline; }
+.tools-tip-arrow { color:var(--gold); font-weight:700; }
+.tools-tip-label { font-size:13px; font-weight:700; color:var(--dark); }
+.tools-tip-desc { font-size:13px; color:var(--mid); line-height:1.6; }
+.tools-tip-desc a { color:var(--gold-dark); font-weight:600; text-decoration:none; white-space:nowrap; }
+@media (max-width:520px) {
+  .tools-tip-grid { grid-template-columns:16px 1fr; }
+  .tools-tip-desc { grid-column:2; }
+}
 
 @media (max-width:600px) {
   .two-col { grid-template-columns:1fr; }
@@ -346,7 +368,24 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 
 <nav>
   <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;">Gabriela <span>Tomíčková</span></a>
+  <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+  </div>
 </nav>
+
+<div class="modal-overlay" id="modal-pro">
+  <div class="modal-box">
+    <div class="modal-box-head">
+      <h3>Odemknout Pro</h3>
+      <button class="modal-box-close" onclick="zavritModalPro()">×</button>
+    </div>
+    <p>Pro verze uloží tenhle výsledek do vašeho účtu. Audit pak stačí za čas zopakovat a hned uvidíte, jestli se stav skladu zlepšuje, nebo je stejný. Samotný audit zůstává navždy zdarma, bez přihlášení.</p>
+    <div class="modal-err" id="pro-err" style="color:var(--mid);"></div>
+    <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
+    <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc</a></div>
+  </div>
+</div>
 
 <div class="hero">
   <div class="hero-inner">
@@ -651,6 +690,36 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
       <div id="nemereno-rows"></div>
     </div>
 
+    <div class="vysledky-detail" id="historie-panel">
+      <div class="vysledky-detail-header">Historie auditů</div>
+      <div id="historie-zamceno" style="padding:18px 20px;">
+        <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Pro verze uloží tenhle výsledek do vašeho účtu. Audit stačí za čas zopakovat a uvidíte, jestli se stav skladu zlepšuje.</p>
+        <button class="btn-gold" style="width:100%;" onclick="otevritModalPro()">Odemknout Pro</button>
+      </div>
+      <div id="historie-obsah" style="display:none;"></div>
+    </div>
+
+    <div class="vysledky-detail" id="projekt-panel" style="display:none;">
+      <div class="vysledky-detail-header">Zařadit k projektu</div>
+      <div style="padding:16px 20px;">
+        <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Nepovinné. Pomůže vám tenhle výsledek pozdějí najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
+        <select id="projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
+          <option value="">Bez projektu</option>
+          <option value="__novy__">+ Nový projekt…</option>
+        </select>
+        <input id="projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+        <button class="btn-gold" style="width:100%;" onclick="ulozitZarazeniProjektu()">Uložit zařazení</button>
+        <div id="projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+      </div>
+    </div>
+
+    <div class="vysledky-detail" id="export-panel" style="display:none;">
+      <div class="vysledky-detail-header">Vaše data</div>
+      <div style="padding:16px 20px;">
+        <button class="btn-gold" style="width:100%;" onclick="exportovatData()">Exportovat moje data (CSV)</button>
+      </div>
+    </div>
+
     <div class="cta-final">
       <div class="cta-final-label">Další krok</div>
       <h2>Výsledek vás překvapil?</h2>
@@ -671,8 +740,15 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 
     <div class="tools-tip">
       <strong>Chcete jít hlouběji?</strong>
-      <div class="tools-tip-row"><strong>Kalkulačka ztrát:</strong>&nbsp;zadejte 5 čísel a za 30 vteřin víte, kolik vás ztráty stojí v korunách. <a href="https://kalkulacka.gabrielatomickova.cz" style="color:var(--gold-dark);font-weight:600;text-decoration:none;">&nbsp;Spustit kalkulačku</a></div>
-      <div class="tools-tip-row"><strong>Měřič plýtvání Pro:</strong>&nbsp;změřte ztráty přímo v provozu, za jednu směnu víte přesně kde a kolik. <a href="https://gabrielatomickova.cz" style="color:var(--gold-dark);font-weight:600;text-decoration:none;">&nbsp;Zjistit více</a></div>
+      <div class="tools-tip-grid">
+        <span class="tools-tip-arrow">→</span>
+        <span class="tools-tip-label">Kalkulačka ztrát:</span>
+        <span class="tools-tip-desc">zadejte 5 čísel a za 30 vteřin víte, kolik vás ztráty stojí v korunách. <a href="https://kalkulacka.gabrielatomickova.cz">Spustit kalkulačku</a></span>
+
+        <span class="tools-tip-arrow">→</span>
+        <span class="tools-tip-label">Měřič plýtvání Pro:</span>
+        <span class="tools-tip-desc">změřte ztráty přímo v provozu, za jednu směnu víte přesně kde a kolik. <a href="https://gabrielatomickova.cz">Zjistit více</a></span>
+      </div>
     </div>
 
     <div class="faq-block">
@@ -689,6 +765,10 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
         <div class="faq-q">Musím projít celý audit najednou?</div>
         <div class="faq-a">Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte. 5 minut najdete vždy.</div>
       </div>
+      <div class="faq-item">
+        <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
+        <div class="faq-a">Pro uloží výsledek do vašeho účtu. Audit zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se stav skladu zlepšuje, nebo je pořád stejný. Samotný audit je pořád celý zdarma, Pro jen přidává historii.</div>
+      </div>
     </div>
 
   </div>
@@ -699,6 +779,9 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
   <div class="footer-legal">Příčná 49, Vrchlabí, IČO: 75905311 &nbsp;·&nbsp; <a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/supabase-client.js"></script>
+<script src="/auth.js"></script>
 <script>
 const TIPY = {
   1: "Má každá položka svoji přesnou pozici v systému i fyzicky ve skladu? Je místo viditelně označené? Sedí to, co systém říká, s tím, co tam reálně leží? Zkuste se na chvíli vcítit do nového skladníka první den v práci. Chápe váš systém bez vysvětlování? Dává mu logiku a smysl? Nebo se zorientuje jen ten, kdo tam pracuje roky?",
@@ -925,6 +1008,10 @@ function zobrazVysledky() {
   const v = document.getElementById('vysledky');
   v.classList.add('active');
   setTimeout(() => v.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+
+  vysledekUlozen = false;
+  ulozitVysledekDoSupabase(skore, maxS).then(renderHistorie);
+  renderHistorie();
   } catch(e) { alert('Chyba zobrazVysledky: ' + e.message); }
 }
 
@@ -959,8 +1046,244 @@ function zacitZnovu() {
   setTimeout(() => q0.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }
 
+let session = null;
+let clenstvi = null;
+let jePro = false;
+let vysledekUlozen = false;
+
+async function nacistPrihlaseniStav() {
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací vrstva se nepodařila načíst, appka jede jako nepřihlášená.', e);
+    session = null; clenstvi = null; jePro = false;
+  }
+  renderUcetNav();
+}
+
+function renderUcetNav() {
+  const info = document.getElementById('nav-ucet-info');
+  const btn = document.getElementById('nav-ucet-btn');
+  if (session && clenstvi) {
+    info.style.display = 'inline-block';
+    info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    btn.textContent = 'Odhlásit';
+  } else {
+    info.style.display = 'none';
+    btn.textContent = 'Přihlásit se';
+  }
+}
+
+async function klikNaUcet() {
+  if (session) {
+    try { await odhlasit(); } catch (e) { console.warn('Odhlášení se nepodařilo.', e); }
+    session = null; clenstvi = null; jePro = false;
+    renderUcetNav();
+    vysledekUlozen = false;
+    if (document.getElementById('vysledky').classList.contains('active')) renderHistorie();
+  } else {
+    try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
+  }
+}
+
+async function klikVModaluPro() {
+  const err = document.getElementById('pro-err');
+  err.textContent = '';
+  if (!session) {
+    try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
+    return;
+  }
+  if (!jePro) {
+    err.textContent = 'K tomuhle účtu zatím není aktivní Pro.';
+    return;
+  }
+  zavritModalPro();
+}
+
+function otevritModalPro() {
+  document.getElementById('pro-err').textContent = '';
+  document.getElementById('modal-pro').style.display = 'flex';
+}
+function zavritModalPro() {
+  document.getElementById('modal-pro').style.display = 'none';
+}
+document.addEventListener('click', function (e) {
+  if (e.target === document.getElementById('modal-pro')) zavritModalPro();
+});
+
+let posledniToolRunId = null;
+
+async function ulozitVysledekDoSupabase(skore, maxS) {
+  if (!jePro || !clenstvi || vysledekUlozen) return;
+  try {
+    const nejhorsi = Object.entries(odpovedi)
+      .sort((a, b) => b[1] - a[1])
+      .filter(([_, b]) => b >= 2)
+      .slice(0, 3)
+      .map(([q]) => OTAZKY[q - 1]);
+    const { data, error } = await supabaseClient.from('tool_runs').insert({
+      organization_id: clenstvi.organization_id,
+      nastroj: 'mini-audit-skladu',
+      nazev: 'Mini audit skladu',
+      shrnuti: skore + '/' + maxS + ' bodů' + (nejhorsi.length ? ', nejhorší: ' + nejhorsi.join(', ') : ''),
+      hlavni_hodnota_cislo: skore,
+      hlavni_hodnota_jednotka: 'z ' + maxS + ' bodů',
+      hlavni_hodnota_typ: 'skore',
+      faze: 'videt',
+      data: { odpovedi: Object.assign({}, odpovedi), nevim: Array.from(nevimSet), nejhorsi_oblasti: nejhorsi }
+    }).select('id').single();
+    if (error) throw error;
+    vysledekUlozen = true;
+    posledniToolRunId = data ? data.id : null;
+  } catch (e) {
+    console.warn('Výsledek se nepodařilo uložit do Supabase, zůstává aspoň na téhle stránce.', e);
+  }
+}
+
+async function nacistProjekty() {
+  const select = document.getElementById('projekt-select');
+  if (!select || !clenstvi) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('projects')
+      .select('id, name')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
+    (data || []).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name;
+      opt.setAttribute('data-projekt', '1');
+      select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+    });
+  } catch (e) {
+    console.warn('Projekty se nepodařilo načíst.', e);
+  }
+}
+
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'projekt-select') {
+    const novyInput = document.getElementById('projekt-novy-nazev');
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+});
+
+async function ulozitZarazeniProjektu() {
+  const stav = document.getElementById('projekt-stav');
+  const select = document.getElementById('projekt-select');
+  if (!posledniToolRunId || !clenstvi || !select) return;
+  stav.textContent = 'Ukládám…';
+  try {
+    let projektId = select.value || null;
+    if (projektId === '__novy__') {
+      const nazev = (document.getElementById('projekt-novy-nazev').value || '').trim();
+      if (!nazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data, error } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: nazev
+      }).select('id').single();
+      if (error) throw error;
+      projektId = data.id;
+    }
+    const { error: chybaUpdate } = await supabaseClient
+      .from('tool_runs')
+      .update({ project_id: projektId })
+      .eq('id', posledniToolRunId);
+    if (chybaUpdate) throw chybaUpdate;
+    stav.textContent = projektId ? 'Uloženo, výsledek patří k projektu.' : 'Uloženo, bez projektu.';
+    await nacistProjekty();
+  } catch (e) {
+    console.warn('Zařazení k projektu se nepodařilo uložit.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
+async function exportovatData() {
+  if (!clenstvi) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('*')
+      .eq('nastroj', 'mini-audit-skladu')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    if (!data || !data.length) { alert('Zatím nemáte žádná uložená data k exportu.'); return; }
+    const hlavicky = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
+    const radky = data.map(r => hlavicky.map(h => {
+      const v = r[h] == null ? '' : String(r[h]).replace(/"/g, '""');
+      return '"' + v + '"';
+    }).join(','));
+    const csv = hlavicky.join(',') + '\n' + radky.join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mini-audit-skladu-data.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.warn('Export se nepodařil.', e);
+    alert('Export se teď nepodařil, zkuste to prosím znovu.');
+  }
+}
+
+async function renderHistorie() {
+  const zamceno = document.getElementById('historie-zamceno');
+  const obsah = document.getElementById('historie-obsah');
+  const projektPanel = document.getElementById('projekt-panel');
+  const exportPanel = document.getElementById('export-panel');
+  if (!jePro || !clenstvi) {
+    zamceno.style.display = 'block';
+    obsah.style.display = 'none';
+    if (projektPanel) projektPanel.style.display = 'none';
+    if (exportPanel) exportPanel.style.display = 'none';
+    return;
+  }
+  zamceno.style.display = 'none';
+  obsah.style.display = 'block';
+  if (projektPanel) { projektPanel.style.display = 'block'; nacistProjekty(); }
+  if (exportPanel) exportPanel.style.display = 'block';
+  obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--light);">Načítám historii…</div>';
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('*')
+      .eq('nastroj', 'mini-audit-skladu')
+      .order('created_at', { ascending: false })
+      .limit(10);
+    if (error) throw error;
+    if (!data || !data.length) {
+      obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--mid);">Zatím žádná historie, tenhle výsledek je první uložený.</div>';
+      return;
+    }
+    obsah.innerHTML = data.map(r => {
+      const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
+      const s = r.hlavni_hodnota_cislo;
+      const jednotka = r.hlavni_hodnota_jednotka || '';
+      const max = parseInt((jednotka.match(/\d+/) || [30])[0], 10);
+      const pomer = max > 0 ? s / max : 0;
+      const barva = pomer <= 7/30 ? '#2a7a4f' : pomer <= 15/30 ? '#d97706' : pomer <= 23/30 ? '#b45309' : '#b91c1c';
+      return '<div class="vysledek-row">' +
+        '<div class="vysledek-arrow" style="background:' + barva + '"></div>' +
+        '<div class="vysledek-text"><strong>' + datum + '</strong><span>' + s + ' ' + jednotka + '</span></div>' +
+        '</div>';
+    }).join('');
+  } catch (e) {
+    console.warn('Historii se nepodařilo načíst.', e);
+    obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--mid);">Historii se teď nepodařilo načíst.</div>';
+  }
+}
+
 updateProgress();
 zkontrolovatStart();
+nacistPrihlaseniStav();
 </script>
 
 <script>
