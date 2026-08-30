@@ -48,7 +48,8 @@ async function ziskatMojiOrganizaci() {
     .limit(1)
     .maybeSingle();
 
-  if (error || !data) return null;
+  if (error) { console.error('ziskatMojiOrganizaci chyba:', error, 'pro user_id:', session.user.id); return null; }
+  if (!data) { console.warn('ziskatMojiOrganizaci: zadna organizace pro user_id:', session.user.id); return null; }
   return data;
 }
 
