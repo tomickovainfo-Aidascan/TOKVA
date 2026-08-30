@@ -286,7 +286,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
   <a class="back" href="index.html">← Zpět na hlavní web</a>
   <div class="brand">Tokva <span>Gabriela Tomíčková</span></div>
   <div class="topbar-right">
-    <a class="topbar-login" href="prihlaseni.html">Moje Tokva</a>
+    <span class="topbar-login" id="nav-ucet-info" style="display:none;cursor:default;"></span>
+    <a class="topbar-login" href="prihlaseni.html" id="nav-ucet-btn">Moje Tokva</a>
     <div class="preview-flag">Náhled</div>
   </div>
 </div>
@@ -328,6 +329,38 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
   </main>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script src="auth.js"></script>
+<script>
+// Přihlašovací stav v horní liště: ukáže jméno firmy + Odhlásit, když je uživatel
+// přihlášený a má firmu; jinak nechá odkaz "Moje Tokva" na přihlašovací stránku.
+(async function nacistUcetIndex() {
+  const info = document.getElementById('nav-ucet-info');
+  const btn = document.getElementById('nav-ucet-btn');
+  if (!info || !btn) return;
+  let session = null, clenstvi = null;
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+  } catch (e) {
+    console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
+  }
+  if (session && clenstvi) {
+    const jePro = maAktivniPro(clenstvi);
+    info.style.display = 'inline-block';
+    info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    btn.textContent = 'Odhlásit';
+    btn.removeAttribute('href');
+    btn.style.cursor = 'pointer';
+    btn.onclick = async function (e) {
+      e.preventDefault();
+      try { await odhlasit(); } catch (err) { console.warn('Odhlášení se nepodařilo.', err); }
+    };
+  }
+})();
+</script>
 
 <script>
 const TOOLS = [
