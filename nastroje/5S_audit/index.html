@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>5S pro každého smrtelníka | Gabriela Tomíčková</title>
-<meta name="description" content="5S audit pracoviště krok za krokem. Checklist, fotodokumentace před/po a report ke stažení. Přístupový kód od Gabriely Tomíčkové.">
+<meta name="description" content="5S audit pracoviště krok za krokem. Checklist, fotodokumentace před/po a report ke stažení. Zdarma, Pro verze pro dlouhodobé udržování po přihlášení.">
 <meta name="keywords" content="5s audit, audit 5s checklist, 5s audit sheet, lean management 5s, co je 5s metoda">
 <meta name="author" content="Gabriela Tomíčková">
 <meta name="robots" content="index, follow">
@@ -771,6 +771,8 @@ nav {
 <nav>
   <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;color:inherit;">Gabriela <span>Tomíčková</span></a>
   <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
     <button class="nav-btn" onclick="tiskNeboPro()">Tisk reportu</button>
     <button class="nav-btn primary" onclick="novaMista()">+ Nové místo</button>
   </div>
@@ -831,26 +833,94 @@ nav {
       <span>Odemknout Pro</span>
       <button class="modal-close" onclick="zavritModal('modal-pro')">×</button>
     </div>
-    <p style="font-size:13px;color:var(--light);margin-bottom:14px;">Pro verze odemyká víc míst najednou, standard s fotkou cílového stavu, pravidelné kontroly se skóre a trendem, úkoly pro tým a přehledný tisk reportu. Zadejte přístupový kód, který vám přišel na email po zaplacení.</p>
-    <input class="modal-input" id="pro-kod" type="text" placeholder="XXXXXX" maxlength="20"
-      onkeydown="if(event.key==='Enter') odemknoutPro()">
-    <div class="login-err" id="pro-err"></div>
-    <button class="modal-save" id="pro-btn" onclick="odemknoutPro()">Odemknout</button>
-    <div class="login-link" style="margin-top:10px;">Nemáte kód? <a href="https://gabrielatomickova.cz/kde-mi-mizi-cas.html">Objednejte zde</a></div>
+    <p style="font-size:13px;color:var(--light);margin-bottom:14px;">Pro verze odemyká víc míst najednou, standard s fotkou cílového stavu, pravidelné kontroly se skóre a trendem, úkoly pro tým a přehledný tisk reportu.</p>
+    <p class="login-err" id="pro-err" style="color:rgba(255,255,255,.5);"></p>
+    <button class="modal-save" id="pro-btn" onclick="klikVModaluPro()">Přihlásit se</button>
+    <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc o balíčku Provoz pod kontrolou</a></div>
   </div>
 </div>
 
 <!-- Report pro tisk, skládá se dynamicky z aktuálního místa při kliknutí na Tisk reportu -->
 <div id="report-print" style="display:none;"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth.js"></script>
 <script>
 // DATA
+// Místa, kroky, fotky a poznámky zůstávají v localStorage i pro Pro uživatele –
+// appka jede naplno i offline. Přihlášení a Pro plán appka zjišťuje ze Supabase
+// (viz nacistPrihlaseniStav níž), Pro běhy a úkoly appka navíc, best-effort,
+// posílá do Supabase (tool_runs/measurements/actions), aby se daly číst napříč
+// nástroji a v budoucím Akčním plánu.
 let data = JSON.parse(localStorage.getItem('5s_data') || 'null') || {
   mista: [],
-  aktivniMisto: null,
-  proUnlocked: false
+  aktivniMisto: null
 };
-if (typeof data.proUnlocked === 'undefined') data.proUnlocked = false;
+delete data.proUnlocked; // starý přístupový kód appka už nepoužívá
+
+// Stav přihlášení, zjišťuje se při startu appky ze sdíleného auth.js
+let session = null;
+let clenstvi = null;
+let jePro = false;
+
+async function nacistPrihlaseniStav() {
+  // Zabaleno v try/catch schválně: appka je pořád zdarma použitelná i offline,
+  // nebo když se z jakéhokoli důvodu nenačte Supabase/auth.js (výpadek, adblock,
+  // firemní firewall v provozu). Bez tohohle by pád přihlašovací vrstvy shodil
+  // úplně celou appku, i tu zdarma část.
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál jako nepřihlášená (zdarma).', e);
+    session = null;
+    clenstvi = null;
+    jePro = false;
+  }
+  renderUcetNav();
+}
+
+function renderUcetNav() {
+  const btn = document.getElementById('nav-ucet-btn');
+  const info = document.getElementById('nav-ucet-info');
+  if (!session) {
+    btn.textContent = 'Přihlásit se';
+    btn.style.display = '';
+    info.style.display = 'none';
+    return;
+  }
+  btn.textContent = 'Odhlásit';
+  btn.style.display = '';
+  info.style.display = '';
+  const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
+  info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
+}
+
+async function klikNaUcet() {
+  try {
+    if (session) { await odhlasit(); return; }
+    await vyzadovatPrihlaseni();
+  } catch (e) {
+    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    console.warn('Přihlášení/odhlášení se nepovedlo.', e);
+  }
+}
+
+// Tlačítko v modalu "Odemknout Pro": podle stavu buď pošle na přihlášení,
+// nebo (už přihlášený, ale bez Pro plánu) jen zavře modal a odkáže na balíček.
+async function klikVModaluPro() {
+  try {
+    if (!session) { await vyzadovatPrihlaseni(); return; }
+  } catch (e) {
+    document.getElementById('pro-err').textContent = 'Přihlašování teď není dostupné. Zkuste to prosím později.';
+    console.warn('Přihlášení se nepovedlo.', e);
+    return;
+  }
+  document.getElementById('pro-err').textContent =
+    'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí balíčku Provoz pod kontrolou.';
+}
 
 const S_DATA = [
   {
@@ -871,11 +941,11 @@ const S_DATA = [
   {
     id: 's4', num: '4S', name: 'Udržet pořádek', jp: 'Seiketsu / Standardize',
     popis: `<span class="arr"></span>Prvních třech S dosáhne každý, jednou.<br><br>Čtvrtá S říká: zapište jak to má vypadat, aby to tak vypadalo vždy. Pokud věci ve správném stavu vracíte na své místo, <strong>také je tam vždy najdete. A v pořádku.</strong><br><br><span class="arr"></span>Jinak přijdete, sáhnete. A tam nic. Hledáte, rozčilujete se, chodíte sem tam. A když konečně najdete, kleště jsou zaflákané vazelínou a chybí pružinka. Krom zkažené nálady máte <strong>20 minut v čoudu.</strong>`,
-    pochvala: 'Máte standard. Teď ho stačí udržet. Nastavte si upozornění na kontrolu za 3 dny.'
+    pochvala: 'Máte standard. Teď ho stačí udržet. Appka vám kontrolu připomene, až ji příště otevřete – hoďte si na den D radši i vlastní upomínku do mobilu.'
   },
   {
     id: 's5', num: '5S', name: 'Udržovat disciplínu', jp: 'Shitsuke / Sustain',
-    popis: `<span class="arr"></span>Nejtěžší ze všech pěti. <strong>5S není projekt, je to návyk.</strong><br><br>A pokud to drhne, hledejte příčinu. Jestli je to lenost, nebo fakt neví kam co patří.<br><br>Zamyslete se co s tím a jak to usnadnit.<br><br><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Tip</strong><br>Aplikace vám pošle upozornění za 3 dny po splnění 4S automaticky. Jako zálohu si klidně hoďte vlastní upomínku do mobilu.<br><br>Pokud něco není jak má, hledejte příčiny a vymyslete praktičtější standard.</div><br><span class="arr"></span>Ne vždy napoprvé všechno vyhovuje. To je normální.`,
+    popis: `<span class="arr"></span>Nejtěžší ze všech pěti. <strong>5S není projekt, je to návyk.</strong><br><br>A pokud to drhne, hledejte příčinu. Jestli je to lenost, nebo fakt neví kam co patří.<br><br>Zamyslete se co s tím a jak to usnadnit.<br><br><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Tip</strong><br>Appka si pamatuje datum další kontroly a připomene vám ji, jakmile appku příště otevřete v tomhle prohlížeči. Nefunguje to jako push zpráva do mobilu bez otevřené appky, proto si na den D hoďte i vlastní upomínku do kalendáře nebo mobilu.<br><br>Pokud něco není jak má, hledejte příčiny a vymyslete praktičtější standard.</div><br><span class="arr"></span>Ne vždy napoprvé všechno vyhovuje. To je normální.`,
     pochvala: 'Hotovo. Všech 5S splněno. Tohle je teď váš standard.'
   }
 ];
@@ -889,7 +959,8 @@ function aktivniMistoData() {
 }
 
 // INIT
-function init() {
+async function init() {
+  await nacistPrihlaseniStav();
   if (data.mista.length === 0) {
     // První spuštění, zobrazíme úvod
     zobrazitUvod();
@@ -903,16 +974,17 @@ function init() {
 
 // MÍSTA
 function novaMista() {
-  if (data.mista.length >= 1 && !data.proUnlocked) { otevritModal('modal-pro'); return; }
+  if (data.mista.length >= 1 && !jePro) { otevritModal('modal-pro'); return; }
   otevritModal('modal-misto');
 }
 
-function ulozitMisto() {
+async function ulozitMisto() {
   const nazev = document.getElementById('input-misto').value.trim();
   if (!nazev) return;
   const misto = {
     id: 'misto_' + Date.now(),
     nazev,
+    location_id: null, // doplní se u Pro, viz zajistitLokaciProMisto()
     splneno: {},
     fotky: {},
     poznamky: {},
@@ -930,6 +1002,26 @@ function ulozitMisto() {
   document.getElementById('input-misto').value = '';
   renderMista();
   renderMain();
+  if (jePro) await zajistitLokaciProMisto(misto);
+}
+
+// Pro Pro uživatele appka místu založí i řádek v Supabase (locations), ať je
+// provoz vidět pro celou firmu, ne jen v tomhle prohlížeči. Best-effort –
+// když se nepovede (offline, chyba sítě), appka jede dál jen s localStorage.
+async function zajistitLokaciProMisto(misto) {
+  if (!jePro || !clenstvi || misto.location_id) return;
+  try {
+    const { data: radek, error } = await supabaseClient
+      .from('locations')
+      .insert({ organization_id: clenstvi.organization_id, name: misto.nazev })
+      .select()
+      .single();
+    if (error) throw error;
+    misto.location_id = radek.id;
+    ulozit();
+  } catch (e) {
+    console.warn('Nepodařilo se založit místo v Supabase, appka jede dál lokálně.', e);
+  }
 }
 
 function smazatMisto(id) {
@@ -1058,14 +1150,34 @@ function renderMain() {
     main.appendChild(card);
   });
 
-  // Kontroly a úkoly, vždy viditelné (ne jen po 4/5 krocích) — obě jsou Pro
-  main.appendChild(renderKontrolySekce(misto));
-  main.appendChild(renderUkolySekce(misto));
+  // Kontroly a úkoly, vždy viditelné (ne jen po 4/5 krocích) — obě jsou Pro.
+  // Bez Pro appka ukáže jen jeden společný box s odkazem na obě funkce
+  // a jedním tlačítkem, ne dvě samostatné nabídky s dvěma tlačítky.
+  if (!jePro) {
+    main.appendChild(renderProTeaserKontrolyUkoly());
+  } else {
+    main.appendChild(renderKontrolySekce(misto));
+    main.appendChild(renderUkolySekce(misto));
+  }
+}
+
+// Společná nabídka Pro pro kontroly i úkoly (appka bez Pro)
+function renderProTeaserKontrolyUkoly() {
+  const div = document.createElement('div');
+  div.className = 'kontroly-sekce';
+  div.innerHTML = `
+    <div class="kontroly-title">Pravidelné kontroly a úkoly <span class="pro-lock-badge">Pro</span></div>
+    <div class="pro-teaser">
+      <p><strong>Pravidelné kontroly a sledování vývoje</strong><br>Jednorázově 5S udělá skoro každý. Udržet to je jiná disciplína. Pro appka sleduje, jestli místo drží standard v čase: skóre kontroly, historie, trend a naplánované připomínky.</p>
+      <p><strong>Úkoly a rozpracované problémy</strong><br>Místo obecné poznámky "co ještě zbývá" si v Pro verzi appky rozdělíte konkrétní úkoly mezi lidi, s termínem a zaškrtnutím hotovo.</p>
+      <button onclick="otevritModal('modal-pro')">Odemknout Pro</button>
+    </div>`;
+  return div;
 }
 
 // STANDARD MÍSTA (4S, Pro)
 function standardBlockHtml(misto) {
-  if (!data.proUnlocked) {
+  if (!jePro) {
     return `<div class="standard-block">
       <div class="standard-title">Standard místa <span class="pro-lock-badge">Pro</span></div>
       <div class="pro-teaser">
@@ -1097,18 +1209,9 @@ function ulozitStandardPravidla(val) {
 
 // KONTROLY (Pro): checklist -> skóre, historie, trend
 function renderKontrolySekce(misto) {
+  // Volá se jen pro Pro appku (bez Pro appka ukáže renderProTeaserKontrolyUkoly() místo obou sekcí).
   const kontrolyDiv = document.createElement('div');
   kontrolyDiv.className = 'kontroly-sekce';
-
-  if (!data.proUnlocked) {
-    kontrolyDiv.innerHTML = `
-      <div class="kontroly-title">Pravidelné kontroly a sledování vývoje <span class="pro-lock-badge">Pro</span></div>
-      <div class="pro-teaser">
-        <p>Jednorázově 5S udělá skoro každý. Udržet to je jiná disciplína. Pro appka sleduje, jestli místo drží standard v čase: skóre kontroly, historie, trend a naplánované připomínky.</p>
-        <button onclick="otevritModal('modal-pro')">Odemknout Pro</button>
-      </div>`;
-    return kontrolyDiv;
-  }
 
   const scoreBarva = s => s >= 80 ? 'green' : (s >= 50 ? 'yellow' : 'red');
 
@@ -1164,18 +1267,9 @@ function renderKontrolySekce(misto) {
 
 // ÚKOLY (Pro): konkrétní úkol + odpovědný + termín + hotovo
 function renderUkolySekce(misto) {
+  // Volá se jen pro Pro appku (bez Pro appka ukáže renderProTeaserKontrolyUkoly() místo obou sekcí).
   const div = document.createElement('div');
   div.className = 'kontroly-sekce';
-
-  if (!data.proUnlocked) {
-    div.innerHTML = `
-      <div class="kontroly-title">Úkoly a rozpracované problémy <span class="pro-lock-badge">Pro</span></div>
-      <div class="pro-teaser">
-        <p>Místo obecné poznámky "co ještě zbývá" si ve Pro appce rozdělíte konkrétní úkoly mezi lidi, s termínem a zaškrtnutím hotovo.</p>
-        <button onclick="otevritModal('modal-pro')">Odemknout Pro</button>
-      </div>`;
-    return div;
-  }
 
   const ukoly = misto.ukoly || [];
   const seznamHtml = ukoly.length > 0
@@ -1203,7 +1297,7 @@ function renderUkolySekce(misto) {
   return div;
 }
 
-function pridatUkol() {
+async function pridatUkol() {
   const misto = aktivniMistoData();
   if (!misto) return;
   const textEl = document.getElementById('ukol-text');
@@ -1212,12 +1306,33 @@ function pridatUkol() {
   const kdo = document.getElementById('ukol-kdo').value.trim();
   const termin = document.getElementById('ukol-termin').value;
   if (!misto.ukoly) misto.ukoly = [];
-  misto.ukoly.push({ id: 'u_' + Date.now(), text, kdo, termin, hotovo: false });
+  const ukol = { id: 'u_' + Date.now(), actionId: null, text, kdo, termin, hotovo: false };
+  misto.ukoly.push(ukol);
   ulozit();
   renderMain();
+  if (jePro && clenstvi) {
+    try {
+      const { data: radek, error } = await supabaseClient
+        .from('actions')
+        .insert({
+          organization_id: clenstvi.organization_id,
+          title: text,
+          responsible_person: kdo || null,
+          due_date: termin || null,
+          status: 'novy'
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      ukol.actionId = radek.id;
+      ulozit();
+    } catch (e) {
+      console.warn('Úkol se nepodařilo uložit do Akčního plánu (Supabase), zůstává aspoň lokálně.', e);
+    }
+  }
 }
 
-function prepnoutUkol(id) {
+async function prepnoutUkol(id) {
   const misto = aktivniMistoData();
   if (!misto) return;
   const u = (misto.ukoly || []).find(x => x.id === id);
@@ -1225,14 +1340,29 @@ function prepnoutUkol(id) {
   u.hotovo = !u.hotovo;
   ulozit();
   renderMain();
+  if (jePro && u.actionId) {
+    try {
+      await supabaseClient.from('actions').update({ status: u.hotovo ? 'hotovo' : 'novy' }).eq('id', u.actionId);
+    } catch (e) {
+      console.warn('Stav úkolu se nepodařilo přepsat v Supabase.', e);
+    }
+  }
 }
 
-function smazatUkol(id) {
+async function smazatUkol(id) {
   const misto = aktivniMistoData();
   if (!misto) return;
+  const u = (misto.ukoly || []).find(x => x.id === id);
   misto.ukoly = (misto.ukoly || []).filter(x => x.id !== id);
   ulozit();
   renderMain();
+  if (jePro && u && u.actionId) {
+    try {
+      await supabaseClient.from('actions').delete().eq('id', u.actionId);
+    } catch (e) {
+      console.warn('Úkol se nepodařilo smazat v Supabase.', e);
+    }
+  }
 }
 
 // TOGGLE KARTY
@@ -1341,7 +1471,7 @@ const POCHVALY = {
   s1: 'První krok hotov. Zbavili jste se balastu. To je víc než si myslíte.',
   s2: 'Tohle bude rozdíl. Fakt. Příště sáhnete a věc tam bude.',
   s3: 'Čistota odhaluje problémy dřív než se projeví. Dobře.',
-  s4: 'Máte standard. Teď ho stačí udržet. Nastavte si upozornění na kontrolu za 3 dny.',
+  s4: 'Máte standard. Teď ho stačí udržet. Appka vám kontrolu připomene, až ji příště otevřete – hoďte si na den D radši i vlastní upomínku do mobilu.',
   s5: 'Hotovo. Všech 5S splněno. Tohle je teď váš standard.'
 };
 
@@ -1358,10 +1488,12 @@ function splnitS(sId) {
 
     const splneno = Object.keys(misto.splneno).filter(k => misto.splneno[k]).length;
 
-    // Notifikace po 4S
+    // Připomínka kontroly po 4S (jen v tomhle prohlížeči, appka musí být příště otevřená –
+    // viz vysvětlení u kroku 5S). Na Safari/iPhonu bez přidání appky na plochu Notification
+    // API vůbec neexistuje, proto se všude nejdřív testuje, jestli je k dispozici.
     if (splneno === 4) {
       setTimeout(() => {
-        if (Notification.permission === 'granted') {
+        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
           new Notification('5S kontrola', {
             body: 'Za 3 dny je čas zkontrolovat ' + misto.nazev + '. Drží to?'
           });
@@ -1387,13 +1519,14 @@ function splnitS(sId) {
   }, 50);
 }
 
-// NOTIFIKACE
+// NOTIFIKACE (jen připomínka při příštím otevření appky v tomhle prohlížeči,
+// ne skutečné push oznámení do mobilu – appka na to zatím nemá backend)
 function zkontrolovatNotifikace() {
   const misto = aktivniMistoData();
   if (!misto || !misto.planovanaKontrola) return;
   const dnes = new Date().toISOString().slice(0, 10);
   if (misto.planovanaKontrola <= dnes) {
-    if (Notification.permission === 'granted') {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
       new Notification('Kontrola 5S', {
         body: misto.nazev + ' čeká na kontrolu. Jak to vypadá?'
       });
@@ -1407,7 +1540,7 @@ function nastavitNotifikaci(misto) {
   misto.planovanaKontrola = d.toISOString().slice(0, 10);
   ulozit();
 
-  if (Notification.permission !== 'granted') {
+  if (typeof Notification !== 'undefined' && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
     Notification.requestPermission();
   }
 }
@@ -1422,7 +1555,7 @@ function naplanovatKontrolu() {
   renderMain();
 }
 
-function ulozitKontrolu() {
+async function ulozitKontrolu() {
   const misto = aktivniMistoData();
   if (!misto) return;
   const checks = Array.from(document.querySelectorAll('#kontrola-checklist input[type=checkbox]'));
@@ -1443,6 +1576,34 @@ function ulozitKontrolu() {
   document.getElementById('input-kontrola').value = '';
   checks.forEach(c => { c.checked = false; });
   renderMain();
+
+  if (jePro && clenstvi) {
+    await zajistitLokaciProMisto(misto);
+    try {
+      const { data: run, error: errRun } = await supabaseClient.from('tool_runs').insert({
+        organization_id: clenstvi.organization_id,
+        location_id: misto.location_id || null,
+        nastroj: '5s',
+        nazev: '5S — ' + misto.nazev,
+        shrnuti: '5S kontrola pracoviště — ' + score + ' %' + (text ? (' — ' + text) : ''),
+        hlavni_hodnota_cislo: score,
+        hlavni_hodnota_jednotka: '%',
+        hlavni_hodnota_typ: 'skore',
+        data: { checklist, poznamka: text }
+      }).select().single();
+      if (errRun) throw errRun;
+      await supabaseClient.from('measurements').insert({
+        organization_id: clenstvi.organization_id,
+        location_id: misto.location_id || null,
+        tool_run_id: run ? run.id : null,
+        metric_name: '5s_skore',
+        metric_value: score,
+        unit: '%'
+      });
+    } catch (e) {
+      console.warn('Kontrolu se nepodařilo zapsat do Supabase, zůstává aspoň lokálně.', e);
+    }
+  }
 }
 
 // KONFETY
@@ -1523,7 +1684,7 @@ function pripravitReport() {
 }
 
 function tiskNeboPro() {
-  if (!data.proUnlocked) { otevritModal('modal-pro'); return; }
+  if (!jePro) { otevritModal('modal-pro'); return; }
   pripravitReport();
   setTimeout(() => window.print(), 60);
 }
@@ -1585,45 +1746,11 @@ function zobrazitUvod() {
 }
 
 // ODEMČENÍ PRO
-// Appka je od 25.8.2026 od začátku přístupná bez přihlašování (1S zdarma). Kroky 2S-5S,
-// víc míst, historie kontrol a tisk reportu se odemykají stejným přístupovým kódem jako
-// dřív celá appka, jen přes modal místo blokující úvodní obrazovky. Kód se ověřuje přes
-// stejný Apps Script endpoint, odemčení se ukládá trvale do 5s_data v localStorage.
-const LOGIN_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyP2l58OvGi5mzk-PXMaGNRZoMj4E8C3vn7o4Ib89DVhqdePdj90OWUUHXC1hYiQ5pC/exec';
-
-async function odemknoutPro() {
-  const kod = document.getElementById('pro-kod').value.trim().toUpperCase();
-  const err = document.getElementById('pro-err');
-  const btn = document.getElementById('pro-btn');
-
-  if (!kod) {
-    err.textContent = 'Zadejte přístupový kód.';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Kontroluji...';
-  err.textContent = '';
-
-  try {
-    const res = await fetch(LOGIN_SCRIPT_URL + '?action=check&kod=' + encodeURIComponent(kod));
-    const resData = await res.json();
-
-    if (resData.ok) {
-      data.proUnlocked = true;
-      ulozit();
-      zavritModal('modal-pro');
-      document.getElementById('pro-kod').value = '';
-      renderMain();
-    } else {
-      err.textContent = resData.zprava || 'Neplatný kód.';
-    }
-  } catch(e) {
-    err.textContent = 'Nepodařilo se ověřit kód. Zkuste znovu.';
-  }
-  btn.disabled = false;
-  btn.textContent = 'Odemknout';
-}
+// Od 26.8.2026 appka Pro neodemyká přístupovým kódem, ale sdíleným přihlášením
+// do Moje Nástrojovna (Supabase, viz auth.js/supabase-client.js). Kdo je přihlášený
+// a jeho firma má aktivní Pro plán (maAktivniPro), appka mu features odemkne sama
+// při načtení (viz nacistPrihlaseniStav a proměnná jePro). Klik na tlačítko v modalu
+// řeší klikVModaluPro() výš.
 
 // START
 init();

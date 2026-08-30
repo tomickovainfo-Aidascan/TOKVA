@@ -454,7 +454,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="measurer-tip">
         <strong>Nemáte představu, jaká čísla zadat?</strong>
         <p>Přesné minuty nikdo nezná zpaměti. Pokud chcete změřit ztráty přímo v provozu s přesnými čísly, vyzkoušejte Měřič plýtvání. Za jednu směnu víte přesně kde a kolik.</p>
-        <a href="https://meric-plytvani-free.gabrielatomickova.cz" target="_blank">Vyzkoušet měřič plýtvání →</a>
+        <a href="../meric-plytvani-free/" target="_blank">Vyzkoušet měřič plýtvání →</a>
       </div>
 
     </div>
@@ -471,13 +471,13 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div style="font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;">Pro sklad</div>
         <div style="font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;">Mini audit skladu</div>
         <div style="font-size:13px;color:var(--mid);margin-bottom:14px;">10 otázek, konkrétní tipy, výsledek zdarma.</div>
-        <a href="https://audit.gabrielatomickova.cz" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;">Spustit audit</a>
+        <a href="../mini-audit-skladu/" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;">Spustit audit</a>
       </div>
       <div style="background:var(--gold-light);border:1px solid rgba(233,169,27,0.3);border-radius:10px;padding:20px 22px;">
         <div style="font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;">Pro výrobu</div>
         <div style="font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;">Měřič plýtvání výroba</div>
         <div style="font-size:13px;color:var(--mid);margin-bottom:14px;">Změřte ztráty přímo v provozu. Za jednu směnu víte kde začít.</div>
-        <a href="https://meric-plytvani-free.gabrielatomickova.cz" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;">Zjistit více</a>
+        <a href="../meric-plytvani-free/" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;">Zjistit více</a>
       </div>
     </div>
     </div>
@@ -514,11 +514,11 @@ function syncFromNumber(id) {
 
 // kam appka pošle uživatele podle toho, kde je největší ztráta
 const CILE = {
-  chuze:   { nazev: "Zbytečná chůze a přesuny", text: "Zmapujte skutečnou trasu a najděte, kde se dá zkrátit.", url: "https://spaghetti.gabrielatomickova.cz", cta: "Zmapovat trasu →" },
-  prostoje:{ nazev: "Čekání a prostoje", text: "Změřte přímo v provozu, během které části procesu se čeká.", url: "https://meric-plytvani-free.gabrielatomickova.cz", cta: "Změřit teď →" },
+  chuze:   { nazev: "Zbytečná chůze a přesuny", text: "Zmapujte skutečnou trasu a najděte, kde se dá zkrátit.", url: "../spaghetti-free/", cta: "Zmapovat trasu →" },
+  prostoje:{ nazev: "Čekání a prostoje", text: "Změřte přímo v provozu, během které části procesu se čeká.", url: "../meric-plytvani-free/", cta: "Změřit teď →" },
   admin:   { nazev: "Ruční administrativa", text: "Časová studie dne umí rozklíčovat, kolik z toho je administrativa a hašení — appka zatím nemá vlastní veřejný odkaz, brzy přibude.", url: null, cta: null },
-  kamion:  { nazev: "Dodávky a expedice", text: "Změřte proces příjmu nebo expedice přímo v provozu.", url: "https://meric-plytvani-free.gabrielatomickova.cz", cta: "Změřit teď →" },
-  vse:     { nazev: "Rozloženo napříč více oblastmi", text: "Když nic výrazně nepřevažuje, problém většinou není jedna činnost, ale celkové fungování provozu.", url: "https://audit.gabrielatomickova.cz", cta: "Spustit Mini audit skladu →" }
+  kamion:  { nazev: "Dodávky a expedice", text: "Změřte proces příjmu nebo expedice přímo v provozu.", url: "../meric-plytvani-free/", cta: "Změřit teď →" },
+  vse:     { nazev: "Rozloženo napříč více oblastmi", text: "Když nic výrazně nepřevažuje, problém většinou není jedna činnost, ale celkové fungování provozu.", url: "../mini-audit-skladu/", cta: "Spustit Mini audit skladu →" }
 };
 
 function update() {

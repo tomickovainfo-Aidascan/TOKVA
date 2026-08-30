@@ -3,6 +3,19 @@
 // Používá appka, která appka potřebuje vědět, jestli je uživatel přihlášený,
 // a ke které firmě patří.
 
+// Zjistí, odkud appka běží, podle toho, odkud se skutečně načetl tenhle
+// soubor (auth.js) - funguje na file:// jednoho počítače, na github.io/nazev-repo/
+// i na vlastní doméně, appka to nemusí nikde ručně nastavovat.
+var KOREN_TOKVA = (function () {
+  var scripty = document.getElementsByTagName('script');
+  for (var i = 0; i < scripty.length; i++) {
+    if (scripty[i].src && scripty[i].src.indexOf('auth.js') !== -1) {
+      return new URL('.', scripty[i].src).href;
+    }
+  }
+  return './';
+})();
+
 // Vrátí aktuální session (nebo null, pokud nikdo není přihlášený).
 async function ziskatSession() {
   const { data: { session } } = await supabaseClient.auth.getSession();
@@ -15,8 +28,8 @@ async function ziskatSession() {
 async function vyzadovatPrihlaseni() {
   const session = await ziskatSession();
   if (!session) {
-    const zpet = encodeURIComponent(window.location.pathname + window.location.search);
-    window.location.href = '/prihlaseni.html?zpet=' + zpet;
+    const zpet = encodeURIComponent(window.location.href);
+    window.location.href = KOREN_TOKVA + 'prihlaseni.html?zpet=' + zpet;
     return null;
   }
   return session;
@@ -67,5 +80,5 @@ async function zalozitOrganizaci(nazevFirmy) {
 // Odhlášení, s přesměrováním zpátky na přihlašovací stránku.
 async function odhlasit() {
   await supabaseClient.auth.signOut();
-  window.location.href = '/prihlaseni.html';
+  window.location.href = KOREN_TOKVA + 'prihlaseni.html';
 }

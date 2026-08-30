@@ -94,7 +94,7 @@ input:focus { border-color:var(--gold); }
     <div class="zprava" id="zprava-firma"></div>
   </div>
 
-  <a class="zpatky-link" href="/">← Zpět na přehled nástrojů</a>
+  <a class="zpatky-link" href="index.html">← Zpět na přehled nástrojů</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -188,7 +188,7 @@ async function odeslatZalozeniFirmy() {
 function presmerovatPoPrihlaseni() {
   const params = new URLSearchParams(window.location.search);
   const zpet = params.get('zpet');
-  window.location.href = zpet ? decodeURIComponent(zpet) : '/';
+  window.location.href = zpet ? decodeURIComponent(zpet) : KOREN_TOKVA;
 }
 
 function prelozitChybu(msg) {

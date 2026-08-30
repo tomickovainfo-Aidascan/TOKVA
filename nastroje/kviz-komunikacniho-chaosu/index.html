@@ -39,10 +39,31 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--dark);min-height:100vh;line-height:1.6;}
-nav{background:var(--black);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+nav{background:var(--black);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;gap:10px;flex-wrap:wrap;}
 .nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:white;text-decoration:none;}
 .nav-brand span{color:var(--gold);}
 .nav-badge{font-size:10px;font-weight:700;color:var(--gold);background:rgba(233,169,27,.12);border:1px solid rgba(233,169,27,.3);padding:3px 8px;border-radius:3px;}
+.nav-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.nav-btn{background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);font-size:11px;padding:5px 12px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* MODAL (Pro odemčení, historie) */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
+.modal{background:#1a1a1a;border:1px solid rgba(255,255,255,.1);border-radius:16px 16px 0 0;padding:20px 20px 36px;width:100%;max-width:560px;max-height:80vh;overflow-y:auto;animation:slideUp .25s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-title{font-family:"Poppins",sans-serif;font-size:15px;font-weight:800;color:white;margin-bottom:16px;display:flex;justify-content:space-between;}
+.modal-close{background:transparent;border:none;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;}
+.modal p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:14px;}
+.modal-save{width:100%;background:var(--gold);border:none;border-radius:10px;padding:13px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:#000;cursor:pointer;transition:all .2s;}
+.modal-save:hover{background:var(--gold-dark);color:white;}
+.login-err{font-size:12px;color:#e74c3c;min-height:18px;margin-bottom:8px;}
+.login-link{font-size:12px;color:rgba(255,255,255,.35);}
+.login-link a{color:var(--gold);text-decoration:none;}
+.historie-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.historie-datum{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.historie-shrnuti{font-size:13px;color:rgba(255,255,255,.85);line-height:1.5;}
+.historie-prazdno{font-size:13px;color:rgba(255,255,255,.4);text-align:center;padding:20px 0;}
+.historie-trend{font-size:12px;color:var(--gold);margin-top:8px;line-height:1.6;}
 .page-header{background:var(--black);padding:24px 20px 20px;position:relative;overflow:hidden;}
 .page-header::before{content:"";position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:50px solid rgba(233,169,27,.07);pointer-events:none;}
 .page-header-inner{max-width:560px;margin:0 auto;position:relative;z-index:1;}
@@ -133,8 +154,41 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 </div>
 <nav>
   <a href="https://gabrielatomickova.cz" class="nav-brand">Gabriela <span>Tomíčková</span></a>
-  <span class="nav-badge">Pro vedoucí a majitele s týmem 3 a více lidí</span>
+  <div class="nav-right">
+    <span class="nav-badge">Pro vedoucí a majitele s týmem 3 a více lidí</span>
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+    <button class="nav-btn" id="nav-historie-btn" onclick="otevritHistorii()" style="display:none;">Historie</button>
+    <button class="nav-btn" id="nav-tym-btn" onclick="otevritTym()" style="display:none;">Tým</button>
+  </div>
 </nav>
+
+<!-- Modal týmové porovnání (jen Pro) -->
+<div class="modal-overlay" id="modal-tym" style="display:none;">
+  <div class="modal">
+    <div class="modal-title"><span>Týmové porovnání</span><button class="modal-close" onclick="document.getElementById('modal-tym').style.display='none';">×</button></div>
+    <div id="tym-obsah"><div class="historie-prazdno">Načítám...</div></div>
+  </div>
+</div>
+
+<!-- Modal Pro odemčení -->
+<div class="modal-overlay" id="modal-pro" style="display:none;">
+  <div class="modal">
+    <div class="modal-title"><span>Odemknout Pro</span><button class="modal-close" onclick="document.getElementById('modal-pro').style.display='none';">×</button></div>
+    <p>Pro uloží váš výsledek do historie a porovná ho s příštím vyplněním, ať vidíte, jestli se komunikace ve firmě zlepšuje nebo zhoršuje.</p>
+    <p class="login-err" id="pro-err" style="color:rgba(255,255,255,.5);"></p>
+    <button class="modal-save" onclick="klikVModaluPro()">Přihlásit se</button>
+    <div class="login-link" style="margin-top:10px;">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc</a></div>
+  </div>
+</div>
+
+<!-- Modal historie výsledků (jen Pro) -->
+<div class="modal-overlay" id="modal-historie" style="display:none;">
+  <div class="modal">
+    <div class="modal-title"><span>Historie výsledků</span><button class="modal-close" onclick="document.getElementById('modal-historie').style.display='none';">×</button></div>
+    <div id="historie-obsah"><div class="historie-prazdno">Načítám...</div></div>
+  </div>
+</div>
 <div class="page-header">
   <div class="page-header-inner">
     <h1>Kde se vám ve firmě <em>ztrácí informace?</em></h1>
@@ -174,6 +228,11 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <h3>Všech 6 oblastí</h3>
     <div id="v-oblasti-rows"></div>
   </div>
+  <div class="v-card" id="v-ulozit-card">
+    <h3>Uložit a sledovat vývoj</h3>
+    <p style="margin-bottom:12px;">Uložte si tenhle výsledek a příště uvidíte, jestli se komunikace ve firmě zlepšuje.</p>
+    <button class="btn-spustit" id="btn-ulozit-vysledek" onclick="klikUlozitVysledek()">Uložit tento výsledek</button>
+  </div>
   <div class="email-card">
     <h3>Chcete podrobnější rozbor?</h3>
     <p>Na e-mail vám pošlu podrobnější výsledek s konkrétními doporučeními pro vaši nejslabší oblast.</p>
@@ -192,6 +251,9 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   <div class="footer-brand">Gabriela <span>Tomíčková</span></div>
   <div class="footer-legal">IČO: 75905311 · <a href="https://gdpr.gabrielatomickova.cz">GDPR</a></div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth.js"></script>
 <script>
 // ============ OTÁZKY ============
 const OTAZKY = [
@@ -372,6 +434,462 @@ const PRVNI_KROK_OBLAST = {
 
 const odpovedi = {};
 
+// ============ PŘIHLÁŠENÍ A PRO (Supabase) ============
+// Kvíz samotný je a zůstává úplně zdarma bez přihlášení - tohle jen navíc
+// odemyká uložení výsledku a historii pro firmy s aktivním Pro.
+let session = null;
+let clenstvi = null;
+let jePro = false;
+let posledniVysledek = null; // { skore, maxSkore, nejslabsiKey, oblastiVysledky } z posledního zobrazeného výsledku
+
+async function nacistPrihlaseniStav() {
+  // try/catch schválně: kvíz musí fungovat i při výpadku Supabase/CDN
+  // (adblock, firemní firewall) - zdarma část na tom vůbec nezávisí.
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací stav se nepodařilo zjistit, kvíz jede dál jako nepřihlášený.', e);
+    session = null;
+    clenstvi = null;
+    jePro = false;
+  }
+  renderUcetNav();
+}
+
+function renderUcetNav() {
+  const btn = document.getElementById('nav-ucet-btn');
+  const info = document.getElementById('nav-ucet-info');
+  const historieBtn = document.getElementById('nav-historie-btn');
+  const tymBtn = document.getElementById('nav-tym-btn');
+  if (!session) {
+    btn.textContent = 'Přihlásit se';
+    info.style.display = 'none';
+    historieBtn.style.display = 'none';
+    tymBtn.style.display = 'none';
+    return;
+  }
+  btn.textContent = 'Odhlásit';
+  info.style.display = '';
+  const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
+  info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
+  historieBtn.style.display = jePro ? '' : 'none';
+  tymBtn.style.display = jePro ? '' : 'none';
+}
+
+async function klikNaUcet() {
+  try {
+    if (session) { await odhlasit(); return; }
+    await vyzadovatPrihlaseni();
+  } catch (e) {
+    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    console.warn('Přihlášení/odhlášení se nepovedlo.', e);
+  }
+}
+
+async function klikVModaluPro() {
+  const err = document.getElementById('pro-err');
+  err.textContent = '';
+  let s;
+  try {
+    s = await vyzadovatPrihlaseni();
+  } catch (e) {
+    err.textContent = 'Přihlašování teď není dostupné. Zkuste to prosím později.';
+    console.warn('Přihlášení se nepovedlo.', e);
+    return;
+  }
+  if (s && !jePro) {
+    err.textContent = 'Jste přihlášeni jako ' + s.user.email + ', ale vaše firma zatím nemá aktivní Pro.';
+  }
+}
+
+// Rozhodne, jestli karta pod výsledkem nabídne "Uložit tento výsledek" (běžné
+// vyplnění appky, Pro), nebo "Odeslat anonymně do týmu" (příchod přes odkaz
+// s ?tym=KOD od kolegy/majitele) - appka to pozná podle adresy v prohlížeči.
+function renderUlozitNeboTym() {
+  const card = document.getElementById('v-ulozit-card');
+  if (!card) return;
+  if (tymKod) {
+    card.innerHTML = `<h3>Týmové porovnání</h3>
+      <p style="margin-bottom:12px;">Vaše odpovědi teď můžete anonymně odeslat vedení - appka nikdy neukáže, kdo přesně co napsal, jen průměr celého týmu.</p>
+      <button class="btn-spustit" id="btn-odeslat-tym" onclick="odeslatDoTymu(document.getElementById('btn-odeslat-tym'))">Odeslat anonymně do týmu</button>`;
+  } else {
+    card.innerHTML = `<h3>Uložit a sledovat vývoj</h3>
+      <p style="margin-bottom:12px;">Uložte si tenhle výsledek a příště uvidíte, jestli se komunikace ve firmě zlepšuje.</p>
+      <button class="btn-spustit" id="btn-ulozit-vysledek" onclick="klikUlozitVysledek()">Uložit tento výsledek</button>`;
+  }
+}
+
+function klikUlozitVysledek() {
+  if (!jePro) { document.getElementById('modal-pro').style.display = 'flex'; return; }
+  ulozitVysledek();
+}
+
+// Best-effort uložení výsledku do Supabase (jen Pro). Appka jede dál i bez
+// tohohle - výsledek na obrazovce a e-mailový rozbor fungují vždy stejně.
+async function ulozitVysledek() {
+  if (!posledniVysledek || !jePro || !clenstvi) return;
+  const btn = document.getElementById('btn-ulozit-vysledek');
+  btn.disabled = true;
+  btn.textContent = 'Ukládám...';
+  const { skore, maxSkore, nejslabsiKey, oblastiVysledky } = posledniVysledek;
+  const nazevNejslabsi = nejslabsiKey ? OBLASTI[nejslabsiKey].nazev : 'nezjištěno';
+  try {
+    await supabaseClient.from('tool_runs').insert({
+      organization_id: clenstvi.organization_id,
+      nastroj: 'kviz-komunikacniho-chaosu',
+      nazev: 'Kvíz komunikačního chaosu — ' + skore + '/' + maxSkore,
+      shrnuti: 'Skóre ' + skore + '/' + maxSkore + ', nejslabší oblast: ' + nazevNejslabsi,
+      hlavni_hodnota_cislo: skore,
+      hlavni_hodnota_jednotka: 'z ' + maxSkore + ' bodů',
+      hlavni_hodnota_typ: 'skore',
+      data: { skore, maxSkore, nejslabsiKey, oblastiVysledky }
+    });
+    btn.textContent = 'Uloženo ✓';
+  } catch (e) {
+    console.warn('Výsledek se nepodařilo uložit do historie (Supabase).', e);
+    btn.disabled = false;
+    btn.textContent = 'Nepodařilo se, zkusit znovu';
+  }
+}
+
+// HISTORIE (jen Pro) - seznam uložených výsledků + porovnání posledních dvou.
+async function otevritHistorii() {
+  if (!jePro || !clenstvi) return;
+  document.getElementById('modal-historie').style.display = 'flex';
+  const obsah = document.getElementById('historie-obsah');
+  obsah.innerHTML = '<div class="historie-prazdno">Načítám...</div>';
+  try {
+    const { data: radky, error } = await supabaseClient
+      .from('tool_runs')
+      .select('id, created_at, nazev, shrnuti, hlavni_hodnota_cislo, hlavni_hodnota_jednotka, data')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'kviz-komunikacniho-chaosu')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (error) throw error;
+    if (!radky || radky.length === 0) {
+      obsah.innerHTML = '<div class="historie-prazdno">Zatím tu nemáte žádný uložený výsledek.</div>';
+      return;
+    }
+    obsah.innerHTML = '';
+    radky.forEach((r, i) => {
+      const item = document.createElement('div');
+      item.className = 'historie-item';
+      const datum = document.createElement('div');
+      datum.className = 'historie-datum';
+      datum.textContent = new Date(r.created_at).toLocaleString('cs-CZ');
+      const shrnuti = document.createElement('div');
+      shrnuti.className = 'historie-shrnuti';
+      shrnuti.textContent = r.nazev || r.shrnuti || 'Kvíz komunikačního chaosu';
+      item.appendChild(datum);
+      item.appendChild(shrnuti);
+      // Trend jen u nejnovějšího záznamu, porovnaný s tím hned pod ním
+      if (i === 0 && radky.length > 1) {
+        const posledni = r.data, predchozi = radky[1].data;
+        if (posledni && predchozi && typeof posledni.skore === 'number' && typeof predchozi.skore === 'number') {
+          const pomerPosledni = posledni.maxSkore ? posledni.skore / posledni.maxSkore : 0;
+          const pomerPredchozi = predchozi.maxSkore ? predchozi.skore / predchozi.maxSkore : 0;
+          const rozdilPb = Math.round((pomerPosledni - pomerPredchozi) * 100);
+          const trend = document.createElement('div');
+          trend.className = 'historie-trend';
+          if (rozdilPb === 0) {
+            trend.textContent = 'Beze změny oproti minulému vyplnění.';
+          } else if (rozdilPb > 0) {
+            trend.textContent = 'Skóre se zhoršilo o ' + rozdilPb + ' p. b. oproti minulému vyplnění (vyšší skóre = víc chaosu).';
+          } else {
+            trend.textContent = 'Skóre se zlepšilo o ' + Math.abs(rozdilPb) + ' p. b. oproti minulému vyplnění.';
+          }
+          item.appendChild(trend);
+        }
+      }
+      obsah.appendChild(item);
+    });
+  } catch (e) {
+    console.warn('Historii se nepodařilo načíst ze Supabase.', e);
+    obsah.innerHTML = '<div class="historie-prazdno">Historii se teď nepodařilo načíst. Zkuste to prosím později.</div>';
+  }
+}
+
+// ============ TÝMOVÉ POROVNÁNÍ (majitel vs. tým, jen Pro) ============
+// Majitel spustí "kolo", appka vygeneruje krátký kód, majitel ho pošle týmu.
+// Kdokoliv s tím kódem appku otevře (?tym=KOD v adrese) vyplní kvíz úplně
+// anonymně - appka se ho neptá na jméno ani e-mail, jen zapíše odpovědi pod
+// dané kolo. Majitel pak vidí jen průměr týmu, nikdy jednotlivé odpovědi.
+const MIN_ZOBRAZIT_TYM = 3;   // pod tuhle hranici appka neukáže vůbec nic (ochrana anonymity)
+const MIN_DOPORUCENY_TYM = 5; // pod tuhle appka zobrazí, ale s upozorněním
+
+const tymKod = new URLSearchParams(window.location.search).get('tym');
+let aktivniKolo = null; // { id, kod, uzavreno } - majitelovo aktuální otevřené kolo
+
+function vygenerovatKod() {
+  const znaky = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // bez matoucích znaků 0/O, 1/I
+  let kod = '';
+  for (let i = 0; i < 6; i++) kod += znaky[Math.floor(Math.random() * znaky.length)];
+  return kod;
+}
+
+async function otevritTym() {
+  if (!jePro || !clenstvi) return;
+  document.getElementById('modal-tym').style.display = 'flex';
+  await nacistStavTymu();
+}
+
+async function nacistStavTymu() {
+  const obsah = document.getElementById('tym-obsah');
+  obsah.innerHTML = '<div class="historie-prazdno">Načítám...</div>';
+  try {
+    const { data: kola, error } = await supabaseClient
+      .from('kviz_tym_kola')
+      .select('id, kod, uzavreno, created_at')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'kviz-komunikacniho-chaosu')
+      .eq('uzavreno', false)
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (error) throw error;
+    if (!kola || kola.length === 0) {
+      aktivniKolo = null;
+      renderTymStart(obsah);
+      return;
+    }
+    aktivniKolo = kola[0];
+    await renderTymStav(obsah);
+  } catch (e) {
+    console.warn('Stav týmového kola se nepodařilo načíst.', e);
+    obsah.innerHTML = '<div class="historie-prazdno">Teď se to nepodařilo načíst. Zkuste to prosím později.</div>';
+  }
+}
+
+function renderTymStart(obsah) {
+  obsah.innerHTML = '';
+  const p = document.createElement('p');
+  p.textContent = 'Spusťte kolo, pošlete odkaz týmu (WhatsApp, e-mail, cokoliv) a appka vám ukáže průměr týmu vedle vaší vlastní odpovědi. Odpovědi jsou vždy úplně anonymní - appka nikdy neukáže, kdo co napsal.';
+  obsah.appendChild(p);
+  const btn = document.createElement('button');
+  btn.className = 'modal-save';
+  btn.textContent = 'Spustit kolo pro tým';
+  btn.onclick = () => spustitTymoveKolo(btn);
+  obsah.appendChild(btn);
+}
+
+async function spustitTymoveKolo(btn) {
+  btn.disabled = true;
+  btn.textContent = 'Zakládám...';
+  let pokusy = 0;
+  while (pokusy < 3) {
+    pokusy++;
+    const kod = vygenerovatKod();
+    try {
+      const { data: radek, error } = await supabaseClient.from('kviz_tym_kola').insert({
+        organization_id: clenstvi.organization_id,
+        nastroj: 'kviz-komunikacniho-chaosu',
+        kod: kod
+      }).select().single();
+      if (error) throw error;
+      aktivniKolo = radek;
+      await nacistStavTymu();
+      return;
+    } catch (e) {
+      // Kód se náhodou srazil s existujícím (unique), zkusíme znovu s jiným.
+      // Jiná chyba (výpadek Supabase apod.) - vzdáme to a řekneme uživateli.
+      if (pokusy >= 3) {
+        console.warn('Kolo se nepodařilo založit.', e);
+        btn.disabled = false;
+        btn.textContent = 'Nepodařilo se, zkusit znovu';
+        return;
+      }
+    }
+  }
+}
+
+async function renderTymStav(obsah) {
+  obsah.innerHTML = '';
+  const odkaz = window.location.origin + window.location.pathname + '?tym=' + aktivniKolo.kod;
+
+  const p1 = document.createElement('p');
+  p1.innerHTML = 'Kolo běží. Pošlete tenhle odkaz týmu:';
+  obsah.appendChild(p1);
+
+  const odkazBox = document.createElement('div');
+  odkazBox.style.cssText = 'background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:10px 12px;font-family:monospace;font-size:12px;color:white;word-break:break-all;margin-bottom:10px;';
+  odkazBox.textContent = odkaz;
+  obsah.appendChild(odkazBox);
+
+  const kopirovatBtn = document.createElement('button');
+  kopirovatBtn.className = 'modal-save';
+  kopirovatBtn.style.marginBottom = '16px';
+  kopirovatBtn.textContent = 'Zkopírovat odkaz';
+  kopirovatBtn.onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(odkaz);
+      kopirovatBtn.textContent = 'Zkopírováno ✓';
+    } catch (e) {
+      kopirovatBtn.textContent = 'Nepodařilo se, zkopírujte ručně';
+    }
+  };
+  obsah.appendChild(kopirovatBtn);
+
+  let pocet = 0;
+  try {
+    const { data: odpovedi, error } = await supabaseClient
+      .from('kviz_tym_odpovedi')
+      .select('id')
+      .eq('kolo_id', aktivniKolo.id);
+    if (error) throw error;
+    pocet = odpovedi ? odpovedi.length : 0;
+  } catch (e) {
+    console.warn('Počet odpovědí se nepodařilo načíst.', e);
+  }
+
+  const stav = document.createElement('p');
+  stav.style.fontWeight = '600';
+  stav.style.color = 'white';
+  stav.textContent = pocet + (pocet === 1 ? ' odpověď zatím přišla.' : ' odpovědí zatím přišlo.');
+  obsah.appendChild(stav);
+
+  if (pocet >= MIN_ZOBRAZIT_TYM) {
+    if (pocet < MIN_DOPORUCENY_TYM) {
+      const varovani = document.createElement('p');
+      varovani.style.color = '#e9a91b';
+      varovani.textContent = 'S tak málo odpověďmi je snazší uhodnout, kdo co napsal. Doporučujeme počkat aspoň na ' + MIN_DOPORUCENY_TYM + ' odpovědí, nebo výsledek berte s rezervou a nevyvozujte z něj závěry o konkrétních lidech.';
+      obsah.appendChild(varovani);
+    }
+    const zobrazitBtn = document.createElement('button');
+    zobrazitBtn.className = 'modal-save';
+    zobrazitBtn.style.marginBottom = '10px';
+    zobrazitBtn.textContent = 'Zobrazit porovnání';
+    zobrazitBtn.onclick = () => zobrazitPorovnani(obsah);
+    obsah.appendChild(zobrazitBtn);
+  }
+
+  const zavritBtn = document.createElement('button');
+  zavritBtn.className = 'modal-save';
+  zavritBtn.style.cssText = 'background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);';
+  zavritBtn.textContent = 'Zavřít kolo (přestat sbírat odpovědi)';
+  zavritBtn.onclick = () => zavritKolo(zavritBtn);
+  obsah.appendChild(zavritBtn);
+}
+
+async function zavritKolo(btn) {
+  if (!confirm('Zavřít kolo? Nikdo další už nebude moct přes tenhle odkaz odpovědět.')) return;
+  btn.disabled = true;
+  try {
+    await supabaseClient.from('kviz_tym_kola').update({ uzavreno: true }).eq('id', aktivniKolo.id);
+  } catch (e) {
+    console.warn('Kolo se nepodařilo zavřít.', e);
+  }
+  await nacistStavTymu();
+}
+
+async function zobrazitPorovnani(obsah) {
+  obsah.innerHTML = '<div class="historie-prazdno">Počítám průměr...</div>';
+  try {
+    const { data: odpovedi, error } = await supabaseClient
+      .from('kviz_tym_odpovedi')
+      .select('oblastni_vysledky')
+      .eq('kolo_id', aktivniKolo.id);
+    if (error) throw error;
+
+    // Průměr týmu za oblast, jen z odpovědí kde daná oblast nebyla "nevím"
+    const soucty = {}, pocty = {};
+    Object.keys(OBLASTI).forEach(k => { soucty[k] = 0; pocty[k] = 0; });
+    (odpovedi || []).forEach(o => {
+      const ov = o.oblastni_vysledky || {};
+      Object.keys(OBLASTI).forEach(k => {
+        if (ov[k] && typeof ov[k].pct === 'number') { soucty[k] += ov[k].pct; pocty[k]++; }
+      });
+    });
+
+    // Majitelův poslední uložený výsledek jako srovnávací bod
+    const { data: mujRadek } = await supabaseClient
+      .from('tool_runs')
+      .select('data')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'kviz-komunikacniho-chaosu')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    const mujVysledek = mujRadek && mujRadek.data ? mujRadek.data.oblastiVysledky : null;
+
+    obsah.innerHTML = '';
+    if (!mujVysledek) {
+      const p = document.createElement('p');
+      p.textContent = 'Pro porovnání ještě nemáte uložený svůj vlastní výsledek - vyplňte kvíz a klikněte "Uložit tento výsledek", pak sem zase přijďte.';
+      obsah.appendChild(p);
+    }
+    const poradi = ['chaos-zmen','zavislost','cekani','uloziste','kanalovy-chaos','prepisovani'];
+    poradi.forEach(k => {
+      const tymPct = pocty[k] > 0 ? Math.round(soucty[k] / pocty[k]) : null;
+      const mujPct = mujVysledek && mujVysledek[k] ? mujVysledek[k].pct : null;
+      const row = document.createElement('div');
+      row.className = 'historie-item';
+      const nadpis = document.createElement('div');
+      nadpis.className = 'historie-shrnuti';
+      nadpis.style.marginBottom = '6px';
+      nadpis.textContent = OBLASTI[k].nazev;
+      row.appendChild(nadpis);
+      const radek2 = document.createElement('div');
+      radek2.style.fontSize = '12px';
+      radek2.style.color = 'rgba(255,255,255,.6)';
+      radek2.textContent = 'Vy: ' + (mujPct !== null ? mujPct + ' %' : 'nezjištěno') + '   ·   Tým (průměr): ' + (tymPct !== null ? tymPct + ' %' : 'nezjištěno');
+      row.appendChild(radek2);
+      if (mujPct !== null && tymPct !== null && Math.abs(mujPct - tymPct) >= 20) {
+        const rozdil = document.createElement('div');
+        rozdil.className = 'historie-trend';
+        rozdil.textContent = mujPct < tymPct
+          ? 'Tým to tady vidí výrazně hůř, než si myslíte.'
+          : 'Vy to vidíte hůř, než tým - stojí za to zjistit proč.';
+        row.appendChild(rozdil);
+      }
+      obsah.appendChild(row);
+    });
+    const zpetBtn = document.createElement('button');
+    zpetBtn.className = 'modal-save';
+    zpetBtn.style.cssText = 'background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);margin-top:6px;';
+    zpetBtn.textContent = 'Zpět na stav kola';
+    zpetBtn.onclick = () => nacistStavTymu();
+    obsah.appendChild(zpetBtn);
+  } catch (e) {
+    console.warn('Porovnání se nepodařilo spočítat.', e);
+    obsah.innerHTML = '<div class="historie-prazdno">Porovnání se teď nepodařilo spočítat. Zkuste to prosím později.</div>';
+  }
+}
+
+// Zaměstnanecká strana - appka otevřená přes odkaz s ?tym=KOD po vyplnění
+// kvízu odešle odpověď anonymně, bez jakéhokoli přihlášení nebo e-mailu.
+async function odeslatDoTymu(btn) {
+  if (!posledniVysledek || !tymKod) return;
+  btn.disabled = true;
+  btn.textContent = 'Odesílám...';
+  try {
+    const { data: kolo, error: errKolo } = await supabaseClient.rpc('najit_tym_kolo', { p_kod: tymKod });
+    if (errKolo) throw errKolo;
+    const nalezene = kolo && kolo[0];
+    if (!nalezene) {
+      btn.textContent = 'Tenhle odkaz appka nenašla, zkontrolujte ho prosím.';
+      return;
+    }
+    if (nalezene.uzavreno) {
+      btn.textContent = 'Tohle kolo je už uzavřené, díky za snahu.';
+      return;
+    }
+    const { skore, maxSkore, oblastiVysledky } = posledniVysledek;
+    const { error: errOdpoved } = await supabaseClient.from('kviz_tym_odpovedi').insert({
+      kolo_id: nalezene.id,
+      skore, max_skore: maxSkore,
+      oblastni_vysledky: oblastiVysledky
+    });
+    if (errOdpoved) throw errOdpoved;
+    btn.textContent = 'Odesláno anonymně ✓';
+  } catch (e) {
+    console.warn('Odpověď se nepodařilo odeslat do týmového kola.', e);
+    btn.disabled = false;
+    btn.textContent = 'Nepodařilo se, zkusit znovu';
+  }
+}
+
 // ============ SPUŠTĚNÍ ============
 function spustitKviz(){
   document.getElementById('intro').style.display='none';
@@ -511,6 +1029,8 @@ function spocitatSkore(){
 // ============ ZOBRAZENÍ VÝSLEDKU ============
 function zobrazitVysledek(){
   const {skore, maxSkore, nejslabsiKey, oblastiVysledky, nevimOtazky} = spocitatSkore();
+  posledniVysledek = { skore, maxSkore, nejslabsiKey, oblastiVysledky };
+  renderUlozitNeboTym();
 
   document.getElementById('kviz').style.display='none';
   document.getElementById('vysledek').style.display='block';
@@ -614,6 +1134,7 @@ function poslatEmail(){
 
 function zacitZnovu(){
   Object.keys(odpovedi).forEach(k=>delete odpovedi[k]);
+  posledniVysledek = null;
   document.getElementById('vysledek').style.display='none';
   document.getElementById('intro').style.display='block';
   document.getElementById('btn-vysledek').disabled = true;
@@ -621,8 +1142,12 @@ function zacitZnovu(){
   document.getElementById('inp-email').value='';
   document.getElementById('email-status').className='email-status';
   document.getElementById('email-status').textContent='';
+  const ulozitBtn = document.getElementById('btn-ulozit-vysledek');
+  if (ulozitBtn) { ulozitBtn.disabled = false; ulozitBtn.textContent = 'Uložit tento výsledek'; }
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
+nacistPrihlaseniStav();
 </script>
 <script>
 (function(){

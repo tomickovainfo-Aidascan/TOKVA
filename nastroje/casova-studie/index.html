@@ -65,6 +65,22 @@ nav {
   color:var(--light);
 }
 
+/* NAV ÚČET (Moje Nástrojovna) */
+.nav-right { display:flex; align-items:center; gap:12px; }
+.nav-btn {
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--mid);
+  font-size:11px;
+  padding:5px 12px;
+  border-radius:4px;
+  cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all .2s;
+  white-space:nowrap;
+}
+.nav-btn:hover { border-color:var(--gold); color:var(--gold-dark); }
+
 /* PAGE HEADER */
 .page-header {
   background:var(--black);
@@ -725,6 +741,48 @@ nav {
 }
 .klas-rocni strong { color:var(--gold-dark); }
 
+/* HISTORIE DNÍ (Pro) */
+.historie-card {
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+  margin-top:16px;
+}
+.historie-card-title {
+  font-family:'Poppins',sans-serif;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:var(--mid);
+  margin-bottom:4px;
+}
+.historie-card-sub { font-size:12px; color:var(--light); margin-bottom:14px; line-height:1.6; }
+.historie-lock { text-align:center; padding:14px 8px; }
+.historie-lock p { font-size:13px; color:var(--mid); line-height:1.7; margin-bottom:14px; }
+.historie-lock button {
+  background:var(--gold);
+  border:none;
+  border-radius:8px;
+  padding:10px 22px;
+  color:var(--black);
+  font-family:'Poppins',sans-serif;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+  transition:all .2s;
+}
+.historie-lock button:hover { background:var(--gold-dark); }
+.historie-day-row { padding:9px 0; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+.historie-day-row:first-child { border-top:none; padding-top:0; }
+.historie-day-date { font-size:12px; color:var(--mid); min-width:80px; flex-shrink:0; }
+.historie-day-bar-bg { flex:1; height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
+.historie-day-bar-fill { height:100%; border-radius:3px; background:var(--green); }
+.historie-day-val { font-family:'DM Mono',monospace; font-size:11px; color:var(--dark); min-width:36px; text-align:right; }
+.historie-empty, .historie-err { font-size:12px; color:var(--light); text-align:center; padding:10px 0; }
+.historie-err { color:var(--red); }
+
 /* MODAL */
 .modal-overlay {
   position:fixed;
@@ -905,7 +963,7 @@ nav {
 @media print {
   nav, .page-header, .faq-section, .status-bar, .mic-wrap, .notif-bar,
   .manual-wrap, .section-title, .zaznam-del, .kat-tag, .cookies-bar,
-  .modal-overlay, .empty-state, .warning, .login-overlay { display:none !important; }
+  .modal-overlay, .empty-state, .warning, .login-overlay, .historie-card { display:none !important; }
   body { background:white; }
   .main { padding:0; }
   .zaznamy { display:flex !important; }
@@ -921,7 +979,11 @@ nav {
 
 <nav>
   <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;color:inherit;">Gabriela <span>Tomíčková</span></a>
-  <div class="nav-date" id="nav-date"></div>
+  <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+    <div class="nav-date" id="nav-date"></div>
+  </div>
 </nav>
 
 <div class="page-header">
@@ -972,6 +1034,10 @@ nav {
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">K čemu je klasifikace Já / Delegovat / Automatizovat / Zrušit?<span class="faq-arrow"></span></button>
       <div class="faq-a">Procento produktivní práce samo o sobě neřekne, jestli byste tu práci měli dělat zrovna vy. V přehledu dne appka seskupí opakující se činnosti a u každé si můžete vybrat, jestli ji musíte dělat vy, jde delegovat, automatizovat, nebo úplně zrušit. Se zadanou hodnotou hodiny appka spočítá i orientační dopad v Kč.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">Co dostanu navíc v Pro verzi?<span class="faq-arrow"></span></button>
+      <div class="faq-a">Jeden den zůstává navždy 100% zdarma, přesně jak appka funguje dnes. Pro navíc po přihlášení průběžně ukládá rozpracovaný den do vašeho účtu (nemusíte na nic klikat, appka to hlídá sama i při zavření appky) a v sekci Historie dní ukáže, jak se procento produktivní práce mění napříč dny.</div>
     </div>
   </div>
 
@@ -1024,6 +1090,7 @@ nav {
     <div class="section-title-btns">
       <button class="export-btn" onclick="otevritModal()">+ Doplnit historii</button>
       <button class="btn-konec" id="btn-konec" onclick="konecMereni()">Konec</button>
+      <button class="export-btn" onclick="novyDen()">🔄 Nový den</button>
       <button class="export-btn" onclick="exportCSV()">Export CSV</button>
       <button class="export-btn" onclick="window.print()">Vytisknout přehled</button>
     </div>
@@ -1049,13 +1116,111 @@ nav {
     <div class="summary-stats" id="summary-stats"></div>
   </div>
 
+  <!-- Historie dní (Pro) -->
+  <div class="historie-card">
+    <div class="historie-card-title">Historie dní</div>
+    <div class="historie-card-sub" id="historie-sub"></div>
+    <div id="historie-body"><div class="historie-empty">Zjišťuji stav přihlášení...</div></div>
+  </div>
+
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth.js"></script>
 <script>
 let zaznamy = JSON.parse(localStorage.getItem('cs_zaznamy') || '[]');
 let recognition = null;
 let isRecording = false;
 let clockInterval = null;
+
+// Přihlášení a Pro plán zjišťuje appka ze sdíleného auth.js (Moje Nástrojovna,
+// Supabase). Jeden den zůstává navždy 100% zdarma v localStorage, i offline -
+// tahle vrstva appku jen doplňuje, nepodmiňuje. Pro navíc, best-effort, uloží
+// uzavřený den do Supabase (tool_runs/measurements), aby šla vidět historie
+// dní a trend produktivní práce napříč nimi.
+let session = null;
+let clenstvi = null;
+let jePro = false;
+
+// Uzavření dne (Konec/Nový den) nestačí jako jediný spouštěč uložení - kdyby
+// appku někdo zavřel bez kliknutí, den by se do historie nikdy nedostal.
+// Appka proto den průběžně synchronizuje se Supabase (upsert, ne pořád nový
+// insert): denRunId drží id existujícího tool_runs řádku dneška, aby se dál
+// jen aktualizoval, ne zakládal znovu. Přežívá i reload appky ve stejném
+// prohlížeči (localStorage), dokud se nezaloguje "Nový den".
+let denRunId = localStorage.getItem('cs_den_run_id') || null;
+let denMereniZapsano = localStorage.getItem('cs_den_mereni_zapsano') === '1';
+let synchronizaceProbiha = false;
+let autosaveTimer = null;
+
+async function nacistPrihlaseniStav() {
+  // Zabaleno v try/catch schválně: appka je pořád zdarma použitelná i offline,
+  // nebo když se z jakéhokoli důvodu nenačte Supabase/auth.js (výpadek, adblock,
+  // firemní firewall v provozu). Bez tohohle by pád přihlašovací vrstvy shodil
+  // úplně celou appku, i tu zdarma část.
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál jako nepřihlášená (zdarma).', e);
+    session = null;
+    clenstvi = null;
+    jePro = false;
+  }
+  renderUcetNav();
+  renderHistorie();
+}
+
+function renderUcetNav() {
+  const btn = document.getElementById('nav-ucet-btn');
+  const info = document.getElementById('nav-ucet-info');
+  if (!session) {
+    btn.textContent = 'Přihlásit se';
+    btn.style.display = '';
+    info.style.display = 'none';
+    return;
+  }
+  btn.textContent = 'Odhlásit';
+  btn.style.display = '';
+  info.style.display = '';
+  const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
+  info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
+}
+
+async function klikNaUcet() {
+  try {
+    if (session) {
+      await odhlasit();
+      session = null; clenstvi = null; jePro = false;
+      renderUcetNav();
+      renderHistorie();
+      return;
+    }
+    await vyzadovatPrihlaseni();
+  } catch (e) {
+    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    console.warn('Přihlášení/odhlášení se nepovedlo.', e);
+  }
+}
+
+// Tlačítko v modalu "Odemknout Pro": podle stavu buď pošle na přihlášení,
+// nebo (už přihlášený, ale bez Pro plánu) jen vysvětlí a odkáže na balíček.
+async function klikVModaluPro() {
+  try {
+    if (!session) { await vyzadovatPrihlaseni(); return; }
+  } catch (e) {
+    document.getElementById('pro-err').textContent = 'Přihlašování teď není dostupné. Zkuste to prosím později.';
+    console.warn('Přihlášení se nepovedlo.', e);
+    return;
+  }
+  document.getElementById('pro-err').textContent =
+    'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí balíčku Provoz pod kontrolou.';
+}
+
+function otevritModalPro() { document.getElementById('modal-pro').style.display = 'flex'; }
+function zavritModalPro() { document.getElementById('modal-pro').style.display = 'none'; }
 
 // Datum
 const now = new Date();
@@ -1171,6 +1336,7 @@ function smazatZaznam(id) {
 
 function ulozit() {
   localStorage.setItem('cs_zaznamy', JSON.stringify(zaznamy));
+  naplanovatPrubezneUlozeni();
 }
 
 function formatDuration(ms) {
@@ -1282,8 +1448,8 @@ function renderZaznamy() {
       presun: 'Zbytečné přesuny jde často vyřešit lepším rozmístěním věcí, lidí nebo informací.'
     };
     const ODKAZ_KAT = {
-      komunikace: { nazev: 'Kvíz komunikačního chaosu', url: 'https://kviz-komunikacni-chaos.gabrielatomickova.cz' },
-      presun: { nazev: 'Spaghetti diagram', url: 'https://spaghetti.gabrielatomickova.cz' }
+      komunikace: { nazev: 'Kvíz komunikačního chaosu', url: '../kviz-komunikacniho-chaosu/' },
+      presun: { nazev: 'Spaghetti diagram', url: '../spaghetti-free/' }
     };
     const top3 = REZERVA_KAT
       .map(id => ({ id, k: katInfo(id), ms: katCas[id] || 0 }))
@@ -1527,6 +1693,205 @@ function konecMereni() {
     document.getElementById('btn-konec').textContent = 'Konec zaznamenán';
     document.getElementById('btn-konec').disabled = true;
   }
+  // Pro: den je uzavřený, poslední (finální) synchronizace včetně zápisu do
+  // measurements - viz ulozitNeboAktualizovatDen výš.
+  if (jePro) ulozitNeboAktualizovatDen(true);
+}
+
+// Souhrn dne, počítaný stejným způsobem jako v renderZaznamy níž, ale zvlášť -
+// potřebujeme ho i mimo vykreslení, při ukládání dne do historie (Pro).
+function spocitatSouhrnDne() {
+  if (zaznamy.length < 2) return null;
+  const total = zaznamy[zaznamy.length - 1].timestamp - zaznamy[0].timestamp;
+
+  const katCas = {};
+  KATEGORIE.forEach(k => katCas[k.id] = 0);
+  zaznamy.forEach((z, i) => {
+    const next = zaznamy[i + 1];
+    if (!next) return;
+    const dur = next.timestamp - z.timestamp;
+    const kid = z.kat || rozpoznatKat(z.text);
+    katCas[kid] = (katCas[kid] || 0) + dur;
+  });
+
+  const produktivniMs = katCas['produktivni'] || 0;
+  const produktivniPct = total > 0 ? Math.round(produktivniMs / total * 100) : 0;
+
+  const klasifikace = JSON.parse(localStorage.getItem('cs_klasifikace') || '{}');
+  const hodnotaHodiny = parseFloat(localStorage.getItem('cs_hodnota_hodiny')) || 0;
+
+  const agregaceMap = {};
+  zaznamy.forEach((z, i) => {
+    if (z.text === 'Konec') return;
+    const next = zaznamy[i + 1];
+    if (!next) return;
+    const dur = next.timestamp - z.timestamp;
+    const key = z.text.trim().toLowerCase();
+    if (!agregaceMap[key]) agregaceMap[key] = { ms: 0 };
+    agregaceMap[key].ms += dur;
+  });
+  const klasSoucty = { ja: 0, delegovat: 0, automatizovat: 0, zrusit: 0 };
+  Object.keys(agregaceMap).forEach(key => {
+    const kid = klasifikace[key];
+    if (kid && klasSoucty.hasOwnProperty(kid)) klasSoucty[kid] += agregaceMap[key].ms;
+  });
+
+  const aktivitCount = zaznamy.filter(z => z.text !== 'Konec').length;
+
+  return { total, katCas, produktivniMs, produktivniPct, hodnotaHodiny, klasSoucty, aktivitCount };
+}
+
+// Sestaví payload jednoho řádku tool_runs pro dnešní den - společné pro
+// vytvoření i pro pozdější aktualizaci téhož řádku.
+function sestavitPayloadDne(s) {
+  return {
+    organization_id: clenstvi.organization_id,
+    nastroj: 'casova-studie',
+    nazev: 'Časová studie dne',
+    shrnuti: 'Produktivní práce ' + s.produktivniPct + ' % (' + formatDuration(s.total) + ' celkem)',
+    hlavni_hodnota_cislo: s.produktivniPct,
+    hlavni_hodnota_jednotka: '% produktivní práce',
+    hlavni_hodnota_typ: 'skore',
+    data: {
+      total_ms: s.total,
+      kat_cas: s.katCas,
+      hodnota_hodiny: s.hodnotaHodiny,
+      klas_soucty: s.klasSoucty,
+      aktivit_count: s.aktivitCount
+    }
+  };
+}
+
+// Uloží/aktualizuje dnešní den v Supabase (tool_runs), jen pro Pro a jen
+// best-effort - appka bez tohohle dál normálně funguje, den jen nezůstane
+// v historii. Poprvé za den appka řádek založí, podruhé a dál (autosave,
+// zavření appky, další Konec) už jen AKTUALIZUJE stejný řádek (denRunId),
+// aby appka nezakládala v historii deset kopií jednoho dne. Zápis do
+// measurements (jeden bod pro budoucí trendy napříč appkami) appka udělá jen
+// jednou za den - při finálním uzavření (zapsatMereni=true), ne při každém
+// průběžném autosave. Klasifikace (cs_klasifikace) a hodnota hodiny se
+// ukládají jako součást dne, ale samy o sobě v localStorage zůstávají i po
+// Novém dni, protože se týkají opakujících se činností napříč dny, ne
+// jednoho dne.
+async function ulozitNeboAktualizovatDen(zapsatMereni) {
+  if (!jePro || !clenstvi) return false;
+  const s = spocitatSouhrnDne();
+  if (!s) return false;
+  if (synchronizaceProbiha) return false;
+  synchronizaceProbiha = true;
+  try {
+    const payload = sestavitPayloadDne(s);
+    let runId = denRunId;
+    if (runId) {
+      const { error } = await supabaseClient.from('tool_runs').update(payload).eq('id', runId);
+      if (error) throw error;
+    } else {
+      const { data: run, error: errRun } = await supabaseClient.from('tool_runs').insert(payload).select().single();
+      if (errRun) throw errRun;
+      runId = run ? run.id : null;
+      if (runId) {
+        denRunId = runId;
+        localStorage.setItem('cs_den_run_id', runId);
+      }
+    }
+    if (zapsatMereni && !denMereniZapsano && runId) {
+      await supabaseClient.from('measurements').insert({
+        organization_id: clenstvi.organization_id,
+        tool_run_id: runId,
+        metric_name: 'cs_produktivni_pct',
+        metric_value: s.produktivniPct,
+        unit: '%'
+      });
+      denMereniZapsano = true;
+      localStorage.setItem('cs_den_mereni_zapsano', '1');
+    }
+    renderHistorie();
+    return true;
+  } catch (e) {
+    console.warn('Den se nepodařilo uložit/aktualizovat v Supabase.', e);
+    return false;
+  } finally {
+    synchronizaceProbiha = false;
+  }
+}
+
+// Lehká průběžná synchronizace, se zpožděním po poslední změně (appka
+// nezakládá požadavek na Supabase po každém jednom písmenku/kliknutí).
+// Volá se z ulozit(), tedy při každé změně záznamů dne. Bez měření -
+// to appka zapisuje jen při finálním uzavření dne, viz konecMereni/novyDen.
+function naplanovatPrubezneUlozeni() {
+  if (!jePro) return;
+  clearTimeout(autosaveTimer);
+  autosaveTimer = setTimeout(() => { ulozitNeboAktualizovatDen(false); }, 4000);
+}
+
+// Appka dřív neuměla den nijak uzavřít a začít znovu - záznamy se v localStorage
+// hromadily donekonečna, i mezi různými dny. Tohle je oprava i pro Free (jen
+// smaže dnešní záznamy), Pro navíc den nejdřív synchronizuje (finálně, včetně
+// measurements) do historie.
+async function novyDen() {
+  if (zaznamy.length === 0) return;
+  const text = jePro
+    ? 'Uložit dnešní den do historie a začít nový? Dnešní záznamy z appky zmizí, v historii zůstanou.'
+    : 'Smazat dnešní záznamy a začít nový den?';
+  if (!confirm(text)) return;
+
+  clearTimeout(autosaveTimer);
+  if (jePro) await ulozitNeboAktualizovatDen(true);
+
+  zaznamy = [];
+  editingId = null;
+  denRunId = null;
+  denMereniZapsano = false;
+  localStorage.removeItem('cs_den_run_id');
+  localStorage.removeItem('cs_den_mereni_zapsano');
+  ulozit();
+  document.getElementById('btn-konec').textContent = 'Konec';
+  document.getElementById('btn-konec').disabled = false;
+  renderZaznamy();
+}
+
+// Sekce Historie dní - u nepřihlášeného/bez Pro ukáže zamčenou nabídku, u Pro
+// stáhne posledních 30 uložených dní ze Supabase a ukáže je jako trend.
+async function renderHistorie() {
+  const sub = document.getElementById('historie-sub');
+  const body = document.getElementById('historie-body');
+  if (!jePro || !clenstvi) {
+    sub.textContent = 'Uložit uzavřený den do účtu a vidět trend napříč dny je součástí Pro.';
+    body.innerHTML = `<div class="historie-lock">
+      <p>Jeden den zůstává vždy zdarma přesně jako dnes. Pro navíc uloží každý uzavřený den a ukáže, jak se procento produktivní práce mění v čase.</p>
+      <button onclick="otevritModalPro()">Odemknout Pro</button>
+    </div>`;
+    return;
+  }
+  sub.textContent = 'Posledních uložených dní, podle procenta produktivní práce. Dnešní den se ukládá průběžně, i bez kliknutí na Konec.';
+  body.innerHTML = `<div class="historie-empty">Načítám...</div>`;
+  try {
+    const { data: dny, error } = await supabaseClient
+      .from('tool_runs')
+      .select('id, created_at, hlavni_hodnota_cislo')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'casova-studie')
+      .order('created_at', { ascending: false })
+      .limit(30);
+    if (error) throw error;
+    if (!dny || dny.length === 0) {
+      body.innerHTML = `<div class="historie-empty">Zatím žádný uložený den. Klepněte na Konec a den se po dokončení uloží automaticky.</div>`;
+      return;
+    }
+    body.innerHTML = dny.map(d => {
+      const datum = new Date(d.created_at).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' });
+      const pct = Math.round(d.hlavni_hodnota_cislo || 0);
+      return `<div class="historie-day-row">
+        <div class="historie-day-date">${datum}</div>
+        <div class="historie-day-bar-bg"><div class="historie-day-bar-fill" style="width:${pct}%;"></div></div>
+        <div class="historie-day-val">${pct} %</div>
+      </div>`;
+    }).join('');
+  } catch (e) {
+    console.warn('Historii dní se nepodařilo načíst.', e);
+    body.innerHTML = `<div class="historie-err">Historii se teď nepodařilo načíst. Zkuste to prosím později.</div>`;
+  }
 }
 
 function exportCSV() {
@@ -1684,12 +2049,31 @@ function ulozitHistorii() {
   zavritModal();
 }
 
+// Appka appku zavře/schová (přepnutí na jinou appku, uzamčení telefonu,
+// zavření karty) mnohem spolehlivěji pozná přes "visibilitychange" než přes
+// "beforeunload" (ten navíc nezaručí, že async request na Supabase doběhne).
+// Tohle je pojistka pro případ, že Pro uživatel zapomene kliknout na Konec/
+// Nový den - i tak appka den průběžně (přes ulozit()) i tady při schování
+// stránky synchronizuje, takže se nic neztratí jen proto, že appku zavřel bez
+// kliknutí.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && jePro) {
+    clearTimeout(autosaveTimer);
+    ulozitNeboAktualizovatDen(true);
+  }
+});
+
 // Init
-// Appka je od 25.8.2026 celá zdarma, bez přihlašovací brány (dřív tu byl kód
-// ověřovaný přes Apps Script LOGIN_SCRIPT_URL, viz koncept-realizace-jeden-nastroj.md).
+// Appka je od 25.8.2026 celá zdarma pro jeden den, bez přihlašovací brány
+// (dřív tu byl kód ověřovaný přes Apps Script LOGIN_SCRIPT_URL). Od 26.8.2026
+// appka navíc, best-effort, zjišťuje přihlášení/Pro plán ze sdíleného auth.js
+// (Supabase, Moje Nástrojovna) - Pro průběžně synchronizuje rozpracovaný den
+// do historie (viz ulozitNeboAktualizovatDen/naplanovatPrubezneUlozeni výš),
+// jeden den zůstává zdarma beze změny.
 renderZaznamy();
 const hhInput = document.getElementById('hodnota-hodiny');
 if (hhInput) hhInput.value = localStorage.getItem('cs_hodnota_hodiny') || '';
+nacistPrihlaseniStav();
 
 </script>
 <!-- Modal doplnění historie -->
@@ -1702,6 +2086,20 @@ if (hhInput) hhInput.value = localStorage.getItem('cs_hodnota_hodiny') || '';
     <div id="modal-rows"></div>
     <button class="modal-add" onclick="pridatModalRow()">+ Přidat další záznam</button>
     <button class="modal-save" onclick="ulozitHistorii()">Uložit záznamy</button>
+  </div>
+</div>
+
+<!-- Modal Pro odemčení -->
+<div class="modal-overlay" id="modal-pro" style="display:none;" onclick="if(event.target===this) zavritModalPro()">
+  <div class="modal">
+    <div class="modal-title">
+      <span>Odemknout Pro</span>
+      <button class="modal-close" onclick="zavritModalPro()">×</button>
+    </div>
+    <p style="font-size:13px;color:var(--mid);margin-bottom:14px;line-height:1.7;">Jeden den zůstává navždy zdarma, přesně jako dnes. Pro navíc po přihlášení uloží každý uzavřený den do vašeho účtu a ukáže trend produktivní práce napříč dny.</p>
+    <p class="login-err" id="pro-err" style="color:var(--mid);"></p>
+    <button class="modal-save" id="pro-btn" onclick="klikVModaluPro()">Přihlásit se</button>
+    <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc o balíčku Provoz pod kontrolou</a></div>
   </div>
 </div>
 

@@ -48,6 +48,11 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .nav-cta { background:var(--gold); color:var(--black); font-size:13px; font-weight:600; padding:8px 20px; border-radius:4px; text-decoration:none; transition:background 0.2s; white-space:nowrap; }
 .nav-cta:hover { background:var(--gold-dark); color:white; }
 
+/* NAV ÚČET (Moje Nástrojovna) */
+.nav-right { display:flex; align-items:center; gap:12px; }
+.nav-btn { background:transparent; border:1px solid var(--border); color:var(--mid); font-size:12px; padding:7px 14px; border-radius:4px; cursor:pointer; font-family:"DM Sans",sans-serif; transition:all .2s; white-space:nowrap; }
+.nav-btn:hover { border-color:var(--gold); color:var(--gold-dark); }
+
 .hero { background:var(--black); padding:56px 40px 48px; position:relative; overflow:hidden; }
 .hero::before { content:""; position:absolute; top:-80px; right:-80px; width:400px; height:400px; border-radius:50%; border:70px solid rgba(233,169,27,0.07); pointer-events:none; }
 .hero-inner { max-width:1040px; margin:0 auto; position:relative; z-index:1; }
@@ -262,7 +267,11 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 <!-- ── NAV ── -->
 <nav>
   <a href="https://gabrielatomickova.cz" class="nav-brand">Gabriela <span>Tomíčková</span></a>
-  <a href="https://calendly.com/tomickova-info/30min" target="_blank" class="nav-cta">Chci 30min hovor zdarma</a>
+  <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+    <a href="https://calendly.com/tomickova-info/30min" target="_blank" class="nav-cta">Chci 30min hovor zdarma</a>
+  </div>
 </nav>
 
 <!-- ── HERO ── -->
@@ -892,7 +901,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="tip-box">
         <strong>Tušíte, kde plýtváte, ale nevíte kde začít?</strong>
         <p>Kalkulačka vám říká, kolik vás sklad stojí. Pokud chcete vědět, kde přesně odchází čas a kde zlepšení dá největší výsledek – na to je Měřič plýtvání.</p>
-        <a href="https://gabrielatomickova.cz/meric-plytvani-prodejni-str.html">Vyzkoušet měřič plýtvání →</a>
+        <a href="../meric-plytvani-pro/">Vyzkoušet měřič plýtvání →</a>
         <p style="margin-top:14px;margin-bottom:0;">Nebo si rovnou domluvte procesní audit – přijdu se podívat přímo do provozu.</p>
       </div>
     </div>
@@ -912,15 +921,17 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <h3>Odemknout Pro</h3>
       <button class="modal-box-close" onclick="zavritModalPro()">×</button>
     </div>
-    <p>Pro verze umí uložit víc výpočtů (různé sklady nebo období), porovnat je vedle sebe a exportovat do CSV. Zadejte přístupový kód, který vám přišel na email po zaplacení.</p>
-    <input id="pro-kod" type="text" placeholder="XXXXXX" maxlength="20" onkeydown="if(event.key==='Enter') odemknoutPro()">
-    <div class="modal-err" id="pro-err"></div>
-    <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="odemknoutPro()">Odemknout</button>
-    <div class="modal-box-link">Nemáte kód? <a href="https://gabrielatomickova.cz/kde-mi-mizi-cas.html">Objednejte zde</a></div>
+    <p>Pro verze umí uložit víc výpočtů (různé sklady nebo období), porovnat je vedle sebe a exportovat do CSV. Samotný výpočet zůstává navždy zdarma, bez přihlášení.</p>
+    <div class="modal-err" id="pro-err" style="color:var(--mid);"></div>
+    <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
+    <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc</a></div>
   </div>
 </div>
 
 <!-- ── SCRIPTS ── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth.js"></script>
 <script>
 let mode = 'najem';
 let posledniVysledek = {};
@@ -1181,14 +1192,88 @@ function cookiesOdmitnout() {
 
 // ── Pro: uložení víc výpočtů, porovnání, export ──
 // Appka je jinak celá zdarma bez omezení (viz koncept-realizace-jeden-nastroj.md).
-// Pro odemyká stejný přístupový kód jako u ostatních nástrojů, přes stejný Apps Script
-// endpoint LOGIN_SCRIPT_URL. Odemčení i uložené výpočty se ukládají trvale do localStorage.
-const LOGIN_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyP2l58OvGi5mzk-PXMaGNRZoMj4E8C3vn7o4Ib89DVhqdePdj90OWUUHXC1hYiQ5pC/exec';
+// Od 26.8.2026 appka Pro neodemyká přístupovým kódem, ale sdíleným přihlášením
+// do Moje Nástrojovna (Supabase, viz auth.js/supabase-client.js) - stejný vzorec
+// jako 5S a Časová studie. Uložené výpočty zůstávají primárně v localStorage
+// (appka je odolná i offline/bez Supabase, uložené výpočty se nikam neztratí),
+// Pro navíc, best-effort, každý uložený výpočet pošle i do Supabase
+// (tool_runs/measurements), aby šel číst napříč nástroji a v budoucím Akčním
+// plánu.
 
-let proUnlocked = localStorage.getItem('kalk_pro') === 'true';
+let session = null;
+let clenstvi = null;
+let jePro = false;
 let ulozene = JSON.parse(localStorage.getItem('kalk_ulozene') || '[]');
 
-function otevritModalPro() { document.getElementById('modal-pro').style.display = 'flex'; }
+async function nacistPrihlaseniStav() {
+  // Zabaleno v try/catch schválně: appka je pořád zdarma použitelná i offline,
+  // nebo když se z jakéhokoli důvodu nenačte Supabase/auth.js (výpadek, adblock,
+  // firemní firewall v provozu). Bez tohohle by pád přihlašovací vrstvy shodil
+  // úplně celou appku, i tu zdarma část.
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál jako nepřihlášená (zdarma).', e);
+    session = null;
+    clenstvi = null;
+    jePro = false;
+  }
+  renderUcetNav();
+  renderUlozene();
+}
+
+function renderUcetNav() {
+  const btn = document.getElementById('nav-ucet-btn');
+  const info = document.getElementById('nav-ucet-info');
+  if (!session) {
+    btn.textContent = 'Přihlásit se';
+    btn.style.display = '';
+    info.style.display = 'none';
+    return;
+  }
+  btn.textContent = 'Odhlásit';
+  btn.style.display = '';
+  info.style.display = '';
+  const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
+  info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
+}
+
+async function klikNaUcet() {
+  try {
+    if (session) {
+      await odhlasit();
+      session = null; clenstvi = null; jePro = false;
+      renderUcetNav();
+      renderUlozene();
+      return;
+    }
+    await vyzadovatPrihlaseni();
+  } catch (e) {
+    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    console.warn('Přihlášení/odhlášení se nepovedlo.', e);
+  }
+}
+
+// Tlačítko v modalu "Odemknout Pro": podle stavu buď pošle na přihlášení,
+// nebo (už přihlášený, ale bez Pro plánu) jen vysvětlí.
+async function klikVModaluPro() {
+  try {
+    if (!session) { await vyzadovatPrihlaseni(); return; }
+  } catch (e) {
+    document.getElementById('pro-err').textContent = 'Přihlašování teď není dostupné. Zkuste to prosím později.';
+    console.warn('Přihlášení se nepovedlo.', e);
+    return;
+  }
+  document.getElementById('pro-err').textContent =
+    'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro.';
+}
+
+function otevritModalPro() {
+  document.getElementById('pro-err').textContent = '';
+  document.getElementById('modal-pro').style.display = 'flex';
+}
 function zavritModalPro() { document.getElementById('modal-pro').style.display = 'none'; }
 
 document.addEventListener('click', function(e) {
@@ -1196,47 +1281,13 @@ document.addEventListener('click', function(e) {
   if (e.target === overlay) zavritModalPro();
 });
 
-async function odemknoutPro() {
-  var kod = document.getElementById('pro-kod').value.trim().toUpperCase();
-  var err = document.getElementById('pro-err');
-  var btn = document.getElementById('pro-btn');
-
-  if (!kod) {
-    err.textContent = 'Zadejte přístupový kód.';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Kontroluji...';
-  err.textContent = '';
-
-  try {
-    var res = await fetch(LOGIN_SCRIPT_URL + '?action=check&kod=' + encodeURIComponent(kod));
-    var resData = await res.json();
-
-    if (resData.ok) {
-      proUnlocked = true;
-      localStorage.setItem('kalk_pro', 'true');
-      zavritModalPro();
-      document.getElementById('pro-kod').value = '';
-      renderUlozene();
-    } else {
-      err.textContent = resData.zprava || 'Neplatný kód.';
-    }
-  } catch (e) {
-    err.textContent = 'Nepodařilo se ověřit kód. Zkuste znovu.';
-  }
-  btn.disabled = false;
-  btn.textContent = 'Odemknout';
-}
-
 function ulozitVypocet() {
-  if (!proUnlocked) { otevritModalPro(); return; }
+  if (!jePro) { otevritModalPro(); return; }
   var navrh = (posledniVysledek.mode === 'najem' ? 'Sklad – pronájem' : 'Sklad – vlastní budova') + ', ' + fmt(posledniVysledek.plocha) + ' m²';
   var nazev = prompt('Název výpočtu (např. "Vrchlabí – hlavní sklad" nebo "Leden 2026"):', navrh);
   if (nazev === null) return;
   nazev = nazev.trim() || navrh;
-  ulozene.push({
+  var polozka = {
     id: 'v_' + Date.now(),
     nazev: nazev,
     datum: new Date().toLocaleDateString('cs-CZ'),
@@ -1247,9 +1298,48 @@ function ulozitVypocet() {
     rok: Math.round(posledniVysledek.celkemRok),
     m2rok: Math.round(posledniVysledek.m2Rok),
     kategorie: posledniVysledek.kategorie
-  });
+  };
+  ulozene.push(polozka);
   localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
   renderUlozene();
+  odeslatVypocetDoSupabase(polozka);
+}
+
+// Uloží uložený výpočet i do Supabase (tool_runs + measurements) - jen pro Pro
+// a jen best-effort, appka bez tohohle dál normálně funguje, výpočet jen
+// nezůstane vidět napříč zařízeními. localStorage (viz výš) je pořád to, co
+// appka reálně vykresluje - tohle appku o nic nepřipraví, ani při výpadku.
+async function odeslatVypocetDoSupabase(polozka) {
+  if (!jePro || !clenstvi) return;
+  try {
+    const { data: run, error: errRun } = await supabaseClient.from('tool_runs').insert({
+      organization_id: clenstvi.organization_id,
+      nastroj: 'kalkulacka-m2',
+      nazev: polozka.nazev,
+      shrnuti: fmt(polozka.m2mesic) + ' Kč/m²/měsíc (' + (polozka.mode === 'najem' ? 'pronájem' : 'vlastní budova') + ', ' + fmt(polozka.plocha) + ' m²)',
+      hlavni_hodnota_cislo: polozka.m2mesic,
+      hlavni_hodnota_jednotka: 'Kč/m²/měsíc',
+      hlavni_hodnota_typ: 'naklady_kc',
+      data: {
+        plocha: polozka.plocha,
+        mode: polozka.mode,
+        mesic: polozka.mesic,
+        rok: polozka.rok,
+        m2rok: polozka.m2rok,
+        kategorie: polozka.kategorie
+      }
+    }).select().single();
+    if (errRun) throw errRun;
+    await supabaseClient.from('measurements').insert({
+      organization_id: clenstvi.organization_id,
+      tool_run_id: run ? run.id : null,
+      metric_name: 'kalk_m2_kc_mesic',
+      metric_value: polozka.m2mesic,
+      unit: 'Kč/m²/měsíc'
+    });
+  } catch (e) {
+    console.warn('Výpočet se nepodařilo uložit do Supabase, zůstává aspoň lokálně.', e);
+  }
 }
 
 function smazatUlozeny(id) {
@@ -1261,7 +1351,7 @@ function smazatUlozeny(id) {
 
 function renderUlozene() {
   var box = document.getElementById('ulozene-box');
-  if (!proUnlocked) { box.style.display = 'none'; return; }
+  if (!jePro) { box.style.display = 'none'; return; }
   box.style.display = 'block';
   var wrap = document.getElementById('ulozene-seznam');
   if (ulozene.length === 0) {
@@ -1305,7 +1395,7 @@ function trendInsightHtml() {
 }
 
 function exportCSV() {
-  if (!proUnlocked) { otevritModalPro(); return; }
+  if (!jePro) { otevritModalPro(); return; }
   if (ulozene.length === 0) {
     alert('Zatím nemáte žádný uložený výpočet k exportu. Nejdřív nějaký uložte tlačítkem „Uložit tento výpočet".');
     return;
@@ -1331,6 +1421,7 @@ function exportCSV() {
 // Init
 update();
 renderUlozene();
+nacistPrihlaseniStav();
 </script>
 </body>
 </html>

@@ -87,6 +87,83 @@ nav {
 }
 .nav-reset:hover { border-color: var(--gold); color: var(--gold); }
 
+.nav-right { display: flex; gap: 8px; align-items: center; }
+.nav-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--light);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all .2s;
+}
+.nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* MODAL (historie uložených analýz, jen pro Pro) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal {
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px 16px 0 0;
+  padding: 20px 20px 36px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.modal-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--light);
+  font-size: 22px;
+  cursor: pointer;
+}
+.historie-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.historie-datum { font-size: 11px; color: var(--light); margin-bottom: 4px; }
+.historie-shrnuti { font-size: 13px; color: rgba(255,255,255,.85); line-height: 1.5; margin-bottom: 8px; }
+.historie-zobrazit {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--gold);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.historie-zobrazit:hover { border-color: var(--gold); }
+.historie-prazdno { font-size: 13px; color: var(--light); text-align: center; padding: 20px 0; }
+
 /* CHAT */
 .chat-wrap {
   flex: 1;
@@ -455,15 +532,13 @@ nav {
         onkeydown="if(event.key==='Enter') spustitZdarma()">
       <div class="login-err" id="zdarma-err"></div>
       <button class="login-btn" id="zdarma-btn" onclick="spustitZdarma()">Chci spustit analýzu zdarma</button>
-      <div class="login-link"><a href="javascript:void(0)" onclick="prepnoutKodBlok()">Mám už přístupový kód Pro</a></div>
+      <div class="login-link"><a href="javascript:void(0)" onclick="prepnoutKodBlok()">Mám účet Pro, chci se přihlásit</a></div>
     </div>
     <div id="kod-blok" style="display:none;">
-      <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Zadejte přístupový kód z emailu po zakoupení.</p>
-      <input class="login-input" id="login-kod" type="text" placeholder="XXXXXX" maxlength="20"
-        onkeydown="if(event.key==='Enter') zkontrolovatPristup()">
+      <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Pro má neomezené analýzy, ukládá historii a založí navazující úkoly. Přihlaste se účtem Nástrojovny.</p>
       <div class="login-err" id="login-err"></div>
-      <button class="login-btn" id="login-btn" onclick="zkontrolovatPristup()">Chci vstoupit</button>
-      <div class="login-link">Nemáte kód? <a href="https://gabrielatomickova.cz/objednavka-provoz.html">Objednejte zde</a> · <a href="javascript:void(0)" onclick="prepnoutKodBlok()">Zpět na analýzu zdarma</a></div>
+      <button class="login-btn" id="login-btn" onclick="klikProLogin()">Přihlásit se</button>
+      <div class="login-link">Nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc o balíčku Provoz pod kontrolou</a> · <a href="javascript:void(0)" onclick="prepnoutKodBlok()">Zpět na analýzu zdarma</a></div>
     </div>
   </div>
 </div>
@@ -471,10 +546,26 @@ nav {
 
 <nav>
   <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;color:inherit;">Gabriela <span>Tomíčková</span></a>
-  <button class="nav-reset" onclick="resetChat()">Nová analýza</button>
+  <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+    <button class="nav-btn" id="nav-historie-btn" onclick="otevritHistorii()" style="display:none;">Historie</button>
+    <button class="nav-reset" onclick="resetChat()">Nová analýza</button>
+  </div>
 </nav>
 
 <div class="chat-wrap" id="chat"></div>
+
+<!-- Modal historie uložených analýz (jen Pro) -->
+<div class="modal-overlay" id="modal-historie" style="display:none;">
+  <div class="modal">
+    <div class="modal-title">
+      <span>Historie analýz</span>
+      <button class="modal-close" onclick="document.getElementById('modal-historie').style.display='none';">×</button>
+    </div>
+    <div id="historie-obsah"><div class="historie-prazdno">Načítám...</div></div>
+  </div>
+</div>
 
 <div class="input-wrap">
   <div class="input-inner">
@@ -488,6 +579,9 @@ nav {
   <div class="input-hint" id="input-hint">Enter = odeslat &nbsp;·&nbsp; Shift+Enter = nový řádek &nbsp;·&nbsp; 🎤 = mluvit</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth.js"></script>
 <script>
 const SYSTEM_PROMPT = `Jsi zkušený facilitátor metody 5× proč, kouč pro řešení problémů a empatický průvodce analýzou kořenové příčiny.
 
@@ -564,6 +658,82 @@ Začni tím, že uživatele přivítáš, stručně vysvětlíš co spolu budete
 let history = [];
 let isLoading = false;
 
+// Stav přihlášení do Nástrojovny (Supabase), zjišťuje se při startu appky.
+// Free e-mailová brána zůstává úplně nezávisle na starém Apps Scriptu (viz
+// spustitZdarma níž) - tohle jen navíc řeší Pro (neomezené analýzy, historie).
+let session = null;
+let clenstvi = null;
+let jePro = false;
+let posledniRawVystup = null;
+let posledniProblem = '';
+// ID rozjeté analýzy v tool_runs (Supabase) - dokud běží konverzace, appka
+// do stejného řádku průběžně dopisuje, nezakládá pokaždé nový. Null = ještě
+// se nikam neukládalo (buď to není Pro, nebo teprve začínáme).
+let aktivniRunId = null;
+
+async function nacistPrihlaseniStav() {
+  // Zabaleno v try/catch schválně: appka musí přežít i výpadek Supabase/CDN
+  // (adblock, firewall v provozu) - Free tehdy pořád funguje přes starý Apps
+  // Script, jen Pro rozpozná appka jako nepřihlášený stav.
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál (Free přes Apps Script funguje beze změny).', e);
+    session = null;
+    clenstvi = null;
+    jePro = false;
+  }
+  renderUcetNav();
+}
+
+function renderUcetNav() {
+  const btn = document.getElementById('nav-ucet-btn');
+  const info = document.getElementById('nav-ucet-info');
+  const historieBtn = document.getElementById('nav-historie-btn');
+  if (!session) {
+    btn.textContent = 'Přihlásit se';
+    info.style.display = 'none';
+    historieBtn.style.display = 'none';
+    return;
+  }
+  btn.textContent = 'Odhlásit';
+  info.style.display = '';
+  const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
+  info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
+  historieBtn.style.display = jePro ? '' : 'none';
+}
+
+async function klikNaUcet() {
+  try {
+    if (session) { await odhlasit(); return; }
+    await vyzadovatPrihlaseni();
+  } catch (e) {
+    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    console.warn('Přihlášení/odhlášení se nepovedlo.', e);
+  }
+}
+
+// Tlačítko "Přihlásit se" v kod-bloku uvítací obrazovky. Pokud je uživatel
+// už přihlášený (jen bez aktivního Pro), vyzadovatPrihlaseni() nepřesměruje
+// nikam - tak mu rovnou vysvětlíme proč Pro ještě nevidí.
+async function klikProLogin() {
+  const err = document.getElementById('login-err');
+  err.textContent = '';
+  let s;
+  try {
+    s = await vyzadovatPrihlaseni();
+  } catch (e) {
+    err.textContent = 'Přihlašování teď není dostupné. Zkuste to prosím později.';
+    console.warn('Přihlášení se nepovedlo.', e);
+    return;
+  }
+  if (s && !jePro) {
+    err.textContent = 'Jste přihlášeni jako ' + s.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí balíčku Provoz pod kontrolou.';
+  }
+}
+
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
@@ -613,7 +783,96 @@ function formatText(text) {
     .replace(/\n/g, '<br>');
 }
 
-function renderOutput(raw) {
+// Vytáhne text jedné očíslované sekce z výstupu (podle stejných klíčů
+// jako labels v renderOutput níž) - používá se pro uložení do Supabase
+// a pro založení navazujících úkolů, ne jen pro zobrazení.
+function extrahovatSekci(raw, klic) {
+  const klice = ['1. PŮVODNÍ PROBLÉM', '2. UPŘESNĚNÝ PROBLÉM', '3. ŘETĚZEC 5× PROČ',
+    '4. KOŘENOVÁ PŘÍČINA', '5. PŘISPÍVAJÍCÍ FAKTORY', '6. FAKTA VS. DOMNĚNKY',
+    '7. DOPORUČENÉ OPATŘENÍ', '8. PRVNÍ KROK DO 24 HODIN', '9. JAK OVĚŘIT VÝSLEDEK',
+    '10. OTEVŘENÉ OTÁZKY'];
+  const lines = raw.split('\n');
+  let sbirat = false;
+  let out = [];
+  for (const line of lines) {
+    const matched = klice.find(k => line.startsWith(k));
+    if (matched) {
+      if (sbirat) break;
+      if (matched === klic) {
+        sbirat = true;
+        const rest = line.slice(matched.length).replace(/^:\s*/, '');
+        if (rest) out.push(rest);
+      }
+      continue;
+    }
+    if (sbirat) out.push(line);
+  }
+  return out.join('\n').trim();
+}
+
+// Best-effort uložení stavu analýzy do Supabase (jen Pro, jen když je firma
+// přihlášená) - ukládá se i rozpracovaná analýza (hotovo=false), ne jen ta
+// dokončená, aby appka mohla nabídnout "Pokračovat" po návratu do appky.
+// Appka jede dál i bez tohohle - export do TXT funguje vždy, uložení a
+// historie jsou navíc. Dokud konverzace běží, appka dopisuje do stejného
+// řádku (aktivniRunId), nezakládá pokaždé nový.
+async function ulozitStavAnalyzy(hotovo, raw) {
+  if (!jePro || !clenstvi) return;
+  const problem = (raw && extrahovatSekci(raw, '2. UPŘESNĚNÝ PROBLÉM')) || posledniProblem || '5x Proč analýza';
+  const pricina = raw ? extrahovatSekci(raw, '4. KOŘENOVÁ PŘÍČINA') : '';
+  const payload = {
+    organization_id: clenstvi.organization_id,
+    nastroj: '5x-proc',
+    nazev: (hotovo ? '5x Proč — ' : '5x Proč (rozpracováno) — ') + problem.slice(0, 80),
+    shrnuti: pricina ? ('Kořenová příčina: ' + pricina.slice(0, 300)) : problem.slice(0, 300),
+    hlavni_hodnota_typ: (hotovo && pricina) ? 'text' : null,
+    hlavni_hodnota_text: (hotovo && pricina) ? pricina.slice(0, 500) : null,
+    data: { raw: raw || null, history, hotovo }
+  };
+  try {
+    if (aktivniRunId) {
+      const { error } = await supabaseClient.from('tool_runs').update(payload).eq('id', aktivniRunId);
+      if (error) throw error;
+    } else {
+      const { data: radek, error } = await supabaseClient.from('tool_runs').insert(payload).select().single();
+      if (error) throw error;
+      aktivniRunId = radek.id;
+    }
+  } catch (e) {
+    console.warn('Stav analýzy se nepodařilo uložit do historie (Supabase), appka jede dál.', e);
+  }
+}
+
+// Založí z dokončené analýzy dva navazující úkoly (doporučené opatření +
+// první krok do 24 hodin) v Akčním plánu - jen Pro. Odpovídá myšlence
+// z kritiky, že jedna analýza může rovnou spustit konkrétní kroky.
+async function vytvoritUkolyZAnalyzy(raw, btn) {
+  if (!jePro || !clenstvi) return;
+  const opatreni = extrahovatSekci(raw, '7. DOPORUČENÉ OPATŘENÍ');
+  const prvniKrok = extrahovatSekci(raw, '8. PRVNÍ KROK DO 24 HODIN');
+  const ukoly = [opatreni, prvniKrok].filter(t => t).map(t => ({
+    organization_id: clenstvi.organization_id,
+    title: t.slice(0, 300),
+    status: 'novy'
+  }));
+  if (ukoly.length === 0) return;
+  btn.disabled = true;
+  btn.textContent = 'Zakládám...';
+  try {
+    const { error } = await supabaseClient.from('actions').insert(ukoly);
+    if (error) throw error;
+    btn.textContent = 'Úkoly založeny ✓';
+  } catch (e) {
+    console.warn('Úkoly se nepodařilo založit v Supabase.', e);
+    btn.disabled = false;
+    btn.textContent = 'Nepodařilo se, zkusit znovu';
+  }
+}
+
+// ulozit=false při zobrazení staré (už hotové) analýzy z historie - jinak by
+// appka přepsala aktuálně rozjetý řádek (aktivniRunId) obsahem té staré.
+function renderOutput(raw, ulozit = true) {
+  posledniRawVystup = raw;
   const chat = document.getElementById('chat');
   const card = document.createElement('div');
   card.className = 'output-card msg ai';
@@ -676,14 +935,40 @@ function renderOutput(raw) {
   });
   flush();
 
+  const btnRow = document.createElement('div');
+  btnRow.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;';
+
   const exportBtn = document.createElement('button');
   exportBtn.className = 'export-output';
+  exportBtn.style.marginTop = '0';
   exportBtn.textContent = 'Stáhnout jako TXT';
   exportBtn.onclick = () => exportTxt(raw);
-  card.appendChild(exportBtn);
+  btnRow.appendChild(exportBtn);
+
+  if (jePro) {
+    const ukolyBtn = document.createElement('button');
+    ukolyBtn.className = 'export-output';
+    ukolyBtn.style.marginTop = '0';
+    ukolyBtn.style.borderColor = 'rgba(233,169,27,.4)';
+    ukolyBtn.style.color = 'var(--gold)';
+    ukolyBtn.textContent = 'Vytvořit 2 navazující úkoly';
+    ukolyBtn.onclick = () => vytvoritUkolyZAnalyzy(raw, ukolyBtn);
+    btnRow.appendChild(ukolyBtn);
+  }
+
+  card.appendChild(btnRow);
+
+  if (!jePro) {
+    const teaser = document.createElement('div');
+    teaser.style.cssText = 'font-size:11px;color:rgba(255,255,255,.3);margin-top:10px;';
+    teaser.textContent = 'Pro plán uloží analýzu do historie a rovnou z ní založí navazující úkoly.';
+    card.appendChild(teaser);
+  }
 
   chat.appendChild(card);
   chat.scrollTop = chat.scrollHeight;
+
+  if (ulozit) ulozitStavAnalyzy(true, raw);
 }
 
 function exportTxt(raw) {
@@ -720,6 +1005,7 @@ async function odeslat() {
   input.style.height = 'auto';
   addMsg('user', text);
   history.push({ role: 'user', content: text });
+  if (!posledniProblem) posledniProblem = text.slice(0, 120);
 
   isLoading = true;
   document.getElementById('send-btn').disabled = true;
@@ -735,6 +1021,10 @@ async function odeslat() {
     const reply = data.content?.[0]?.text || 'Omlouvám se, něco se pokazilo.';
     history.push({ role: 'assistant', content: reply });
     addMsg('ai', reply);
+    // Pokud tenhle krok analýzu nedokončil (===VÝSTUP=== zpracovává a ukládá
+    // renderOutput sám), průběžně uložíme rozpracovaný stav, ať se k němu jde
+    // vrátit i po zavření appky.
+    if (!reply.includes('===VÝSTUP===')) ulozitStavAnalyzy(false, null);
 
   } catch (e) {
     hideTyping();
@@ -837,6 +1127,9 @@ window.addEventListener('DOMContentLoaded', () => {
 function resetChat() {
   if (!confirm('Začít novou analýzu? Aktuální konverzace bude smazána.')) return;
   history = [];
+  posledniProblem = '';
+  posledniRawVystup = null;
+  aktivniRunId = null;
   document.getElementById('chat').innerHTML = '';
   start();
 }
@@ -855,6 +1148,7 @@ async function start() {
     history.push({ role: 'user', content: 'Začni.' });
     history.push({ role: 'assistant', content: reply });
     addMsg('ai', reply);
+    ulozitStavAnalyzy(false, null);
 
   } catch (e) {
     hideTyping();
@@ -915,45 +1209,104 @@ async function spustitZdarma() {
   }
 }
 
-async function zkontrolovatPristup() {
-  const kod = document.getElementById('login-kod').value.trim().toUpperCase();
-  const err = document.getElementById('login-err');
-  const btn = document.getElementById('login-btn');
+// HISTORIE (jen Pro) - seznam dřív uložených analýz z tool_runs.
+async function otevritHistorii() {
+  if (!jePro || !clenstvi) return;
+  document.getElementById('modal-historie').style.display = 'flex';
+  const obsah = document.getElementById('historie-obsah');
+  obsah.innerHTML = '<div class="historie-prazdno">Načítám...</div>';
+  try {
+    const { data: radky, error } = await supabaseClient
+      .from('tool_runs')
+      .select('id, created_at, nazev, shrnuti, data')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', '5x-proc')
+      .order('created_at', { ascending: false })
+      .limit(30);
+    if (error) throw error;
+    if (!radky || radky.length === 0) {
+      obsah.innerHTML = '<div class="historie-prazdno">Zatím tu nemáte žádnou uloženou analýzu.</div>';
+      return;
+    }
+    obsah.innerHTML = '';
+    radky.forEach(r => {
+      const rozpracovana = !!(r.data && r.data.hotovo === false);
+      const item = document.createElement('div');
+      item.className = 'historie-item';
+      const datum = document.createElement('div');
+      datum.className = 'historie-datum';
+      datum.textContent = new Date(r.created_at).toLocaleString('cs-CZ') + (rozpracovana ? ' · rozpracováno' : '');
+      const shrnuti = document.createElement('div');
+      shrnuti.className = 'historie-shrnuti';
+      shrnuti.textContent = r.nazev || r.shrnuti || '5x Proč analýza';
+      const btn = document.createElement('button');
+      btn.className = 'historie-zobrazit';
+      if (rozpracovana) {
+        btn.textContent = 'Pokračovat';
+        btn.onclick = () => pokracovatVAnalyze(r);
+      } else {
+        btn.textContent = 'Zobrazit';
+        btn.onclick = () => zobrazitZHistorie(r.data && r.data.raw);
+      }
+      item.appendChild(datum);
+      item.appendChild(shrnuti);
+      item.appendChild(btn);
+      obsah.appendChild(item);
+    });
+  } catch (e) {
+    console.warn('Historii se nepodařilo načíst ze Supabase.', e);
+    obsah.innerHTML = '<div class="historie-prazdno">Historii se teď nepodařilo načíst. Zkuste to prosím později.</div>';
+  }
+}
 
-  if (!kod) {
-    err.textContent = 'Zadejte přístupový kód.';
+function zobrazitZHistorie(raw) {
+  if (!raw) return;
+  document.getElementById('modal-historie').style.display = 'none';
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+  addMsg('ai', 'Zobrazuji uloženou analýzu z historie:');
+  renderOutput(raw, false);
+}
+
+// Načte rozpracovanou analýzu zpátky do appky a nechá uživatele pokračovat
+// v psaní přesně tam, kde přestal - appka dál dopisuje do stejného řádku
+// v Supabase (aktivniRunId), nezaklaidá nový.
+function pokracovatVAnalyze(radek) {
+  const ulozenaHistorie = (radek.data && radek.data.history) || [];
+  if (ulozenaHistorie.length === 0) return;
+  document.getElementById('modal-historie').style.display = 'none';
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+  history = ulozenaHistorie.slice();
+  aktivniRunId = radek.id;
+  posledniProblem = '';
+  posledniRawVystup = null;
+  history.forEach(m => {
+    if (m.role === 'user' && m.content === 'Začni.') return; // stejně jako u start(), tohle appka nezobrazuje
+    if (!posledniProblem && m.role === 'user') posledniProblem = m.content.slice(0, 120);
+    addMsg(m.role === 'assistant' ? 'ai' : 'user', m.content);
+  });
+  addMsg('ai', 'Pokračujete v rozpracované analýze z ' + new Date(radek.created_at).toLocaleString('cs-CZ') + '.');
+  document.getElementById('input').focus();
+}
+
+// Pokud je firma přihlášená a má aktivní Pro, appka jede rovnou bez e-mailové
+// brány (to je jeden z benefitů Pro - žádné omezení na 1 analýzu). Jinak
+// zůstává beze změny stará Free e-mailová brána / rozjeté sezení.
+async function init() {
+  await nacistPrihlaseniStav();
+  if (jePro) {
+    document.getElementById('login-overlay').style.display = 'none';
+    start();
     return;
   }
-
-  btn.disabled = true;
-  btn.textContent = 'Kontroluji...';
-  err.textContent = '';
-
-  try {
-    const res = await fetch(LOGIN_SCRIPT_URL + '?action=check&kod=' + encodeURIComponent(kod));
-    const data = await res.json();
-
-    if (data.ok) {
-      sessionStorage.setItem('pristup_ok', '1');
-      document.getElementById('login-overlay').style.display = 'none';
-      start();
-    } else {
-      err.textContent = data.zprava || 'Neplatný kód.';
-      btn.disabled = false;
-      btn.textContent = 'Chci vstoupit';
-    }
-  } catch(e) {
-    err.textContent = 'Nepodařilo se ověřit kód. Zkuste znovu.';
-    btn.disabled = false;
-    btn.textContent = 'Chci vstoupit';
+  if (sessionStorage.getItem('pristup_ok') === '1') {
+    document.getElementById('login-overlay').style.display = 'none';
+    start();
   }
 }
 
-// Pokud už byl ověřen v této session
-if (sessionStorage.getItem('pristup_ok') === '1') {
-  document.getElementById('login-overlay').style.display = 'none';
-  start();
-}
+init();
 
 </script>
 </body>

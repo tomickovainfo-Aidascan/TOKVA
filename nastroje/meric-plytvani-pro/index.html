@@ -23,6 +23,9 @@ nav{background:var(--black);border-bottom:2px solid var(--gold);padding:12px 20p
 .nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:white;}
 .nav-brand span{color:var(--gold);}
 .nav-badge{font-size:10px;font-weight:700;color:var(--pro);background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);padding:3px 8px;border-radius:3px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{background:transparent;border:1px solid var(--border);color:var(--mid);font-size:12px;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
 
 .page-header{background:var(--black);padding:24px 20px 20px;position:relative;overflow:hidden;}
 .page-header::before{content:"";position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:50px solid rgba(233,169,27,.07);pointer-events:none;}
@@ -261,7 +264,11 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 
 <nav>
   <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;">Gabriela <span>Tomíčková</span></a>
-  <span class="nav-badge">Pro verze</span>
+  <div class="nav-right">
+    <span class="nav-badge">Pro verze</span>
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+  </div>
 </nav>
 
 <div class="page-header">
@@ -274,11 +281,10 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 <!-- PŘIHLÁŠENÍ -->
 <div id="prihlaseni" class="prihlaseni">
   <div class="prih-card">
-    <h2>Zadejte přístupový kód</h2>
-    <p>Přístupový kód jste dostali emailem po uhrazení objednávky.</p>
-    <input type="text" class="prih-input" id="prih-kod" placeholder="XXXXXX" maxlength="10" oninput="this.value=this.value.toUpperCase()">
-    <div class="prih-err" id="prih-err">Neplatný kód. Zkontrolujte email nebo kontaktujte tomickova.info@gmail.com</div>
-    <button class="prih-btn" onclick="overitKod()">Vstoupit do aplikace</button>
+    <h2 id="prih-nadpis">Přihlaste se ke svému účtu</h2>
+    <p id="prih-text">Měřič plýtvání Pro je součástí vašeho předplatného Moje Nástrojovna. Přihlaste se účtem, který jste dostali po zakoupení.</p>
+    <div class="prih-err" id="prih-err" style="display:none;">Přihlášení se nepodařilo. Zkuste to znovu nebo napište na tomickova.info@gmail.com</div>
+    <button class="prih-btn" id="prih-btn" onclick="klikNaPrihlaseni()">Přihlásit se</button>
     <p style="margin-top:16px;font-size:12px;color:var(--light);">Nemáte přístup? <a href="kde-mi-mizi-cas.html" style="color:var(--gold);text-decoration:none;font-weight:700;">Zjistit více o Měřiči plýtvání Pro</a></p>
   </div>
 </div>
@@ -476,77 +482,88 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   <div class="footer-legal"><a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth.js"></script>
 <script>
 // =============================================
-// PŘIHLAŠOVÁNÍ - ověření kódu přes Google Sheet
+// PŘIHLAŠOVÁNÍ - Moje Nástrojovna (Supabase), celá appka je Pro
 // =============================================
-const KODY_URL = 'https://script.google.com/macros/s/AKfycbxq9mk1F1PYHkbdsaAkLa1wK5Xw1ddgfvP_82jrOnrgE6uW78oiyZ7IRD7PzArZxG2W/exec';
+let session = null;
+let clenstvi = null;
+let jePro = false;
 
-function overitKod() {
-  const kod = document.getElementById('prih-kod').value.trim().toUpperCase();
-  if (!kod) return;
+async function nacistPrihlaseniStav() {
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
+    session = null; clenstvi = null; jePro = false;
+  }
+  renderUcetNav();
+  renderPrihlaseniStav();
+}
 
-  if (kod === 'DEMO2024') {
-    localStorage.setItem('meric_pro_kod', kod);
+function renderUcetNav() {
+  const info = document.getElementById('nav-ucet-info');
+  const btn = document.getElementById('nav-ucet-btn');
+  if (session && clenstvi) {
+    info.style.display = 'inline-block';
+    info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    btn.textContent = 'Odhlásit';
+  } else {
+    info.style.display = 'none';
+    btn.textContent = 'Přihlásit se';
+  }
+}
+
+async function klikNaUcet() {
+  if (session) {
+    try { await odhlasit(); } catch (e) { console.warn('Odhlášení se nepodařilo.', e); }
+    location.reload();
+  } else {
+    try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
+  }
+}
+
+async function klikNaPrihlaseni() {
+  const err = document.getElementById('prih-err');
+  err.style.display = 'none';
+  try { await vyzadovatPrihlaseni(); } catch (e) {
+    console.warn('Přihlášení se nepodařilo spustit.', e);
+    err.style.display = 'block';
+  }
+}
+
+function renderPrihlaseniStav() {
+  if (jePro) {
     vstoupitDoAplikace();
     return;
   }
-
-  const btn = document.querySelector('.prih-btn');
-  btn.textContent = 'Ověřuji...';
-  btn.disabled = true;
-
-  fetch(KODY_URL + '?action=check&kod=' + encodeURIComponent(kod))
-    .then(r => r.json())
-    .then(data => {
-      if (data.ok) {
-        localStorage.setItem('meric_pro_kod', kod);
-        vstoupitDoAplikace();
-      } else {
-        const err = document.getElementById('prih-err');
-        err.textContent = data.zprava || 'Kód není platný nebo přístup vypršel.';
-        err.style.display = 'block';
-        btn.textContent = 'Vstoupit do aplikace';
-        btn.disabled = false;
-      }
-    })
-    .catch(() => {
-      document.getElementById('prih-err').style.display = 'block';
-      btn.textContent = 'Vstoupit do aplikace';
-      btn.disabled = false;
-    });
+  document.getElementById('prihlaseni').style.display = 'block';
+  document.getElementById('setup').style.display = 'none';
+  const nadpis = document.getElementById('prih-nadpis');
+  const text = document.getElementById('prih-text');
+  const btn = document.getElementById('prih-btn');
+  if (session) {
+    nadpis.textContent = 'K tomuto účtu není aktivní Pro';
+    text.textContent = 'Jste přihlášeni jako ' + (clenstvi ? clenstvi.organizations.name : 'váš účet') + ', ale Měřič plýtvání Pro k tomuhle účtu zatím není aktivní.';
+    btn.style.display = 'none';
+  } else {
+    nadpis.textContent = 'Přihlaste se ke svému účtu';
+    text.textContent = 'Měřič plýtvání Pro je součástí vašeho předplatného Moje Nástrojovna. Přihlaste se účtem, který jste dostali po zakoupení.';
+    btn.style.display = 'block';
+    btn.textContent = 'Přihlásit se';
+  }
 }
 
 function vstoupitDoAplikace() {
   document.getElementById('prihlaseni').style.display = 'none';
   document.getElementById('setup').style.display = 'block';
   nacistHistorii();
-}
-
-// Auto-přihlášení pokud má platný kód – kontrola data přes script
-window.addEventListener('load', () => {
-  const ulozeny = localStorage.getItem('meric_pro_kod');
-  if (!ulozeny) return;
-  zkontrolovatPlatnost(ulozeny);
-});
-
-function zkontrolovatPlatnost(kod) {
-  fetch(KODY_URL + '?action=check&kod=' + encodeURIComponent(kod))
-    .then(r => r.json())
-    .then(data => {
-      if (data.ok) {
-        vstoupitDoAplikace();
-      } else {
-        localStorage.removeItem('meric_pro_kod');
-        const err = document.getElementById('prih-err');
-        err.textContent = data.zprava || 'Váš přístup vypršel. Obnovte předplatné.';
-        err.style.display = 'block';
-      }
-    })
-    .catch(() => {
-      // Při chybě sítě pustíme dál
-      vstoupitDoAplikace();
-    });
+  synchronizovatHistoriiSeSupabase();
 }
 
 // =============================================
@@ -882,9 +899,9 @@ function ukoncit() {
   // Insights tipy
   const ins = document.getElementById('insights');
   const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
-  const TIPY_URL = 'https://spaghetti.gabrielatomickova.cz';
+  const TIPY_URL = '../spaghetti-free/';
   const TIPY_PRO = {
-    // TODO: až bude spaghetti-vyroba.html napojená na stejný kód jako Měřič Pro, přidat zpět odkaz: <a href="https://spaghetti.gabrielatomickova.cz/vyroba">spaghetti diagram →</a>
+    // TODO: až bude spaghetti-vyroba.html napojená na stejný kód jako Měřič Pro, přidat zpět odkaz: <a href="../spaghetti-free//vyroba">spaghetti diagram →</a>
     presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. Nakreslete spaghetti diagram a vizuálně uvidíte kde se trasy kříží a opakují.`,
     hledani:`Hledání tvoří ${Math.round(avg.hledani/avgC*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
     cekani:`Čekání tvoří ${Math.round(avg.cekani/avgC*100)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
@@ -925,18 +942,77 @@ function ulozitDoHistorie() {
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
   const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
   const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+  const plyKcRok = avgC > 0 ? Math.round((plyC/avgC) * hodinovaSazba * delkaSmeny * 250 * pocetPracovniku) : 0;
 
   const zaznam = {
     id: Date.now(),
     nazev, datum: new Date().toLocaleDateString('cs-CZ'),
     cyklu: n, avgC, plyPct,
-    smena: delkaSmeny
+    smena: delkaSmeny,
+    plyKcRok
   };
 
   let hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
   hist.unshift(zaznam);
   if (hist.length > 20) hist = hist.slice(0, 20);
   localStorage.setItem('meric_pro_hist', JSON.stringify(hist));
+
+  ulozitDoSupabase(zaznam, plyKcRok);
+}
+
+// Best-effort zápis do účtu, aby historie šla vidět i z jiného zařízení.
+// Místní historie (výš) je pořád ta, na které appka jede — tohle je jen doplněk.
+async function ulozitDoSupabase(zaznam, plyKcRok) {
+  if (!jePro || !clenstvi) return;
+  try {
+    await supabaseClient.from('tool_runs').insert({
+      organization_id: clenstvi.organization_id,
+      nastroj: 'meric-plytvani-pro',
+      nazev: 'Měřič plýtvání Pro — ' + zaznam.nazev,
+      shrnuti: zaznam.plyPct + '% mimo přímou práci, přibližně ' + plyKcRok.toLocaleString('cs-CZ') + ' Kč/rok',
+      hlavni_hodnota_cislo: plyKcRok,
+      hlavni_hodnota_jednotka: 'Kč/rok',
+      hlavni_hodnota_typ: 'potencial_kc',
+      data: zaznam
+    });
+  } catch (e) {
+    console.warn('Uložení do účtu se nepodařilo, měření zůstává uložené v appce.', e);
+  }
+}
+
+// Doplní místní historii o měření uložená z jiných zařízení pod stejným účtem.
+async function synchronizovatHistoriiSeSupabase() {
+  if (!jePro || !clenstvi) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('data')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'meric-plytvani-pro')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (error || !data) return;
+
+    let hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+    const zname = new Set(hist.map(z => z.id));
+    let pribylo = false;
+    data.forEach(radek => {
+      const z = radek.data;
+      if (z && z.id && !zname.has(z.id)) {
+        hist.push(z);
+        zname.add(z.id);
+        pribylo = true;
+      }
+    });
+    if (!pribylo) return;
+
+    hist.sort((a, b) => b.id - a.id);
+    if (hist.length > 20) hist = hist.slice(0, 20);
+    localStorage.setItem('meric_pro_hist', JSON.stringify(hist));
+    nacistHistorii();
+  } catch (e) {
+    console.warn('Historie z účtu se nenačetla, appka jede z místní historie.', e);
+  }
 }
 
 function smazatHistorii(index, e) {
@@ -1309,6 +1385,8 @@ function zacitZnovu() {
 function getNazev(k) { return STD_NAZVY[k] || (vlastniOp.find(o=>o.id===k)||{nazev:k}).nazev; }
 function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
 function fmtC(s) { return pad(Math.floor(s/60)) + ':' + pad(Math.floor(s%60)); }
+
+nacistPrihlaseniStav();
 </script>
 
 <script>

@@ -46,6 +46,9 @@ body { font-family:"DM Sans",sans-serif; background:var(--paper); color:var(--da
 nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; box-shadow:0 2px 10px rgba(0,0,0,0.06); }
 .nav-brand { font-family:"Poppins",sans-serif; font-size:14px; font-weight:800; color:var(--black); }
 .nav-brand span { color:var(--gold); }
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{background:transparent;border:1px solid var(--border);color:var(--mid);font-size:12px;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
 
 .page-header { background:var(--white); border-bottom:1px solid var(--border); padding:24px 24px 20px; }
 .tool-badge { display:inline-block; background:#545454; color:var(--gold); font-size:10px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase; padding:3px 10px; border-radius:2px; margin-bottom:10px; }
@@ -283,6 +286,10 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 
 <nav>
   <a href="https://gabrielatomickova.cz" class="nav-brand" style="text-decoration:none;">Gabriela <span>Tomíčková</span></a>
+  <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+  </div>
 </nav>
 
 <div class="page-header">
@@ -293,12 +300,10 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 
 <div class="prihlaseni" id="prihlaseni">
   <div class="prih-card">
-    <h2>Přístup do nástroje</h2>
-    <p>Spaghetti diagram Pro je součástí ročního balíčku. Zadejte přístupový kód který jste obdrželi po zaplacení.</p>
-    <input type="text" class="prih-input" id="prih-kod" placeholder="VÁŠKÓD" maxlength="20"
-      onkeydown="if(event.key==='Enter')overitKod()">
-    <div class="prih-err" id="prih-err">Kód není platný nebo přístup vypršel.</div>
-    <button class="prih-btn" onclick="overitKod()">Vstoupit do aplikace</button>
+    <h2 id="prih-nadpis">Přihlaste se ke svému účtu</h2>
+    <p id="prih-text">Spaghetti diagram Pro je součástí vašeho předplatného Moje Nástrojovna. Přihlaste se účtem, který jste dostali po zakoupení.</p>
+    <div class="prih-err" id="prih-err" style="display:none;">Přihlášení se nepodařilo. Zkuste to znovu nebo napište na tomickova.info@gmail.com</div>
+    <button class="prih-btn" id="prih-btn" onclick="klikNaPrihlaseni()">Přihlásit se</button>
     <p style="margin-top:16px;font-size:12px;color:var(--light);">
       Nemáte přístup? <a href="meric-plytvani-prodejni-str.html" style="color:var(--gold);text-decoration:none;font-weight:700;">Zjistit více o ročním balíčku</a>
     </p>
@@ -978,6 +983,97 @@ function aktualizovatMojeProjektyBar() {
   if (pocet) pocet.textContent = seznam.length;
 }
 
+// =============================================
+// PROJEKTY V ÚČTU (Supabase), doplněk k localStorage výš
+// Místní úložiště zůstává hlavní - appka jede naplno i offline/bez Pro.
+// Tohle jen best-effort dorovnává stejné projekty napříč zařízeními stejné firmy.
+// =============================================
+async function ulozitProjektDoSupabase(zaznam) {
+  if (!jePro || !clenstvi) return;
+  try {
+    let hlavniCislo = null, hlavniJednotka = null, hlavniTyp = 'text';
+    let shrnuti = zaznam.zakazky.length + (zaznam.zakazky.length === 1 ? ' trasa' : (zaznam.zakazky.length >= 2 && zaznam.zakazky.length <= 4 ? ' trasy' : ' tras'));
+    const srov = (typeof zjistiSrovnani === 'function') ? zjistiSrovnani() : null;
+    if (srov && srov.dopadSoucasny && srov.dopadNavrh) {
+      const potencialKc = Math.round(srov.dopadSoucasny.kcRok - srov.dopadNavrh.kcRok);
+      hlavniCislo = potencialKc;
+      hlavniJednotka = 'Kč/rok';
+      hlavniTyp = 'potencial_kc';
+      shrnuti = 'PŘED × PO — potenciál ' + potencialKc.toLocaleString('cs-CZ') + ' Kč/rok';
+    }
+    const { data: existujici } = await supabaseClient
+      .from('tool_runs')
+      .select('id')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'spaghetti-pro')
+      .eq('data->>id', zaznam.id)
+      .limit(1);
+    const payload = {
+      organization_id: clenstvi.organization_id,
+      nastroj: 'spaghetti-pro',
+      nazev: 'Spaghetti diagram Pro — ' + zaznam.nazev,
+      shrnuti: shrnuti,
+      hlavni_hodnota_cislo: hlavniCislo,
+      hlavni_hodnota_jednotka: hlavniJednotka,
+      hlavni_hodnota_typ: hlavniTyp,
+      data: zaznam
+    };
+    if (existujici && existujici.length) {
+      await supabaseClient.from('tool_runs').update(payload).eq('id', existujici[0].id);
+    } else {
+      await supabaseClient.from('tool_runs').insert(payload);
+    }
+  } catch (e) {
+    console.warn('Uložení projektu do účtu se nepodařilo, projekt zůstává uložený v appce.', e);
+  }
+}
+
+async function smazatProjektZeSupabase(id) {
+  if (!jePro || !clenstvi) return;
+  try {
+    await supabaseClient
+      .from('tool_runs')
+      .delete()
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'spaghetti-pro')
+      .eq('data->>id', id);
+  } catch (e) {
+    console.warn('Smazání projektu z účtu se nepodařilo.', e);
+  }
+}
+
+async function synchronizovatProjektySeSupabase() {
+  if (!jePro || !clenstvi) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('data')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'spaghetti-pro')
+      .order('created_at', { ascending: false })
+      .limit(MAX_PROJEKTU);
+    if (error || !data) return;
+
+    let seznam = nacistSeznamProjektu();
+    const zname = new Set(seznam.map(p => p.id));
+    let pribylo = false;
+    data.forEach(radek => {
+      const p = radek.data;
+      if (p && p.id && !zname.has(p.id)) {
+        seznam.push(p);
+        zname.add(p.id);
+        pribylo = true;
+      }
+    });
+    if (!pribylo) return;
+
+    ulozitSeznamProjektu(seznam);
+    aktualizovatMojeProjektyBar();
+  } catch (e) {
+    console.warn('Projekty z účtu se nenačetly, appka jede z místních projektů.', e);
+  }
+}
+
 function ulozitProjekt() {
   if (!layout || zakazky.every(z => z.body.length < 2)) {
     alert('Nejdřív nahrajte plánek a nakreslete alespoň jednu trasu, pak bude co uložit.');
@@ -1024,6 +1120,7 @@ function potvrditUlozeniProjektu() {
   nazevProjektu = nazev;
   zavritModalUlozitProjekt();
   aktualizovatMojeProjektyBar();
+  ulozitProjektDoSupabase(zaznam);
 }
 
 function otevritSeznamProjektu() {
@@ -1128,6 +1225,7 @@ function duplikovatProjekt(id, e) {
   seznam.push(kopie);
   if (!ulozitSeznamProjektu(seznam)) return;
   otevritSeznamProjektu();
+  ulozitProjektDoSupabase(kopie);
 }
 
 function smazatProjekt(id, e) {
@@ -1141,6 +1239,7 @@ function smazatProjekt(id, e) {
   if (aktualniProjektId === id) aktualniProjektId = null;
   otevritSeznamProjektu();
   aktualizovatMojeProjektyBar();
+  smazatProjektZeSupabase(id);
 }
 
 // =============================================
@@ -2255,67 +2354,91 @@ function resetovat() {
 }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth.js"></script>
 <script>
-// PŘIHLAŠOVÁNÍ
-const KODY_URL = 'https://script.google.com/macros/s/AKfycbxq9mk1F1PYHkbdsaAkLa1wK5Xw1ddgfvP_82jrOnrgE6uW78oiyZ7IRD7PzArZxG2W/exec';
-const STORAGE_KEY = 'spaghetti_pro_kod';
+// =============================================
+// PŘIHLAŠOVÁNÍ - Moje Nástrojovna (Supabase), celá appka je Pro
+// =============================================
+let session = null;
+let clenstvi = null;
+let jePro = false;
 
-function overitKod() {
-  const kod = document.getElementById('prih-kod').value.trim().toUpperCase();
-  if (!kod) return;
+async function nacistPrihlaseniStav() {
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
+    session = null; clenstvi = null; jePro = false;
+  }
+  renderUcetNav();
+  renderPrihlaseniStav();
+}
 
-  if (kod === 'DEMO2024') {
-    localStorage.setItem(STORAGE_KEY, kod);
+function renderUcetNav() {
+  const info = document.getElementById('nav-ucet-info');
+  const btn = document.getElementById('nav-ucet-btn');
+  if (session && clenstvi) {
+    info.style.display = 'inline-block';
+    info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    btn.textContent = 'Odhlásit';
+  } else {
+    info.style.display = 'none';
+    btn.textContent = 'Přihlásit se';
+  }
+}
+
+async function klikNaUcet() {
+  if (session) {
+    try { await odhlasit(); } catch (e) { console.warn('Odhlášení se nepodařilo.', e); }
+    location.reload();
+  } else {
+    try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
+  }
+}
+
+async function klikNaPrihlaseni() {
+  const err = document.getElementById('prih-err');
+  err.style.display = 'none';
+  try { await vyzadovatPrihlaseni(); } catch (e) {
+    console.warn('Přihlášení se nepodařilo spustit.', e);
+    err.style.display = 'block';
+  }
+}
+
+function renderPrihlaseniStav() {
+  if (jePro) {
     vstoupitDoAplikace();
     return;
   }
-
-  const btn = document.querySelector('.prih-btn');
-  btn.textContent = 'Ověřuji...';
-  btn.disabled = true;
-  fetch(KODY_URL + '?action=check&kod=' + encodeURIComponent(kod))
-    .then(r => r.json())
-    .then(data => {
-      if (data.ok) {
-        localStorage.setItem(STORAGE_KEY, kod);
-        vstoupitDoAplikace();
-      } else {
-        const err = document.getElementById('prih-err');
-        err.textContent = data.zprava || 'Kód není platný nebo přístup vypršel.';
-        err.style.display = 'block';
-        btn.textContent = 'Vstoupit do aplikace';
-        btn.disabled = false;
-      }
-    })
-    .catch(() => {
-      document.getElementById('prih-err').style.display = 'block';
-      btn.textContent = 'Vstoupit do aplikace';
-      btn.disabled = false;
-    });
+  document.getElementById('prihlaseni').style.display = 'block';
+  document.getElementById('main-app').style.display = 'none';
+  const nadpis = document.getElementById('prih-nadpis');
+  const text = document.getElementById('prih-text');
+  const btn = document.getElementById('prih-btn');
+  if (session) {
+    nadpis.textContent = 'K tomuto účtu není aktivní Pro';
+    text.textContent = 'Jste přihlášeni jako ' + (clenstvi ? clenstvi.organizations.name : 'váš účet') + ', ale Spaghetti diagram Pro k tomuhle účtu zatím není aktivní.';
+    btn.style.display = 'none';
+  } else {
+    nadpis.textContent = 'Přihlaste se ke svému účtu';
+    text.textContent = 'Spaghetti diagram Pro je součástí vašeho předplatného Moje Nástrojovna. Přihlaste se účtem, který jste dostali po zakoupení.';
+    btn.style.display = 'block';
+    btn.textContent = 'Přihlásit se';
+  }
 }
 
 function vstoupitDoAplikace() {
   document.getElementById('prihlaseni').style.display = 'none';
   document.getElementById('main-app').style.display = 'block';
+  aktualizovatMojeProjektyBar();
+  synchronizovatProjektySeSupabase();
 }
 
-window.addEventListener('load', () => {
-  const ulozeny = localStorage.getItem(STORAGE_KEY);
-  if (!ulozeny) return;
-  fetch(KODY_URL + '?action=check&kod=' + encodeURIComponent(ulozeny))
-    .then(r => r.json())
-    .then(data => {
-      if (data.ok) {
-        vstoupitDoAplikace();
-      } else {
-        localStorage.removeItem(STORAGE_KEY);
-        const err = document.getElementById('prih-err');
-        err.textContent = data.zprava || 'Váš přístup vypršel. Obnovte předplatné.';
-        err.style.display = 'block';
-      }
-    })
-    .catch(() => { vstoupitDoAplikace(); });
-});
+nacistPrihlaseniStav();
 </script>
 
 <script>
