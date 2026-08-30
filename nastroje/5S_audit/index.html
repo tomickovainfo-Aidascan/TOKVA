@@ -882,9 +882,28 @@ async function nacistPrihlaseniStav() {
   renderUcetNav();
 }
 
+function aktualizovatProBtn() {
+  const proBtn = document.getElementById('pro-btn');
+  const proErr = document.getElementById('pro-err');
+  if (!proBtn) return;
+  if (session && !jePro) {
+    proBtn.textContent = 'Zavřít';
+    proBtn.onclick = function () { zavritModal('modal-pro'); };
+    if (proErr) proErr.textContent = 'Jste přihlášeni jako ' + session.user.email + ', ale vaše firma zatím nemá aktivní Pro. Pro je součástí balíčku Provoz pod kontrolou.';
+  } else if (session && jePro) {
+    proBtn.textContent = 'Pokračovat';
+    proBtn.onclick = function () { zavritModal('modal-pro'); };
+    if (proErr) proErr.textContent = '';
+  } else {
+    proBtn.textContent = 'Přihlásit se';
+    proBtn.onclick = klikVModaluPro;
+    if (proErr) proErr.textContent = '';
+  }
+}
 function renderUcetNav() {
   const btn = document.getElementById('nav-ucet-btn');
   const info = document.getElementById('nav-ucet-info');
+  aktualizovatProBtn();
   if (!session) {
     btn.textContent = 'Přihlásit se';
     btn.style.display = '';

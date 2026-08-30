@@ -1063,9 +1063,28 @@ async function nacistPrihlaseniStav() {
   renderUcetNav();
 }
 
+function aktualizovatProBtn() {
+  const proBtn = document.getElementById('pro-btn');
+  const proErr = document.getElementById('pro-err');
+  if (!proBtn) return;
+  if (session && !jePro) {
+    proBtn.textContent = 'Zavřít';
+    proBtn.onclick = zavritModalPro;
+    if (proErr) proErr.textContent = 'K tomuhle účtu zatím není aktivní Pro.';
+  } else if (session && jePro) {
+    proBtn.textContent = 'Pokračovat';
+    proBtn.onclick = zavritModalPro;
+    if (proErr) proErr.textContent = '';
+  } else {
+    proBtn.textContent = 'Přihlásit se';
+    proBtn.onclick = klikVModaluPro;
+    if (proErr) proErr.textContent = '';
+  }
+}
 function renderUcetNav() {
   const info = document.getElementById('nav-ucet-info');
   const btn = document.getElementById('nav-ucet-btn');
+  aktualizovatProBtn();
   if (session && clenstvi) {
     info.style.display = 'inline-block';
     info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
