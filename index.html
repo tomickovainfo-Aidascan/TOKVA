@@ -440,14 +440,14 @@ const TOOLS = [
       ]
     },
     ucelMetoda:"Kalkulačka neviditelných ztrát je rychlý odhad, kolik vás ročně stojí běžná rutina ve skladu nebo ve výrobě. Zadáte pár čísel o svém provozu (kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje) a kalkulačka to přepočítá na hodiny, kilometry a koruny za rok.\n\nNení to náhrada za měření přímo v provozu. Je to první rychlý odhad, jestli se vůbec vyplatí to řešit dál.",
-    princip:"Do posuvníků zadáte základní údaje o provozu (počet lidí, směny, mzdové náklady) a čtyři čísla o ztrátách (zbytečná chůze, ruční administrativa, čekání a prostoje, ruční zpracování dodávek a expedic). Kalkulačka je hned přepočítá na hodiny týdně, kilometry navíc za rok a koruny za měsíc i za rok, a ukáže i to, kde ztráta vzniká nejvíc.",
+    princip:"Do posuvníků zadáte základní údaje o provozu (počet lidí, počet směn, délka směny, mzdové náklady) a pět čísel o ztrátách (zbytečná chůze, ruční administrativa, čekání a prostoje, počet kamionů a čas na zpracování jednoho). Kalkulačka je hned přepočítá na hodiny týdně, kilometry navíc za rok a koruny za měsíc i za rok, a ukáže i to, kde ztráta vzniká nejvíc.",
     postup:[
       "Zadejte základní údaje o provozu: počet lidí, počet směn a mzdové náklady.",
       "Zadejte čísla o ztrátách: kolik se zbytečně chodí, kolik se ručně přepisuje, kolik se čeká a kolik trvá zpracování dodávky nebo expedice.",
       "Výsledek se spočítá okamžitě, bez registrace, přímo na stránce.",
       "Podívejte se, jaká je vaše výchozí situace a kolik vás plýtvání reálně stojí, vezměte to jako startovní čáru. U kategorie, kde ztrácíte nejvíc času, začněte a udělejte si detailnější rozbor procesu."
     ],
-    vstupy:"Počet pracovníků, počet směn, mzdové náklady, a čtyři čísla o ztrátách: zbytečná chůze a přesuny, ruční administrativa, čekání a prostoje, ruční zpracování dodávek a expedic.",
+    vstupy:"Počet pracovníků, počet směn, délka směny, mzdové náklady, a pět čísel o ztrátách: zbytečná chůze a přesuny, ruční administrativa, čekání a prostoje, počet kamionů za měsíc a čas na zpracování jednoho.",
     vystupy:"Celková ztráta za rok v korunách, náklady za měsíc, zbytečné hodiny za týden, kilometry nachozené navíc za rok, a kolik lidí v přepočtu pracuje jen na těchto ztrátách. Plus rozpad podle toho, kde ztráta vzniká nejvíc.",
     priklad:"Sklad, 5 lidí, jedna směna. Nic dramatického, jen běžná rutina: špatně rozmístěné zboží, přepisování dodacích listů, čekání na informaci. Dohromady to dělalo kolem 40 minut zbytečně za směnu na člověka.\n\nKalkulačka z těchto čísel spočítala 303 100 Kč ročně za práci, která nepřinášela žádnou hodnotu.\n\nŘešení nebylo drahé. Změnilo se rozmístění zboží a jeden formulář pro příjem zboží. Žádná velká investice, jen jinak nastavený systém.",
     chyby:[
@@ -465,8 +465,8 @@ const TOOLS = [
       heroNote:"Bez registrace · výsledek hned<br>orientační odhad za pár minut",
       ctaLabel:"Chci znát svoje číslo",
       stats:[
-        {num:"3", lbl:"základní údaje o provozu"},
-        {num:"4", lbl:"čísla o ztrátách"},
+        {num:"4", lbl:"základní údaje o provozu"},
+        {num:"5", lbl:"čísel o ztrátách"},
         {num:"0", lbl:"nutná registrace"},
         {num:"3", lbl:"výstupy: hodiny, km, Kč"}
       ],
@@ -552,7 +552,7 @@ const TOOLS = [
       "Odpovězte na 10 otázek o svém provozu, vždy tři možnosti a jedno kliknutí.",
       "Dostanete skóre a konkrétní tipy, co sledovat jako první, hned na stránce."
     ],
-    vstupy:"E-mail (slouží jako přístup ke kvízu) a odpovědi na 10 otázek o vašem provozu.",
+    vstupy:"Odpovědi na 10 otázek o vašem provozu, e-mail jen nepovinně, pokud chcete výsledek i poslat.",
     vystupy:"Skóre 0 až 20 bodů se slovním hodnocením (třeba \"provoz řídí vás, ne vy provoz\"), přehled po jednotlivých oblastech, kde vám chybí přehled, a konkrétní tipy pro oblasti, kde to bolí nejvíc, hned na stránce.",
     priklad:"Vedoucí skladu, 15 lidí, firma fungovala. Na papíře v pohodě. Přišel kvíz.\n\nNeznal náklady na metr čtvereční. Nevedl statistiku chyb. Nevěděl, kolik ho stojí odchod jednoho člověka. Tři procesy závisely na jednom skladníkovi, který byl u firmy 11 let. Kdyby odešel, nikdo by nevěděl, jak to dělá.\n\nKaždou z těchto věcí věděl, že nějak fungují. Ale číslo k žádné z nich neměl.\n\nKvíz nezjistil, co nefunguje. Zjistil, co neví. A to byl první krok k tomu, aby to začal řídit.",
     chyby:[
@@ -560,7 +560,7 @@ const TOOLS = [
       "Splést si kvíz s mini auditem skladu. Kvíz ukazuje, co nevíte a neměříte, mini audit hledá, kde konkrétně vznikají ztráty v procesech."
     ],
     faq:[
-      { q:"Proč musím zadat e-mail?", a:"Kvíz je zdarma, e-mail slouží jako přístup. Žádný spam, jen občasné tipy pro vedoucí skladu. Kdykoli se můžete odhlásit." },
+      { q:"Musím zadat e-mail?", a:"Ne. Kvíz spustíte rovnou bez e-mailu a výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit." },
       { q:"Jaký je rozdíl mezi kvízem a mini auditem skladu?", a:"Kvíz odhaluje slepá místa v přehledu, co nevíte, co neměříte, kde chybí čísla. Mini audit skladu hledá, kde konkrétně vznikají ztráty v procesech." },
       { q:"Musím projít celý kvíz najednou?", a:"Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte, 5 minut najdete vždy." }
     ],
@@ -765,7 +765,7 @@ const TOOLS = [
   { id:"spaghetti-vyroba", group:"paid-solo", name:"Spaghetti diagram Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Zaznamenáte pohyb víc lidí najednou, ve skladu i ve výrobě, včetně zastávek.",
     popis:"Zaznamenáte trasy víc lidí najednou, včetně zastávek, kde se zastaví a něco dělají. Umí i rovnou spočítat, o kolik je návrh lepší než současný stav. Pro sklad i pro výrobu.",
     proKoho:"Vedoucí skladu nebo výroby, co řeší zbytečný pohyb víc lidí najednou.",
-    prodejniStranka:null, prodejniNote:"Prodejní stránka se zatím připravuje.",
+    prodejniStranka:"nastroje/spaghetti-pro/",
     souvisejici:["spaghetti-sklad"],
     kdyPouzit:{
       otazky:[
@@ -821,15 +821,15 @@ const TOOLS = [
 
   { id:"5s-audit", group:"free", name:"5S pro každého smrtelníka", krok:3, oblasti:["sklad","vyroba"], benefit:"Uspořádáte pracoviště krok za krokem, s fotkami před a po.",
     popis:"Krok po kroku uspořádáte jakékoliv pracoviště. Fotodokumentace před a po, report co se změnilo.",
-    url:"nastroje/5S_audit/", prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje." },
+    url:"nastroje/5S_audit/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Pro verze se zatím dá získat jen společně s dalšími nástroji v balíčku, samostatná objednávka se připravuje." },
 
   { id:"5x-proc", group:"free", name:"5x Proč AI kouč", krok:3, oblasti:["sklad","vyroba"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
     popis:"AI kouč vás provede rozhovorem a dovede ke kořenu problému. Strukturovaný výstup s příčinou a prvním krokem.",
-    url:"nastroje/5x-proc-ai-kouc/", prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje." },
+    url:"nastroje/5x-proc-ai-kouc/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Pro verze se zatím dá získat jen společně s dalšími nástroji v balíčku, samostatná objednávka se připravuje." },
 
   { id:"casova-studie", group:"free", name:"Časová studie mého dne", krok:3, oblasti:["sklad","vyroba","administrativa","lide"], benefit:"Získáte skutečný přehled svého dne, podklad pro delegování nebo automatizaci.",
-    popis:"Skutečný přehled vašeho dne s činnostmi a intervaly. Podklad pro delegování nebo automatizaci, export do CSV.",
-    url:"nastroje/casova-studie/", prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje.",
+    popis:"Skutečný přehled vašeho dne s činnostmi a intervaly. Podklad pro delegování nebo automatizaci, export do CSV.\n\n1 den zdarma. Historie a trendy mezi dny jsou v Tokva Pro.",
+    url:"nastroje/casova-studie/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Pro verze se zatím dá získat jen společně s dalšími nástroji v balíčku, samostatná objednávka se připravuje.",
     souvisejici:["kviz-komunikace"] },
 
   { id:"kalkulacka-naklady-skladu", group:"free", name:"Kalkulačka nákladů provozu na m²", krok:2, oblasti:["sklad"], benefit:"Spočítáte, kolik vás sklad doopravdy stojí na metr čtvereční, ne jen nájem.",
