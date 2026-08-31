@@ -194,6 +194,11 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .story-title { font-family:"Poppins",sans-serif; font-size:14px; font-weight:700; color:var(--dark); margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
 .story-block p { font-size:14px; color:var(--mid); line-height:1.75; margin-bottom:10px; }
 .story-block p:last-of-type { margin-bottom:0; }
+.info-detail summary { cursor:pointer; list-style:none; }
+.info-detail summary::-webkit-details-marker { display:none; }
+.info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
+.info-summary::before { content:""; display:inline-block; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--gold-dark); transition:transform .2s; }
+.info-detail[open] .info-summary::before { transform:rotate(180deg); }
 .trust-line { font-size:13px; color:var(--light); font-style:italic; border-top:1px solid var(--border); margin-top:16px; padding-top:14px; }
 .two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 .content-card { background:var(--paper); border:1px solid var(--border); border-radius:12px; padding:24px; }
@@ -288,6 +293,9 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 <!-- ── INTRO ── -->
 <div class="content-block">
   <div class="content-inner">
+    <details class="info-detail">
+      <summary class="info-summary">Chci vědět jak na to</summary>
+      <div style="margin-top:22px;display:flex;flex-direction:column;gap:32px;">
     <div class="story-block">
       <div class="story-title">Proč to vůbec počítat?</div>
       <p>Většina majitelů skladů zná nájem. Málokdo ví, kolik k tomu přidají energie, revize, pojištění a opotřebení rackingu. Čísla co jsem viděla v praxi? Reálné náklady bývají 1,5 až 2× vyšší než samotný nájem.</p>
@@ -316,6 +324,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </ul>
       </div>
     </div>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -902,7 +912,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="tip-box">
         <strong>Tušíte, kde plýtváte, ale nevíte kde začít?</strong>
         <p>Kalkulačka vám říká, kolik vás sklad stojí. Pokud chcete vědět, kde přesně odchází čas a kde zlepšení dá největší výsledek – na to je Měřič plýtvání.</p>
-        <a href="../meric-plytvani-pro/">Vyzkoušet měřič plýtvání →</a>
+        <a href="../meric-plytvani-free/">Spustit Měřič plýtvání →</a>
         <p style="margin-top:14px;margin-bottom:0;">Nebo si rovnou domluvte procesní audit – přijdu se podívat přímo do provozu.</p>
       </div>
     </div>
@@ -925,7 +935,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
     <p>Pro verze umí uložit víc výpočtů (různé sklady nebo období), porovnat je vedle sebe a exportovat do CSV. Samotný výpočet zůstává navždy zdarma, bez přihlášení.</p>
     <div class="modal-err" id="pro-err" style="color:var(--mid);"></div>
     <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
-    <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc</a></div>
+    <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://tokva.cz/">Zjistit víc o Tokva Pro</a></div>
   </div>
 </div>
 
@@ -1442,17 +1452,6 @@ function exportCSV() {
 update();
 renderUlozene();
 nacistPrihlaseniStav();
-</script>
-<script>
-(function(){
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('start') === '1') {
-    setTimeout(function(){
-      var el = document.querySelector('.calc-grid');
-      if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-    }, 300);
-  }
-})();
 </script>
 </body>
 </html>

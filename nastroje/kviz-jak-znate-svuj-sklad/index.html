@@ -185,6 +185,11 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 .story-title{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--dark);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;}
 .story-block p{font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;}
 .story-block p:last-of-type{margin-bottom:0;}
+.info-detail summary { cursor:pointer; list-style:none; }
+.info-detail summary::-webkit-details-marker { display:none; }
+.info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
+.info-summary::before { content:""; display:inline-block; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--gold-dark); transition:transform .2s; }
+.info-detail[open] .info-summary::before { transform:rotate(180deg); }
 .trust-line{font-size:13px;color:var(--light);font-style:italic;border-top:1px solid var(--border);margin-top:16px;padding-top:14px;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 .content-card{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:24px;}
@@ -246,7 +251,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
     <p>Pro verze uloží tenhle výsledek do vašeho účtu. Kvíz pak stačí za čas zopakovat a hned uvidíte, jestli se přehled zlepšuje, nebo je stejný. Samotný kvíz zůstává navždy zdarma, bez přihlášení.</p>
     <div class="modal-err" id="pro-err" style="color:var(--mid);"></div>
     <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
-    <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://gabrielatomickova.cz">Zjistit víc</a></div>
+    <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://tokva.cz/">Zjistit víc o Tokva Pro</a></div>
   </div>
 </div>
 
@@ -266,6 +271,9 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 <div class="content-block">
   <div class="content-inner">
 
+    <details class="info-detail">
+      <summary class="info-summary">Chci vědět jak na to</summary>
+      <div style="margin-top:22px;display:flex;flex-direction:column;gap:32px;">
     <div class="story-block">
       <div class="story-title">Jak to vypadá v praxi?</div>
       <p>Vedoucí skladu, 15 lidí, firma fungovala. Na papíře v pohodě. Přišel kvíz.</p>
@@ -306,6 +314,9 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
       <div class="time-note">Stačí 5 minut a ochota odpovědět upřímně.</div>
     </div>
 
+      </div>
+    </details>
+
   </div>
 </div>
 
@@ -319,17 +330,8 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 
 <div class="main">
 
-  <!-- START, ZADNY EMAIL -->
-  <div class="email-brana" id="email-brana">
-    <div class="email-card">
-      <h2>Spusťte kvíz</h2>
-      <p>10 otázek, 5 minut. Výsledek s konkrétními tipy ihned na stránce.</p>
-      <button class="btn-spustit" onclick="spustitKviz()">Spustit kvíz zdarma</button>
-    </div>
-  </div>
-
   <!-- OTAZKY -->
-  <div class="otazka-wrap" id="q1">
+  <div class="otazka-wrap active" id="q1">
     <div class="otazka-card">
       <div class="otazka-num">Otázka 1 z 10</div>
       <div class="otazka-text">Kolik vás stojí metr čtvereční vašeho skladu?</div>
@@ -750,14 +752,6 @@ const CO_DAL_ODKAZY = {
 
 const odpovedi = {};
 
-// Kviz se spusti rovnou, zadny email pred prvni otazkou.
-function spustitKviz() {
-  document.getElementById('email-brana').style.display = 'none';
-  document.getElementById('q1').classList.add('active');
-  updateProgress();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
 function vyber(el, q, body) {
   el.closest('.moznosti').querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
   el.classList.add('selected');
@@ -879,7 +873,7 @@ function zacitZnovu() {
   document.querySelectorAll('.otazka-wrap,.vysledky-wrap').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
   document.querySelectorAll('[id^=dal]').forEach(b => b.disabled = true);
-  document.getElementById('email-brana').style.display = 'block';
+  document.getElementById('q1').classList.add('active');
   updateProgress();
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -920,16 +914,6 @@ function cookiesOdmitnout() {
   localStorage.setItem('cookies_souhlas', 'ne');
   document.getElementById('cookies-bar').style.display = 'none';
 }
-</script>
-<script>
-(function(){
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('start') === '1') {
-    setTimeout(function(){
-      if (typeof spustitKviz === 'function') spustitKviz();
-    }, 300);
-  }
-})();
 </script>
 </body>
 </html>
