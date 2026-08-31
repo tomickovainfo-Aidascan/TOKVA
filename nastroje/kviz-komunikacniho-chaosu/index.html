@@ -249,7 +249,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   </div>
   <div class="email-card">
     <h3>Chcete podrobnější rozbor?</h3>
-    <p>Na e-mail vám pošlu váš výsledek i s tím, kde vás to nejvíc bolí.</p>
+    <p>Na e-mail vám pošlu váš výsledek i s doporučením, co s vaší nejslabší oblastí dělat jako první.</p>
     <button type="button" class="btn-spustit" id="btn-poslat-email-chaos" onclick="ukazatEmailFormChaos()">Poslat podrobný výsledek na e-mail</button>
     <div id="email-form-wrap-chaos" style="display:none;margin-top:10px;">
       <iframe name="brevo-frame-chaos" style="display:none;" title="odeslani formulare"></iframe>
@@ -459,6 +459,15 @@ const PRVNI_KROK_OBLAST = {
 const odpovedi = {};
 let aktualniOtazka = 0;
 const vybranaIndexy = {};
+const RADY_OBLAST = {
+  'kanalovy-chaos': "Ve vaší firmě teče komunikace k jedné zakázce hned několika kanály najednou, e-mail, WhatsApp, telefon, Excel. To neznamená, že lidé nekomunikují, znamená to, že nikdo neví, kde hledat, až to bude potřeba. Vyberte jeden kanál pro jeden typ informace, třeba telefon pro urgentní věci a systém nebo tabulku pro stav zakázky, a napište to jako jednoduché pravidlo pro celý tým. Pokud používáte WhatsApp skupinu pro zakázky, stanovte aspoň, co tam nepatří, úkoly s termíny se v konverzaci ztrácejí a nikdo za ně pak nenese odpovědnost.",
+  'prepisovani': "Pokud zadáváte zákazníka, termín nebo stav zakázky do víc systémů nebo tabulek, není problém v lidech, je v systému. Přepisování stojí čas a hlavně vytváří verze, takže nikdy nevíte jistě, která tabulka je ta aktuální. Určete jedno místo pravdy pro každý typ dat, zákazníka jen na jednom místě, stav zakázky jen na jednom místě, termíny jen v jednom kalendáři. I 10 minut denně přepisování je přes 40 hodin ročně, jen na přepisování.",
+  'cekani': "Pokud lidé čekají, protože nemají informaci nebo pokyn, nebo trávíte hodiny telefonáty a vysvětlováním jak to vlastně je, firma platí za komunikaci, ne za práci. Zkuste jeden den sledovat, kdo za kým chodí s jakým dotazem, pravděpodobně uvidíte pořád stejný vzorec. Pro nejčastější dotazy nastavte jedno místo odpovědi, stav zakázky viditelný bez volání, aktuální termíny bez nutnosti ptát se vedoucího.",
+  'zavislost': "Pokud stav zakázky ví jen majitel, vedoucí nebo jedna zkušená osoba, firma funguje na lidské paměti místo na systému, a to je křehký stav. Co by se stalo, kdyby ta osoba zítra byla na měsíc pryč? Pojmenujte, co všechno ta klíčová osoba ví a kde ty informace žijí, a zkuste jeden okruh (třeba stav rozpracovaných zakázek) zpřístupnit ostatním bez nutnosti se ptát, klidně jako tabulku aktualizovanou jednou denně.",
+  'chaos-zmen': "Pokud se u vás pravidelně řeší to mi nikdo neřekl, nebo změna termínu, ceny nebo požadavku zákazníka automaticky nedojde ke všem, kdo to potřebují vědět, každá změna je potenciální problém. Zmapujte, co se u vás typicky mění, a pro každý typ změny si odpovězte, kdo by o tom měl vědět, většinou zjistíte, že informace jde jen nahoru nebo dopředu, ale ne do stran. Zaveďte jedno pravidlo, každá změna ovlivňující víc než jednoho člověka musí mít písemný záznam, ne jen telefonát.",
+  'uloziste': "Jakmile pošlete soubor jako přílohu, vzniknou dvě verze, jedna u vás, jedna u příjemce, a když ho někdo upraví a pošle zpět, jsou tři. Přestaňte posílat soubory jako přílohy a posílejte vždy odkaz na sdílené místo, ať už Google Drive, OneDrive nebo cokoliv jiného, jeden soubor, všichni čtou a editují to samé. Nastavte jedno místo pro každý typ dokumentu, nabídky na jedno místo, smlouvy na jiné, a komentáře pište přímo do dokumentu, ne do e-mailu pod ním."
+};
+
 
 // ============ PŘIHLÁŠENÍ A PRO (Supabase) ============
 // Kvíz samotný je a zůstává úplně zdarma bez přihlášení - tohle jen navíc
@@ -1156,11 +1165,9 @@ function odeslatEmailChaos(e){
   const pasmo = document.getElementById('v-pasmo').textContent.trim();
   const doporuceni = document.getElementById('v-doporuceni').textContent.trim();
   let popis = pasmo + '. ' + doporuceni;
-  const nejslabsiCard = document.getElementById('v-nejslabsi-card');
-  if(nejslabsiCard && nejslabsiCard.style.display !== 'none'){
-    const oblastNazev = document.getElementById('v-oblast-badge').textContent.trim();
-    const oblastPopis = document.getElementById('v-nejslabsi').textContent.trim();
-    popis += ' Nejslabší oblast: ' + oblastNazev + '. ' + oblastPopis;
+  const klic = posledniVysledek && posledniVysledek.nejslabsiKey;
+  if(klic && OBLASTI[klic]){
+    popis += ' Nejslabší oblast: ' + OBLASTI[klic].nazev + '. ' + (RADY_OBLAST[klic] || OBLASTI[klic].popis);
   }
   document.getElementById('hid-chaos-skore-popis').value = popis;
   document.getElementById('email-form-chaos').style.display = 'none';
