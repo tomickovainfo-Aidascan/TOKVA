@@ -53,6 +53,12 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .krok-popis{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;}
 
 .field label{font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:5px;}
+
+.info-detail summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:700;color:var(--gold-dark);}
+.info-detail summary::-webkit-details-marker{display:none;}
+.info-detail summary::before{content:"";display:inline-block;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--gold-dark);transition:transform .2s;flex-shrink:0;}
+.info-detail[open] summary::before{transform:rotate(180deg);}
+.info-detail[open] summary{margin-bottom:10px;}
 .field input{width:100%;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
 .field input:focus{border-color:var(--gold);background:white;}
 .field+.field{margin-top:12px;}
@@ -85,7 +91,7 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .btn-spustit .arr{width:16px;height:10px;background:currentColor;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);}
 
 /* MERENI */
-.mereni{display:none;max-width:520px;margin:0 auto;padding:14px 16px 80px;}
+.mereni{display:block;max-width:520px;margin:0 auto;padding:14px 16px 80px;}
 
 .m-header{background:var(--black);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
 .m-nazev{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:white;}
@@ -251,22 +257,9 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 <!-- SETUP -->
 <div class="main" id="setup">
 
-  <!-- KROK 1 - PROCES -->
-  <div class="setup-krok">
-    <div class="krok-num">Krok 1</div>
-    <div class="krok-title">Zvolte si proces který chcete měřit</div>
-    <div class="krok-popis">Vyberte jednu konkrétní opakující se operaci - vychystávání objednávky, montáž dílu, příjem zboží. Čím konkrétnější, tím přesnější výsledek.</div>
-    <div class="field">
-      <label>Název procesu</label>
-      <input type="text" id="inp-nazev" placeholder="např. Vychystávání objednávky">
-    </div>
-
-  </div>
-
-  <!-- KROK 2 - TLACITKA -->
-  <div class="setup-krok">
-    <div class="krok-num">Krok 2</div>
-    <div class="krok-title">Jak fungují tlačítka měření</div>
+  <!-- INFO ROZBALOVACI -->
+  <details class="setup-krok info-detail">
+    <summary>Chci vědět jak na to</summary>
     <div class="krok-popis">Vždy klikněte na tlačítko <strong>na začátku</strong> dané činnosti - ne na konci. Aplikace měří jak dlouho trvá než kliknete na další tlačítko.</div>
     <div class="kat-prehled">
       <div class="kat-item">
@@ -298,33 +291,17 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
         <div class="kat-info"><strong>Příprava</strong><span>Příprava pracoviště, nástrojů nebo materiálu před operací</span></div>
       </div>
     </div>
-  </div>
+  </details>
 
-  <!-- KROK 3 - VLASTNI OPERACE (PRO) -->
-  <div class="pro-sekce">
-    <div class="pro-label">Pro</div>
-    <div class="krok-title">Vlastní operace pro váš proces</div>
-    <div class="krok-popis" style="font-size:12px;">Přidejte konkrétní kroky vašeho procesu - omotávání, svařování, zapékání. Zobrazí se jako zelená tlačítka vedle Práce.</div>
-    <button class="pro-btn" onclick="zobrazProTooltip('tt-operace')">+ Přidat vlastní operaci</button>
-    <div class="pro-tooltip" id="tt-operace">Vlastní operace jsou dostupné v <a href="../meric-plytvani-pro/">Měřiči plýtvání Pro</a>.</div>
-  </div>
-
-  <!-- KROK 4 - POCET CYKLU (PRO) -->
-  <div class="pro-sekce">
-    <div class="pro-label">Pro</div>
-    <div class="krok-title">Počet cyklů měření</div>
-    <div class="krok-popis" style="font-size:12px;">Ve free verzi měříte 3 cykly. Pro přesnější výsledky a statistiku doporučujeme 5-10 cyklů.</div>
-    <div style="display:flex;align-items:center;gap:12px;">
-      <input class="pro-input" type="number" value="3" disabled>
-      <span style="font-size:12px;color:var(--mid);">Neomezený počet cyklů v Pro verzi</span>
+  <!-- NAZEV PROCESU -->
+  <div class="setup-krok">
+    <div class="krok-title">Zvolte si proces který chcete měřit</div>
+    <div class="krok-popis">Vyberte jednu konkrétní opakující se operaci - vychystávání objednávky, montáž dílu, příjem zboží. Čím konkrétnější, tím přesnější výsledek.</div>
+    <div class="field">
+      <label>Název procesu</label>
+      <input type="text" id="inp-nazev" placeholder="např. Vychystávání objednávky">
     </div>
-    <button class="pro-btn" style="margin-top:8px;" onclick="zobrazProTooltip('tt-cykly')">Odemknout více cyklů</button>
-    <div class="pro-tooltip" id="tt-cykly">Neomezený počet cyklů je dostupný v <a href="../meric-plytvani-pro/">Měřiči plýtvání Pro</a>.</div>
   </div>
-
-  <button class="btn-spustit" onclick="prejitKMereni()">
-    <span class="arr"></span> Rozumím, přejít k měření
-  </button>
 
 </div>
 
@@ -461,16 +438,20 @@ function zobrazProTooltip(id) {
   el.style.display = el.style.display === 'block' ? 'none' : 'block';
 }
 
-function prejitKMereni() {
+function initMereni() {
   nazev = document.getElementById('inp-nazev').value.trim() || 'Proces';
-  document.getElementById('setup').style.display = 'none';
-  document.getElementById('mereni').style.display = 'block';
   document.getElementById('m-nazev').textContent = nazev;
   document.getElementById('m-cykly').textContent = 'Cyklus 1 / ' + MAX_CYKLY;
   mereniSpusteno = true;
   zacitNovyCyklus();
-  window.scrollTo({top:0,behavior:'smooth'});
 }
+
+document.getElementById('inp-nazev').addEventListener('input', function() {
+  nazev = this.value.trim() || 'Proces';
+  document.getElementById('m-nazev').textContent = nazev;
+});
+
+initMereni();
 
 function zacitNovyCyklus() {
   const cas = {};
@@ -685,17 +666,15 @@ function odeslatEmail(e) {
 }
 
 function zacitZnovu() {
-  cykly = []; aktCyklus = null; aktivniKat = null; mereniSpusteno = false;
   document.getElementById('uloz-list').innerHTML = '';
+  document.getElementById('ulozene').style.display = 'none';
   document.getElementById('souhrn').style.display = 'none';
   document.getElementById('setup').style.display = 'block';
-  document.getElementById('timer').textContent = '00:00';
-  document.getElementById('timer').style.color = 'var(--dark)';
-  document.getElementById('timer-kat').textContent = 'Klikněte na první činnost';
-  document.getElementById('timer-kat').style.background = 'var(--light)';
+  document.getElementById('inp-nazev').value = '';
   document.getElementById('email-form').style.display = 'flex';
   document.getElementById('email-ok').style.display = 'none';
   document.getElementById('inp-email').value = '';
+  initMereni();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -735,17 +714,6 @@ function cookiesOdmitnout() {
   localStorage.setItem('cookies_souhlas', 'ne');
   document.getElementById('cookies-bar').style.display = 'none';
 }
-</script>
-<script>
-(function(){
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('start') === '1') {
-    setTimeout(function(){
-      var el = document.querySelector('#setup');
-      if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-    }, 300);
-  }
-})();
 </script>
 </body>
 </html>
