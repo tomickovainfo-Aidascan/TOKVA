@@ -145,6 +145,11 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 .story-title { font-family:"Poppins",sans-serif; font-size:14px; font-weight:700; color:var(--dark); margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
 .story-block p { font-size:14px; color:var(--mid); line-height:1.75; margin-bottom:10px; }
 .story-block p:last-of-type { margin-bottom:0; }
+.info-detail summary { cursor:pointer; list-style:none; }
+.info-detail summary::-webkit-details-marker { display:none; }
+.info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
+.info-summary::before { content:""; display:inline-block; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--gold-dark); transition:transform .2s; }
+.info-detail[open] .info-summary::before { transform:rotate(180deg); }
 .trust-line { font-size:13px; color:var(--light); font-style:italic; border-top:1px solid var(--border); margin-top:16px; padding-top:14px; }
 .two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 .content-card { background:var(--paper); border:1px solid var(--border); border-radius:12px; padding:24px; }
@@ -163,7 +168,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 .time-note { font-size:14px; color:var(--dark); font-weight:600; }
 .post-calc { background:var(--white); border-top:1px solid var(--border); padding:40px; }
 .post-calc-inner { max-width:1040px; margin:0 auto; }
-.post-calc-grid { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+.post-calc-grid { display:grid; grid-template-columns:1fr; max-width:640px; margin:0 auto; }
 .measurer-tip { background:var(--gold-light); border:1px solid rgba(233,169,27,0.3); border-radius:12px; padding:24px; }
 .measurer-tip strong { font-family:"Poppins",sans-serif; font-size:14px; font-weight:700; color:var(--dark); display:block; margin-bottom:8px; }
 .measurer-tip p { font-size:13px; color:var(--mid); line-height:1.7; margin-bottom:14px; }
@@ -228,6 +233,10 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 <div class="content-block">
   <div class="content-inner">
 
+    <details class="info-detail">
+      <summary class="info-summary">Chci vědět jak na to</summary>
+      <div style="margin-top:22px;display:flex;flex-direction:column;gap:32px;">
+
     <div class="story-block">
       <div class="story-title">Jak to vypadá v praxi?</div>
       <p>Sklad, 5 lidí, 1 směna. Celkem 40 minut zbytečně za směnu: špatné rozmístění zboží, přepisy dodacích listů, čekání na informaci.</p>
@@ -272,6 +281,9 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       </div>
       <div class="time-note">Vyplnění: 2 minuty. Výsledek: okamžitě.</div>
     </div>
+
+      </div>
+    </details>
 
   </div>
 </div>
@@ -451,11 +463,6 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </div>
       </div>
 
-      <div class="measurer-tip">
-        <strong>Nemáte představu, jaká čísla zadat?</strong>
-        <p>Přesné minuty nikdo nezná zpaměti. Pokud chcete změřit ztráty přímo v provozu s přesnými čísly, vyzkoušejte Měřič plýtvání. Za jednu směnu víte přesně kde a kolik.</p>
-        <a href="../meric-plytvani-free/" target="_blank">Vyzkoušet měřič plýtvání →</a>
-      </div>
 
     </div>
   </div>
@@ -465,7 +472,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   <div class="calc-grid">
     <div></div>
     <div>
-    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:14px;">Chcete zkoumat hlouběji?</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:14px;">Navazující nástroje</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
       <div style="background:var(--gold-light);border:1px solid rgba(233,169,27,0.3);border-radius:10px;padding:20px 22px;">
         <div style="font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;">Pro sklad</div>
@@ -475,7 +482,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       </div>
       <div style="background:var(--gold-light);border:1px solid rgba(233,169,27,0.3);border-radius:10px;padding:20px 22px;">
         <div style="font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;">Pro výrobu</div>
-        <div style="font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;">Měřič plýtvání výroba</div>
+        <div style="font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;">Měřič plýtvání</div>
         <div style="font-size:13px;color:var(--mid);margin-bottom:14px;">Změřte ztráty přímo v provozu. Za jednu směnu víte kde začít.</div>
         <a href="../meric-plytvani-free/" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;">Zjistit více</a>
       </div>
@@ -634,17 +641,6 @@ function cookiesOdmitnout() {
   localStorage.setItem('cookies_souhlas', 'ne');
   document.getElementById('cookies-bar').style.display = 'none';
 }
-</script>
-<script>
-(function(){
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('start') === '1') {
-    setTimeout(function(){
-      var el = document.querySelector('.calc-grid');
-      if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-    }, 300);
-  }
-})();
 </script>
 </body>
 </html>
