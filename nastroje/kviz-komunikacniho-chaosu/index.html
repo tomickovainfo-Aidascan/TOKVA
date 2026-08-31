@@ -202,9 +202,8 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <p>Jedna změna termínu je v e-mailu. Druhá ve WhatsAppu. Třetí v hlavě majitele. Sklad čeká. Výroba neví. Účetní se připomíná. A zákazník už se ptá, kdy to bude.</p>
     <p>Kvíz vás provede šesti oblastmi komunikace a ukáže kde se u vás informace nejčastěji ztrácejí, zastavují nebo překrucují. Výsledkem není seznam chyb, ale přehled kde má smysl začít.</p>
   </div>
-  <button class="btn-spustit" onclick="spustitKviz()"><span class="arr"></span> Spustit kvíz zdarma</button>
 </div>
-<div class="main" id="kviz" style="display:none;">
+<div class="main" id="kviz">
   <div class="progres"><div class="progres-bar" id="progres-bar"></div></div>
   <div id="otazky"></div>
   <button class="btn-spustit" id="btn-vysledek" onclick="zobrazitVysledek()" disabled>Zobrazit výsledek</button>
@@ -891,14 +890,6 @@ async function odeslatDoTymu(btn) {
   }
 }
 
-// ============ SPUŠTĚNÍ ============
-function spustitKviz(){
-  document.getElementById('intro').style.display='none';
-  document.getElementById('kviz').style.display='block';
-  vykreslitOtazky();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
 function vykreslitOtazky(){
   const wrap = document.getElementById('otazky');
   wrap.innerHTML = OTAZKY.map((q,i)=>{
@@ -1137,7 +1128,8 @@ function zacitZnovu(){
   Object.keys(odpovedi).forEach(k=>delete odpovedi[k]);
   posledniVysledek = null;
   document.getElementById('vysledek').style.display='none';
-  document.getElementById('intro').style.display='block';
+  document.getElementById('kviz').style.display='block';
+  vykreslitOtazky();
   document.getElementById('btn-vysledek').disabled = true;
   document.getElementById('progres-bar').style.width='0%';
   document.getElementById('inp-email').value='';
@@ -1148,6 +1140,7 @@ function zacitZnovu(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+vykreslitOtazky();
 nacistPrihlaseniStav();
 </script>
 <script>
@@ -1186,16 +1179,6 @@ function cookiesOdmitnout() {
   localStorage.setItem('cookies_souhlas', 'ne');
   document.getElementById('cookies-bar').style.display = 'none';
 }
-</script>
-<script>
-(function(){
-  var params = new URLSearchParams(window.location.search);
-  if (params.get('start') === '1') {
-    setTimeout(function(){
-      if (typeof spustitKviz === 'function') spustitKviz();
-    }, 300);
-  }
-})();
 </script>
 </body>
 </html>
