@@ -760,16 +760,163 @@ const TOOLS = [
 
   { id:"5s-audit", group:"free", name:"5S pro každého smrtelníka", krok:3, oblasti:["sklad","vyroba"], benefit:"Uspořádáte pracoviště krok za krokem, s fotkami před a po.",
     popis:"Krok po kroku uspořádáte jakékoliv pracoviště, s fotkami před a po u všech 5 kroků, zdarma bez omezení.\n\nPřehledný tisk reportu, historie kontrol a úkoly jsou v Tokva Pro.",
-    url:"nastroje/5S_audit/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje." },
+    proKoho:"Vedoucí skladu, výroby nebo dílny, co chce uklidit konkrétní pracoviště podle metody 5S krok za krokem, s fotkami jako důkazem, ne jen na oko.",
+    url:"nastroje/5S_audit/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
+    kdyPouzit:{
+      otazky:[
+        "Chcete uklidit konkrétní pracoviště (dílnu, sklad, kancelář) podle osvědčené metody, ne nazdařbůh?",
+        "Potřebujete fotky před a po jako důkaz, že se něco fakt změnilo, ne jen dojem?",
+        "Chystáte se zavést standard, který vydrží, ne jen jednorázový úklid před kontrolou?"
+      ],
+      zaver:[
+        "5 kroků metody 5S vychází z japonského systému (Seiri, Seiton, Seiso, Seiketsu, Shitsuke), appka je vede v češtině s konkrétními tipy, ne jen názvy kroků.",
+        "Free verze zvládne jedno pracoviště kompletně a bez omezení, víc pracovišť najednou, standard s fotkou cílového stavu a sledování v čase jsou v Tokva Pro."
+      ]
+    },
+    ucelMetoda:"5S pro každého smrtelníka appka vás provede pěti kroky metody 5S, vytřídit, uspořádat, uklidit, udržet pořádek a udržovat disciplínu, na jednom konkrétním pracovišti. U každého kroku appka vysvětlí, co přesně dělat a proč, a necháte si vyfotit stav před a po.\n\nPo dokončení appka umí pracoviště pravidelně znovu zkontrolovat, jestli standard pořád drží, ne že se do měsíce vrátí starý nepořádek.",
+    princip:"Appka vás provede krokem po kroku, u každého najdete vysvětlení a praktické tipy, ne jen suchý název. Než krok označíte za hotový, appka vás vyzve vyfotit stav před a po, aby změna byla vidět, ne jen tvrzená. Po dokončení všech pěti kroků appka pracoviště eviduje jako místo, které lze kdykoli znovu zkontrolovat.",
+    postup:[
+      "Založte nové místo (dílna, sklad, kancelář, konkrétní pracoviště) a projděte prvních pět kroků.",
+      "U každého kroku (Vytřídit, Uspořádat, Uklidit, Udržet pořádek, Udržovat disciplínu) si přečtěte, co dělat, a vyfoťte stav před a po.",
+      "Appka počítá postup 0 z 5, po dokončení máte hotový základní standard pracoviště a můžete ho kdykoli znovu zkontrolovat."
+    ],
+    vstupy:"Název pracoviště a fotky před a po u každého z pěti kroků. Ve Free verzi jedno pracoviště, v Pro víc pracovišť najednou a fotka cílového (standardního) stavu.",
+    vystupy:"Checklist pěti kroků se stavem hotovo/nehotovo a fotodokumentací před a po. V Pro navíc přehledný tisk reportu, pravidelné kontroly se skóre a trendem v čase a úkoly pro tým.",
+    priklad:"Dílna s pracovním stolem a regálem na nářadí. U kroku 1, Vytřídit, appka vyzve projít šuplíky a regál a zbavit se všeho, co tam nepatří, nářadí co rok nikdo nepoužil, zbytky materiálu, staré dokumenty.\n\nU kroku 4, Udržet pořádek, appka připomíná, že první tři kroky zvládne skoro každý jednou, čtvrtý krok je o tom napsat, jak má pracoviště vypadat vždy, ne jen dnes. Po dokončení všech pěti kroků appka ukáže postup 5 z 5 a pracoviště je připravené na první kontrolu.",
+    chyby:[
+      "Udělat všech pět kroků najednou na celou dílnu nebo sklad. Appka sama radí řešit menší úseky postupně, jeden šuplík, jeden regál, a teprve pak pokračovat dál.",
+      "Přeskočit fotky před a po, protože se to zdá zdržující. Bez fotek nemáte důkaz, že se něco změnilo, jen dojem.",
+      "Nezavést pravidelnou kontrolu. Prvních čtyři kroky zvládne skoro každý jednou, bez pravidelné kontroly se pracoviště za pár týdnů vrátí do starého stavu."
+    ],
+    faq:[
+      { q:"Kolik pracovišť zvládnu zdarma?", a:"Free verze zvládne jedno pracoviště kompletně, se všemi pěti kroky a fotkami před a po, bez časového omezení. Víc pracovišť najednou je v Tokva Pro." },
+      { q:"Musím appku znovu procházet od začátku, nebo si pamatuje rozpracovaný stav?", a:"Appka si pamatuje, který krok máte hotový a fotky u něj, dokud ji nesmažete z prohlížeče nebo se nepřihlásíte v Pro účtu, kde se to ukládá natrvalo." },
+      { q:"Co znamená Kontrola pracoviště?", a:"Krátký pětipoložkový checklist (věci na svém místě, čistota, označení, dodržování standardu), kterým po čase ověříte, jestli standard z prvních čtyř kroků pořád drží." },
+      { q:"Co dostanu navíc v Pro?", a:"Víc pracovišť najednou, standard s fotkou cílového stavu, pravidelné kontroly se skóre a trendem v čase, úkoly pro tým a přehledný tisk reportu." }
+    ],
+    design2a:{
+      heroLines:["Uklidit pracoviště,","a udržet to tak"],
+      heroNote:"Bez registrace · fotky před a po<br>5 kroků, jedno pracoviště zdarma",
+      ctaLabel:"Chci uklidit pracoviště",
+      stats:[
+        {num:"5", lbl:"kroků metody 5S"},
+        {num:"1", lbl:"pracoviště zdarma bez omezení"},
+        {num:"0", lbl:"Kč za základní checklist"},
+        {num:"2", lbl:"fotky u každého kroku, před a po"}
+      ],
+      recognizeClose:"Prvních tří kroků dosáhne skoro každý jednou. Ten čtvrtý a pátý, udržet to tak, je ten těžší.",
+      example:{
+        headline:"Co appka po vás chce u kroku Vytřídit?",
+        stat:{ quote:true, text:"Zbavte se všeho, co tam nepatří. Pokud jste to rok nepoužili, vyhoďte to nebo odneste na půdu.", note:"přesný text appky u prvního kroku, Vytřídit." }
+      }
+    } },
 
   { id:"5x-proc", group:"free", name:"5x Proč AI kouč", krok:3, oblasti:["sklad","vyroba"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
     popis:"AI kouč vás provede rozhovorem a dovede ke kořenu problému. Strukturovaný výstup s příčinou a prvním krokem, zdarma.\n\nHistorie analýz a navazující úkoly jsou v Tokva Pro.",
-    url:"nastroje/5x-proc-ai-kouc/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje." },
+    proKoho:"Vedoucí skladu nebo výroby, co řeší furt stejný problém dokola a chce se dostat k tomu, co ho fakt způsobuje, ne jen hasit znovu a znovu.",
+    url:"nastroje/5x-proc-ai-kouc/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
+    kdyPouzit:{
+      otazky:[
+        "Řešíte problém, který se pořád vrací, i když jste ho už párkrát \"vyřešili\"?",
+        "Chcete se dostat od výmluv a prvních dojmů ke skutečné příčině v procesu, ne k viníkovi?",
+        "Potřebujete strukturovaný výstup, co si můžete vytisknout nebo poslat dál, ne jen záznam rozhovoru?"
+      ],
+      zaver:[
+        "AI kouč vede rozhovor jako zkušený kaizen konzultant, ptá se dál, dokud odpověď není dost konkrétní, a hlídá, aby analýza nesklouzla k hledání viníka.",
+        "Free verze zahrnuje 1 kompletní analýzu na e-mail, Pro má neomezené analýzy, ukládá historii a z hotové analýzy rovnou založí dva navazující úkoly."
+      ]
+    },
+    ucelMetoda:"5x Proč AI kouč vede rozhovor podle metody pěti proč, klasické kaizen techniky pro hledání kořenové příčiny problému. Appka se ptá jednu otázku po druhé, navazuje na vaše odpovědi, rozlišuje fakta od domněnek a emocí, a nedovolí, aby analýza sklouzla k hledání viníka mezi lidmi.\n\nNa konci appka sestaví strukturovaný výstup, původní problém, upřesněný problém, celý řetězec pěti proč, kořenovou příčinu, přispívající faktory, fakta versus domněnky, doporučené opatření, první krok do 24 hodin, jak ověřit výsledek a otevřené otázky.",
+    princip:"Nejdřív appka pomůže přesně formulovat problém (co, kdy, kde, koho se to týká, jaký je dopad). Pak vede samotnou analýzu pěti proč, vždy jen jedna otázka, navazující na předchozí odpověď, dokud odpověď není dost konkrétní. Když se odpověď stáčí k vině člověka, appka se vrátí k otázce, co v systému umožnilo, že se to stalo.",
+    postup:[
+      "Zadejte e-mail a spusťte analýzu zdarma (1 kompletní analýza), nebo se přihlaste do Pro pro neomezené analýzy.",
+      "Popište problém a odpovídejte na otázky AI kouče, jednu po druhé, co nejkonkrétněji.",
+      "Na konci dostanete strukturovaný výstup s kořenovou příčinou a prvním krokem, ke stažení jako TXT (v Pro navíc rovnou založíte 2 navazující úkoly)."
+    ],
+    vstupy:"E-mail (pro spuštění zdarma verze), popis problému a odpovědi na otázky AI kouče v průběhu rozhovoru.",
+    vystupy:"Strukturovaný textový výstup s deseti oddíly, původní a upřesněný problém, celý řetězec pěti proč, kořenová příčina, přispívající faktory, fakta versus domněnky, doporučené opatření, první krok do 24 hodin, jak ověřit výsledek, otevřené otázky. Ke stažení jako TXT, v Pro navíc uložený v historii a rovnou zdroj pro 2 navazující úkoly.",
+    priklad:"Opakovaně chybí položka při expedici. AI kouč se nejdřív doptá na přesnou situaci, kdy, kde, jak často a jaký to má dopad.\n\nPak vede přes otázky proč, proč se stalo tohle konkrétně, proč tomu nic nezabránilo, proč to není vidět dřív, dokud se nedostane za výmluvy typu \"málo lidí\" k jasnému místu v procesu, třeba že kontrola kompletnosti není nikde napsaná jako povinný krok, jen se předpokládá, že to každý udělá po paměti.\n\nVýstupem je kořenová příčina, konkrétní opatření a první krok, co udělat do 24 hodin, ne obecné \"zlepšit komunikaci\".",
+    chyby:[
+      "Zastavit se u prvního \"proč\" a považovat ho za příčinu. To je většinou jen příznak, appka se ptá dál, dokud se nedostanete k procesu nebo systému za tím.",
+      "Hledat viníka mezi lidmi. Appka takové odpovědi vrací zpátky k otázce, co v systému umožnilo, že se to stalo.",
+      "Odpovídat obecně (\"komunikace nefunguje\") místo konkrétní situace, appka se pak musí doptávat na příklad, čas a místo, což rozhovor prodlužuje."
+    ],
+    faq:[
+      { q:"Kolik analýz mám zdarma?", a:"1 kompletní analýzu, stačí zadat e-mail, nic dalšího. Neomezené analýzy a uložená historie jsou v Tokva Pro." },
+      { q:"Hledá appka, kdo za problém může?", a:"Ne, naopak. Appka je vedená tak, aby se nezastavila u viníka mezi lidmi, ale hledala příčinu v procesu, systému, komunikaci nebo chybějícím standardu." },
+      { q:"Co když nevím, jak přesně otázku zodpovědět?", a:"Appka se doptá na konkrétní situaci, příklad, čas, místo a lidi. Není potřeba znát odpověď dopředu, stačí popisovat, co se skutečně stalo." },
+      { q:"Co dostanu navíc v Pro?", a:"Neomezené analýzy místo jedné, uloženou historii všech analýz a možnost z hotové analýzy rovnou založit 2 navazující úkoly." }
+    ],
+    design2a:{
+      heroLines:["Od výmluvy","ke skutečné příčině"],
+      heroNote:"Stačí e-mail · 1 analýza zdarma<br>vede vás AI kouč, krok za krokem",
+      ctaLabel:"Chci spustit analýzu",
+      stats:[
+        {num:"5×", lbl:"proč, dokud nenajdete kořenovou příčinu"},
+        {num:"10", lbl:"oddílů strukturovaného výstupu"},
+        {num:"1", lbl:"kompletní analýza zdarma"},
+        {num:"24", lbl:"hodin, do kdy navrhne první krok"}
+      ],
+      recognizeClose:"Cílem není najít viníka, ale místo v procesu, kde problém vzniká.",
+      example:{
+        headline:"Co dostanete na konci rozhovoru?",
+        stat:{ quote:true, text:"Kořenová příčina, přispívající faktory, fakta versus domněnky, doporučené opatření a první krok do 24 hodin.", note:"pět z deseti oddílů strukturovaného výstupu, který appka na konci sestaví." }
+      }
+    } },
 
   { id:"casova-studie", group:"free", name:"Časová studie mého dne", krok:3, oblasti:["sklad","vyroba","administrativa","lide"], benefit:"Získáte skutečný přehled svého dne, podklad pro delegování nebo automatizaci.",
     popis:"Skutečný přehled vašeho dne s činnostmi a intervaly. Podklad pro delegování nebo automatizaci, export do CSV.\n\n1 den zdarma. Historie a trendy mezi dny jsou v Tokva Pro.",
+    proKoho:"Vedoucí skladu, výroby nebo kdokoli, kdo tuší, že mu den nějak utíká, ale neví přesně kam, a chce si to ověřit čísly, ne pocitem.",
     url:"nastroje/casova-studie/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
-    souvisejici:["kviz-komunikace"] },
+    souvisejici:["kviz-komunikace"],
+    kdyPouzit:{
+      otazky:[
+        "Máte pocit, že vám den utíká, ale nevíte přesně na co?",
+        "Chcete zjistit, co ze své práce můžete delegovat nebo automatizovat, místo abyste dělali všechno sami?",
+        "Potřebujete podklad, se kterým přijdete k vedení, ne jen dojem?"
+      ],
+      zaver:[
+        "Appka rozezná kategorie (produktivní práce, komunikace, administrativa, přestávky, hašení problémů) automaticky podle textu záznamu, kategorii jde kdykoli ručně přeřadit.",
+        "Vysoký podíl kategorie Hašení problémů (reklamace, poruchy, havárie) bývá signál, že se řeší jen důsledek, ne kořenová příčina."
+      ]
+    },
+    ucelMetoda:"Časová studie mého dne zaznamenává vaše aktivity během celého dne, hlasem nebo ručně, a automaticky je třídí do kategorií. Na konci dne appka ukáže, kolik času šlo do produktivní práce, komunikace, administrativy, přestávek a hašení problémů (reklamace, poruchy, havárie).\n\nU opakujících se činností appka navíc nabídne klasifikaci, jestli tu práci musíte dělat vy, jde delegovat, automatizovat, nebo úplně zrušit, a se zadanou hodinovou sazbou spočítá orientační dopad v korunách.",
+    princip:"Klepnete na mikrofon a řeknete, co právě děláte, appka zapíše čas automaticky, nebo aktivitu napíšete ručně. Každý záznam dostane kategorii podle textu, kategorii jde kdykoli přeřadit klepnutím na štítek. Na konci dne appka spočítá souhrn podle kategorií a nabídne klasifikaci Já/Delegovat/Automatizovat/Zrušit u opakujících se činností.",
+    postup:[
+      "Klepněte na mikrofon nebo napište aktivitu ručně, appka zaznamená čas.",
+      "Průběžně upravujte kategorie klepnutím na štítek, pokud appka zařadila záznam jinak, než chcete.",
+      "Na konci dne klepněte na Konec, appka spočítá souhrn podle kategorií, s tabulkou Já/Delegovat/Automatizovat/Zrušit a exportem do CSV nebo tiskem."
+    ],
+    vstupy:"Aktivity zaznamenané hlasem nebo ručně během dne, volitelně hodinová sazba pro výpočet dopadu delegování nebo automatizace v korunách.",
+    vystupy:"Souhrn dne podle kategorií (produktivní práce, komunikace, administrativa, přestávky, hašení problémů), tabulka opakujících se činností s klasifikací Já/Delegovat/Automatizovat/Zrušit a orientačním dopadem v Kč, export do CSV a tisk přehledu. V Pro navíc historie dní se sledováním trendu.",
+    priklad:"Den ve skladu, kde se jedna aktivita, řešení reklamace od zákazníka, objeví za den třikrát. Appka ji sama zařadí do kategorie Hašení problémů, protože v textu rozezná slovo \"reklamace\".\n\nNa konci dne appka ukáže, že hašení problémů zabralo třeba 90 minut, přes 15 % pracovní doby. U klasifikace Já/Delegovat/Automatizovat/Zrušit jde označit, že řešení reklamací by po zaškolení mohla přebírat i jiná osoba, tedy Delegovat, a se zadanou hodinovou sazbou appka spočítá, kolik by to ročně ušetřilo.",
+    chyby:[
+      "Zaznamenávat jen občas, ne průběžně. Appka umí doplnit záznam i zpětně, ale výsledek pak není tak přesný jako průběžné zaznamenávání.",
+      "Nechat appku kategorizovat všechno automaticky a nikdy kategorii nezkontrolovat. Automatické rozpoznání funguje podle klíčových slov v textu, občas se sekne, kategorii jde kdykoli ručně opravit.",
+      "Zaměřit se jen na procento produktivní práce a přehlédnout tabulku Já/Delegovat/Automatizovat/Zrušit, právě ta říká, co s tím dál dělat, ne jen kde čas mizí."
+    ],
+    faq:[
+      { q:"K čemu jsou kategorie?", a:"Každý záznam dostane kategorii automaticky podle textu. V souhrnu pak vidíte, kolik času šlo do produktivní práce, komunikace, administrativy nebo přestávek. Klepnutím na štítek kategorii změníte." },
+      { q:"Jak získat přesnější výsledky?", a:"Zapněte si připomínku přímo v aplikaci, tlačítko Zapnout najdete hned pod mikrofonem, a nastavte interval 15 až 20 minut. Nebo nechte jeden den zaznamenávat kolegu nebo asistentku, výsledek bývá překvapivě jiný než vlastní odhad." },
+      { q:"Co je kategorie Hašení problémů?", a:"Samostatná kategorie pro reklamace, poruchy, havárie a další věci, které jste museli vyřešit narychlo a neplánovaně. Vysoký podíl hašení bývá signál, že se řeší jen důsledek, ne kořenová příčina." },
+      { q:"Co dostanu navíc v Pro verzi?", a:"Jeden den zůstává navždy 100% zdarma, přesně jak appka funguje dnes. Pro navíc po přihlášení průběžně ukládá rozpracovaný den do vašeho účtu a v sekci Historie dní ukáže, jak se procento produktivní práce mění napříč dny." }
+    ],
+    design2a:{
+      heroLines:["Kam vám","mizí čas?"],
+      heroNote:"1 den zdarma navždy · hlas nebo ručně<br>žádná instalace, appka běží v prohlížeči",
+      ctaLabel:"Chci zmapovat svůj den",
+      stats:[
+        {num:"5", lbl:"kategorií aktivit, appka je pozná sama"},
+        {num:"4", lbl:"možnosti u každé činnosti, Já/Delegovat/Automatizovat/Zrušit"},
+        {num:"1", lbl:"den zdarma, navždy"},
+        {num:"0", lbl:"instalace, appka běží v prohlížeči"}
+      ],
+      recognizeClose:"Procento produktivní práce samo o sobě neřekne, jestli byste tu práci měli dělat zrovna vy.",
+      example:{
+        headline:"Co appka pozná sama v textu záznamu?",
+        stat:{ quote:true, text:"Appka rozezná kategorii Hašení problémů automaticky podle textu, například reklamace, porucha, havárie, výpadek.", note:"přesně jak appka popisuje svoje vlastní automatické rozpoznávání kategorií." }
+      }
+    } },
 
   { id:"kalkulacka-naklady-skladu", group:"free", name:"Kalkulačka nákladů provozu na m²", krok:2, oblasti:["sklad"], benefit:"Spočítáte, kolik vás sklad doopravdy stojí na metr čtvereční, ne jen nájem.",
     popis:"Spočítá měsíční a roční náklady na m² skladu (nájem nebo odpisy budovy, energie, daně a pojištění, revize, provozní služby, odpisy vybavení) a ukáže, která kategorie nákladů tvoří největší podíl.",
