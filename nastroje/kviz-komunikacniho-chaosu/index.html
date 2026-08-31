@@ -249,7 +249,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   </div>
   <div class="email-card">
     <h3>Chcete podrobnější rozbor?</h3>
-    <p>Na e-mail vám pošlu podrobnější výsledek s konkrétními doporučeními pro vaši nejslabší oblast.</p>
+    <p>Na e-mail vám pošlu váš výsledek i s tím, kde vás to nejvíc bolí.</p>
     <button type="button" class="btn-spustit" id="btn-poslat-email-chaos" onclick="ukazatEmailFormChaos()">Poslat podrobný výsledek na e-mail</button>
     <div id="email-form-wrap-chaos" style="display:none;margin-top:10px;">
       <iframe name="brevo-frame-chaos" style="display:none;" title="odeslani formulare"></iframe>
@@ -1155,7 +1155,14 @@ function odeslatEmailChaos(e){
   document.getElementById('hid-chaos-skore').value = document.getElementById('v-skore').textContent.trim();
   const pasmo = document.getElementById('v-pasmo').textContent.trim();
   const doporuceni = document.getElementById('v-doporuceni').textContent.trim();
-  document.getElementById('hid-chaos-skore-popis').value = pasmo + '. ' + doporuceni;
+  let popis = pasmo + '. ' + doporuceni;
+  const nejslabsiCard = document.getElementById('v-nejslabsi-card');
+  if(nejslabsiCard && nejslabsiCard.style.display !== 'none'){
+    const oblastNazev = document.getElementById('v-oblast-badge').textContent.trim();
+    const oblastPopis = document.getElementById('v-nejslabsi').textContent.trim();
+    popis += ' Nejslabší oblast: ' + oblastNazev + '. ' + oblastPopis;
+  }
+  document.getElementById('hid-chaos-skore-popis').value = popis;
   document.getElementById('email-form-chaos').style.display = 'none';
   document.getElementById('email-ok-chaos').style.display = 'block';
   if(typeof fbq === 'function') fbq('track', 'Lead');
