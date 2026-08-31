@@ -916,8 +916,7 @@ function showIntro(updateUrl) {
   closeMobileSidebar();
   window.scrollTo({top:0, behavior:"smooth"});
   if (updateUrl) {
-    const url = new URL(window.location.href);
-    url.searchParams.delete("nastroj");
+    const url = new URL(window.location.origin + "/");
     history.pushState({}, "", url);
   }
 }
@@ -1130,7 +1129,7 @@ function renderDetail(id, updateUrl) {
   closeMobileSidebar();
   window.scrollTo({top:0, behavior:"smooth"});
   if (updateUrl) {
-    const url = new URL(window.location.href);
+    const url = new URL(window.location.origin + "/");
     url.searchParams.set("nastroj", id);
     history.pushState({nastroj:id}, "", url);
   }
