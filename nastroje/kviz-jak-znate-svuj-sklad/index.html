@@ -492,7 +492,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
     <div class="detail-panel" id="historie-panel">
       <div class="detail-header">Historie kvízů</div>
       <div id="historie-zamceno" style="padding:18px;">
-        <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Pro verze uloží tenhle výsledek do vašeho účtu. Kvíz stačí za čas zopakovat a uvidíte, jestli se přehled zlepšuje.</p>
+        <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Pro uloží výsledek do vašeho účtu. Kvíz zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se přehled zlepšuje, nebo je pořád stejný. Samotný kvíz je pořád celý zdarma, Pro jen přidává historii.</p>
         <button class="btn-gold" style="width:100%;" onclick="otevritModalPro()">Odemknout Pro</button>
       </div>
       <div id="historie-obsah" style="display:none;"></div>
@@ -504,7 +504,21 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
       <p>Pošlete mi ho a podíváme se na něj spolu. 30 minut, zdarma, bez závazku. Řekneme si co má smysl řešit jako první.</p>
       <a href="https://calendly.com/tomickova-info/30min" target="_blank" class="btn-diagnostika">Chci 30min hovor zdarma</a>
       <button class="btn-znovu" onclick="zacitZnovu()">Vyplnit znovu</button>
-      <a href="https://2f524664.sibforms.com/serve/MUIFAM4Y0lqN-wXuHDGgsTLu6pdCfwYzGU4Tt-ANbGBhyZ5fPtShiKTZSnH1HBmpIcGpAUfjnyeQy7EaXod7ob8DPGAf2tTaa2qdKd2du0luk3dyAedCW-AjUBjZr0HFOUz9yW0_lpRP8O7IvVHQtCJO96JXSAAG5UdGAgbpk-lpQW6-nRNpO-pjUhBV8quq9mdT7Kn_3Y_L6_EQ_Q==" target="_blank" class="btn-znovu">Poslat výsledek e-mailem</a>
+      <div style="width:100%;">
+        <button type="button" class="btn-znovu" id="btn-poslat-email-kviz" onclick="ukazatEmailFormKviz()">Poslat výsledek e-mailem</button>
+        <div id="email-form-wrap-kviz" style="display:none;margin-top:10px;width:100%;">
+          <iframe name="brevo-frame-kviz" style="display:none;" title="odeslani formulare"></iframe>
+          <form id="email-form-kviz" action="https://2f524664.sibforms.com/serve/MUIFAM4Y0lqN-wXuHDGgsTLu6pdCfwYzGU4Tt-ANbGBhyZ5fPtShiKTZSnH1HBmpIcGpAUfjnyeQy7EaXod7ob8DPGAf2tTaa2qdKd2du0luk3dyAedCW-AjUBjZr0HFOUz9yW0_lpRP8O7IvVHQtCJO96JXSAAG5UdGAgbpk-lpQW6-nRNpO-pjUhBV8quq9mdT7Kn_3Y_L6_EQ_Q==" method="POST" target="brevo-frame-kviz" onsubmit="return odeslatEmailKviz(event)" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+            <input type="email" id="inp-email-kviz" name="EMAIL" placeholder="vas@email.cz" required style="flex:1;min-width:180px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;">
+            <input type="hidden" name="email_address_check" value="">
+            <input type="hidden" name="locale" value="en">
+            <input type="hidden" name="SKORE" id="hid-kviz-skore" value="">
+            <input type="hidden" name="SKORE_POPIS" id="hid-kviz-skore-popis" value="">
+            <button type="submit" class="btn-znovu">Odeslat</button>
+          </form>
+          <div id="email-ok-kviz" style="display:none;font-size:13px;color:var(--mid);margin-top:8px;">Díky, posíláme vám to na e-mail.</div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -745,9 +759,25 @@ const PROC_ZALEZI = [
 const CO_DAL_ODKAZY = {
   2: { nazev: 'Měřič plýtvání', url: '../meric-plytvani-free/' },
   5: { nazev: 'Kalkulačku ztrát', url: '../kalkulacka-ztrat/' },
-  7: { nazev: 'Montážní checklist', url: 'https://montaz.gabrielatomickova.cz' },
+  6: { nazev: '5x Proč AI kouč', url: '../5x-proc-ai-kouc/' },
   8: { nazev: 'Spaghetti diagram', url: '../spaghetti-free/' }
 };
+
+function ukazatEmailFormKviz() {
+  document.getElementById('btn-poslat-email-kviz').style.display = 'none';
+  document.getElementById('email-form-wrap-kviz').style.display = 'block';
+}
+
+function odeslatEmailKviz(e) {
+  const email = document.getElementById('inp-email-kviz').value.trim();
+  if (!email) { e.preventDefault(); return false; }
+  document.getElementById('hid-kviz-skore').value = document.getElementById('skore-cislo').textContent.trim();
+  document.getElementById('hid-kviz-skore-popis').value = document.getElementById('skore-label').textContent + '. ' + document.getElementById('skore-popis').textContent;
+  document.getElementById('email-form-kviz').style.display = 'none';
+  document.getElementById('email-ok-kviz').style.display = 'block';
+  if (typeof gtag === 'function') { gtag('event', 'lead_email_submit', { source: 'kviz_jak_znate_svuj_sklad' }); }
+  return true;
+}
 
 const odpovedi = {};
 

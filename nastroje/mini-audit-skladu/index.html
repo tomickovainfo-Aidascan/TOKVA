@@ -724,7 +724,21 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
         <a href="https://calendly.com/tomickova-info/30min" target="_blank" class="btn-diagnostika">Chci 30min hovor zdarma</a>
         <button class="btn-znovu" onclick="window.print()">Vytisknout výsledky</button>
         <button class="btn-znovu" onclick="zacitZnovu()">Vyplnit znovu</button>
-        <a href="https://2f524664.sibforms.com/serve/MUIFADBV1wG0TwfPwo6aLvF8QiCGo6beKuaY7Y_J9UVHScSZonk4OYFHztETmh9gsYuOHXybCcbEGGzyxTIa5yCZkR8flFL4CLi0Sqi54gkoIVUm_ujs_E6IKWgLrOKsiBoTzxNHFerZooLnOvEDiTR7fC1KbJEDem4IEeXMXM7Sd83jRtyVsfvj8IveWheVJkdNZlwGM3kSdOw-sw==" target="_blank" class="btn-znovu">Poslat výsledek e-mailem</a>
+        <div style="width:100%;">
+          <button type="button" class="btn-znovu" id="btn-poslat-email-audit" onclick="ukazatEmailFormAudit()">Poslat výsledek e-mailem</button>
+          <div id="email-form-wrap-audit" style="display:none;margin-top:10px;width:100%;">
+            <iframe name="brevo-frame-audit" style="display:none;" title="odeslani formulare"></iframe>
+            <form id="email-form-audit" action="https://2f524664.sibforms.com/serve/MUIFADBV1wG0TwfPwo6aLvF8QiCGo6beKuaY7Y_J9UVHScSZonk4OYFHztETmh9gsYuOHXybCcbEGGzyxTIa5yCZkR8flFL4CLi0Sqi54gkoIVUm_ujs_E6IKWgLrOKsiBoTzxNHFerZooLnOvEDiTR7fC1KbJEDem4IEeXMXM7Sd83jRtyVsfvj8IveWheVJkdNZlwGM3kSdOw-sw==" method="POST" target="brevo-frame-audit" onsubmit="return odeslatEmailAudit(event)" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+              <input type="email" id="inp-email-audit" name="EMAIL" placeholder="vas@email.cz" required style="flex:1;min-width:180px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;">
+              <input type="hidden" name="email_address_check" value="">
+              <input type="hidden" name="locale" value="en">
+              <input type="hidden" name="SKORE" id="hid-audit-skore" value="">
+              <input type="hidden" name="SKORE_POPIS" id="hid-audit-skore-popis" value="">
+              <button type="submit" class="btn-znovu">Odeslat</button>
+            </form>
+            <div id="email-ok-audit" style="display:none;font-size:13px;color:var(--mid);margin-top:8px;">Díky, posíláme vám to na e-mail.</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1009,6 +1023,22 @@ function zobrazVysledky() {
   ulozitVysledekDoSupabase(skore, maxS).then(renderHistorie);
   renderHistorie();
   } catch(e) { alert('Chyba zobrazVysledky: ' + e.message); }
+}
+
+function ukazatEmailFormAudit() {
+  document.getElementById('btn-poslat-email-audit').style.display = 'none';
+  document.getElementById('email-form-wrap-audit').style.display = 'block';
+}
+
+function odeslatEmailAudit(e) {
+  const email = document.getElementById('inp-email-audit').value.trim();
+  if (!email) { e.preventDefault(); return false; }
+  document.getElementById('hid-audit-skore').value = document.getElementById('skore-cislo').textContent.trim();
+  document.getElementById('hid-audit-skore-popis').value = document.getElementById('skore-label').textContent + '. ' + document.getElementById('skore-popis').textContent;
+  document.getElementById('email-form-audit').style.display = 'none';
+  document.getElementById('email-ok-audit').style.display = 'block';
+  if (typeof gtag === 'function') { gtag('event', 'lead_email_submit', { source: 'mini_audit_skladu' }); }
+  return true;
 }
 
 function zacitZnovu() {
