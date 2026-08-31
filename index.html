@@ -427,7 +427,7 @@ const TOOLS = [
   { id:"kalkulacka", group:"free", name:"Kalkulačka neviditelných ztrát", krok:2, oblasti:["sklad","vyroba"], benefit:"Zjistíte v korunách, kolik vás ročně stojí obyčejná rutina ve skladu nebo výrobě.",
     popis:"Tušíte, že vám ve skladu nebo ve výrobě někde uniká čas a peníze, ale nemáte to podložené číslem? Tady ho zjistíte za pár minut.\n\nZadáte pár čísel o svém provozu, kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje, a kalkulačka to spočítá na hodiny, kilometry a koruny za rok.\n\nVýsledek je orientační, ne audit na korunu přesně. Ale vychází z reálných měření, ne z odhadu od stolu.",
     proKoho:"Vedoucí skladu nebo výroby, co chce první rychlé číslo, ne jen pocit, že něco vázne. Ideální pro tým 5 až 50 lidí.",
-    url:"nastroje/kalkulacka-ztrat/", souvisejici:["mini-audit","meric-free","kviz-komunikace"],
+    url:"nastroje/kalkulacka-ztrat/", souvisejici:["mini-audit","meric-free","kviz-komunikace","kalkulacka-naklady-skladu"],
     kdyPouzit:{
       otazky:[
         "Tušíte, že vám někde uniká čas, ale netušíte o jakém celkovém čísle je vlastně řeč?",
@@ -481,7 +481,7 @@ const TOOLS = [
   { id:"mini-audit", group:"free", name:"Mini audit skladu", krok:1, oblasti:["sklad"], benefit:"Za 5 minut zjistíte, kde váš sklad ztrácí čas a kapacitu.",
     popis:"Za 5 minut víte, kde váš sklad ztrácí čas, lidi a kapacitu.\n\n10 otázek ze skutečného provozu. Bez teorie, bez přípravy. Konkrétní tipy pro 3 nejkritičtější oblasti hned na stránce.",
     proKoho:"Vedoucí skladu s týmem 3 až 30 lidí.",
-    url:"nastroje/mini-audit-skladu/", souvisejici:["kalkulacka","meric-pro","kviz-sklad","spaghetti-sklad"],
+    url:"nastroje/mini-audit-skladu/", souvisejici:["kalkulacka","meric-pro","kviz-sklad","spaghetti-sklad","kalkulacka-naklady-skladu"],
     kdyPouzit:{
       otazky:[
         "Máte pocit, že někde ztrácíte čas, ale nevíte přesně kde?",
@@ -834,7 +834,56 @@ const TOOLS = [
 
   { id:"kalkulacka-naklady-skladu", group:"free", name:"Kalkulačka nákladů provozu na m²", krok:2, oblasti:["sklad"], benefit:"Spočítáte, kolik vás sklad doopravdy stojí na metr čtvereční, ne jen nájem.",
     popis:"Spočítá měsíční a roční náklady na m² skladu (nájem nebo odpisy budovy, energie, daně a pojištění, revize, provozní služby, odpisy vybavení) a ukáže, která kategorie nákladů tvoří největší podíl.",
-    url:null, formNote:"Nástroj je hotový, čeká na zveřejnění na doméně." },
+    proKoho:"Vedoucí skladu nebo provozní manažer, co zná nájem, ale netuší, kolik k tomu doopravdy přidávají energie, revize a odpisy vybavení.",
+    url:null, formNote:"Nástroj je hotový, čeká na zveřejnění na doméně.", souvisejici:["kalkulacka","mini-audit"],
+    kdyPouzit:{
+      otazky:[
+        "Chcete vědět, kolik vás skutečně stojí metr čtvereční skladu, ne jen nájem?",
+        "Zvažujete, jestli se vyplatí zůstat v nájmu, nebo si pořídit vlastní budovu?",
+        "Fakturujete skladování jiným firmám a potřebujete cenu postavit na reálném čísle, ne na odhadu?"
+      ],
+      zaver:[
+        "Kategorie nákladů vycházejí z českých právních předpisů (daň z nemovitosti, revize zdvihacích zařízení, elektrorevize) a z toho, co jsem v praxi viděla ve skladech různé velikosti.",
+        "Reálné náklady bývají 1,5 až 2× vyšší než samotný nájem. Kalkulačka ukáže, kde přesně se ta druhá polovina schovává."
+      ]
+    },
+    ucelMetoda:"Kalkulačka nákladů provozu na m² spočítá, kolik vás sklad měsíčně a ročně stojí, když k nájmu nebo odpisu budovy přičtete energie, povinné revize, pojištění, daň z nemovitosti, odpisy vybavení a provozní služby.\n\nPočítá jen náklady na budovu a její provoz. Mzdové náklady a mobilní techniku (VZV) appka nezahrnuje.",
+    princip:"Appka nabízí rychlý odhad, vyplníte jen to, co znáte (plochu, nájem), zbytek appka doplní orientačními hodnotami. U každé položky uvidíte, jestli počítáte s vaším skutečným číslem, nebo s odhadem. Kdykoli můžete kliknout na \"Chci zpřesnit výsledek\" a rozepsat všechny kategorie zvlášť.",
+    postup:[
+      "Zadejte plochu skladu a zvolte, jestli sklad platíte nájmem, nebo vlastníte budovu.",
+      "Doplňte, co znáte, energie, revize, pojištění, odpisy vybavení. Co nevíte, appka doplní orientačním odhadem.",
+      "Dostanete náklad na m² za měsíc i za rok, s rozpadem podle kategorie, kde se dá nejrychleji ušetřit."
+    ],
+    vstupy:"Plocha skladu, nájem nebo hodnota budovy a pozemku, energie, revize, pojištění, daň z nemovitosti, hodnota a stáří vybavení. Co nezadáte, appka doplní orientačním odhadem.",
+    vystupy:"Náklad na m² za měsíc i za rok, celkové roční náklady budovy, rozpad podle kategorie (základní náklad, energie, pojištění, revize, provoz, odpisy, ostatní) a podíl základního nákladu na celku.",
+    priklad:"Sklad 600 m² v nájmu za 60 000 Kč měsíčně. Samotný nájem vychází na 105 Kč na metr čtvereční.\n\nKdyž se přičtou energie, revize, pojištění, daň z nemovitosti, odpisy vybavení a provozní služby, celkový náklad vyskočí na 177 Kč na m² měsíčně, skoro 1,7× víc než samotný nájem.\n\nRočně to dělá přes 1,27 milionu Kč za budovu, ne jen ty téměř 720 000 Kč za nájem, co je vidět na první pohled.",
+    chyby:[
+      "Nezapočítat odpisy vybavení, protože nejsou na měsíční faktuře. Racking za 250 000 Kč rozložený na 15 let stojí přes 1 300 Kč měsíčně, i když ho nikde neplatíte najednou.",
+      "Nechat všechny hodnoty na výchozím odhadu, když se rozhodujete o konkrétní investici (stěhování, koupě, pronájem). Pro první orientaci odhad stačí, pro rozhodnutí použijte skutečná čísla ze svých smluv a faktur.",
+      "Zapomenout, že appka nepočítá mzdy ani mobilní techniku (VZV), jen náklady budovy a jejího provozu."
+    ],
+    faq:[
+      { q:"Je výsledek přesný?", a:"Přesnost záleží na tom, co zadáte. Použijte skutečné číslice z faktur a smluv, pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku." },
+      { q:"Proč jsou tam odpisy vybavení?", a:"Racking za 250 000 Kč rozložený na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad, jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé." },
+      { q:"Co je oportunitní náklad kapitálu u vlastní budovy?", a:"Peníze vázané v nemovitosti mohly být investované jinam. Oportunitní náklad ukazuje, co \"stojí\" vlastnit budovu oproti pronájmu, i když reálně žádné nájemné neplatíte." },
+      { q:"Neznám přesné výše revizí. Co mám zadat?", a:"Výchozí hodnoty jsou orientační průměry z regionálních provozů (300 až 800 m²). Pro první orientaci je klidně nechte tak, jak jsou. Pro rozhodování o konkrétní investici ale použijte skutečná čísla ze svých smluv a faktur." }
+    ],
+    design2a:{
+      heroLines:["Kolik vás reálně","stojí 1 m² skladu?"],
+      heroNote:"Bez registrace · výsledek hned<br>orientační odhad za pár minut",
+      ctaLabel:"Chci znát svoje číslo",
+      stats:[
+        {num:"7", lbl:"kategorií nákladů budovy"},
+        {num:"2", lbl:"minuty na rychlý odhad"},
+        {num:"0", lbl:"Kč, appka je celá zdarma"},
+        {num:"1,5–2×", lbl:"reálné náklady oproti nájmu"}
+      ],
+      recognizeClose:"Reálné náklady bývají 1,5 až 2× vyšší než samotný nájem.",
+      example:{
+        headline:"Kolik je nájem doopravdy?",
+        stat:{ num:"177 Kč/m²/měsíc", note:"u skladu 600 m² s nájmem 60 000 Kč, po připočtení energií, revizí, pojištění a odpisů vybavení, skoro 1,7× víc než samotný nájem." }
+      }
+    } },
 ];
 
 const byId = id => TOOLS.find(t => t.id === id);
