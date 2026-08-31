@@ -1510,7 +1510,7 @@ function renderZaznamy() {
               <div class="top3-item-val">${formatDuration(x.ms)}</div>
             </div>
             <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> ${PROC_ZALEZI_KAT[x.id] || ''}</div>
-            ${ODKAZ_KAT[x.id] ? `<a href="${ODKAZ_KAT[x.id].url}" target="_blank" rel="noopener" class="top3-item-link">Zjistit teď: ${ODKAZ_KAT[x.id].nazev} →</a>` : ''}
+            ${ODKAZ_KAT[x.id] ? `<a href="${ODKAZ_KAT[x.id].url}" target="_blank" rel="noopener" class="top3-item-link">Spustit ${ODKAZ_KAT[x.id].nazev} →</a>` : ''}
           </div>
         `).join('')}
       </div>`;
