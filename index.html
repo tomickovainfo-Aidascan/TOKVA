@@ -695,12 +695,6 @@ const TOOLS = [
       }
     } },
 
-  { id:"automat-faktury", group:"free", name:"Automatické stahování faktur (návod)", krok:3, oblasti:["administrativa"], krowTag:"Návod", benefit:"Přestanete ručně stahovat a přepisovat faktury z e-mailu.",
-    popis:"Návod, jak si nechat automaticky stahovat faktury z e-mailu rovnou na Google Drive. Instalace na míru za 199 Kč.",
-    proKoho:"Kdo je unavený z ručního stahování a přepisování faktur.",
-    url:"https://checklist.gabrielatomickova.cz",
-    souvisejici:[] },
-
   // PLACENÉ SAMOSTATNĚ
   { id:"meric-pro", group:"paid-solo", name:"Měřič plýtvání Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Změříte čas přesněji, s vlastními kroky procesu a exportem dat.",
     popis:"Jde do hloubky víc než free verze. Pro výrobní firmy a sklady, co chtějí přesnější čísla a víc kontextu.",
@@ -827,62 +821,6 @@ const TOOLS = [
       example:{
         headline:"Kolik je nájem doopravdy?",
         stat:{ num:"177 Kč/m²/měsíc", note:"u skladu 600 m² s nájmem 60 000 Kč, po připočtení energií, revizí, pojištění a odpisů vybavení, skoro 1,7× víc než samotný nájem." }
-      }
-    } },
-
-  { id:"montazni-checklist", group:"free", name:"Montážní checklist", krok:3, oblasti:["vyroba"], krowTag:"Na míru", benefit:"Vyzkoušíte si živý checklist zdarma, a uvidíte, jak by mohl vypadat na míru pro váš provoz.",
-    popis:"Živá ukázka mobilního checklistu před odjezdem na zakázku (vestavěná skříň, kuchyňská linka, servisní výjezd), zdarma k vyzkoušení. Na míru pro vaše vlastní montáže se pak dělá jako samostatná zakázka.",
-    proKoho:"Firmy, kde montážníci nebo servisní technici jezdí na zakázky a občas se vrací pro zapomenutou věc.",
-    url:"nastroje/montazni-checklist/", souvisejici:[],
-    kdyPouzit:{
-      otazky:[
-        "Vrací se vám montážníci nebo servisní technici z cesty zpátky na dílnu, protože něco zapomněli naložit?",
-        "Má každý pracovník trochu jiný postup, co a jak si před odjezdem zkontroluje, podle vlastní paměti a zvyku?",
-        "Stalo se vám, že kvůli chybějícímu šroubku, kování nebo kusu materiálu stála celá montáž na místě?",
-        "Nevíte přesně, kdo a kdy potvrdil, že je auto naložené kompletně, a kdo za to tedy odpovídá?"
-      ],
-      zaver:[
-        "Pokud se poznáváte aspoň v jedné, pár minut zaškrtávání před odjezdem vás vyjde levněji, než jeden návrat pro zapomenutou věc.",
-        "Tři ukázkové checklisty (skříň, kuchyň, servis) si můžete hned vyzkoušet zdarma, verze na míru pro vaše vlastní výrobky a montáže se pak dělá jako samostatná zakázka."
-      ]
-    },
-    ucelMetoda:"Montážní checklist je živá ukázka toho, jak může vypadat mobilní checklist na míru pro montážní nebo servisní firmu. Tři vzorové checklisty (vestavěná skříň, kuchyňská linka, servisní výjezd) si můžete rovnou vyzkoušet zdarma. Appka rozdělí položky do kategorií (výrobek a díly, spojovací materiál, nářadí, bezpečnost a ochrana, dokumentace), pracovník je odškrtává při nakládce auta, appka počítá procento hotovo a na konci se checklist potvrdí jménem a časem.\n\nVerze na míru pro vaše vlastní výrobky a typy zakázek se pak dělá jako samostatná zakázka, s kategoriemi podle vašeho provozu a mobilním odkazem funkčním na jakémkoli telefonu. Cena začíná na 5000 Kč a liší se podle provedení.",
-    princip:"Vyberete typ zakázky, appka zobrazí kategorie s položkami k naložení. Při nakládce auta je postupně odškrtáváte, appka průběžně počítá procento hotovo za celý checklist i za každou kategorii zvlášť. Na konci pracovník zadá jméno a potvrdí, appka zaznamená čas a kolik položek bylo zkontrolováno.",
-    postup:[
-      "Vyberte typ zakázky (v ukázce skříň, kuchyň nebo servis, na míru podle vašich vlastních typů montáží).",
-      "Procházejte kategorie (výrobek, spojovací materiál, nářadí, bezpečnost, dokumentace) a odškrtávejte položky při nakládce.",
-      "Sledujte procento hotovo, dokud není celý checklist na 100 %.",
-      "Potvrďte jménem, appka zaznamená čas a počet zkontrolovaných položek.",
-      "Potvrzení vytiskněte nebo uložte jako důkaz, že checklist před odjezdem proběhl."
-    ],
-    vstupy:"Výběr typu zakázky a postupné odškrtávání položek v jednotlivých kategoriích při nakládce auta.",
-    vystupy:"Průběžné procento hotovo za celý checklist i za každou kategorii, a po dokončení potvrzení se jménem pracovníka, časem a počtem zkontrolovaných položek, k vytištění nebo uložení.",
-    priklad:"Dva montážníci dojedou na zakázku a zjistí, že jim chybí kus kování. Vrací se pro něj zpátky na dílnu, i když je to jen pár kilometrů přes město, cesta tam a zpátky zabere přes hodinu.\n\nZa tu dobu zaplatíte mzdu a odvody obou montážníků, pohonné hmoty, a k tomu zpoždění zákazníka a nervozitu, kterou se těžko vyčísluje. Jeden takový návrat vyjde na víc než 1000 Kč. Když se to stane třikrát za rok, je to 3000 Kč, když jednou měsíčně, je to 12 000 Kč ročně jen za to, co by vyřešilo pár minut zaškrtávání před odjezdem.",
-    chyby:[
-      "Nechat checklist jen jako formalitu a odškrtat všechno najednou až po návratu, ne v okamžiku skutečné nakládky.",
-      "Nemít v checklistu rezervu na drobný spojovací materiál, právě ta zachraňuje montáž, když něco chybí.",
-      "Nezaznamenat, kdo checklist prošel a kdy, bez podpisu se odpovědnost za naložení ztrácí."
-    ],
-    faq:[
-      { q:"Je tenhle checklist zdarma?", a:"Ano, tři ukázkové checklisty (vestavěná skříň, kuchyňská linka, servisní výjezd) můžete použít hned a zdarma. Placená je až verze na míru pro vaše vlastní výrobky a montáže." },
-      { q:"Co znamená verze na míru?", a:"Checklist upravený přesně na vaše typy zakázek, s kategoriemi podle vašeho provozu, mobilním odkazem pro pracovníky a potvrzením nakládky jménem a časem." },
-      { q:"Co je v ceně verze na míru?", a:"Cena začíná na 5000 Kč a liší se podle provedení, počtu typů zakázek a rozsahu kategorií. Zahrnuje úvodní rozhovor nad typy vašich zakázek, checklist upravený na vaše výrobky, rozdělení do kategorií (výrobek, díly, spojovací materiál, nářadí, dokumentace, bezpečnost), mobilní odkaz funkční na každém telefonu, potvrzení nakládky jménem a časem, tisk nebo uložení checklistu a zaškolení nebo videonávod." }
-    ],
-    design2a:{
-      heroLines:["Auto naložené,","nebo se vracíte pro zapomenuté?"],
-      heroNote:"3 živé ukázky zdarma · skříň, kuchyň, servis<br>na míru od 5000 Kč dle provedení",
-      ctaLabel:"Vyzkoušet checklist zdarma",
-      stats:[
-        {num:"3", lbl:"živé ukázkové checklisty"},
-        {num:"5", lbl:"kategorií položek v checklistu"},
-        {num:"0", lbl:"Kč za vyzkoušení ukázky"},
-        {num:"5000", lbl:"Kč verze na míru, dle provedení"}
-      ],
-      recognizeClose:"Pokud se poznáváte aspoň v jedné, pár minut zaškrtávání před odjezdem vás vyjde levněji, než jeden návrat pro zapomenutou věc.",
-      how:{ chipsLabel:"5 kategorií v checklistu", chips:["Výrobek a díly","Spojovací materiál","Nářadí","Bezpečnost a ochrana","Dokumentace k zakázce"] },
-      example:{
-        headline:"Kolik stojí jeden návrat pro zapomenutou věc?",
-        stat:{ num:"1000+", note:"Kč za jeden návrat dvou montážníků kvůli zapomenutému dílu (mzda, odvody, pohonné hmoty). Třikrát za rok je to 3000 Kč, jednou měsíčně 12 000 Kč ročně." }
       }
     } },
 ];
