@@ -75,6 +75,18 @@ nav{background:var(--black);border-bottom:2px solid var(--gold);padding:12px 20p
 .intro-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 20px;margin-bottom:14px;}
 .intro-card p{font-size:14px;color:var(--mid);margin-bottom:10px;}
 .intro-card p:last-of-type{margin-bottom:0;}
+.info-detail summary { cursor:pointer; list-style:none; }
+.info-detail summary::-webkit-details-marker { display:none; }
+.info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
+.info-summary::before { content:""; display:inline-block; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--gold-dark); transition:transform .2s; }
+.info-detail[open] .info-summary::before { transform:rotate(180deg); }
+.otazka-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px;}
+.btn-zpet{background:transparent;border:1px solid var(--border);color:var(--mid);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:500;padding:10px 18px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.btn-zpet:hover{border-color:var(--mid);color:var(--dark);}
+.btn-dal{background:var(--gold);color:var(--black);border:none;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;padding:11px 26px;border-radius:6px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.btn-dal:hover{background:var(--gold-dark);color:white;}
+.btn-dal:disabled{background:var(--border);color:var(--light);cursor:default;}
+.btn-dal .arrow{display:inline-block;width:16px;height:10px;background:currentColor;clip-path:polygon(0 0,65% 0,100% 50%,65% 100%,0 100%);}
 .q-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;}
 .q-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
 .q-text{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:12px;line-height:1.4;}
@@ -197,16 +209,18 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   </div>
 </div>
 <div class="main" id="intro">
-  <div class="intro-card">
-    <p>Ve firmách často nevzniká chaos proto, že by lidé nechtěli pracovat. Vzniká proto, že informace nemá jasnou cestu.</p>
-    <p>Jedna změna termínu je v e-mailu. Druhá ve WhatsAppu. Třetí v hlavě majitele. Sklad čeká. Výroba neví. Účetní se připomíná. A zákazník už se ptá, kdy to bude.</p>
-    <p>Kvíz vás provede šesti oblastmi komunikace a ukáže kde se u vás informace nejčastěji ztrácejí, zastavují nebo překrucují. Výsledkem není seznam chyb, ale přehled kde má smysl začít.</p>
-  </div>
+  <details class="info-detail">
+    <summary class="info-summary">Chci vědět jak na to</summary>
+    <div class="intro-card" style="margin-top:14px;">
+      <p>Ve firmách často nevzniká chaos proto, že by lidé nechtěli pracovat. Vzniká proto, že informace nemá jasnou cestu.</p>
+      <p>Jedna změna termínu je v e-mailu. Druhá ve WhatsAppu. Třetí v hlavě majitele. Sklad čeká. Výroba neví. Účetní se připomíná. A zákazník už se ptá, kdy to bude.</p>
+      <p>Kvíz vás provede šesti oblastmi komunikace a ukáže kde se u vás informace nejčastěji ztrácejí, zastavují nebo překrucují. Výsledkem není seznam chyb, ale přehled kde má smysl začít.</p>
+    </div>
+  </details>
 </div>
 <div class="main" id="kviz">
   <div class="progres"><div class="progres-bar" id="progres-bar"></div></div>
   <div id="otazky"></div>
-  <button class="btn-spustit" id="btn-vysledek" onclick="zobrazitVysledek()" disabled>Zobrazit výsledek</button>
 </div>
 <div class="vysledek" id="vysledek">
   <div class="v-header">
@@ -433,6 +447,8 @@ const PRVNI_KROK_OBLAST = {
 };
 
 const odpovedi = {};
+let aktualniOtazka = 0;
+const vybranaIndexy = {};
 
 // ============ PŘIHLÁŠENÍ A PRO (Supabase) ============
 // Kvíz samotný je a zůstává úplně zdarma bez přihlášení - tohle jen navíc
@@ -890,26 +906,64 @@ async function odeslatDoTymu(btn) {
   }
 }
 
+function jeOtazkaZodpovezena(q){
+  const v = odpovedi[q.id];
+  if(q.typ==='checkbox'){ return v instanceof Set && v.size>0; }
+  return v!==undefined;
+}
+
 function vykreslitOtazky(){
   const wrap = document.getElementById('otazky');
-  wrap.innerHTML = OTAZKY.map((q,i)=>{
-    const opts = q.opts.map((o,oi)=>`<div class="q-opt" data-q="${q.id}" data-points="${o.b!==undefined?o.b:''}" data-nevim="${o.nevim?'1':''}" data-oi="${oi}" onclick="vybrat('${q.id}','${q.typ}',${oi},this)">${o.t}</div>`).join('');
-    const otherField = q.other ? `<div class="q-opt" data-q="${q.id}" data-oi="other" onclick="vybratJine('${q.id}',this)">Jinak (napsat vlastní)</div>
-      <div class="q-opt-other"><input type="text" id="other-${q.id}" placeholder="Napište vlastní odpověď" oninput="zapsatJine('${q.id}',this.value)"></div>` : '';
-    const hint = q.hint ? `<div class="q-hint">${q.hint}</div>` : '';
-    return `<div class="q-card">
+  const i = aktualniOtazka;
+  const q = OTAZKY[i];
+  const vybIdx = vybranaIndexy[q.id];
+  const opts = q.opts.map((o,oi)=>{
+    const on = (q.typ==='checkbox') ? (vybIdx instanceof Set && vybIdx.has(oi)) : (vybIdx===oi);
+    return `<div class="q-opt${on?' on':''}" data-q="${q.id}" data-points="${o.b!==undefined?o.b:''}" data-nevim="${o.nevim?'1':''}" data-oi="${oi}" onclick="vybrat('${q.id}','${q.typ}',${oi},this)">${o.t}</div>`;
+  }).join('');
+  const otherOn = vybIdx==='other';
+  const otherVal = odpovedi[q.id+'_text'] || '';
+  const otherField = q.other ? `<div class="q-opt${otherOn?' on':''}" data-q="${q.id}" data-oi="other" onclick="vybratJine('${q.id}',this)">Jinak (napsat vlastní)</div>
+      <div class="q-opt-other"><input type="text" id="other-${q.id}" class="${otherOn?'show':''}" value="${otherVal.replace(/"/g,'&quot;')}" placeholder="Napište vlastní odpověď" oninput="zapsatJine('${q.id}',this.value)"></div>` : '';
+  const hint = q.hint ? `<div class="q-hint">${q.hint}</div>` : '';
+  const jePosledni = i === OTAZKY.length - 1;
+  const zodpovezeno = jeOtazkaZodpovezena(q);
+  const navZpet = i>0 ? `<button class="btn-zpet" onclick="zpetOtazka()">Zpět</button>` : `<div></div>`;
+  const navDal = jePosledni
+    ? `<button class="btn-dal" id="btn-dal" ${zodpovezeno?'':'disabled'} onclick="zobrazitVysledek()">Zobrazit výsledek</button>`
+    : `<button class="btn-dal" id="btn-dal" ${zodpovezeno?'':'disabled'} onclick="dalOtazka()">Další <span class="arrow"></span></button>`;
+  wrap.innerHTML = `<div class="q-card">
       <div class="q-num">Otázka ${i+1} / ${OTAZKY.length}</div>
       <div class="q-text">${q.text}</div>
       ${hint}
       <div class="q-opts">${opts}${otherField}</div>
-    </div>`;
-  }).join('');
+    </div>
+    <div class="otazka-nav">${navZpet}${navDal}</div>`;
+  document.getElementById('progres-bar').style.width = Math.round(i/OTAZKY.length*100)+'%';
+}
+
+function dalOtazka(){
+  if(!jeOtazkaZodpovezena(OTAZKY[aktualniOtazka])) return;
+  if(aktualniOtazka < OTAZKY.length - 1){
+    aktualniOtazka++;
+    vykreslitOtazky();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+function zpetOtazka(){
+  if(aktualniOtazka > 0){
+    aktualniOtazka--;
+    vykreslitOtazky();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
 }
 
 function vybrat(qid, typ, oi, el){
   if(typ==='radio'){
     document.querySelectorAll(`.q-opt[data-q="${qid}"]`).forEach(o=>o.classList.remove('on'));
     el.classList.add('on');
+    vybranaIndexy[qid] = oi;
     if(el.getAttribute('data-nevim')==='1'){
       odpovedi[qid] = 'NEVIM';
     } else {
@@ -919,36 +973,32 @@ function vybrat(qid, typ, oi, el){
   } else if(typ==='checkbox'){
     el.classList.toggle('on');
     if(!odpovedi[qid]) odpovedi[qid] = new Set();
+    if(!(vybranaIndexy[qid] instanceof Set)) vybranaIndexy[qid] = new Set();
     if(odpovedi[qid] instanceof Set){
-      if(el.classList.contains('on')) odpovedi[qid].add(oi);
-      else odpovedi[qid].delete(oi);
+      if(el.classList.contains('on')){ odpovedi[qid].add(oi); vybranaIndexy[qid].add(oi); }
+      else { odpovedi[qid].delete(oi); vybranaIndexy[qid].delete(oi); }
     }
   }
-  aktualizovatProgres();
+  aktualizovatDalTlacitko();
 }
 
 function vybratJine(qid, el){
   document.querySelectorAll(`.q-opt[data-q="${qid}"]`).forEach(o=>o.classList.remove('on'));
   el.classList.add('on');
+  vybranaIndexy[qid] = 'other';
   const inp = document.getElementById(`other-${qid}`);
   if(inp) inp.classList.add('show');
   odpovedi[qid] = odpovedi[qid] || 2;
+  aktualizovatDalTlacitko();
 }
 
 function zapsatJine(qid, val){
   odpovedi[qid+'_text'] = val;
 }
 
-function aktualizovatProgres(){
-  const total = OTAZKY.length;
-  let zodpovezeno = 0;
-  OTAZKY.forEach(q=>{
-    const v = odpovedi[q.id];
-    if(q.typ==='checkbox'){ if(v instanceof Set && v.size>0) zodpovezeno++; }
-    else { if(v!==undefined) zodpovezeno++; }
-  });
-  document.getElementById('progres-bar').style.width = Math.round(zodpovezeno/total*100)+'%';
-  document.getElementById('btn-vysledek').disabled = zodpovezeno < total;
+function aktualizovatDalTlacitko(){
+  const btn = document.getElementById('btn-dal');
+  if(btn) btn.disabled = !jeOtazkaZodpovezena(OTAZKY[aktualniOtazka]);
 }
 
 function bodyZaKanaly(pocet){
@@ -1129,8 +1179,9 @@ function zacitZnovu(){
   posledniVysledek = null;
   document.getElementById('vysledek').style.display='none';
   document.getElementById('kviz').style.display='block';
+  aktualniOtazka = 0;
+  Object.keys(vybranaIndexy).forEach(k=>delete vybranaIndexy[k]);
   vykreslitOtazky();
-  document.getElementById('btn-vysledek').disabled = true;
   document.getElementById('progres-bar').style.width='0%';
   document.getElementById('inp-email').value='';
   document.getElementById('email-status').className='email-status';
