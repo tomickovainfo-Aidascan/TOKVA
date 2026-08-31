@@ -48,7 +48,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .nav-cta { background:var(--gold); color:var(--black); font-size:13px; font-weight:600; padding:8px 20px; border-radius:4px; text-decoration:none; transition:background 0.2s; white-space:nowrap; }
 .nav-cta:hover { background:var(--gold-dark); color:white; }
 
-/* NAV ÚČET (Moje Nástrojovna) */
+/* NAV ÚČET (Tokva Pro) */
 .nav-right { display:flex; align-items:center; gap:12px; }
 .nav-btn { background:transparent; border:1px solid var(--border); color:var(--mid); font-size:12px; padding:7px 14px; border-radius:4px; cursor:pointer; font-family:"DM Sans",sans-serif; transition:all .2s; white-space:nowrap; }
 .nav-btn:hover { border-color:var(--gold); color:var(--gold-dark); }
@@ -1193,7 +1193,7 @@ function cookiesOdmitnout() {
 // ── Pro: uložení víc výpočtů, porovnání, export ──
 // Appka je jinak celá zdarma bez omezení (viz koncept-realizace-jeden-nastroj.md).
 // Od 26.8.2026 appka Pro neodemyká přístupovým kódem, ale sdíleným přihlášením
-// do Moje Nástrojovna (Supabase, viz auth.js/supabase-client.js) - stejný vzorec
+// do Tokva Pro (Supabase, viz auth.js/supabase-client.js) - stejný vzorec
 // jako 5S a Časová studie. Uložené výpočty zůstávají primárně v localStorage
 // (appka je odolná i offline/bez Supabase, uložené výpočty se nikam neztratí),
 // Pro navíc, best-effort, každý uložený výpočet pošle i do Supabase

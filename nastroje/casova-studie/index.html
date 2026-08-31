@@ -65,7 +65,7 @@ nav {
   color:var(--light);
 }
 
-/* NAV ÚČET (Moje Nástrojovna) */
+/* NAV ÚČET (Tokva Pro) */
 .nav-right { display:flex; align-items:center; gap:12px; }
 .nav-btn {
   background:transparent;
@@ -1134,7 +1134,7 @@ let recognition = null;
 let isRecording = false;
 let clockInterval = null;
 
-// Přihlášení a Pro plán zjišťuje appka ze sdíleného auth.js (Moje Nástrojovna,
+// Přihlášení a Pro plán zjišťuje appka ze sdíleného auth.js (Tokva Pro,
 // Supabase). Jeden den zůstává navždy 100% zdarma v localStorage, i offline -
 // tahle vrstva appku jen doplňuje, nepodmiňuje. Pro navíc, best-effort, uloží
 // uzavřený den do Supabase (tool_runs/measurements), aby šla vidět historie
@@ -2086,7 +2086,7 @@ document.addEventListener('visibilitychange', () => {
 // Appka je od 25.8.2026 celá zdarma pro jeden den, bez přihlašovací brány
 // (dřív tu byl kód ověřovaný přes Apps Script LOGIN_SCRIPT_URL). Od 26.8.2026
 // appka navíc, best-effort, zjišťuje přihlášení/Pro plán ze sdíleného auth.js
-// (Supabase, Moje Nástrojovna) - Pro průběžně synchronizuje rozpracovaný den
+// (Supabase, Tokva Pro) - Pro průběžně synchronizuje rozpracovaný den
 // do historie (viz ulozitNeboAktualizovatDen/naplanovatPrubezneUlozeni výš),
 // jeden den zůstává zdarma beze změny.
 renderZaznamy();

@@ -535,7 +535,7 @@ nav {
       <div class="login-link"><a href="javascript:void(0)" onclick="prepnoutKodBlok()">Mám účet Pro, chci se přihlásit</a></div>
     </div>
     <div id="kod-blok" style="display:none;">
-      <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Pro má neomezené analýzy, ukládá historii a založí navazující úkoly. Přihlaste se účtem Nástrojovny.</p>
+      <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Pro má neomezené analýzy, ukládá historii a založí navazující úkoly. Přihlaste se účtem Tokvy.</p>
       <div class="login-err" id="login-err"></div>
       <button class="login-btn" id="login-btn" onclick="klikProLogin()">Přihlásit se</button>
       <div class="login-link">Nemáte Tokva Pro? <a href="https://tokva.cz">Zjistit víc o Tokva Pro</a> · <a href="javascript:void(0)" onclick="prepnoutKodBlok()">Zpět na analýzu zdarma</a></div>
@@ -658,7 +658,7 @@ Začni tím, že uživatele přivítáš, stručně vysvětlíš co spolu budete
 let history = [];
 let isLoading = false;
 
-// Stav přihlášení do Nástrojovny (Supabase), zjišťuje se při startu appky.
+// Stav přihlášení do Tokvy (Supabase), zjišťuje se při startu appky.
 // Free e-mailová brána zůstává úplně nezávisle na starém Apps Scriptu (viz
 // spustitZdarma níž) - tohle jen navíc řeší Pro (neomezené analýzy, historie).
 let session = null;

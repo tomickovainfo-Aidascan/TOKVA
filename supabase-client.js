@@ -1,4 +1,4 @@
-// Sdílené napojení na Supabase databázi Nástrojovny.
+// Sdílené napojení na Supabase databázi Tokvy.
 // Tenhle soubor načítá KAŽDÁ appka, co potřebuje přihlášení nebo ukládání dat.
 // Musí být načtený AŽ PO knihovně Supabase, viz pořadí v <head>:
 //   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

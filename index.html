@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tokva | Gabriela Tomíčková</title>
-<!-- TODO: až se rozhodne finální adresa Nástrojovny, nahradit href skutečnou URL a doplnit odpovídající řádek do sitemap.xml -->
+<!-- TODO: az bude rozhodnuto o "pripravujeme se" strance pro Tokva Pro, doplnit odpovidajici radek do sitemap.xml -->
 <link rel="canonical" href="https://tokva.cz/">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Cpolygon points='4,9 18,9 28,16 18,23 4,23' fill='%23e9a91b'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
@@ -363,13 +363,13 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 <script>
 const TOOLS = [
   // ZDARMA
-  { id:"meric-free", group:"free", name:"Měřič plýtvání Free", krok:2, oblasti:["sklad","vyroba"], benefit:"Změříte, kolik času vaši lidé skutečně tráví prací, a kolik chozením a čekáním.",
+  { id:"meric-free", group:"free", name:"Měřič plýtvání", krok:2, oblasti:["sklad","vyroba"], benefit:"Změříte, kolik času vaši lidé skutečně tráví prací, a kolik chozením a čekáním.",
     popis:"Máte pocit, že vaši zaměstnanci víc nachodí, než vyrobí? Nebo že půlku pracovní doby vyplňují papíry? To jste tady správně.\n\nMěřič plýtvání vám pomůže objevit místa, kde ztrácíte nejvíc.\n\nZvolíte si proces, který chcete změřit, pozorujete pracovníka přímo při práci a klikáte na tlačítka podle toho, co zrovna dělá.\n\nAppka sama spočítá, kolik času padá na práci, přesun, hledání, čekání, administrativu, kontrolu a přípravu. Tři cykly zdarma, bez registrace.",
     proKoho:"Majitel nebo manažer výroby či skladu, co tuší, že se někde ztrácí čas, ale nemá to podložené čísly.",
     url:"nastroje/meric-plytvani-free/?start=1", souvisejici:["meric-pro","kalkulacka","kviz-komunikace"],
     metaTitle:"Výpočet produktivity práce zdarma | Gabriela Tomíčková",
     metaDescription:"Zjistěte výpočet produktivity práce ve vaší firmě za 10 minut. Bez stopek a papíru, zdarma online, výsledek na e-mail.",
-    ucelMetoda:"Měřič plýtvání Free je jednoduchá časová studie jednoho konkrétního procesu. Místo stopek a papíru klikáte na tlačítko podle toho, co zrovna pracovník dělá, appka sama měří, jak dlouho která činnost trvá. Na konci uvidíte, kolik času padá na skutečnou práci, a kolik na chození, hledání, čekání, papírování nebo kontrolu.\n\nKdo zná metodu KAIZEN, pozná v těch kategoriích klasické druhy plýtvání, takzvané muda. Znát ji ale vůbec nemusíte, appka funguje stejně dobře i bez toho.",
+    ucelMetoda:"Měřič plýtvání je jednoduchá časová studie jednoho konkrétního procesu. Místo stopek a papíru klikáte na tlačítko podle toho, co zrovna pracovník dělá, appka sama měří, jak dlouho která činnost trvá. Na konci uvidíte, kolik času padá na skutečnou práci, a kolik na chození, hledání, čekání, papírování nebo kontrolu.\n\nKdo zná metodu KAIZEN, pozná v těch kategoriích klasické druhy plýtvání, takzvané muda. Znát ji ale vůbec nemusíte, appka funguje stejně dobře i bez toho.",
     kdyPouzit:{
       otazky:[
         "Nestíháte vyrábět, i když všichni pracují na plný výkon?",
@@ -396,7 +396,7 @@ const TOOLS = [
     ],
     vstupy:"Název procesu, který měříte, a živé kliky na tlačítka během reálné práce.",
     vystupy:"Průměrné rozložení času mezi 7 kategoriemi za změřené cykly, nalezení různých druhů plýtvání, možnost poslat si výsledek e-mailem.",
-    priklad:"Řekněme, že máte na skladě Honzu, který furt čeká na materiál. Jenže nikdo pořádně neví, na kolik minut se to čekání za směnu natáhne.\n\nSpustíte Měřič plýtvání Free a jdete se na Honzu podívat přímo do provozu. Klikáte na tlačítka podle toho, co zrovna dělá: práce, čekání na materiál, chození pro dodací list, co byl přece ráno na stole.\n\nPo pár cyklech appka spočítá skutečná čísla. Ne odhad typu \"tak nějak deset minut, možná patnáct\", ale přesný podíl času, který padá na čekání, hledání a chození.\n\nTahle čísla pak stačí zadat do Kalkulačky neviditelných ztrát a najednou víte, kolik vás to čekání stojí ročně v korunách. Ne tuším, ale vím.",
+    priklad:"Řekněme, že máte na skladě Honzu, který furt čeká na materiál. Jenže nikdo pořádně neví, na kolik minut se to čekání za směnu natáhne.\n\nSpustíte Měřič plýtvání a jdete se na Honzu podívat přímo do provozu. Klikáte na tlačítka podle toho, co zrovna dělá: práce, čekání na materiál, chození pro dodací list, co byl přece ráno na stole.\n\nPo pár cyklech appka spočítá skutečná čísla. Ne odhad typu \"tak nějak deset minut, možná patnáct\", ale přesný podíl času, který padá na čekání, hledání a chození.\n\nTahle čísla pak stačí zadat do Kalkulačky neviditelných ztrát a najednou víte, kolik vás to čekání stojí ročně v korunách. Ne tuším, ale vím.",
     chyby:[
       "Kliknutí na konci činnosti místo na jejím začátku, appka pak měří špatný úsek.",
       "Míchání různých variant procesu dohromady, cykly pak nejdou mezi sebou srovnat.",
@@ -459,7 +459,7 @@ const TOOLS = [
     faq:[
       { q:"Je výsledek přesný?", a:"Není, a záměrně. Kalkulačka počítá s čísly, která zadáte, a ta jsou vždy odhadem. Cílem není přesný audit, ale rychlá orientace. Pokud vás výsledek překvapí, teprve pak má smysl měřit přesněji." },
       { q:"Potřebuji znát přesné minuty?", a:"Ne. Zadejte odhad, vedoucí, který v provozu stojí denně, ho má v hlavě. Výsledek bude dostatečně blízko realitě." },
-      { q:"Jak mám zjistit přesná, nebo alespoň orientační čísla, když je neznám?", a:"Stačí odhad od oka, všimněte si při běžné směně, kolik se chodí, čeká nebo ručně přepisuje. Přesnost tady není cíl. Pokud budete chtít čísla přesnější, vyzkoušejte Měřič plýtvání Free, ten vám je změří přímo v provozu." }
+      { q:"Jak mám zjistit přesná, nebo alespoň orientační čísla, když je neznám?", a:"Stačí odhad od oka, všimněte si při běžné směně, kolik se chodí, čeká nebo ručně přepisuje. Přesnost tady není cíl. Pokud budete chtít čísla přesnější, vyzkoušejte Měřič plýtvání, ten vám je změří přímo v provozu." }
     ],
     design2a:{
       heroLines:["Kolik vás stojí","obyčejná rutina?"],
@@ -751,11 +751,6 @@ const TOOLS = [
       }
     } },
 
-  { id:"aidoklad", group:"free", name:"AIDoklad Agent (ukázka)", krok:3, oblasti:["administrativa"], krowTag:"Ukázka", benefit:"Uvidíte, jak AI agenti umí sami zpracovat faktury od začátku do konce.",
-    popis:"Ukázka schopností, ne hlavní produkt. Šest AI agentů za sebou zpracuje faktury, ověří IČ a DIČ přes ARES, najde duplicity a spočítá částky.",
-    proKoho:"Kdokoliv, kdo chce vidět, co umí udělat AI agenti postavení na míru, ne obecné demo.",
-    url:"https://aidokladagent.cz", souvisejici:[] },
-
   { id:"automat-faktury", group:"free", name:"Automatické stahování faktur (návod)", krok:3, oblasti:["administrativa"], krowTag:"Návod", benefit:"Přestanete ručně stahovat a přepisovat faktury z e-mailu.",
     popis:"Návod, jak si nechat automaticky stahovat faktury z e-mailu rovnou na Google Drive. Instalace na míru za 199 Kč.",
     proKoho:"Kdo je unavený z ručního stahování a přepisování faktur.",
@@ -825,20 +820,20 @@ const TOOLS = [
       }
     } },
 
-  { id:"5s-audit", group:"paid-solo", name:"5S pro každého smrtelníka", krok:3, oblasti:["sklad","vyroba"], benefit:"Uspořádáte pracoviště krok za krokem, s fotkami před a po.",
+  { id:"5s-audit", group:"free", name:"5S pro každého smrtelníka", krok:3, oblasti:["sklad","vyroba"], benefit:"Uspořádáte pracoviště krok za krokem, s fotkami před a po.",
     popis:"Krok po kroku uspořádáte jakékoliv pracoviště. Fotodokumentace před a po, report co se změnilo.",
-    prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje." },
+    url:"nastroje/5S_audit/?start=1", prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje." },
 
-  { id:"5x-proc", group:"paid-solo", name:"5x Proč AI kouč", krok:3, oblasti:["sklad","vyroba"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
+  { id:"5x-proc", group:"free", name:"5x Proč AI kouč", krok:3, oblasti:["sklad","vyroba"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
     popis:"AI kouč vás provede rozhovorem a dovede ke kořenu problému. Strukturovaný výstup s příčinou a prvním krokem.",
-    prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje." },
+    url:"nastroje/5x-proc-ai-kouc/?start=1", prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje." },
 
-  { id:"casova-studie", group:"paid-solo", name:"Časová studie mého dne", krok:3, oblasti:["sklad","vyroba"], benefit:"Získáte skutečný přehled svého dne, podklad pro delegování nebo automatizaci.",
+  { id:"casova-studie", group:"free", name:"Časová studie mého dne", krok:3, oblasti:["sklad","vyroba"], benefit:"Získáte skutečný přehled svého dne, podklad pro delegování nebo automatizaci.",
     popis:"Skutečný přehled vašeho dne s činnostmi a intervaly. Podklad pro delegování nebo automatizaci, export do CSV.",
-    prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje.",
+    url:"nastroje/casova-studie/?start=1", prodejniStranka:null, prodejniNote:"Zatím se dá získat jen společně s dalšími nástroji, samostatná objednávka se připravuje.",
     souvisejici:["kviz-komunikace"] },
 
-  { id:"kalkulacka-naklady-skladu", group:"free", name:"Kalkulačka nákladů provozu skladu na m²", krok:2, oblasti:["sklad"], benefit:"Spočítáte, kolik vás sklad stojí na metr čtvereční, a porovnáte to s trhem.",
+  { id:"kalkulacka-naklady-skladu", group:"free", name:"Kalkulačka nákladů provozu na m²", krok:2, oblasti:["sklad"], benefit:"Spočítáte, kolik vás sklad stojí na metr čtvereční, a porovnáte to s trhem.",
     popis:"Spočítá měsíční a roční náklady na m² skladu (nájem nebo odpisy budovy, energie, daně a pojištění, revize, provozní služby, odpisy vybavení) a porovná je s benchmarkem trhu v ČR.",
     url:null, formNote:"Nástroj je hotový, čeká na zveřejnění na doméně." },
 ];
@@ -855,7 +850,7 @@ const OBLASTI = [
 const KROKY = [
   { n:1, title:"Ukažte mi, kde to bolí", desc:"Rychlá diagnostika zdarma. Pár otázek, žádná příprava, výsledek hned na stránce." },
   { n:2, title:"Změřte to v korunách", desc:"Z tušení uděláte číslo. Čas, vzdálenost i koruny za rok, bez registrace." },
-  { n:3, title:"Napravte to a udržte", desc:"Nástroje na nápravu a udržení pořádku. Pár z nich je zdarma rovnou, ty hlubší postupně přejdou pod jeden měsíční přístup ke všem nástrojům Nástrojovny." }
+  { n:3, title:"Napravte to a udržte", desc:"Nástroje na nápravu a udržení pořádku. Pár z nich je zdarma rovnou, ty hlubší postupně přejdou pod jeden měsíční přístup ke všem nástrojům Tokvy." }
 ];
 
 let activeArea = "";
@@ -946,7 +941,7 @@ function ctaHtml(t, d2) {
   } else if (t.group === "paid-solo") {
     if (t.prodejniStranka) {
       btn = `<a class="btn-cta" href="${t.prodejniStranka}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`;
-      note = d2.heroNote || "Součást měsíčního přístupu ke všem nástrojům Nástrojovny.";
+      note = d2.heroNote || "Součást měsíčního přístupu ke všem nástrojům Tokvy.";
     } else {
       btn = `<div class="btn-cta disabled">${t.prodejniNote || "Prodejní stránka se připravuje"}</div>`;
       note = "";
@@ -1102,7 +1097,7 @@ function renderDetail(id, updateUrl) {
   if (!t) return;
   const d2 = t.design2a || {};
 
-  let html = `<button class="detail-back" data-back="1">← Zpět na Nástrojovnu</button>`;
+  let html = `<button class="detail-back" data-back="1">← Zpět na Tokvu</button>`;
   html += `<div class="detail-card">`;
 
   const heroLines = (d2.heroLines && d2.heroLines.length) ? d2.heroLines : [t.name];
@@ -1201,7 +1196,7 @@ otevritZUrl();
 </script>
 
 <script>
-// TODO: doplnit skutečné GA4 ID pro Nástrojovnu, teď je tam jen placeholder
+// TODO: doplnit skutečné GA4 ID pro Tokvu, teď je tam jen placeholder
 var NASTROJOVNA_GA_ID = 'G-XXXXXXXXXX';
 
 (function(){
