@@ -395,7 +395,7 @@ const TOOLS = [
     ],
     vstupy:"Název procesu, který měříte, a živé kliky na tlačítka během reálné práce.",
     vystupy:"Průměrné rozložení času mezi 7 kategoriemi za změřené cykly, nalezení různých druhů plýtvání, možnost poslat si výsledek e-mailem.",
-    priklad:"Řekněme, že máte na skladě Honzu, který furt čeká na materiál. Jenže nikdo pořádně neví, na kolik minut se to čekání za směnu natáhne.\n\nSpustíte Měřič plýtvání a jdete se na Honzu podívat přímo do provozu. Klikáte na tlačítka podle toho, co zrovna dělá: práce, čekání na materiál, chození pro dodací list, co byl přece ráno na stole.\n\nPo pár cyklech appka spočítá skutečná čísla. Ne odhad typu \"tak nějak deset minut, možná patnáct\", ale přesný podíl času, který padá na čekání, hledání a chození.\n\nTahle čísla pak stačí zadat do Kalkulačky neviditelných ztrát a najednou víte, kolik vás to čekání stojí ročně v korunách.",
+    priklad:"Řekněme, že máte na skladě Honzu, který furt čeká na materiál. Jenže nikdo pořádně neví, na kolik minut se to čekání za směnu natáhne.\n\nSpustíte Měřič plýtvání a jdete se na Honzu podívat přímo do provozu. Klikáte na tlačítka podle toho, co zrovna dělá: práce, čekání na materiál, chození pro dodací list, co byl přece ráno na stole.\n\nPo pár cyklech appka spočítá skutečná čísla. Ne odhad typu \"tak nějak deset minut, možná patnáct\", ale přesný podíl času, který padá na čekání, hledání a chození.\n\nTahle čísla pak stačí zadat do Kalkulačky ztrát a najednou víte, kolik vás to čekání stojí ročně v korunách.",
     chyby:[
       "Kliknutí na konci činnosti místo na jejím začátku, appka pak měří špatný úsek.",
       "Míchání různých variant procesu dohromady, cykly pak nejdou mezi sebou srovnat.",
@@ -424,7 +424,7 @@ const TOOLS = [
       }
     } },
 
-  { id:"kalkulacka", group:"free", name:"Kalkulačka neviditelných ztrát", krok:2, oblasti:["sklad","vyroba"], benefit:"Zjistíte v korunách, kolik vás ročně stojí obyčejná rutina ve skladu nebo výrobě.",
+  { id:"kalkulacka", group:"free", name:"Kalkulačka ztrát", krok:2, oblasti:["sklad","vyroba"], benefit:"Zjistíte v korunách, kolik vás ročně stojí obyčejná rutina ve skladu nebo výrobě.",
     popis:"Tušíte, že vám ve skladu nebo ve výrobě někde uniká čas a peníze, ale nemáte to podložené číslem? Tady ho zjistíte za pár minut.\n\nZadáte pár čísel o svém provozu, kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje, a kalkulačka to spočítá na hodiny, kilometry a koruny za rok.\n\nVýsledek je orientační, ne audit na korunu přesně. Ale vychází z reálných měření, ne z odhadu od stolu.",
     proKoho:"Vedoucí skladu nebo výroby, co chce první rychlé číslo, ne jen pocit, že něco vázne. Ideální pro tým 5 až 50 lidí.",
     url:"nastroje/kalkulacka-ztrat/", souvisejici:["mini-audit","meric-free","kviz-komunikace","kalkulacka-naklady-skladu"],
@@ -439,7 +439,7 @@ const TOOLS = [
         "Výsledek je orientační, nejde o audit na korunu přesně. Ale vychází z reálných měření, která jsem roky dělala ručně se stopkami přímo v provozu, takže bývá překvapivě blízko realitě."
       ]
     },
-    ucelMetoda:"Kalkulačka neviditelných ztrát je rychlý odhad, kolik vás ročně stojí běžná rutina ve skladu nebo ve výrobě. Zadáte pár čísel o svém provozu (kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje) a kalkulačka to přepočítá na hodiny, kilometry a koruny za rok.\n\nNení to náhrada za měření přímo v provozu. Je to první rychlý odhad, jestli se vůbec vyplatí to řešit dál.",
+    ucelMetoda:"Kalkulačka ztrát je rychlý odhad, kolik vás ročně stojí běžná rutina ve skladu nebo ve výrobě. Zadáte pár čísel o svém provozu (kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje) a kalkulačka to přepočítá na hodiny, kilometry a koruny za rok.\n\nNení to náhrada za měření přímo v provozu. Je to první rychlý odhad, jestli se vůbec vyplatí to řešit dál.",
     princip:"Do posuvníků zadáte základní údaje o provozu (počet lidí, počet směn, délka směny, mzdové náklady) a pět čísel o ztrátách (zbytečná chůze, ruční administrativa, čekání a prostoje, počet kamionů a čas na zpracování jednoho). Kalkulačka je hned přepočítá na hodiny týdně, kilometry navíc za rok a koruny za měsíc i za rok, a ukáže i to, kde ztráta vzniká nejvíc.",
     postup:[
       "Zadejte základní údaje o provozu: počet lidí, počet směn a mzdové náklady.",
