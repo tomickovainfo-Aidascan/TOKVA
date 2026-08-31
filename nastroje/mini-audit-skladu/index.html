@@ -300,6 +300,11 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 .story-title { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:var(--dark); margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
 .story-block p { font-size:14px; color:var(--mid); line-height:1.75; margin-bottom:10px; }
 .story-block p:last-of-type { margin-bottom:0; }
+.info-detail summary { cursor:pointer; list-style:none; }
+.info-detail summary::-webkit-details-marker { display:none; }
+.info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
+.info-summary::before { content:""; display:inline-block; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--gold-dark); transition:transform .2s; }
+.info-detail[open] .info-summary::before { transform:rotate(180deg); }
 .trust-line { font-size:13px; color:var(--light); font-style:italic; border-top:1px solid var(--border); margin-top:16px; padding-top:14px; }
 .two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 .content-card { background:var(--paper); border:1px solid var(--border); border-radius:12px; padding:24px; }
@@ -403,6 +408,10 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 <div class="content-block">
   <div class="content-inner">
 
+    <details class="info-detail">
+      <summary class="info-summary">Chci vědět jak na to</summary>
+      <div style="margin-top:22px;display:flex;flex-direction:column;gap:32px;">
+
     <div class="story-block">
       <div class="story-title">Jak to vypadá v praxi?</div>
       <p>Petr vedl sklad v Hradci. 12 lidí, příjem zboží každý den, dva až tři kamiony týdně. Stěžoval si, že lidi nestíhají. Uvažoval o posilách.</p>
@@ -443,6 +452,9 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
       <div class="time-note">Stačí znát svůj sklad a 5 minut klidu.</div>
     </div>
 
+      </div>
+    </details>
+
   </div>
 </div>
 
@@ -457,21 +469,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 <div class="main">
 
   <!-- OTAZKY -->
-  <!-- KROK 0: JEDNO TLACITKO, ZADNY EMAIL -->
-  <div class="otazka-wrap active" id="q0">
-    <div class="otazka-card" style="text-align:center;padding:36px 28px;">
-      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:12px;">Než začneme</div>
-      <h2 style="font-family:Poppins,sans-serif;font-size:clamp(18px,2.5vw,24px);font-weight:800;color:var(--black);margin-bottom:12px;line-height:1.25;">Spusťte audit</h2>
-      <p style="font-size:15px;color:var(--mid);margin-bottom:28px;line-height:1.75;max-width:420px;margin-left:auto;margin-right:auto;">10 otázek, 5 minut. Výsledek s konkrétními tipy uvidíte hned na stránce.</p>
-      <div style="max-width:420px;margin:0 auto;">
-        <button onclick="spustitAudit()" style="display:flex;align-items:center;justify-content:center;gap:8px;background:var(--gold);color:var(--black);font-family:Poppins,sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:6px;border:none;cursor:pointer;width:100%;">
-          Začít audit zdarma
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="otazka-wrap" id="q1">
+  <div class="otazka-wrap active" id="q1">
     <div class="otazka-card">
       <div class="otazka-num">Otázka 1 z 10</div>
       <div class="otazka-text">Víte, kde přesně zboží leží?</div>
@@ -1015,35 +1013,16 @@ function zobrazVysledky() {
   } catch(e) { alert('Chyba zobrazVysledky: ' + e.message); }
 }
 
-function zkontrolovatStart() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('start') === '1') {
-    document.getElementById('q0').classList.remove('active');
-    const q1 = document.getElementById('q1');
-    q1.classList.add('active');
-    setTimeout(() => q1.scrollIntoView({behavior:'smooth',block:'start'}), 50);
-    updateProgress();
-  }
-}
-
-function spustitAudit() {
-  document.getElementById('q0').classList.remove('active');
-  const q1 = document.getElementById('q1');
-  q1.classList.add('active');
-  setTimeout(() => q1.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-  updateProgress();
-}
-
 function zacitZnovu() {
   Object.keys(odpovedi).forEach(k => delete odpovedi[k]);
   nevimSet.clear();
   document.querySelectorAll('.otazka-wrap, .email-brana, .vysledky-wrap').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
   document.querySelectorAll('.btn-dal').forEach(b => b.disabled = true);
-  const q0 = document.getElementById('q0');
-  q0.classList.add('active');
+  const q1 = document.getElementById('q1');
+  q1.classList.add('active');
   updateProgress();
-  setTimeout(() => q0.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  setTimeout(() => q1.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }
 
 let session = null;
@@ -1301,7 +1280,6 @@ async function renderHistorie() {
 }
 
 updateProgress();
-zkontrolovatStart();
 nacistPrihlaseniStav();
 </script>
 
