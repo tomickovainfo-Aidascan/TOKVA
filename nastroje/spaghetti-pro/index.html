@@ -1256,7 +1256,10 @@ function prepocitatFitZoom() {
   const outer = document.getElementById('canvas-outer');
   const outerW = outer.clientWidth;
   if (!outerW) return;
-  fitZoom = outerW / canvas.width;
+  // Vyska planku je omezena i vyskou obrazovky, ne jen sirkou - jinak na mobilu
+  // vysoky/uzky plan zabere celou vysku a tlacitka pod nim/nad nim zmizi mimo obrazovku.
+  const maxOuterH = Math.max(260, Math.min(window.innerHeight * 0.55, 560));
+  fitZoom = Math.min(outerW / canvas.width, maxOuterH / canvas.height);
   // Vyska obalu musi sedet s vizualne zmenseným/zvetsenym obrazkem, jinak zbyde prazdny pruh dole
   outer.style.height = (canvas.height * fitZoom) + 'px';
   aplikovatCssTransform();
@@ -1488,10 +1491,14 @@ function onTouchMove(e) {
     const distOld = Math.hypot(l1.clientX-l2.clientX, l1.clientY-l2.clientY);
     const delta = distNew / distOld;
     const outerRect = document.getElementById('canvas-outer').getBoundingClientRect();
-    const midX = (t1.clientX + t2.clientX) / 2 - outerRect.left;
-    const midY = (t1.clientY + t2.clientY) / 2 - outerRect.top;
-    offsetX = midX - (midX - offsetX) * delta;
-    offsetY = midY - (midY - offsetY) * delta;
+    // Kotva pro zoom i posun je STARY stred dvou prstu (ne novy) - jinak se pri cistem
+    // posunu dvema prsty (delta=1) offset vubec nezmeni, protoze se zrusi ve vzorci.
+    const midXOld = (l1.clientX + l2.clientX) / 2 - outerRect.left;
+    const midYOld = (l1.clientY + l2.clientY) / 2 - outerRect.top;
+    const midXNew = (t1.clientX + t2.clientX) / 2 - outerRect.left;
+    const midYNew = (t1.clientY + t2.clientY) / 2 - outerRect.top;
+    offsetX = midXNew - (midXOld - offsetX) * delta;
+    offsetY = midYNew - (midYOld - offsetY) * delta;
     zoom = Math.min(Math.max(zoom * delta, 0.3), 5);
     lastTouches = e.touches;
     aplikovatCssTransform();
