@@ -855,23 +855,26 @@ function onWheel(e) {
 }
 
 let lastTouches = null;
+let pendingTouch = null; // bod cekajici na potvrzeni - viz onTouchEnd
 function onTouchStart(e) {
   e.preventDefault();
   if (e.touches.length === 1 && mod === 'kalibrace') {
     const t = e.touches[0];
-    kalibraceKlik(getCanvasPos({clientX: t.clientX, clientY: t.clientY}));
+    // Bod se nezapisuje hned - kdyby prave teď prilozil i druhy prst (doladovani zoomu/posunu),
+    // nesmi to omylem zapsat bod. Potvrdi se az v onTouchEnd, pokud zustal jen jeden prst.
+    pendingTouch = { mod: 'kalibrace', pos: getCanvasPos({clientX: t.clientX, clientY: t.clientY}) };
   } else if (e.touches.length === 1 && mod === 'kreslit') {
     const t = e.touches[0];
-    const pos = getCanvasPos({clientX: t.clientX, clientY: t.clientY});
-    zakazky[aktivniZakazka].body.push(pos);
-    kreslit();
-    updateStats();
+    pendingTouch = { mod: 'kreslit', pos: getCanvasPos({clientX: t.clientX, clientY: t.clientY}) };
   } else if (e.touches.length === 1 && mod === 'posouvat') {
+    pendingTouch = null;
     const t = e.touches[0];
     isPanning = true;
     panStart = {x: t.clientX, y: t.clientY};
     offsetStart = {x: offsetX, y: offsetY};
   } else if (e.touches.length === 2) {
+    // Pribyl druhy prst driv, nez se stihl bod potvrdit - je to gesto (zoom/posun), zrusit cekajici bod.
+    pendingTouch = null;
     isPanning = false;
     lastTouches = e.touches;
   }
@@ -905,7 +908,22 @@ function onTouchMove(e) {
   }
 }
 
-function onTouchEnd() { lastTouches = null; isPanning = false; }
+function onTouchEnd(e) {
+  // Bod se zapise, jen kdyz na obrazovce nezustal ani nepribyl druhy prst behem celeho doteku -
+  // takze doladovani dvema prsty (zoom/posun) uz nikdy omylem nenakresli bod.
+  if (pendingTouch && e.touches.length === 0) {
+    if (pendingTouch.mod === 'kalibrace') {
+      kalibraceKlik(pendingTouch.pos);
+    } else if (pendingTouch.mod === 'kreslit') {
+      zakazky[aktivniZakazka].body.push(pendingTouch.pos);
+      kreslit();
+      updateStats();
+    }
+  }
+  pendingTouch = null;
+  lastTouches = null;
+  isPanning = false;
+}
 
 // =============================================
 // OPERACE
