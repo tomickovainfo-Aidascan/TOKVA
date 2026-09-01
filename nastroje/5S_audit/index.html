@@ -1581,6 +1581,10 @@ function splnitS(sId) {
       ukazatUpozorneni('V poli "Co ještě zbývá" máte rozepsané úkoly. Než krok označíte jako splněný, dokončete je nebo pole vymažte.');
       return;
     }
+    if (!misto.fotky[sId + '_pred'] || !misto.fotky[sId + '_po']) {
+      ukazatUpozorneni('U tohohle kroku chybí fotka před nebo po. Bez obou fotek nemáte důkaz, že se něco fakt změnilo – vyfoťte oba stavy a pak krok označte jako splněný.');
+      return;
+    }
     misto.splneno[sId] = true;
     const pochvala = document.getElementById('pochvala-' + sId);
     if (pochvala) pochvala.style.display = 'block';
