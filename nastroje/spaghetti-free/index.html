@@ -53,6 +53,20 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .page-header h1 em { color:var(--gold); font-style:normal; }
 .page-header p { font-size:13px; color:var(--mid); max-width:600px; line-height:1.65; }
 
+.howto-block { background:var(--white); border-bottom:1px solid var(--border); padding:18px 24px; }
+.howto-inner { max-width:700px; margin:0 auto; }
+.info-detail summary { cursor:pointer; list-style:none; }
+.info-detail summary::-webkit-details-marker { display:none; }
+.info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
+.info-summary::before { content:""; display:inline-block; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--gold-dark); transition:transform .2s; }
+.info-detail[open] .info-summary::before { transform:rotate(180deg); }
+.howto-video { width:100%; max-width:360px; display:block; margin:18px auto 20px; border-radius:14px; border:1px solid var(--border); background:#000; }
+.howto-steps { display:flex; flex-direction:column; gap:12px; margin-top:6px; }
+.howto-step { display:flex; gap:12px; align-items:flex-start; }
+.howto-step-num { flex-shrink:0; width:22px; height:22px; border-radius:50%; background:var(--gold-light); border:1px solid rgba(233,169,27,0.4); color:var(--gold-dark); font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.howto-step-text { font-size:13px; color:var(--mid); line-height:1.6; }
+.howto-step-text strong { color:var(--dark); }
+
 .main { max-width:1100px; margin:0 auto; padding:20px 20px 60px; }
 
 /* SETUP PANEL */
@@ -231,6 +245,43 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   <div class="tool-badge">Nástroj zdarma</div>
   <h1>Spaghetti diagram<br><em>měření tras</em></h1>
   <p>Nahrajte plánek skladu nebo výroby, klikejte body trasy a aplikace automaticky zakreslí spaghetti diagram i délku každé cesty.</p>
+</div>
+
+<div class="howto-block">
+  <div class="howto-inner">
+    <details class="info-detail">
+      <summary class="info-summary">Chci vědět, jak appka funguje</summary>
+      <div style="margin-top:18px;">
+        <video class="howto-video" src="demo-gesta.mp4" controls playsinline preload="metadata"></video>
+        <div class="howto-steps">
+          <div class="howto-step">
+            <div class="howto-step-num">1</div>
+            <div class="howto-step-text"><strong>Nahrajte nebo vyfoťte plánek</strong> skladu či výroby - klikněte na plochu nahoře nebo přetáhněte soubor.</div>
+          </div>
+          <div class="howto-step">
+            <div class="howto-step-num">2</div>
+            <div class="howto-step-text"><strong>Nastavte měřítko.</strong> Klikněte na "Kalibrovat kliknutím na plánek", označte na plánku dva body známé vzdálenosti (např. délku regálu) a napište, kolik metrů to ve skutečnosti je. Appka pak počítá reálné vzdálenosti bez ohledu na zoom.</div>
+          </div>
+          <div class="howto-step">
+            <div class="howto-step-num">3</div>
+            <div class="howto-step-text"><strong>Klikněte na "Začít kreslit trasu".</strong></div>
+          </div>
+          <div class="howto-step">
+            <div class="howto-step-num">4</div>
+            <div class="howto-step-text"><strong>Jedním prstem nebo kliknutím myší</strong> přidáváte body trasy - každou změnu směru, odbočení nebo uličku mezi regály.</div>
+          </div>
+          <div class="howto-step">
+            <div class="howto-step-num">5</div>
+            <div class="howto-step-text"><strong>Dvěma prsty</strong> (na mobilu či tabletu) plánek přibližujete, oddalujete a posouváte - na počítači kolečkem myši a tlačítky + / −. Zoom nemění naměřené vzdálenosti.</div>
+          </div>
+          <div class="howto-step">
+            <div class="howto-step-num">6</div>
+            <div class="howto-step-text"><strong>Přidejte další zakázku</strong> tlačítkem "+ Nová zakázka", pokud chcete do stejného plánku zaznamenat víc tras - každá dostane vlastní barvu.</div>
+          </div>
+        </div>
+      </div>
+    </details>
+  </div>
 </div>
 
 <div class="main">
