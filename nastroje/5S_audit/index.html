@@ -401,6 +401,16 @@ nav {
 
 .foto-slot.has-photo .foto-slot-icon { display: none; }
 
+.foto-slot-formats {
+  font-size: 9px;
+  letter-spacing: .3px;
+  color: rgba(255,255,255,.22);
+  position: relative;
+  z-index: 1;
+}
+
+.foto-slot.has-photo .foto-slot-formats { display: none; }
+
 .foto-timestamp {
   font-family: 'DM Mono', monospace;
   font-size: 9px;
@@ -801,6 +811,8 @@ nav {
 .standard-foto-slot.has-photo .standard-foto-icon, .standard-foto-slot.has-photo .standard-foto-label { display: none; }
 .standard-foto-icon { font-size: 20px; opacity: .4; }
 .standard-foto-label { font-size: 11px; color: var(--light); margin-top: 4px; }
+.standard-foto-formats { font-size: 9px; color: rgba(255,255,255,.25); margin-top: 2px; }
+.standard-foto-slot.has-photo .standard-foto-formats { display: none; }
 
 /* KONTROLA: checklist + skóre + trend (Pro) */
 .kontrola-checklist { display: flex; flex-direction: column; gap: 10px; margin-bottom: 4px; }
@@ -1210,6 +1222,7 @@ function renderMain() {
                 ${fotokyPred ? `<img src="${fotokyPred}">` : ''}
                 <div class="foto-slot-icon">📷</div>
                 <div class="foto-slot-label">${fotokyPred ? 'Před' : 'Před'}</div>
+                <div class="foto-slot-formats">JPG, JPEG, PNG</div>
               </div>
               ${ts_pred ? `<div class="foto-timestamp">${ts_pred}</div>` : ''}
             </div>
@@ -1218,6 +1231,7 @@ function renderMain() {
                 ${fotokyPo ? `<img src="${fotokyPo}">` : ''}
                 <div class="foto-slot-icon">📷</div>
                 <div class="foto-slot-label">${fotokyPo ? 'Po' : 'Po'}</div>
+                <div class="foto-slot-formats">JPG, JPEG, PNG</div>
               </div>
               ${ts_po ? `<div class="foto-timestamp">${ts_po}</div>` : ''}
             </div>
@@ -1292,6 +1306,7 @@ function standardBlockHtml(misto) {
       ${std.foto ? `<img src="${std.foto}">` : ''}
       <div class="standard-foto-icon">📷</div>
       <div class="standard-foto-label">Fotografie standardu</div>
+      <div class="standard-foto-formats">JPG, JPEG, PNG</div>
     </div>
     <textarea class="poznamky-area" placeholder="Standard, např.: klíče zavěšené vlevo, aku vrtačka v označeném boxu, plocha stolu prázdná, odpadkový koš max. do ¾..."
       onchange="ulozitStandardPravidla(this.value)">${std.pravidla || ''}</textarea>
@@ -1517,7 +1532,7 @@ function zpracovatFoto(file, ulozitCallback) {
       }
     };
     img.onerror = () => {
-      ukazatUpozorneni('Tenhle formát fotky appka nepřečte (typicky HEIC z iPhonu). Na iPhonu v Nastavení – Fotoaparát – Formáty zvolte "Nejvíce kompatibilní" a appka pak fotky přijme, nebo nahrajte JPG či PNG.');
+      ukazatUpozorneni('Tenhle formát fotky appka nepřečte, nahrajte JPG či PNG, nebo vyfoťte.');
     };
     img.src = ev.target.result;
   };
