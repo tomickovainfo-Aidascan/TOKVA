@@ -432,15 +432,40 @@ nav {
 
 /* LOGIN OVERLAY */
 .login-overlay {
-  position: fixed;
-  inset: 0;
   background: #0e0e0e;
-  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 40px 20px 56px;
 }
+.hero { background:var(--dark); padding:44px 24px 36px; position:relative; overflow:hidden; }
+.hero::before { content:""; position:absolute; top:-80px; right:-80px; width:320px; height:320px; border-radius:50%; border:60px solid rgba(233,169,27,0.07); pointer-events:none; }
+.hero-inner { max-width:1040px; margin:0 auto; position:relative; z-index:1; }
+.tool-badge { display:inline-block; background:rgba(233,169,27,0.15); border:1px solid rgba(233,169,27,0.3); color:var(--gold); font-size:10px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase; padding:4px 12px; border-radius:2px; margin-bottom:16px; }
+.hero h1 { font-family:"Poppins",sans-serif; font-size:clamp(22px,3.6vw,34px); font-weight:900; color:var(--white); line-height:1.2; letter-spacing:-0.4px; margin-bottom:12px; }
+.hero h1 em { color:var(--gold); font-style:normal; }
+.hero p { font-size:14.5px; color:rgba(255,255,255,0.55); max-width:640px; line-height:1.7; font-weight:300; }
+.content-block { background:var(--white); border-bottom:1px solid rgba(0,0,0,.08); padding:28px 24px; }
+.content-inner { max-width:1040px; margin:0 auto; }
+.info-detail summary { cursor:pointer; list-style:none; }
+.info-detail summary::-webkit-details-marker { display:none; }
+.info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
+.info-summary::before { content:""; display:inline-block; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--gold-dark); transition:transform .2s; }
+.info-detail[open] .info-summary::before { transform:rotate(180deg); }
+.d-example-eyebrow { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:2.2px; color:var(--gold); margin-bottom:14px; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:0; }
+.content-card { background:#f5f4f0; border:1px solid rgba(0,0,0,.08); border-radius:12px; padding:22px; }
+.content-card-title { font-family:"Poppins",sans-serif; font-size:12.5px; font-weight:700; color:#111; margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
+.check-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.check-list li { font-size:13.5px; color:#545454; display:flex; gap:10px; align-items:flex-start; line-height:1.6; }
+.check-list li::before { content:"→"; color:var(--gold); font-weight:700; flex-shrink:0; margin-top:1px; }
+.steps-list { display:flex; flex-direction:column; gap:12px; }
+.step-item { display:flex; gap:12px; align-items:flex-start; }
+.step-num { width:22px; height:22px; border-radius:50%; background:var(--gold); color:#1a1000; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+.step-item > div:last-child { font-size:13.5px; color:#545454; line-height:1.65; }
+@media (max-width:600px) { .two-col { grid-template-columns:1fr; } }
+.gate-note { text-align:center; color:rgba(255,255,255,.35); font-size:12px; margin-top:20px; max-width:400px; }
+.input-wrap { display:none; }
 .login-box {
   background: #161616;
   border: 1px solid rgba(255,255,255,.1);
@@ -519,14 +544,59 @@ nav {
 </head>
 <body>
 
+<nav>
+  <a href="https://tokva.cz/?nastroj=5x-proc" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a>
+  <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+    <button class="nav-btn" id="nav-historie-btn" onclick="otevritHistorii()" style="display:none;">Historie</button>
+    <button class="nav-reset" onclick="resetChat()">Nová analýza</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="tool-badge">Vedoucí skladu nebo výroby, co řeší furt stejný problém dokola</div>
+    <h1>Od výmluvy <em>ke skutečné příčině</em></h1>
+    <p>AI kouč vás provede rozhovorem metodou 5x Proč a dovede ke kořenu problému, ne jen k příznaku. Na konci dostanete strukturovaný výstup s příčinou a prvním krokem. Stačí e-mail, 1 kompletní analýza zdarma.</p>
+  </div>
+</div>
+
+<div class="content-block">
+  <div class="content-inner">
+    <details class="info-detail">
+      <summary class="info-summary">Chci vědět víc</summary>
+      <div style="margin-top:22px;">
+
+        <div class="two-col">
+          <div class="content-card">
+            <div class="content-card-title">Hodí se vám to, pokud:</div>
+            <ul class="check-list">
+              <li>Řešíte problém, který se pořád vrací, i když jste ho už párkrát "vyřešili"</li>
+              <li>Chcete se dostat od výmluv a prvních dojmů ke skutečné příčině v procesu, ne k viníkovi</li>
+              <li>Potřebujete strukturovaný výstup, co si můžete vytisknout nebo poslat dál, ne jen záznam rozhovoru</li>
+            </ul>
+          </div>
+          <div class="content-card">
+            <div class="content-card-title">Tři kroky, žádná věda:</div>
+            <div class="steps-list">
+              <div class="step-item"><div class="step-num">1</div><div>Zadáte e-mail a spustíte analýzu zdarma (1 kompletní analýza)</div></div>
+              <div class="step-item"><div class="step-num">2</div><div>Popíšete problém a odpovídáte na otázky AI kouče, jednu po druhé</div></div>
+              <div class="step-item"><div class="step-num">3</div><div>Dostanete strukturovaný výstup s kořenovou příčinou a prvním krokem</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </details>
+  </div>
+</div>
+
 <!-- LOGIN OVERLAY -->
 <div class="login-overlay" id="login-overlay">
   <div class="login-box">
     <div class="login-brand">Gabriela <span>Tomíčková</span></div>
-    <h1 style="font-family:'Poppins',sans-serif;font-size:22px;font-weight:900;color:var(--white);margin-bottom:8px;line-height:1.2;">5x Proč, AI kouč</h1>
-    <p style="font-size:13px;color:var(--light);margin-bottom:14px;line-height:1.6;">Strukturovaná analýza kořenové příčiny pro vedoucí skladu a výroby.</p>
-    <p style="font-size:13px;color:var(--light);margin-bottom:10px;line-height:1.7;">Metoda 5x Proč vám pomůže dostat se od příznaku k příčině. Problém se opakuje? Lidi nestíhají? Zboží se ztrácí? Místo hašení zjistíte proč to vzniká a kde v procesu to má kořen.</p>
-    <p style="font-size:13px;color:var(--light);margin-bottom:20px;line-height:1.7;">Nástroj vás vede otázkami krok za krokem. Odhalí výmluvy, emoce a první dojmy, které jinak zastíní skutečnou příčinu. Výsledkem není viník, ale konkrétní místo v procesu kde problém vzniká.</p>
+    <div style="font-family:'Poppins',sans-serif;font-size:18px;font-weight:900;color:var(--white);margin-bottom:16px;line-height:1.2;">Spustit analýzu</div>
     <div id="zdarma-blok">
       <p style="font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:16px;">Vyzkoušejte si 1 kompletní analýzu zdarma. Stačí e-mail, nic dalšího.</p>
       <input class="login-input" id="zdarma-email" type="email" placeholder="vas@email.cz" style="letter-spacing:normal;"
@@ -544,16 +614,6 @@ nav {
   </div>
 </div>
 
-
-<nav>
-  <a href="https://tokva.cz/?nastroj=5x-proc" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a>
-  <div class="nav-right">
-    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
-    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
-    <button class="nav-btn" id="nav-historie-btn" onclick="otevritHistorii()" style="display:none;">Historie</button>
-    <button class="nav-reset" onclick="resetChat()">Nová analýza</button>
-  </div>
-</nav>
 
 <div class="chat-wrap" id="chat"></div>
 
@@ -1136,6 +1196,8 @@ function resetChat() {
 }
 
 async function start() {
+  const iw = document.querySelector('.input-wrap');
+  if (iw) iw.style.display = 'block';
   isLoading = true;
   showTyping();
 
