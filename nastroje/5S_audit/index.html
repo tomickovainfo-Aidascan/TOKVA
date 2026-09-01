@@ -1921,8 +1921,9 @@ function ukazatPotvrzeni(text, onConfirm, potvrditLabel) {
   btnOk.textContent = potvrditLabel || 'Smazat';
   _noticeConfirmCb = onConfirm;
   btnOk.onclick = () => {
+    const potvrzeno = _noticeConfirmCb;
     zavritUpozorneni();
-    if (_noticeConfirmCb) _noticeConfirmCb();
+    if (potvrzeno) potvrzeno();
   };
   document.getElementById('notice-overlay').style.display = 'flex';
 }
