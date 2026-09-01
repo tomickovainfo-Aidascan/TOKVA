@@ -483,6 +483,8 @@ nav {
 
 .splnit-btn:hover { background: var(--gold-dark); }
 .splnit-btn.done { background: rgba(42,122,79,.2); color: var(--green); border: 1px solid rgba(42,122,79,.3); }
+.splnit-btn.locked { background: var(--surface2); color: rgba(255,255,255,.35); cursor: not-allowed; }
+.splnit-btn.locked:hover { background: var(--surface2); }
 
 /* Pochvala */
 .pochvala {
@@ -1275,6 +1277,7 @@ function renderMain() {
 
   S_DATA.forEach((s, idx) => {
     const done = !!misto.splneno[s.id];
+    const locked = !done && idx > 0 && !misto.splneno[S_DATA[idx - 1].id];
     const card = document.createElement('div');
     card.className = 's-card' + (done ? ' done' : '') + (idx === 0 && splneno === 0 ? ' open' : '');
     card.id = 'card-' + s.id;
@@ -1340,8 +1343,8 @@ function renderMain() {
 
         ${s.id === 's4' && jePro ? standardBlockHtml(misto) : ''}
 
-        <button class="splnit-btn ${done ? 'done' : ''}" onclick="splnitS('${s.id}')">
-          ${done ? '✓ Splněno' : s.num + ' Označit jako splněné'}
+        <button class="splnit-btn ${done ? 'done' : ''}${locked ? ' locked' : ''}" onclick="splnitS('${s.id}')" ${locked ? 'disabled' : ''}>
+          ${done ? '✓ Splněno' : (locked ? 'Nejdřív dokončete ' + S_DATA[idx - 1].num : s.num + ' Označit jako splněné')}
         </button>
       </div>`;
 
@@ -1701,8 +1704,19 @@ function splnitS(sId) {
   if (!misto) return;
 
   if (misto.splneno[sId]) {
+    const idxUnmark = S_DATA.findIndex(x => x.id === sId);
+    const dalsiHotovy = S_DATA.slice(idxUnmark + 1).find(x => misto.splneno[x.id]);
+    if (dalsiHotovy) {
+      ukazatUpozorneni('Krok ' + S_DATA[idxUnmark].num + ' nejde odškrtnout zpátky, dokud je splněný navazující krok ' + dalsiHotovy.num + ' (' + dalsiHotovy.name + '). Nejdřív odškrtněte ten.');
+      return;
+    }
     misto.splneno[sId] = false;
   } else {
+    const idx = S_DATA.findIndex(x => x.id === sId);
+    if (idx > 0 && !misto.splneno[S_DATA[idx - 1].id]) {
+      ukazatUpozorneni('Kroky 5S na sebe navazují. Nejdřív dokončete krok ' + S_DATA[idx - 1].num + ' (' + S_DATA[idx - 1].name + '), pak teprve ' + S_DATA[idx].num + '.');
+      return;
+    }
     const zbyva = (misto.zbyvaCo[sId] || '').trim();
     if (zbyva) {
       ukazatUpozorneni('V poli "Co ještě zbývá" máte rozepsané úkoly. Než krok označíte jako splněný, dokončete je nebo pole vymažte.');
