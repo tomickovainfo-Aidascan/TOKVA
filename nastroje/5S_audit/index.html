@@ -682,6 +682,27 @@ nav {
 }
 .notice-btn:hover { background: var(--gold-dark); }
 
+.notice-btns { display: flex; gap: 10px; justify-content: center; }
+
+.notice-btn.secondary {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.7);
+}
+.notice-btn.secondary:hover { border-color: rgba(255,255,255,.35); color: var(--white); }
+
+.foto-slot-required {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  position: relative;
+  z-index: 1;
+  margin-top: 1px;
+}
+.foto-slot.has-photo .foto-slot-required { display: none; }
+
 .modal-title {
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
@@ -798,6 +819,66 @@ nav {
   vertical-align: middle;
 }
 
+/* PRO FINAL PANEL - vetsi, vyraznejsi souhrn na konci appky (kandidat na sjednoceny vzhled napric appkami) */
+.pro-final-panel {
+  background: linear-gradient(160deg, rgba(233,169,27,.10), rgba(233,169,27,.03));
+  border: 1px solid rgba(233,169,27,.35);
+  border-radius: 16px;
+  padding: 24px 22px 22px;
+  margin-bottom: 16px;
+}
+.pro-final-badge {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dark);
+  background: var(--gold);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.pro-final-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+.pro-final-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+.pro-final-item { display: flex; gap: 12px; align-items: flex-start; }
+.pro-final-item-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(233,169,27,.18); color: var(--gold);
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.pro-final-item.soon .pro-final-item-icon { background: rgba(255,255,255,.08); color: rgba(255,255,255,.5); }
+.pro-final-item-title { font-size: 13.5px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
+.pro-final-item-desc { font-size: 12.5px; color: rgba(255,255,255,.55); line-height: 1.6; }
+.pro-final-soon {
+  display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+  color: rgba(255,255,255,.55); background: rgba(255,255,255,.08); padding: 2px 7px; border-radius: 8px;
+  margin-left: 6px; vertical-align: middle;
+}
+.pro-final-cta {
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all .2s;
+}
+.pro-final-cta:hover { background: var(--gold-dark); }
+
 /* STANDARD MÍSTA (4S, Pro) */
 .standard-block { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
 .standard-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
@@ -911,9 +992,12 @@ nav {
 
 <div class="notice-overlay" id="notice-overlay" style="display:none;" onclick="if(event.target===this) zavritUpozorneni()">
   <div class="notice-box">
-    <div class="notice-icon">!</div>
+    <div class="notice-icon" id="notice-icon">!</div>
     <div class="notice-text" id="notice-text"></div>
-    <button class="notice-btn" onclick="zavritUpozorneni()">Rozumím</button>
+    <div class="notice-btns">
+      <button class="notice-btn secondary" id="notice-btn-cancel" style="display:none;" onclick="zavritUpozorneni()">Zrušit</button>
+      <button class="notice-btn" id="notice-btn-ok" onclick="zavritUpozorneni()">Rozumím</button>
+    </div>
   </div>
 </div>
 
@@ -1137,18 +1221,19 @@ async function zajistitLokaciProMisto(misto) {
 function smazatMisto(id) {
   const misto = data.mista.find(m => m.id === id);
   if (!misto) return;
-  if (!confirm('Smazat místo "' + misto.nazev + '"? Vše včetně fotek a poznámek bude odstraněno.')) return;
-  data.mista = data.mista.filter(m => m.id !== id);
-  if (data.aktivniMisto === id) {
-    data.aktivniMisto = data.mista.length > 0 ? data.mista[0].id : null;
-  }
-  ulozit();
-  renderMista();
-  if (data.mista.length === 0) {
-    zobrazitUvod();
-  } else {
-    renderMain();
-  }
+  ukazatPotvrzeni('Smazat místo "' + misto.nazev + '"? Vše včetně fotek a poznámek bude odstraněno.', () => {
+    data.mista = data.mista.filter(m => m.id !== id);
+    if (data.aktivniMisto === id) {
+      data.aktivniMisto = data.mista.length > 0 ? data.mista[0].id : null;
+    }
+    ulozit();
+    renderMista();
+    if (data.mista.length === 0) {
+      zobrazitUvod();
+    } else {
+      renderMain();
+    }
+  }, 'Smazat');
 }
 
 function prepnoutMisto(id) {
@@ -1215,7 +1300,7 @@ function renderMain() {
         <div class="s-popis">${s.popis}</div>
 
         <div class="foto-sekce">
-          <div class="foto-label">Fotodokumentace</div>
+          <div class="foto-label">Fotodokumentace${s.id === 's1' ? ' — fotka před je povinná' : (s.id === 's4' ? ' — fotka po je povinná' : '')}</div>
           <div class="foto-grid">
             <div>
               <div class="foto-slot ${fotokyPred ? 'has-photo' : ''}" onclick="vybratFoto('${s.id}', 'pred')">
@@ -1223,6 +1308,7 @@ function renderMain() {
                 <div class="foto-slot-icon">📷</div>
                 <div class="foto-slot-label">${fotokyPred ? 'Před' : 'Před'}</div>
                 <div class="foto-slot-formats">JPG, JPEG, PNG</div>
+                ${s.id === 's1' ? '<div class="foto-slot-required">Fotka povinná</div>' : ''}
               </div>
               ${ts_pred ? `<div class="foto-timestamp">${ts_pred}</div>` : ''}
             </div>
@@ -1232,6 +1318,7 @@ function renderMain() {
                 <div class="foto-slot-icon">📷</div>
                 <div class="foto-slot-label">${fotokyPo ? 'Po' : 'Po'}</div>
                 <div class="foto-slot-formats">JPG, JPEG, PNG</div>
+                ${s.id === 's4' ? '<div class="foto-slot-required">Fotka povinná</div>' : ''}
               </div>
               ${ts_po ? `<div class="foto-timestamp">${ts_po}</div>` : ''}
             </div>
@@ -1276,15 +1363,41 @@ function renderMain() {
 // Společná nabídka Pro pro kontroly i úkoly (appka bez Pro)
 function renderProTeaserKontrolyUkoly() {
   const div = document.createElement('div');
-  div.className = 'kontroly-sekce';
+  div.className = 'pro-final-panel';
   div.innerHTML = `
-    <div class="kontroly-title">Co appka umí navíc v Pro <span class="pro-lock-badge">Pro</span></div>
-    <div class="pro-teaser">
-      <p><strong>Standard místa s fotkou cílového stavu</strong><br>Zapíšete přesně, jak má místo vždycky vypadat, s fotkou. Při dalších kontrolách pak porovnáváte realitu se standardem, ne s pamětí.</p>
-      <p><strong>Pravidelné kontroly a sledování vývoje</strong><br>Jednorázově 5S udělá skoro každý. Udržet to je jiná disciplína. Pro appka sleduje, jestli místo drží standard v čase: skóre kontroly, historie, trend a naplánované připomínky.</p>
-      <p><strong>Úkoly a rozpracované problémy</strong><br>Místo obecné poznámky "co ještě zbývá" si v Pro verzi appky rozdělíte konkrétní úkoly mezi lidi, s termínem a zaškrtnutím hotovo.</p>
-      <button onclick="otevritModal('modal-pro')">Odemknout Pro</button>
-    </div>`;
+    <div class="pro-final-badge">Tokva Pro</div>
+    <div class="pro-final-title">Co appka umí navíc v Pro</div>
+    <div class="pro-final-list">
+      <div class="pro-final-item">
+        <div class="pro-final-item-icon">✓</div>
+        <div>
+          <div class="pro-final-item-title">Standard místa s fotkou cílového stavu</div>
+          <div class="pro-final-item-desc">Zapíšete přesně, jak má místo vždycky vypadat, s fotkou. Při dalších kontrolách pak porovnáváte realitu se standardem, ne s pamětí.</div>
+        </div>
+      </div>
+      <div class="pro-final-item">
+        <div class="pro-final-item-icon">✓</div>
+        <div>
+          <div class="pro-final-item-title">Pravidelné kontroly a sledování vývoje</div>
+          <div class="pro-final-item-desc">Jednorázově 5S udělá skoro každý. Udržet to je jiná disciplína. Pro appka sleduje, jestli místo drží standard v čase: skóre kontroly, historie, trend a naplánované připomínky.</div>
+        </div>
+      </div>
+      <div class="pro-final-item">
+        <div class="pro-final-item-icon">✓</div>
+        <div>
+          <div class="pro-final-item-title">Úkoly a rozpracované problémy</div>
+          <div class="pro-final-item-desc">Místo obecné poznámky "co ještě zbývá" si rozdělíte konkrétní úkoly mezi lidi, s termínem a zaškrtnutím hotovo.</div>
+        </div>
+      </div>
+      <div class="pro-final-item soon">
+        <div class="pro-final-item-icon">◷</div>
+        <div>
+          <div class="pro-final-item-title">Místo v rámci projektu firmy<span class="pro-final-soon">Připravujeme</span></div>
+          <div class="pro-final-item-desc">Tohle pracoviště přiřadíte ke konkrétnímu projektu zlepšení a úkoly z appky půjdou rovnou do firemního akčního plánu, ne zvlášť appka po appce.</div>
+        </div>
+      </div>
+    </div>
+    <button class="pro-final-cta" onclick="otevritModal('modal-pro')">Odemknout Tokva Pro</button>`;
   return div;
 }
 
@@ -1812,12 +1925,36 @@ function tiskNeboPro() {
 }
 
 // MODALY
+let _noticeConfirmCb = null;
+
 function ukazatUpozorneni(text) {
+  document.getElementById('notice-icon').textContent = '!';
   document.getElementById('notice-text').textContent = text;
+  document.getElementById('notice-btn-cancel').style.display = 'none';
+  const btnOk = document.getElementById('notice-btn-ok');
+  btnOk.textContent = 'Rozumím';
+  btnOk.onclick = zavritUpozorneni;
+  _noticeConfirmCb = null;
   document.getElementById('notice-overlay').style.display = 'flex';
 }
+
+function ukazatPotvrzeni(text, onConfirm, potvrditLabel) {
+  document.getElementById('notice-icon').textContent = '?';
+  document.getElementById('notice-text').textContent = text;
+  document.getElementById('notice-btn-cancel').style.display = 'inline-block';
+  const btnOk = document.getElementById('notice-btn-ok');
+  btnOk.textContent = potvrditLabel || 'Smazat';
+  _noticeConfirmCb = onConfirm;
+  btnOk.onclick = () => {
+    zavritUpozorneni();
+    if (_noticeConfirmCb) _noticeConfirmCb();
+  };
+  document.getElementById('notice-overlay').style.display = 'flex';
+}
+
 function zavritUpozorneni() {
   document.getElementById('notice-overlay').style.display = 'none';
+  _noticeConfirmCb = null;
 }
 
 function otevritModal(id) {
