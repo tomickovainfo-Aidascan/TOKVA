@@ -613,6 +613,65 @@ nav {
   to { transform: translateY(0); }
 }
 
+/* UPOZORNENI - vlastni vystredeny modal misto browser alert() */
+.notice-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.notice-box {
+  background: #1a1a1a;
+  border: 1px solid rgba(233,169,27,.3);
+  border-radius: 16px;
+  padding: 28px 24px 22px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  animation: noticeIn .18s ease;
+}
+@keyframes noticeIn {
+  from { transform: scale(.94); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.notice-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(233,169,27,.12);
+  color: var(--gold);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+.notice-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: rgba(255,255,255,.85);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.notice-btn {
+  background: var(--gold);
+  color: var(--dark);
+  border: none;
+  border-radius: 10px;
+  padding: 11px 28px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.notice-btn:hover { background: var(--gold-dark); }
+
 .modal-title {
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
@@ -838,6 +897,14 @@ nav {
   </div>
 </div>
 
+<div class="notice-overlay" id="notice-overlay" style="display:none;" onclick="if(event.target===this) zavritUpozorneni()">
+  <div class="notice-box">
+    <div class="notice-icon">!</div>
+    <div class="notice-text" id="notice-text"></div>
+    <button class="notice-btn" onclick="zavritUpozorneni()">Rozumím</button>
+  </div>
+</div>
+
 <!-- Modal Pro odemčení -->
 <div class="modal-overlay" id="modal-pro" style="display:none;">
   <div class="modal">
@@ -934,7 +1001,7 @@ async function klikNaUcet() {
     if (session) { await odhlasit(); return; }
     await vyzadovatPrihlaseni();
   } catch (e) {
-    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    ukazatUpozorneni('Přihlašování teď není dostupné. Zkuste to prosím později.');
     console.warn('Přihlášení/odhlášení se nepovedlo.', e);
   }
 }
@@ -1446,11 +1513,11 @@ function zpracovatFoto(file, ulozitCallback) {
       try {
         ulozitCallback(compressed);
       } catch (err) {
-        alert('Fotku se nepodařilo uložit. Zkuste ji pořídit znovu nebo vyčistěte data prohlížeče.');
+        ukazatUpozorneni('Fotku se nepodařilo uložit. Zkuste ji pořídit znovu nebo vyčistěte data prohlížeče.');
       }
     };
     img.onerror = () => {
-      alert('Tenhle formát fotky appka nepřečte (typicky HEIC z iPhonu). Na iPhonu v Nastavení – Fotoaparát – Formáty zvolte "Nejvíce kompatibilní" a appka pak fotky přijme, nebo nahrajte JPG či PNG.');
+      ukazatUpozorneni('Tenhle formát fotky appka nepřečte (typicky HEIC z iPhonu). Na iPhonu v Nastavení – Fotoaparát – Formáty zvolte "Nejvíce kompatibilní" a appka pak fotky přijme, nebo nahrajte JPG či PNG.');
     };
     img.src = ev.target.result;
   };
@@ -1511,7 +1578,7 @@ function splnitS(sId) {
   } else {
     const zbyva = (misto.zbyvaCo[sId] || '').trim();
     if (zbyva) {
-      alert('V poli "Co ještě zbývá" máte rozepsané úkoly. Než krok označíte jako splněný, dokončete je nebo pole vymažte.');
+      ukazatUpozorneni('V poli "Co ještě zbývá" máte rozepsané úkoly. Než krok označíte jako splněný, dokončete je nebo pole vymažte.');
       return;
     }
     misto.splneno[sId] = true;
@@ -1722,6 +1789,14 @@ function tiskNeboPro() {
 }
 
 // MODALY
+function ukazatUpozorneni(text) {
+  document.getElementById('notice-text').textContent = text;
+  document.getElementById('notice-overlay').style.display = 'flex';
+}
+function zavritUpozorneni() {
+  document.getElementById('notice-overlay').style.display = 'none';
+}
+
 function otevritModal(id) {
   document.getElementById(id).style.display = 'flex';
 }
