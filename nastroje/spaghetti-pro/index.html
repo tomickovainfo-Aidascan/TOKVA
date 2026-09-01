@@ -335,9 +335,6 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
       <button class="tool-btn" id="btn-kalibrovat" onclick="spustitKalibraci()" style="width:100%;justify-content:center;background:var(--gold-light);border-color:var(--gold);color:var(--gold-dark);">
         Kalibrovat kliknutím na plánek
       </button>
-      <button class="tool-btn" id="btn-meritko-cislem" onclick="otevritModalMeritkoCislem()" style="width:100%;justify-content:center;margin-top:8px;">
-        Znám měřítko z výkresu (1:X)
-      </button>
     </div>
     <div class="setup-grid">
       <div class="setup-group">
@@ -604,21 +601,6 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   </div>
 </div>
 
-<!-- MODAL MERITKO CISLEM (podle pomeru z vykresu, napr. 1:100) -->
-<div class="modal-overlay" id="modal-meritko-cislem">
-  <div class="modal">
-    <h3>Zadat měřítko podle výkresu</h3>
-    <p>Pokud má výkres napsané měřítko (např. 1:100) a víte, jak široký je vytištěný nebo naskenovaný výkres na papíře, appka si sama dopočítá přesné měřítko - nemusíte nic klikat.</p>
-    <label style="font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:6px;">Měřítko výkresu (1 : X)</label>
-    <input type="number" class="modal-input" id="modal-meritko-pomer" min="1" step="1" placeholder="např. 100">
-    <label style="font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:6px;">Šířka výkresu na papíře (cm)</label>
-    <input type="number" class="modal-input" id="modal-meritko-sirka-cm" min="0.1" step="0.1" placeholder="např. 29,7 pro A4 na šířku">
-    <div class="modal-btns">
-      <button class="btn-modal-cancel" onclick="zavritModalMeritkoCislem()">Zrušit</button>
-      <button class="btn-modal-ok" onclick="ulozitMeritkoCislem()">Uložit měřítko</button>
-    </div>
-  </div>
-</div>
 
 <!-- MODAL ULOZIT PROJEKT -->
 <div class="modal-overlay" id="modal-ulozit-projekt">
@@ -950,35 +932,6 @@ function ulozitKalibraci() {
   kreslit();
 }
 
-function otevritModalMeritkoCislem() {
-  document.getElementById('modal-meritko-pomer').value = '';
-  document.getElementById('modal-meritko-sirka-cm').value = '';
-  document.getElementById('modal-meritko-cislem').classList.add('visible');
-}
-
-function zavritModalMeritkoCislem() {
-  document.getElementById('modal-meritko-cislem').classList.remove('visible');
-}
-
-function ulozitMeritkoCislem() {
-  const pomer = parseFloat(document.getElementById('modal-meritko-pomer').value);
-  const sirkaCm = parseFloat(document.getElementById('modal-meritko-sirka-cm').value);
-  document.getElementById('modal-meritko-cislem').classList.remove('visible');
-  if (!pomer || pomer <= 0 || !sirkaCm || sirkaCm <= 0 || !canvas || !canvas.width) return;
-  // 1 : pomer znamena 1 cm na vykresu = pomer cm ve skutecnosti. Sirka vykresu na papire (cm)
-  // prepoctena pres pomer da skutecnou sirku cele plochy planku v metrech, ze ktere se dopocita meritko.
-  const skutecnaSirkaM = (sirkaCm * pomer) / 100;
-  meritko = skutecnaSirkaM / canvas.width;
-  meritkoNastaveno = true;
-  const status = document.getElementById('kalibrace-status');
-  if (status) status.textContent = 'Měřítko nastavené podle poměru 1:' + pomer + ' (celá šířka plánku = ' + skutecnaSirkaM.toLocaleString('cs-CZ', {maximumFractionDigits:1}) + ' m). Klidně zadejte znovu, pokud se spletete.';
-  const btn2 = document.getElementById('btn-zacit-kreslit');
-  if (btn2) btn2.disabled = false;
-  mod = jeAppSpustena() ? 'kreslit' : null;
-  if (mod === 'kreslit') setMod('kreslit');
-  updateStats();
-  kreslit();
-}
 
 function spustitKresleni() {
   if (!meritkoNastaveno) { alert('Nejdřív zkalibrujte měřítko kliknutím na plánek.'); return; }
