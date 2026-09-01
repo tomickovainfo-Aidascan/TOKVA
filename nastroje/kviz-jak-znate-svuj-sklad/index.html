@@ -876,7 +876,10 @@ function zobrazVysledky() {
     coDal.innerHTML = top.map(({i}) => {
       const odkaz = CO_DAL_ODKAZY[i];
       const tlacitko = odkaz
-        ? `<a href="${odkaz.url}" target="_blank" style="display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:var(--gold-dark);text-decoration:none;">Spustit ${odkaz.nazev} →</a>`
+        ? `<div style="margin-top:12px;padding-top:12px;border-top:1px dashed rgba(233,169,27,.4);">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:7px;">Doporučený další krok</div>
+            <a href="${odkaz.url}" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-size:13px;font-weight:600;padding:9px 18px;border-radius:6px;text-decoration:none;">Spustit ${odkaz.nazev} →</a>
+          </div>`
         : '';
       return `
       <div style="padding:14px 18px;border-bottom:1px solid #f5f5f5;">

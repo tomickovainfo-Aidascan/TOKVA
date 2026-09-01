@@ -699,15 +699,28 @@ nav {
 .top3-item-val { font-family:'DM Mono',monospace; font-size:13px; color:var(--gold-dark); flex-shrink:0; }
 .top3-item-proc { font-size:12px; color:var(--mid); line-height:1.55; margin-bottom:6px; }
 .top3-item-proc strong { color:var(--dark); }
+.top3-item-cta-label {
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:var(--gold-dark);
+  margin-top:10px;
+  margin-bottom:7px;
+  padding-top:10px;
+  border-top:1px dashed rgba(233,169,27,.4);
+}
 .top3-item-link {
   display:inline-block;
-  font-size:12px;
-  font-weight:700;
-  color:var(--gold-dark);
+  background:var(--black);
+  color:var(--white);
+  font-size:13px;
+  font-weight:600;
+  padding:9px 18px;
+  border-radius:6px;
   text-decoration:none;
-  border-bottom:1px solid var(--gold);
 }
-.top3-item-link:hover { color:var(--dark); }
+.top3-item-link:hover { background:var(--gold); color:var(--black); }
 
 /* KLASIFIKACE */
 .klas-card {
@@ -1510,7 +1523,7 @@ function renderZaznamy() {
               <div class="top3-item-val">${formatDuration(x.ms)}</div>
             </div>
             <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> ${PROC_ZALEZI_KAT[x.id] || ''}</div>
-            ${ODKAZ_KAT[x.id] ? `<a href="${ODKAZ_KAT[x.id].url}" target="_blank" rel="noopener" class="top3-item-link">Spustit ${ODKAZ_KAT[x.id].nazev} →</a>` : ''}
+            ${ODKAZ_KAT[x.id] ? `<div class="top3-item-cta-label">Doporučený další krok</div><a href="${ODKAZ_KAT[x.id].url}" target="_blank" rel="noopener" class="top3-item-link">Spustit ${ODKAZ_KAT[x.id].nazev} →</a>` : ''}
           </div>
         `).join('')}
       </div>`;
