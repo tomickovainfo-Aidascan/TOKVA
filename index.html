@@ -134,6 +134,16 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 .d-hero-cta .btn-cta .arr { color:var(--black); width:11px; height:7px; min-width:11px; }
 .d-hero-cta .btn-cta.disabled { background:transparent; border:1px solid rgba(255,255,255,.25); color:rgba(255,255,255,.5); cursor:default; }
 .d-hero-cta .btn-cta.disabled .arr { display:none; }
+
+.d-bottom-cta { padding:36px 48px 44px; border-top:1px solid var(--border); text-align:center; }
+.d-bottom-cta-title { font-family:'Poppins',sans-serif; font-weight:800; font-size:19px; color:var(--dark); margin-bottom:6px; }
+.d-bottom-cta-sub { font-size:14px; color:var(--mid); margin-bottom:20px; }
+.d-bottom-cta .btn-cta { background:var(--gold); color:var(--black); font-family:'DM Sans',sans-serif; font-size:15.5px; font-weight:700; padding:17px 28px; border-radius:6px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:background .2s; cursor:pointer; border:none; }
+.d-bottom-cta .btn-cta:hover { background:var(--gold-dark); color:var(--white); }
+.d-bottom-cta .btn-cta .arr { color:var(--black); width:11px; height:7px; min-width:11px; }
+.d-bottom-cta .btn-cta.disabled { background:transparent; border:1px solid var(--border-strong); color:var(--mid); cursor:default; }
+.d-bottom-cta .btn-cta.disabled .arr { display:none; }
+@media (max-width:720px) { .d-bottom-cta { padding:32px 28px 36px; } }
 .d-hero-note { font-size:12.5px; color:rgba(255,255,255,.45); text-align:center; line-height:1.6; }
 
 /* 2. číselný pás */
@@ -1085,6 +1095,27 @@ function ctaHtml(t, d2) {
   return btn + (note ? `<div class="d-hero-note">${note}</div>` : "");
 }
 
+function bottomCtaHtml(t, d2) {
+  const label = d2.ctaLabel || (t.group === "paid-solo" ? "Chci zjistit cenu" : "Chci nástroj otevřít");
+  let btn;
+  if (t.group === "free") {
+    btn = t.url
+      ? `<a class="btn-cta" href="${t.url}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`
+      : `<div class="btn-cta disabled">${t.formNote || "Připravuje se"}</div>`;
+  } else if (t.group === "paid-solo") {
+    btn = t.prodejniStranka
+      ? `<a class="btn-cta" href="${t.prodejniStranka}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`
+      : `<div class="btn-cta disabled">${t.prodejniNote || "Prodejní stránka se připravuje"}</div>`;
+  } else {
+    btn = `<div class="btn-cta disabled">Připravuje se</div>`;
+  }
+  return `<div class="d-bottom-cta">
+    <div class="d-bottom-cta-title">${t.name}</div>
+    <div class="d-bottom-cta-sub">Dočetli jste až sem? Tohle je ten okamžik, kdy to zkusit na vlastním provozu.</div>
+    ${btn}
+  </div>`;
+}
+
 function statsHtml(stats) {
   const items = (stats && stats.length) ? stats : [0,1,2,3].map(() => ({num:"—", lbl:"čeká na doplnění"}));
   return `<div class="d-stats">${items.map(s => `<div class="d-stat"><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join("")}</div>`;
@@ -1252,6 +1283,7 @@ function renderDetail(id, updateUrl) {
   html += exampleHtml(t, d2);
   html += ioMistakesHtml(t);
   html += faqRelatedHtml(t);
+  html += bottomCtaHtml(t, d2);
 
   html += `</div>`;
 

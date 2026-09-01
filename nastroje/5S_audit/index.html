@@ -1343,7 +1343,6 @@ function renderMain() {
         <button class="splnit-btn ${done ? 'done' : ''}" onclick="splnitS('${s.id}')">
           ${done ? '✓ Splněno' : s.num + ' Označit jako splněné'}
         </button>
-        <div class="pochvala" id="pochvala-${s.id}">${s.pochvala}</div>
       </div>`;
 
     main.appendChild(card);
@@ -1718,15 +1717,15 @@ function splnitS(sId) {
       return;
     }
     misto.splneno[sId] = true;
-    const pochvala = document.getElementById('pochvala-' + sId);
-    if (pochvala) pochvala.style.display = 'block';
 
     const splneno = Object.keys(misto.splneno).filter(k => misto.splneno[k]).length;
 
-    // Připomínka kontroly po 4S (jen v tomhle prohlížeči, appka musí být příště otevřená –
-    // viz vysvětlení u kroku 5S). Na Safari/iPhonu bez přidání appky na plochu Notification
+    // Připomínka kontroly po 4S – jen ve Free appce. V Pro appce si kontrolu appka plánuje
+    // ručně (sekce Kontroly, naplánovatKontrolu()), aby appka nepřepisovala vlastní zvolené
+    // datum automatickým "za 3 dny", jen v tomhle prohlížeči, appka musí být příště otevřená –
+    // viz vysvětlení u kroku 5S. Na Safari/iPhonu bez přidání appky na plochu Notification
     // API vůbec neexistuje, proto se všude nejdřív testuje, jestli je k dispozici.
-    if (splneno === 4) {
+    if (splneno === 4 && !jePro) {
       setTimeout(() => {
         if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
           new Notification('5S kontrola', {
@@ -1743,14 +1742,22 @@ function splnitS(sId) {
     }
   }
 
+  const jePravePotvrzeno = !!misto.splneno[sId];
+  const pochvalaText = S_DATA.find(x => x.id === sId).pochvala;
+
   ulozit();
   renderMista();
   renderMain();
   setTimeout(() => {
     const card = document.getElementById('card-' + sId);
-    if (card && !card.classList.contains('open')) card.classList.add('open');
-    const pochvala = document.getElementById('pochvala-' + sId);
-    if (pochvala && misto.splneno[sId]) pochvala.style.display = 'block';
+    if (card) {
+      if (jePravePotvrzeno) {
+        card.classList.remove('open');
+      } else if (!card.classList.contains('open')) {
+        card.classList.add('open');
+      }
+    }
+    if (jePravePotvrzeno) ukazatUpozorneni(pochvalaText, '✓');
   }, 50);
 }
 
@@ -1927,8 +1934,8 @@ function tiskNeboPro() {
 // MODALY
 let _noticeConfirmCb = null;
 
-function ukazatUpozorneni(text) {
-  document.getElementById('notice-icon').textContent = '!';
+function ukazatUpozorneni(text, icon) {
+  document.getElementById('notice-icon').textContent = icon || '!';
   document.getElementById('notice-text').textContent = text;
   document.getElementById('notice-btn-cancel').style.display = 'none';
   const btnOk = document.getElementById('notice-btn-ok');
