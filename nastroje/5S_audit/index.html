@@ -504,28 +504,6 @@ nav {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* KONFETY */
-#konfety {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 999;
-  display: none;
-}
-
-.konfet {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  animation: padat linear forwards;
-}
-
-@keyframes padat {
-  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-}
-
 /* KONTROLY */
 .kontroly-sekce {
   background: var(--surface);
@@ -932,7 +910,6 @@ nav {
 </head>
 <body>
 
-<div id="konfety"></div>
 
 <nav>
   <a href="https://tokva.cz/?nastroj=5s-audit" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a>
@@ -1750,10 +1727,6 @@ function splnitS(sId) {
       }, 100);
     }
 
-    // Konfety po 5S
-    if (splneno === 5) {
-      spustitKonfety();
-    }
   }
 
   const jePravePotvrzeno = !!misto.splneno[sId];
@@ -1860,28 +1833,6 @@ async function ulozitKontrolu() {
       console.warn('Kontrolu se nepodařilo zapsat do Supabase, zůstává aspoň lokálně.', e);
     }
   }
-}
-
-// KONFETY
-function spustitKonfety() {
-  const wrap = document.getElementById('konfety');
-  wrap.style.display = 'block';
-  wrap.innerHTML = '';
-  const barvy = ['#e9a91b', '#2a7a4f', '#fff', '#c48e10', '#6ee7a8'];
-  for (let i = 0; i < 80; i++) {
-    const k = document.createElement('div');
-    k.className = 'konfet';
-    k.style.cssText = `
-      left: ${Math.random() * 100}%;
-      background: ${barvy[Math.floor(Math.random() * barvy.length)]};
-      animation-duration: ${1.5 + Math.random() * 2}s;
-      animation-delay: ${Math.random() * .5}s;
-      width: ${6 + Math.random() * 8}px;
-      height: ${6 + Math.random() * 8}px;
-    `;
-    wrap.appendChild(k);
-  }
-  setTimeout(() => { wrap.style.display = 'none'; wrap.innerHTML = ''; }, 4000);
 }
 
 // TISK — sestaví přehledný report z aktuálního místa a vytiskne jen ten
