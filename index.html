@@ -196,6 +196,10 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 .d-example-stat .stat-num { font-family:'Poppins',sans-serif; font-weight:900; font-size:40px; color:var(--gold); line-height:1.05; margin-bottom:10px; }
 .d-example-stat.quote .stat-num { font-size:23px; line-height:1.4; letter-spacing:-0.3px; }
 .d-example-stat .stat-note { font-size:14px; line-height:1.65; color:rgba(255,255,255,.6); }
+.d-example-photos { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:36px; }
+.d-example-photos img { width:100%; height:280px; object-fit:cover; border-radius:12px; display:block; }
+.d-example-photos figcaption { font-size:12px; color:rgba(255,255,255,.5); margin-top:8px; }
+@media (max-width:640px){ .d-example-photos { grid-template-columns:1fr; } }
 
 /* 7. vstupy/výstupy + časté chyby */
 .d-io-mistakes { background:var(--white); padding:42px 48px; display:grid; grid-template-columns:1fr 1fr; gap:36px; }
@@ -816,7 +820,11 @@ const TOOLS = [
       recognizeClose:"Prvních tří kroků dosáhne skoro každý jednou. Ten čtvrtý a pátý, udržet to tak, je ten těžší.",
       example:{
         headline:"Čištění odhalilo povolené šrouby strojů",
-        stat:{ quote:true, text:"Cílem 3.S Uklidit není pouze mít čisto." }
+        stat:{ quote:true, text:"Cílem 3.S Uklidit není pouze mít čisto." },
+        images:[
+          { src:"nastroje/5S_audit/sroub-bez-znacky.jpg", alt:"Šroub bez bílé značky", caption:"Bez značky nejde na první pohled poznat, jestli šroub drží." },
+          { src:"nastroje/5S_audit/sroub-oznaceny.jpg", alt:"Šrouby označené bílou čárou", caption:"Bílá čára na matici i šroubu v jedné linii, standard po zavedení 5S." }
+        ]
       }
     } },
 
@@ -1187,7 +1195,10 @@ function exampleHtml(t, d2) {
       ? `<div class="d-example-stat quote"><div class="stat-num">"${ex.stat.text}"</div><div class="stat-note">${ex.stat.note || ""}</div></div>`
       : `<div class="d-example-stat"><div class="stat-num">${ex.stat.num}</div><div class="stat-note">${ex.stat.note || ""}</div></div>`;
   }
-  return `<div class="d-example">${eyebrow}<h3>${ex.headline || "Praktický příklad"}</h3><div class="d-example-grid" style="${right ? "" : "grid-template-columns:1fr;"}">${left}${right}</div></div>`;
+  const photos = (ex.images && ex.images.length)
+    ? `<div class="d-example-photos">${ex.images.map(img => `<figure><img src="${img.src}" alt="${img.alt || ""}" loading="lazy">${img.caption ? `<figcaption>${img.caption}</figcaption>` : ""}</figure>`).join("")}</div>`
+    : "";
+  return `<div class="d-example">${eyebrow}<h3>${ex.headline || "Praktický příklad"}</h3><div class="d-example-grid" style="${right ? "" : "grid-template-columns:1fr;"}">${left}${right}</div>${photos}</div>`;
 }
 
 function ioColHtml(cls, label, value, fallback) {
