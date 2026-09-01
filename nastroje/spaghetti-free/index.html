@@ -67,7 +67,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .howto-step-text { font-size:13px; color:var(--mid); line-height:1.6; }
 .howto-step-text strong { color:var(--dark); }
 
-.main { max-width:1100px; margin:0 auto; padding:20px 20px 60px; }
+.main { max-width:1100px; margin:0 auto; padding:14px 16px 30px; }
 
 /* SETUP PANEL */
 .setup-panel { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:16px; }
@@ -98,8 +98,8 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 /* TOOLBAR */
 .toolbar {
   background:var(--white); border:1px solid var(--border); border-radius:10px;
-  padding:10px 14px; margin-bottom:12px;
-  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  padding:8px 10px; margin-bottom:8px;
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
 }
 .toolbar-group { display:flex; align-items:center; gap:8px; }
 .toolbar-divider { width:1px; height:24px; background:var(--border); }
@@ -117,9 +117,9 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 
 /* STATS BAR */
 .stats-bar {
-  display:flex; gap:16px; flex-wrap:wrap;
+  display:flex; gap:14px; flex-wrap:wrap;
   background:var(--dark); border-radius:10px;
-  padding:12px 16px; margin-bottom:12px;
+  padding:8px 14px; margin-bottom:8px;
 }
 .stat-item { display:flex; flex-direction:column; gap:2px; }
 .stat-val { font-family:"Poppins",sans-serif; font-size:18px; font-weight:800; color:var(--gold); line-height:1; }
@@ -138,13 +138,13 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 #main-canvas { display:block; transform-origin:0 0; touch-action:none; }
 
 /* ZAKÁZKY */
-.zakazky-panel { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:12px; }
-.zakazky-title { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--mid); margin-bottom:12px; }
-.zakazky-list { display:flex; flex-direction:column; gap:6px; max-height:200px; overflow-y:auto; }
+.zakazky-panel { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-top:8px; }
+.zakazky-title { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--light); margin-bottom:6px; }
+.zakazky-list { display:flex; flex-direction:column; gap:4px; max-height:96px; overflow-y:auto; }
 .zakazka-item {
-  display:flex; align-items:center; gap:10px;
-  padding:8px 12px; border-radius:6px; border:1px solid var(--border);
-  cursor:pointer; transition:all 0.15s; font-size:13px;
+  display:flex; align-items:center; gap:8px;
+  padding:5px 10px; border-radius:6px; border:1px solid var(--border);
+  cursor:pointer; transition:all 0.15s; font-size:12px;
 }
 .zakazka-item:hover { border-color:var(--gold); background:var(--gold-light); }
 .zakazka-item.active { border-color:var(--gold); background:var(--gold-light); }
@@ -155,14 +155,14 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .zakazka-smazat:hover { color:var(--red); background:#fff0f0; }
 .btn-nova-zakazka {
   background:transparent; border:1px dashed var(--border);
-  border-radius:6px; padding:8px 12px; width:100%;
-  font-family:"DM Sans",sans-serif; font-size:12px; font-weight:600;
-  color:var(--light); cursor:pointer; transition:all 0.2s; margin-top:6px;
+  border-radius:6px; padding:5px 10px; width:100%;
+  font-family:"DM Sans",sans-serif; font-size:11px; font-weight:600;
+  color:var(--light); cursor:pointer; transition:all 0.2s; margin-top:4px;
 }
 .btn-nova-zakazka:hover { border-color:var(--gold); color:var(--gold-dark); background:var(--gold-light); }
 
 /* TIP BOX */
-.tip-box { background:var(--gold-light); border:1px solid rgba(233,169,27,0.3); border-radius:8px; padding:12px 16px; margin-top:12px; font-size:13px; color:var(--mid); line-height:1.65; }
+.tip-box { background:var(--gold-light); border:1px solid rgba(233,169,27,0.3); border-radius:8px; padding:8px 12px; margin-top:8px; font-size:11.5px; color:var(--mid); line-height:1.5; }
 .tip-box strong { color:var(--dark); }
 .tip-box a { color:var(--gold-dark); font-weight:600; }
 
@@ -236,21 +236,21 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   </div>
 </div>
 
-<nav>
+<nav id="site-nav">
   <a href="https://tokva.cz/?nastroj=spaghetti-sklad" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a>
   <a href="../spaghetti-pro/" class="nav-pro" style="font-size:12px;font-weight:700;color:#8b5cf6;text-decoration:none;padding:5px 12px;border:1px solid #8b5cf6;border-radius:4px;">Tokva Pro</a>
 </nav>
 
-<div class="page-header">
+<div class="page-header" id="page-header">
   <div class="tool-badge">Nástroj zdarma</div>
   <h1>Spaghetti diagram<br><em>měření tras</em></h1>
   <p>Nahrajte plánek skladu nebo výroby, klikejte body trasy a aplikace automaticky zakreslí spaghetti diagram i délku každé cesty.</p>
 </div>
 
-<div class="howto-block">
+<div class="howto-block" id="howto-block">
   <div class="howto-inner">
     <details class="info-detail">
-      <summary class="info-summary">Chci vědět, jak appka funguje</summary>
+      <summary class="info-summary">Chci vědět jak na to</summary>
       <div style="margin-top:18px;">
         <video class="howto-video" src="demo-gesta.mp4" controls playsinline preload="metadata"></video>
         <div class="howto-steps">
@@ -641,9 +641,26 @@ function skrytUploadNotice() {
   el.style.display = 'none';
 }
 
+function skrytChromePriPraci() {
+  const nav = document.getElementById('site-nav');
+  const header = document.getElementById('page-header');
+  const howto = document.getElementById('howto-block');
+  if (nav) nav.style.display = 'none';
+  if (header) header.style.display = 'none';
+  if (howto) howto.style.display = 'none';
+}
+function zobrazitChrome() {
+  const nav = document.getElementById('site-nav');
+  const header = document.getElementById('page-header');
+  const howto = document.getElementById('howto-block');
+  if (nav) nav.style.display = '';
+  if (header) header.style.display = '';
+  if (howto) howto.style.display = '';
+}
 function inicializovat() {
   document.getElementById('upload-zone').style.display = 'none';
   document.getElementById('setup-panel').style.display = 'block';
+  skrytChromePriPraci();
   document.getElementById('canvas-placeholder').style.display = 'none';
   canvas.style.display = 'block';
 
@@ -731,7 +748,6 @@ function spustitKresleni() {
   document.getElementById('setup-panel').style.display = 'none';
   document.getElementById('stats-bar').style.display = 'flex';
   document.getElementById('toolbar').style.display = 'flex';
-  document.getElementById('vysvetlivky').style.display = 'block';
   document.getElementById('zakazky-panel').style.display = 'block';
   document.getElementById('tip-krokomery').style.display = 'block';
   document.getElementById('export-bar').style.display = 'flex';
@@ -757,7 +773,7 @@ function prepocitatFitZoom() {
   // Okno pro planek je vzdy ctvercove (cely planek se do nej vejde cely, "contain" fit),
   // aby vysoke/uzke fotky z mobilu nezabraly celou obrazovku a tlacitka pod nimi zustala
   // vidět. Stejny rozmer se pak pouziva i pro export/tisk.
-  const side = Math.max(240, Math.min(parentW, window.innerHeight * 0.6, 640));
+  const side = Math.max(240, Math.min(parentW, window.innerHeight * 0.68, 640));
   fitZoom = Math.min(side / canvas.width, side / canvas.height);
   outer.style.width = side + 'px';
   outer.style.height = side + 'px';
@@ -1194,6 +1210,7 @@ function resetovat() {
     document.getElementById('canvas-outer').style.height = '';
     document.getElementById('canvas-placeholder').style.display = 'flex';
     document.getElementById('upload-zone').style.display = 'block';
+    zobrazitChrome();
     skrytUploadNotice();
     document.getElementById('setup-panel').style.display = 'none';
     document.getElementById('stats-bar').style.display = 'none';
