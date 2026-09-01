@@ -47,11 +47,13 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .nav-brand { font-family:"Poppins",sans-serif; font-size:14px; font-weight:800; color:var(--black); }
 .nav-brand span { color:var(--gold); }
 
-.page-header { background:var(--white); border-bottom:1px solid var(--border); padding:24px 24px 20px; }
-.tool-badge { display:inline-block; background:var(--gold-light); border:1px solid rgba(233,169,27,0.3); color:var(--gold-dark); font-size:10px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase; padding:3px 10px; border-radius:2px; margin-bottom:10px; }
-.page-header h1 { font-family:"Poppins",sans-serif; font-size:clamp(18px,3vw,26px); font-weight:900; color:var(--black); line-height:1.2; letter-spacing:-0.3px; margin-bottom:6px; }
-.page-header h1 em { color:var(--gold); font-style:normal; }
-.page-header p { font-size:13px; color:var(--mid); max-width:600px; line-height:1.65; }
+.hero { background:var(--black); padding:44px 24px 36px; position:relative; overflow:hidden; }
+.hero::before { content:""; position:absolute; top:-80px; right:-80px; width:320px; height:320px; border-radius:50%; border:60px solid rgba(233,169,27,0.07); pointer-events:none; }
+.hero-inner { max-width:1040px; margin:0 auto; position:relative; z-index:1; }
+.tool-badge { display:inline-block; background:rgba(233,169,27,0.15); border:1px solid rgba(233,169,27,0.3); color:var(--gold); font-size:10px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase; padding:4px 12px; border-radius:2px; margin-bottom:16px; }
+.hero h1 { font-family:"Poppins",sans-serif; font-size:clamp(22px,3.6vw,34px); font-weight:900; color:var(--white); line-height:1.2; letter-spacing:-0.4px; margin-bottom:12px; }
+.hero h1 em { color:var(--gold); font-style:normal; }
+.hero p { font-size:14.5px; color:rgba(255,255,255,0.55); max-width:600px; line-height:1.7; font-weight:300; }
 
 .howto-block { background:var(--white); border-bottom:1px solid var(--border); padding:18px 24px; }
 .howto-inner { max-width:700px; margin:0 auto; }
@@ -66,6 +68,36 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .howto-step-num { flex-shrink:0; width:22px; height:22px; border-radius:50%; background:var(--gold-light); border:1px solid rgba(233,169,27,0.4); color:var(--gold-dark); font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
 .howto-step-text { font-size:13px; color:var(--mid); line-height:1.6; }
 .howto-step-text strong { color:var(--dark); }
+
+/* Z PRAXE story (sjednoceno s katalogovou strankou) */
+.d-example { background:var(--black); color:var(--white); border-radius:14px; padding:36px 32px; margin-bottom:24px; }
+.d-example-eyebrow { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:2.2px; color:var(--gold); margin-bottom:14px; }
+.d-example h4 { font-family:"Poppins",sans-serif; font-weight:900; font-size:clamp(19px,2.6vw,26px); line-height:1.2; letter-spacing:-0.5px; margin-bottom:20px; }
+.d-example-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:28px; align-items:start; }
+.d-example-text p { font-size:14px; line-height:1.7; color:rgba(255,255,255,.8); margin-bottom:12px; }
+.d-example-text p:last-child { margin-bottom:0; }
+.d-example-stat { border-left:3px solid var(--gold); padding-left:18px; }
+.d-example-stat .stat-num { font-family:"Poppins",sans-serif; font-weight:900; font-size:34px; color:var(--gold); line-height:1.05; margin-bottom:8px; }
+.d-example-stat .stat-note { font-size:12.5px; line-height:1.6; color:rgba(255,255,255,.6); }
+@media (max-width:600px) { .d-example-grid { grid-template-columns:1fr; } }
+
+/* Hodi se vam to / kroky / co nepotrebujete */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px; }
+.content-card { background:var(--paper); border:1px solid var(--border); border-radius:12px; padding:22px; }
+.content-card-title { font-family:"Poppins",sans-serif; font-size:12.5px; font-weight:700; color:var(--dark); margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
+.check-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.check-list li { font-size:13.5px; color:var(--mid); display:flex; gap:10px; align-items:flex-start; line-height:1.6; }
+.check-list li::before { content:"→"; color:var(--gold); font-weight:700; flex-shrink:0; margin-top:1px; }
+.steps-list { display:flex; flex-direction:column; gap:12px; }
+.step-item { display:flex; gap:12px; align-items:flex-start; }
+.step-num { width:22px; height:22px; border-radius:50%; background:var(--gold); color:#1a1000; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+.step-item > div:last-child { font-size:13.5px; color:var(--mid); line-height:1.65; }
+.no-need-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:0; }
+.no-need-item { font-size:13.5px; color:var(--mid); display:flex; gap:8px; align-items:center; }
+.no-need-item::before { content:"✕"; color:var(--light); font-size:11px; }
+@media (max-width:600px) { .two-col { grid-template-columns:1fr; } .no-need-grid { grid-template-columns:1fr; } }
+
+.howto-divider-title { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:var(--dark); text-transform:uppercase; letter-spacing:1px; margin:6px 0 16px; padding-top:24px; border-top:1px solid var(--border); }
 
 .main { max-width:1100px; margin:0 auto; padding:14px 16px 30px; }
 
@@ -204,7 +236,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 @media (max-width:600px) {
   .main { padding:12px 12px 40px; }
   .stats-bar { gap:12px; }
-  nav, .page-header { padding-left:16px; padding-right:16px; }
+  nav, .hero { padding-left:16px; padding-right:16px; }
   footer { padding:16px; flex-direction:column; text-align:center; }
 }
 /* Na dotykovem zarizeni (mys nema "dva prsty") uz posun/zoom resi primo dva prsty
@@ -241,17 +273,65 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   <a href="../spaghetti-pro/" class="nav-pro" style="font-size:12px;font-weight:700;color:#8b5cf6;text-decoration:none;padding:5px 12px;border:1px solid #8b5cf6;border-radius:4px;">Tokva Pro</a>
 </nav>
 
-<div class="page-header" id="page-header">
-  <div class="tool-badge">Nástroj zdarma</div>
-  <h1>Spaghetti diagram<br><em>měření tras</em></h1>
-  <p>Nahrajte plánek skladu nebo výroby, klikejte body trasy a aplikace automaticky zakreslí spaghetti diagram i délku každé cesty.</p>
+<div class="hero" id="page-header">
+  <div class="hero-inner">
+    <div class="tool-badge">Vedoucí skladu nebo výroby, co chce čísla, ne odhad</div>
+    <h1>Kolik lidé <em>reálně nachodí?</em></h1>
+    <p>Nahrajte plánek skladu nebo výroby, klikejte body trasy a aplikace automaticky zakreslí spaghetti diagram i délku každé cesty. Celé zdarma, bez registrace.</p>
+  </div>
 </div>
 
 <div class="howto-block" id="howto-block">
   <div class="howto-inner">
     <details class="info-detail">
-      <summary class="info-summary">Chci vědět jak na to</summary>
+      <summary class="info-summary">Chci vědět víc</summary>
       <div style="margin-top:18px;">
+
+        <div class="d-example">
+          <div class="d-example-eyebrow">Z praxe</div>
+          <h4>Kolik uleví přesunutí pár položek v regálu?</h4>
+          <div class="d-example-grid">
+            <div class="d-example-text">
+              <p>Andula pracovala na výdeji skladu roky, věděla, kde co je. Nikdo netušil, kolik toho za směnu nachodí, dokud to nezměřili krokoměrem: 7,5 km, jen na výdeji.</p>
+              <p>Nakreslily spaghetti diagram jejího pohybu, přesunuly šest položek v regálu, nic víc. Nový výsledek: 4,2 km za směnu, o 44&nbsp;% míň. Anduliny nohy přestaly bolet.</p>
+            </div>
+            <div class="d-example-stat">
+              <div class="stat-num">44 %</div>
+              <div class="stat-note">kratší trasa u reálné zaměstnankyně ve skladu, ze 7,5 km na 4,2 km za směnu, jen přesunem šesti položek v regálu, bez jakékoli investice.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="content-card">
+            <div class="content-card-title">Hodí se vám to, pokud:</div>
+            <ul class="check-list">
+              <li>Tušíte, že se ve skladu nebo výrobě zbytečně nachodí, ale nemáte to podložené čísly</li>
+              <li>Chystáte změnu rozmístění regálů nebo pracovišť a chcete vidět, jestli to dává smysl</li>
+              <li>Chcete ukázat vedení nebo kolegům černé na bílém, kudy se lidi zbytečně motají</li>
+            </ul>
+          </div>
+          <div class="content-card">
+            <div class="content-card-title">Tři kroky, žádná věda:</div>
+            <div class="steps-list">
+              <div class="step-item"><div class="step-num">1</div><div>Nahrajete plánek skladu nebo výroby</div></div>
+              <div class="step-item"><div class="step-num">2</div><div>Naklikáte trasu, kudy se ve skutečnosti chodí</div></div>
+              <div class="step-item"><div class="step-num">3</div><div>Appka spočítá vzdálenost a nakreslí diagram</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-card" style="margin-bottom:24px;">
+          <div class="content-card-title">Co k tomu nepotřebujete:</div>
+          <div class="no-need-grid">
+            <div class="no-need-item">Papír a tužku</div>
+            <div class="no-need-item">Stopky</div>
+            <div class="no-need-item">Žádnou registraci</div>
+            <div class="no-need-item">Žádný software navíc</div>
+          </div>
+        </div>
+
+        <div class="howto-divider-title">Jak appka funguje krok za krokem</div>
         <video class="howto-video" src="demo-gesta.mp4" controls playsinline preload="metadata"></video>
         <div class="howto-steps">
           <div class="howto-step">
