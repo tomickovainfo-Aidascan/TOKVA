@@ -1581,8 +1581,12 @@ function splnitS(sId) {
       ukazatUpozorneni('V poli "Co ještě zbývá" máte rozepsané úkoly. Než krok označíte jako splněný, dokončete je nebo pole vymažte.');
       return;
     }
-    if (!misto.fotky[sId + '_pred'] || !misto.fotky[sId + '_po']) {
-      ukazatUpozorneni('U tohohle kroku chybí fotka před nebo po. Bez obou fotek nemáte důkaz, že se něco fakt změnilo – vyfoťte oba stavy a pak krok označte jako splněný.');
+    if (sId === 's1' && !misto.fotky['s1_pred']) {
+      ukazatUpozorneni('U kroku Vytřídit chybí fotka před. Vyfoťte stav před a pak krok označte jako splněný.');
+      return;
+    }
+    if (sId === 's4' && !misto.fotky['s4_po']) {
+      ukazatUpozorneni('U kroku Udržet pořádek chybí fotka po, tady vzniká standard. Vyfoťte výsledný stav a pak krok označte jako splněný.');
       return;
     }
     misto.splneno[sId] = true;
