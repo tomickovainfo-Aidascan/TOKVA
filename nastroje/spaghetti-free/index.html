@@ -120,7 +120,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .canvas-outer.no-layout { min-height:300px; display:flex; align-items:center; justify-content:center; }
 .canvas-placeholder { text-align:center; color:var(--light); }
 .canvas-placeholder p { font-size:14px; margin-top:8px; }
-#canvas-outer { overflow:hidden; width:100%; cursor:crosshair; }
+#canvas-outer { overflow:hidden; width:100%; cursor:crosshair; margin:0 auto; }
 #main-canvas { display:block; transform-origin:0 0; touch-action:none; }
 
 /* ZAKÁZKY */
@@ -245,6 +245,9 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
       <div id="kalibrace-status" style="font-size:13px;color:var(--mid);margin-bottom:8px;">Zatím není nastavené - klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.</div>
       <button class="tool-btn" id="btn-kalibrovat" onclick="spustitKalibraci()" style="width:100%;justify-content:center;background:var(--gold-light);border-color:var(--gold);color:var(--gold-dark);">
         Kalibrovat kliknutím na plánek
+      </button>
+      <button class="tool-btn" id="btn-meritko-cislem" onclick="otevritModalMeritkoCislem()" style="width:100%;justify-content:center;margin-top:8px;">
+        Znám měřítko z výkresu (1:X)
       </button>
     </div>
     <div class="setup-grid">
@@ -400,6 +403,22 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <div class="modal-btns">
       <button class="btn-modal-cancel" onclick="zavritModalKalibrace()">Zrušit</button>
       <button class="btn-modal-ok" onclick="ulozitKalibraci()">Uložit měřítko</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MERITKO CISLEM (podle pomeru z vykresu, napr. 1:100) -->
+<div class="modal-overlay" id="modal-meritko-cislem">
+  <div class="modal">
+    <h3>Zadat měřítko podle výkresu</h3>
+    <p>Pokud má výkres napsané měřítko (např. 1:100) a víte, jak široký je vytištěný nebo naskenovaný výkres na papíře, appka si sama dopočítá přesné měřítko - nemusíte nic klikat.</p>
+    <label style="font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:6px;">Měřítko výkresu (1 : X)</label>
+    <input type="number" class="modal-input" id="modal-meritko-pomer" min="1" step="1" placeholder="např. 100">
+    <label style="font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:6px;">Šířka výkresu na papíře (cm)</label>
+    <input type="number" class="modal-input" id="modal-meritko-sirka-cm" min="0.1" step="0.1" placeholder="např. 29,7 pro A4 na šířku">
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="zavritModalMeritkoCislem()">Zrušit</button>
+      <button class="btn-modal-ok" onclick="ulozitMeritkoCislem()">Uložit měřítko</button>
     </div>
   </div>
 </div>
@@ -596,6 +615,8 @@ function inicializovat() {
   canvas.height = layout.naturalHeight * scale;
   zoom = 1; offsetX = 0; offsetY = 0;
   prepocitatFitZoom();
+  vycentrovatPohled();
+  aplikovatCssTransform();
 
   // Prva zakázka
   if (zakazky.length === 0) {
@@ -662,6 +683,37 @@ function ulozitKalibraci() {
   kreslit();
 }
 
+function otevritModalMeritkoCislem() {
+  document.getElementById('modal-meritko-pomer').value = '';
+  document.getElementById('modal-meritko-sirka-cm').value = '';
+  document.getElementById('modal-meritko-cislem').classList.add('visible');
+}
+
+function zavritModalMeritkoCislem() {
+  document.getElementById('modal-meritko-cislem').classList.remove('visible');
+}
+
+function ulozitMeritkoCislem() {
+  const pomer = parseFloat(document.getElementById('modal-meritko-pomer').value);
+  const sirkaCm = parseFloat(document.getElementById('modal-meritko-sirka-cm').value);
+  document.getElementById('modal-meritko-cislem').classList.remove('visible');
+  if (!pomer || pomer <= 0 || !sirkaCm || sirkaCm <= 0 || !canvas || !canvas.width) return;
+  // 1 : pomer znamena 1 cm na vykresu = pomer cm ve skutecnosti. Sirka vykresu na papire (cm)
+  // prepoctena pres pomer da skutecnou sirku cele plochy planku v metrech, ze ktere se dopocita meritko.
+  const skutecnaSirkaM = (sirkaCm * pomer) / 100;
+  meritko = skutecnaSirkaM / canvas.width;
+  meritkoNastaveno = true;
+  const status = document.getElementById('kalibrace-status');
+  if (status) status.textContent = 'Měřítko nastavené podle poměru 1:' + pomer + ' (celá šířka plánku = ' + skutecnaSirkaM.toLocaleString('cs-CZ', {maximumFractionDigits:1}) + ' m). Klidně zadejte znovu, pokud se spletete.';
+  const btn = document.getElementById('btn-zacit-kreslit');
+  if (btn) btn.disabled = false;
+  const jizBezi = document.getElementById('toolbar').style.display !== 'none';
+  mod = jizBezi ? 'kreslit' : null;
+  if (jizBezi) setMod('kreslit');
+  updateStats();
+  kreslit();
+}
+
 function spustitKresleni() {
   if (!meritkoNastaveno) { alert('Nejdřív zkalibrujte měřítko kliknutím na plánek.'); return; }
   const nazev = document.getElementById('nazev-zakazky').value || 'Zakázka 1';
@@ -691,15 +743,22 @@ function aplikovatCssTransform() {
 function prepocitatFitZoom() {
   if (!canvas || !canvas.width) return;
   const outer = document.getElementById('canvas-outer');
-  const outerW = outer.clientWidth;
-  if (!outerW) return;
-  // Vyska planku je omezena i vyskou obrazovky, ne jen sirkou - jinak na mobilu
-  // vysoky/uzky plan zabere celou vysku a tlacitka pod nim/nad nim zmizi mimo obrazovku.
-  const maxOuterH = Math.max(260, Math.min(window.innerHeight * 0.55, 560));
-  fitZoom = Math.min(outerW / canvas.width, maxOuterH / canvas.height);
-  // Vyska obalu musi sedet s vizualne zmenseným/zvetsenym obrazkem, jinak zbyde prazdny pruh dole
-  outer.style.height = (canvas.height * fitZoom) + 'px';
+  const parentW = outer.parentElement.clientWidth;
+  if (!parentW) return;
+  // Okno pro planek je vzdy ctvercove (cely planek se do nej vejde cely, "contain" fit),
+  // aby vysoke/uzke fotky z mobilu nezabraly celou obrazovku a tlacitka pod nimi zustala
+  // vidět. Stejny rozmer se pak pouziva i pro export/tisk.
+  const side = Math.max(240, Math.min(parentW, window.innerHeight * 0.6, 640));
+  fitZoom = Math.min(side / canvas.width, side / canvas.height);
+  outer.style.width = side + 'px';
+  outer.style.height = side + 'px';
   aplikovatCssTransform();
+}
+
+function vycentrovatPohled() {
+  const outer = document.getElementById('canvas-outer');
+  offsetX = (outer.clientWidth - canvas.width * fitZoom) / 2;
+  offsetY = (outer.clientHeight - canvas.height * fitZoom) / 2;
 }
 
 function kreslit() {
@@ -777,7 +836,8 @@ function zoomIn() { zoomAround(1.2); }
 function zoomOut() { zoomAround(1/1.2); }
 
 function resetZoom() {
-  zoom = 1; offsetX = 0; offsetY = 0;
+  zoom = 1;
+  vycentrovatPohled();
   aplikovatCssTransform();
 }
 
@@ -1016,12 +1076,20 @@ function kresliNaExportCanvas(expCtx, expW, expH) {
   });
 }
 
-function exportovatObrazek() {
+function vytvoritExportCanvas() {
+  // Ctvercova plocha planku v exportu (stejny princip jako zivy nahled - cely planek
+  // se vejde cely, "contain" fit, vycentrovano), aby export/tisk odpovidal tomu, co appka
+  // ukazuje na obrazovce, a vysoke/uzke fotky nedelaly extremne dlouhy exportovany obrazek.
+  const planSide = 900;
+  const scale = Math.min(planSide / canvas.width, planSide / canvas.height);
+  const drawW = canvas.width * scale, drawH = canvas.height * scale;
+  const offX = (planSide - drawW) / 2, offY = (planSide - drawH) / 2;
+
   const legendH = zakazky.length * 22 + 50;
   const statsH = 36;
   const expCanvas = document.createElement('canvas');
-  expCanvas.width = canvas.width;
-  expCanvas.height = canvas.height + legendH + statsH;
+  expCanvas.width = planSide;
+  expCanvas.height = planSide + legendH + statsH;
   const expCtx = expCanvas.getContext('2d');
 
   expCtx.fillStyle = '#fff';
@@ -1035,20 +1103,21 @@ function exportovatObrazek() {
   const celkem = zakazky.reduce((s,z) => s + spocitejDelku(z.body), 0);
   expCtx.fillText('Spaghetti diagram  |  Celkem: ' + celkem.toFixed(0) + ' m  |  Zakázek: ' + zakazky.length, 14, 22);
 
-  // Mapa a trasy
+  // Mapa a trasy, vycentrovane a zmenseno na ctvercovou plochu
   expCtx.save();
-  expCtx.translate(0, statsH);
+  expCtx.translate(offX, statsH + offY);
+  expCtx.scale(scale, scale);
   kresliNaExportCanvas(expCtx, canvas.width, canvas.height);
   expCtx.restore();
 
   // Legenda dole
   expCtx.fillStyle = '#111';
-  expCtx.fillRect(0, canvas.height + statsH, expCanvas.width, legendH);
+  expCtx.fillRect(0, planSide + statsH, expCanvas.width, legendH);
   expCtx.fillStyle = '#e9a91b';
   expCtx.font = 'bold 11px Arial, sans-serif';
-  expCtx.fillText('ZAKÁZKY A TRASY', 14, canvas.height + statsH + 20);
+  expCtx.fillText('ZAKÁZKY A TRASY', 14, planSide + statsH + 20);
   zakazky.forEach((z, i) => {
-    const y = canvas.height + statsH + 36 + i * 22;
+    const y = planSide + statsH + 36 + i * 22;
     expCtx.beginPath();
     expCtx.arc(18, y, 6, 0, Math.PI * 2);
     expCtx.fillStyle = z.barva;
@@ -1059,6 +1128,11 @@ function exportovatObrazek() {
     expCtx.fillText(z.nazev + ': ' + delka.toFixed(0) + ' m', 32, y + 4);
   });
 
+  return expCanvas;
+}
+
+function exportovatObrazek() {
+  const expCanvas = vytvoritExportCanvas();
   const link = document.createElement('a');
   link.download = 'spaghetti-diagram.png';
   link.href = expCanvas.toDataURL('image/png');
@@ -1066,45 +1140,8 @@ function exportovatObrazek() {
 }
 
 function tisknout() {
+  const expCanvas = vytvoritExportCanvas();
   const printWin = window.open('', '_blank');
-  const expCanvas = document.createElement('canvas');
-  const legendH = zakazky.length * 22 + 50;
-  const statsH = 36;
-  expCanvas.width = canvas.width;
-  expCanvas.height = canvas.height + legendH + statsH;
-  const expCtx = expCanvas.getContext('2d');
-
-  expCtx.fillStyle = '#fff';
-  expCtx.fillRect(0, 0, expCanvas.width, expCanvas.height);
-
-  expCtx.fillStyle = '#111';
-  expCtx.fillRect(0, 0, expCanvas.width, statsH);
-  expCtx.fillStyle = '#fff';
-  expCtx.font = 'bold 12px Arial';
-  const celkem = zakazky.reduce((s,z) => s + spocitejDelku(z.body), 0);
-  expCtx.fillText('Celkem: ' + celkem.toFixed(0) + ' m  |  Zakázek: ' + zakazky.length, 14, 22);
-
-  expCtx.save();
-  expCtx.translate(0, statsH);
-  kresliNaExportCanvas(expCtx, canvas.width, canvas.height);
-  expCtx.restore();
-
-  expCtx.fillStyle = '#111';
-  expCtx.fillRect(0, canvas.height + statsH, expCanvas.width, legendH);
-  expCtx.fillStyle = '#e9a91b';
-  expCtx.font = 'bold 11px Arial';
-  expCtx.fillText('ZAKÁZKY A TRASY', 14, canvas.height + statsH + 20);
-  zakazky.forEach((z, i) => {
-    const y = canvas.height + statsH + 36 + i * 22;
-    expCtx.beginPath();
-    expCtx.arc(18, y, 6, 0, Math.PI * 2);
-    expCtx.fillStyle = z.barva; expCtx.fill();
-    expCtx.fillStyle = '#fff';
-    expCtx.font = '11px Arial';
-    const delka = spocitejDelku(z.body);
-    expCtx.fillText(z.nazev + ': ' + delka.toFixed(0) + ' m', 32, y + 4);
-  });
-
   const img = expCanvas.toDataURL('image/png');
   printWin.document.write('<html><head><title>Spaghetti diagram</title><style>body{margin:0;padding:0;}img{max-width:100%;display:block;}@media print{body{margin:0;}}</style></head><body><img src="' + img + '"></body></html>');
   printWin.document.close();
