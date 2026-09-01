@@ -261,6 +261,12 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   nav, .page-header { padding-left:16px; padding-right:16px; }
   footer { padding:16px; flex-direction:column; text-align:center; }
 }
+/* Na dotykovem zarizeni (mys nema "dva prsty") uz posun/zoom resi primo dva prsty
+   kdykoliv, bez ohledu na rezim - tlacitko Posouvat mapu je tam zbytecne a jen zabira misto.
+   Na myši/trackpadu (jemny ukazatel) zustava, protoze tam neni jinou cestou jak tazenim posunout. */
+@media (pointer:coarse) {
+  #btn-posouvat { display:none; }
+}
 </style>
 
 <style id="cookies-css">
