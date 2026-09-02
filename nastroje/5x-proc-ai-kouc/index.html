@@ -150,7 +150,7 @@ nav {
 }
 .modal p { font-size: 13px; color: var(--mid); line-height: 1.7; margin-bottom: 14px; }
 .modal-notice-btns { display: flex; gap: 10px; }
-.modal-save { width: 100%; background: var(--gold); border: none; border-radius: 10px; padding: 13px; font-family: "Poppins", sans-serif; font-size: 14px; font-weight: 800; color: var(--black); cursor: pointer; transition: all .2s; }
+.modal-save { width: 100%; background: var(--gold); border: none; border-radius: 10px; padding: 13px; font-family: "Poppins", sans-serif; font-size: 14px; font-weight: 800; color: var(--dark); cursor: pointer; transition: all .2s; }
 .modal-save:hover { background: var(--gold-dark); }
 .modal-cancel { background: transparent; border: 1px solid var(--border); border-radius: 10px; padding: 13px; color: var(--mid); font-family: "DM Sans", sans-serif; font-size: 14px; cursor: pointer; flex-shrink: 0; }
 .historie-item {
@@ -448,13 +448,14 @@ nav {
   justify-content: center;
   padding: 40px 20px 56px;
 }
-.hero { background:var(--dark); padding:44px 24px 36px; position:relative; overflow:hidden; }
+.hero { background:var(--dark); padding:52px 24px 44px; position:relative; overflow:hidden; }
 .hero::before { content:""; position:absolute; top:-70px; right:-70px; width:240px; height:240px; border-radius:50%; border:42px solid rgba(233,169,27,0.07); pointer-events:none; }
 .hero-inner { max-width:1040px; margin:0 auto; position:relative; z-index:1; }
 .tool-badge { display:inline-block; background:rgba(233,169,27,0.15); border:1px solid rgba(233,169,27,0.3); color:var(--gold); font-size:10px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase; padding:4px 12px; border-radius:2px; margin-bottom:16px; }
-.hero h1 { font-family:"Poppins",sans-serif; font-size:clamp(22px,3.6vw,34px); font-weight:900; color:var(--white); line-height:1.2; letter-spacing:-0.4px; margin-bottom:12px; }
+.hero h1 { font-family:"Poppins",sans-serif; font-size:clamp(22px,4vw,36px); font-weight:900; color:var(--white); line-height:1.2; letter-spacing:-0.5px; margin-bottom:14px; }
 .hero h1 em { color:var(--gold); font-style:normal; }
-.hero p { font-size:14.5px; color:rgba(255,255,255,0.55); max-width:640px; line-height:1.7; font-weight:300; }
+.hero p { font-size:15px; color:rgba(255,255,255,0.5); max-width:640px; line-height:1.75; font-weight:300; }
+@media (max-width:600px) { .hero{padding:36px 16px 32px;} }
 .content-block { background:var(--white); border-bottom:1px solid rgba(0,0,0,.08); padding:28px 24px; }
 .content-inner { max-width:1040px; margin:0 auto; }
 .info-detail summary { cursor:pointer; list-style:none; }
