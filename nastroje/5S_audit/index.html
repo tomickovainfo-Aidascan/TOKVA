@@ -38,7 +38,7 @@
   --dark: #111;
   --surface: #1a1a1a;
   --surface2: #222;
-  --border: rgba(255,255,255,.08);
+  --border: #e2e2e2;
   --mid: #545454;
   --light: #888;
   --white: #fff;
@@ -53,15 +53,15 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background: var(--dark);
-  color: var(--white);
+  background: var(--paper);
+  color: var(--dark);
   min-height: 100vh;
 }
 
 /* NAV */
 nav {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: var(--white);
+  border-bottom: 2px solid var(--gold);
   padding: 12px 20px;
   display: flex;
   justify-content: space-between;
@@ -69,15 +69,18 @@ nav {
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
 }
 
 .nav-brand {
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 800;
-  color: var(--white);
+  color: var(--dark);
 }
 .nav-brand span { color: var(--gold); }
+.nav-tool { font-size:12px; color:var(--light); font-weight:500; margin-left:10px; padding-left:10px; border-left:1px solid var(--border); }
+@media (max-width:600px) { .nav-tool { display:none; } }
 
 .nav-right { display: flex; gap: 8px; align-items: center; }
 
@@ -98,7 +101,7 @@ nav {
 
 /* MÍSTA */
 .mista-bar {
-  background: var(--surface);
+  background: var(--white);
   border-bottom: 1px solid var(--border);
   padding: 10px 20px;
   display: flex;
@@ -167,8 +170,8 @@ nav {
   border-radius: 20px;
   font-size: 12px;
   cursor: pointer;
-  border: 1px dashed rgba(255,255,255,.2);
-  color: rgba(255,255,255,.3);
+  border: 1px dashed rgba(0,0,0,.18);
+  color: var(--light);
   background: transparent;
   font-family: 'DM Sans', sans-serif;
   transition: all .2s;
@@ -206,7 +209,7 @@ nav {
 
 .progress-bar {
   height: 6px;
-  background: rgba(255,255,255,.06);
+  background: var(--border);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -227,7 +230,7 @@ nav {
 
 /* S KARTY */
 .s-card {
-  background: var(--surface);
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 14px;
   margin-bottom: 16px;
@@ -269,7 +272,7 @@ nav {
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   font-weight: 800;
-  color: var(--white);
+  color: var(--dark);
 }
 
 .s-jp {
@@ -308,7 +311,7 @@ nav {
 
 .s-popis {
   font-size: 13px;
-  color: rgba(255,255,255,.6);
+  color: var(--mid);
   line-height: 1.75;
   margin-bottom: 16px;
   padding-top: 4px;
@@ -316,7 +319,7 @@ nav {
   padding-top: 14px;
 }
 
-.s-popis strong { color: rgba(255,255,255,.9); }
+.s-popis strong { color: var(--dark); }
 
 .s-popis .arr {
   display: inline-block;
@@ -354,8 +357,8 @@ nav {
   overflow: hidden;
   position: relative;
   aspect-ratio: 4/3;
-  background: var(--surface2);
-  border: 1px dashed rgba(255,255,255,.15);
+  background: var(--paper);
+  border: 1px dashed var(--border);
   cursor: pointer;
   transition: all .2s;
   display: flex;
@@ -380,7 +383,7 @@ nav {
   font-weight: 600;
   letter-spacing: .5px;
   text-transform: uppercase;
-  color: rgba(255,255,255,.3);
+  color: var(--light);
   position: relative;
   z-index: 1;
 }
@@ -404,7 +407,7 @@ nav {
 .foto-slot-formats {
   font-size: 9px;
   letter-spacing: .3px;
-  color: rgba(255,255,255,.22);
+  color: var(--light);
   position: relative;
   z-index: 1;
 }
@@ -414,7 +417,7 @@ nav {
 .foto-timestamp {
   font-family: 'DM Mono', monospace;
   font-size: 9px;
-  color: rgba(255,255,255,.25);
+  color: var(--light);
   text-align: center;
   margin-top: 4px;
 }
@@ -449,13 +452,13 @@ nav {
 
 .poznamky-area {
   width: 100%;
-  background: var(--surface2);
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px 14px;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
-  color: var(--white);
+  color: var(--dark);
   resize: none;
   min-height: 80px;
   outline: none;
@@ -463,7 +466,7 @@ nav {
   transition: border .2s;
 }
 
-.poznamky-area::placeholder { color: rgba(255,255,255,.2); }
+.poznamky-area::placeholder { color: var(--light); }
 .poznamky-area:focus { border-color: rgba(233,169,27,.4); }
 
 /* Splnit tlačítko */
@@ -483,17 +486,17 @@ nav {
 
 .splnit-btn:hover { background: var(--gold-dark); }
 .splnit-btn.done { background: rgba(42,122,79,.2); color: var(--green); border: 1px solid rgba(42,122,79,.3); }
-.splnit-btn.locked { background: var(--surface2); color: rgba(255,255,255,.35); cursor: not-allowed; }
-.splnit-btn.locked:hover { background: var(--surface2); }
+.splnit-btn.locked { background: var(--border); color: var(--light); cursor: not-allowed; }
+.splnit-btn.locked:hover { background: var(--border); }
 
 /* Pochvala */
 .pochvala {
-  background: rgba(42,122,79,.15);
+  background: var(--green-light);
   border: 1px solid rgba(42,122,79,.3);
   border-radius: 10px;
   padding: 12px 16px;
   font-size: 13px;
-  color: #6ee7a8;
+  color: var(--green);
   margin-top: 10px;
   display: none;
   animation: fadeIn .4s ease;
@@ -506,7 +509,7 @@ nav {
 
 /* KONTROLY */
 .kontroly-sekce {
-  background: var(--surface);
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 18px 20px;
@@ -517,7 +520,7 @@ nav {
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 800;
-  color: var(--white);
+  color: var(--dark);
   margin-bottom: 14px;
 }
 
@@ -540,7 +543,7 @@ nav {
   min-width: 90px;
 }
 
-.kontrola-text { flex: 1; color: rgba(255,255,255,.7); }
+.kontrola-text { flex: 1; color: var(--mid); }
 .kontrola-ok { color: var(--green); font-size: 16px; }
 
 .plan-kontrolu {
@@ -552,13 +555,13 @@ nav {
 }
 
 .plan-input {
-  background: var(--surface2);
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px 12px;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
-  color: var(--white);
+  color: var(--dark);
   outline: none;
 }
 
@@ -589,8 +592,8 @@ nav {
 }
 
 .modal {
-  background: #1a1a1a;
-  border: 1px solid rgba(255,255,255,.1);
+  background: var(--white);
+  border: 1px solid var(--border);
   border-radius: 16px 16px 0 0;
   padding: 20px 20px 36px;
   width: 100%;
@@ -615,7 +618,7 @@ nav {
   padding: 20px;
 }
 .notice-box {
-  background: #1a1a1a;
+  background: var(--white);
   border: 1px solid rgba(233,169,27,.3);
   border-radius: 16px;
   padding: 28px 24px 22px;
@@ -645,7 +648,7 @@ nav {
 .notice-text {
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  color: rgba(255,255,255,.85);
+  color: var(--dark);
   line-height: 1.6;
   margin-bottom: 20px;
 }
@@ -666,10 +669,10 @@ nav {
 
 .notice-btn.secondary {
   background: transparent;
-  border: 1px solid rgba(255,255,255,.18);
-  color: rgba(255,255,255,.7);
+  border: 1px solid var(--border);
+  color: var(--mid);
 }
-.notice-btn.secondary:hover { border-color: rgba(255,255,255,.35); color: var(--white); }
+.notice-btn.secondary:hover { border-color: var(--light); color: var(--dark); }
 
 .foto-slot-required {
   font-size: 9px;
@@ -687,7 +690,7 @@ nav {
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: 800;
-  color: var(--white);
+  color: var(--dark);
   margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
@@ -703,13 +706,13 @@ nav {
 
 .modal-input {
   width: 100%;
-  background: var(--surface2);
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px 14px;
   font-family: 'DM Sans', sans-serif;
   font-size: 14px;
-  color: var(--white);
+  color: var(--dark);
   outline: none;
   margin-bottom: 12px;
 }
@@ -751,7 +754,7 @@ nav {
 }
 .login-link {
   font-size: 12px;
-  color: rgba(255,255,255,.3);
+  color: var(--light);
 }
 .login-link a { color: #e9a91b; text-decoration: none; }
 
@@ -766,7 +769,7 @@ nav {
 }
 .pro-teaser p {
   font-size: 12.5px;
-  color: rgba(255,255,255,.6);
+  color: var(--mid);
   line-height: 1.65;
   margin-bottom: 12px;
 }
@@ -824,7 +827,7 @@ nav {
   font-family: 'Poppins', sans-serif;
   font-size: 17px;
   font-weight: 800;
-  color: var(--white);
+  color: var(--dark);
   margin-bottom: 16px;
 }
 .pro-final-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
@@ -836,12 +839,12 @@ nav {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0; margin-top: 1px;
 }
-.pro-final-item.soon .pro-final-item-icon { background: rgba(255,255,255,.08); color: rgba(255,255,255,.5); }
-.pro-final-item-title { font-size: 13.5px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
-.pro-final-item-desc { font-size: 12.5px; color: rgba(255,255,255,.55); line-height: 1.6; }
+.pro-final-item.soon .pro-final-item-icon { background: rgba(0,0,0,.06); color: var(--light); }
+.pro-final-item-title { font-size: 13.5px; font-weight: 700; color: var(--dark); margin-bottom: 3px; }
+.pro-final-item-desc { font-size: 12.5px; color: var(--mid); line-height: 1.6; }
 .pro-final-soon {
   display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
-  color: rgba(255,255,255,.55); background: rgba(255,255,255,.08); padding: 2px 7px; border-radius: 8px;
+  color: var(--light); background: rgba(0,0,0,.06); padding: 2px 7px; border-radius: 8px;
   margin-left: 6px; vertical-align: middle;
 }
 .pro-final-cta {
@@ -872,12 +875,12 @@ nav {
 .standard-foto-slot.has-photo .standard-foto-icon, .standard-foto-slot.has-photo .standard-foto-label { display: none; }
 .standard-foto-icon { font-size: 20px; opacity: .4; }
 .standard-foto-label { font-size: 11px; color: var(--light); margin-top: 4px; }
-.standard-foto-formats { font-size: 9px; color: rgba(255,255,255,.25); margin-top: 2px; }
+.standard-foto-formats { font-size: 9px; color: var(--light); margin-top: 2px; }
 .standard-foto-slot.has-photo .standard-foto-formats { display: none; }
 
 /* KONTROLA: checklist + skóre + trend (Pro) */
 .kontrola-checklist { display: flex; flex-direction: column; gap: 10px; margin-bottom: 4px; }
-.kontrola-check-item { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: rgba(255,255,255,.8); cursor: pointer; }
+.kontrola-check-item { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--dark); cursor: pointer; }
 .kontrola-check-item input { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
 .kontrola-score { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 12px; padding: 2px 8px; border-radius: 10px; flex-shrink: 0; }
 .kontrola-score.green { background: var(--green-light); color: var(--green); }
@@ -885,7 +888,7 @@ nav {
 .kontrola-score.red { background: rgba(214,60,60,.15); color: var(--red); }
 .trend-wrap { display: flex; align-items: flex-end; gap: 4px; height: 44px; margin: 14px 0 6px; }
 .trend-bar { flex: 1; border-radius: 3px 3px 0 0; min-height: 4px; transition: height .3s; }
-.trend-warning { background: rgba(214,60,60,.1); border: 1px solid rgba(214,60,60,.3); border-radius: 8px; padding: 10px 12px; font-size: 12.5px; color: #ff8a8a; margin-bottom: 10px; }
+.trend-warning { background: rgba(214,60,60,.1); border: 1px solid rgba(214,60,60,.3); border-radius: 8px; padding: 10px 12px; font-size: 12.5px; color: var(--red); margin-bottom: 10px; }
 
 /* ÚKOLY (Pro) */
 .ukol-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
@@ -893,14 +896,14 @@ nav {
 .ukol-item.hotovo .ukol-text { text-decoration: line-through; color: var(--light); }
 .ukol-check { margin-top: 2px; width: 18px; height: 18px; accent-color: var(--green); cursor: pointer; flex-shrink: 0; }
 .ukol-body { flex: 1; min-width: 0; }
-.ukol-text { font-size: 13.5px; color: rgba(255,255,255,.85); }
+.ukol-text { font-size: 13.5px; color: var(--dark); }
 .ukol-meta { font-size: 11px; color: var(--light); margin-top: 2px; }
 .ukol-del { background: transparent; border: none; color: var(--light); font-size: 16px; cursor: pointer; flex-shrink: 0; }
 .ukol-del:hover { color: var(--red); }
 .ukol-form { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
 .ukol-form input[type=text], .ukol-form input[type=date] {
-  background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
-  padding: 9px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--white); outline: none;
+  background: var(--white); border: 1px solid var(--border); border-radius: 8px;
+  padding: 9px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--dark); outline: none;
 }
 .ukol-form input:focus { border-color: var(--gold); }
 #ukol-text { flex: 2; min-width: 140px; }
@@ -957,7 +960,7 @@ nav {
 
 
 <nav>
-  <a href="https://tokva.cz/?nastroj=5s-audit" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a>
+  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/?nastroj=5s-audit" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">5S pro každého smrtelníka</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
@@ -1100,7 +1103,7 @@ nav {
       <button class="modal-close" onclick="zavritModal('modal-pro')">×</button>
     </div>
     <p style="font-size:13px;color:var(--light);margin-bottom:14px;">Pro verze odemyká víc míst najednou, standard s fotkou cílového stavu, pravidelné kontroly se skóre a trendem, úkoly pro tým a přehledný tisk reportu.</p>
-    <p class="login-err" id="pro-err" style="color:rgba(255,255,255,.5);"></p>
+    <p class="login-err" id="pro-err" style="color:var(--mid);"></p>
     <button class="modal-save" id="pro-btn" onclick="klikVModaluPro()">Přihlásit se</button>
     <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Tokva Pro? <a href="https://tokva.cz">Zjistit víc o Tokva Pro</a></div>
   </div>
@@ -1210,7 +1213,7 @@ async function klikVModaluPro() {
 const S_DATA = [
   {
     id: 's1', num: '1S', name: 'Vytřídit', jp: 'Seiri / Sort',
-    popis: `<span class="arr"></span><strong>Zbavte se všeho, co tam nepatří.</strong> Projděte stanovené místo, šuplíky, skříňky. Nářadí které nepoužíváte, zásoby navíc, zastaralé dokumenty. Pryč.<br><br><span class="arr"></span>Pokud jste to rok nepoužili, <strong>vyhoďte to nebo odneste na půdu.</strong> <em>Do 14 dnů to budete nevyhnutelně potřebovat. A pak zase 5 let ne.</em><br><br><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:8px;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Tip 1</strong><br>Pokud si nejste jistí, že zvládnete celou kancelář, řešte jen maličké úseky postupně. Jeden šuplík, povrch pracovního stolu, druhý šuplík u ponku v dílně. Postupně zvládnete celý úsek.</div><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Tip 2</strong><br>Pokud si nejste jistí, zda předmět potřebujete a jak často, odstraňte ho třeba do krabičky do spíže a napište na ni datum. Až budete předmět jednou potřebovat, uvidíte kdy byl odstraněn a posoudíte, zda ho na původním místě skutečně potřebujete.</div>`,
+    popis: `<span class="arr"></span><strong>Zbavte se všeho, co tam nepatří.</strong> Projděte stanovené místo, šuplíky, skříňky. Nářadí které nepoužíváte, zásoby navíc, zastaralé dokumenty. Pryč.<br><br><span class="arr"></span>Pokud jste to rok nepoužili, <strong>vyhoďte to nebo odneste na půdu.</strong> <em>Do 14 dnů to budete nevyhnutelně potřebovat. A pak zase 5 let ne.</em><br><br><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--mid);line-height:1.7;margin-bottom:8px;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Tip 1</strong><br>Pokud si nejste jistí, že zvládnete celou kancelář, řešte jen maličké úseky postupně. Jeden šuplík, povrch pracovního stolu, druhý šuplík u ponku v dílně. Postupně zvládnete celý úsek.</div><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--mid);line-height:1.7;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Tip 2</strong><br>Pokud si nejste jistí, zda předmět potřebujete a jak často, odstraňte ho třeba do krabičky do spíže a napište na ni datum. Až budete předmět jednou potřebovat, uvidíte kdy byl odstraněn a posoudíte, zda ho na původním místě skutečně potřebujete.</div>`,
     pochvala: 'První krok hotov. Zbavili jste se balastu. To je víc než si myslíte.'
   },
   {
@@ -1230,7 +1233,7 @@ const S_DATA = [
   },
   {
     id: 's5', num: '5S', name: 'Udržovat disciplínu', jp: 'Shitsuke / Sustain',
-    popis: `<span class="arr"></span>Nejtěžší ze všech pěti. <strong>5S není projekt, je to návyk.</strong><br><br>A pokud to drhne, hledejte příčinu. Jestli je to lenost, nebo fakt neví kam co patří.<br><br>Zamyslete se co s tím a jak to usnadnit.<br><br><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:8px;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Kdy krok doopravdy odškrtnout</strong><br>Nespěchejte s tím. Návyk se pozná až v čase, ne hned po prvním úklidu. Počkejte aspoň 3 měsíce od zavedení standardu (krok 4S) a v té době udělejte minimálně 3 kontroly, ideálně jednu měsíčně, v prvních týdnech klidně i častěji. Teprve když standard vydrží opakovaně, ne jen napoprvé, má smysl 5S označit jako splněné.</div><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:rgba(255,255,255,.6);line-height:1.7;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Tip</strong><br>Appka umí připomenout datum další kontroly, jakmile appku v tomhle prohlížeči příště otevřete a povolíte oznámení (ve Free verzi appka naplánuje kontrolu automaticky 3 dny po dokončení 4S, v Pro verzi si datum naplánujete sami v sekci Kontroly). Nefunguje to jako push zpráva do mobilu bez otevřené appky, proto si na den D hoďte i vlastní upomínku do kalendáře nebo mobilu.<br><br>Pokud něco není jak má, hledejte příčiny a vymyslete praktičtější standard.</div><br><span class="arr"></span>Ne vždy napoprvé všechno vyhovuje. To je normální.`,
+    popis: `<span class="arr"></span>Nejtěžší ze všech pěti. <strong>5S není projekt, je to návyk.</strong><br><br>A pokud to drhne, hledejte příčinu. Jestli je to lenost, nebo fakt neví kam co patří.<br><br>Zamyslete se co s tím a jak to usnadnit.<br><br><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--mid);line-height:1.7;margin-bottom:8px;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Kdy krok doopravdy odškrtnout</strong><br>Nespěchejte s tím. Návyk se pozná až v čase, ne hned po prvním úklidu. Počkejte aspoň 3 měsíce od zavedení standardu (krok 4S) a v té době udělejte minimálně 3 kontroly, ideálně jednu měsíčně, v prvních týdnech klidně i častěji. Teprve když standard vydrží opakovaně, ne jen napoprvé, má smysl 5S označit jako splněné.</div><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--mid);line-height:1.7;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Tip</strong><br>Appka umí připomenout datum další kontroly, jakmile appku v tomhle prohlížeči příště otevřete a povolíte oznámení (ve Free verzi appka naplánuje kontrolu automaticky 3 dny po dokončení 4S, v Pro verzi si datum naplánujete sami v sekci Kontroly). Nefunguje to jako push zpráva do mobilu bez otevřené appky, proto si na den D hoďte i vlastní upomínku do kalendáře nebo mobilu.<br><br>Pokud něco není jak má, hledejte příčiny a vymyslete praktičtější standard.</div><br><span class="arr"></span>Ne vždy napoprvé všechno vyhovuje. To je normální.`,
     pochvala: 'Hotovo. Všech 5S splněno. Tohle je teď váš standard.'
   }
 ];
@@ -2068,8 +2071,8 @@ function zobrazitUvod() {
   main.innerHTML = `
     <div style="padding:24px 0 16px;">
       <div style="background:rgba(233,169,27,.08);border:1px solid rgba(233,169,27,.2);border-radius:14px;padding:20px 22px;margin-bottom:20px;">
-        <div style="font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;color:var(--white);margin-bottom:6px;">Co je 5S?</div>
-        <p style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.75;">Japonská metoda pro organizaci pracovního místa. Původně z výroby, funguje stejně dobře v kuchyni, dílně nebo kanceláři. Pět kroků které vám pomohou udržet věci na svém místě.</p>
+        <div style="font-family:'Poppins',sans-serif;font-size:15px;font-weight:800;color:var(--dark);margin-bottom:6px;">Co je 5S?</div>
+        <p style="font-size:13px;color:var(--mid);line-height:1.75;">Japonská metoda pro organizaci pracovního místa. Původně z výroby, funguje stejně dobře v kuchyni, dílně nebo kanceláři. Pět kroků které vám pomohou udržet věci na svém místě.</p>
       </div>
       ${['Vytřídit','Uspořádat','Uklidit','Udržet pořádek','Udržovat disciplínu'].map((n,i) => {
         const jp = ['Seiri / Sort','Seiton / Set in Order','Seiso / Shine','Seiketsu / Standardize','Shitsuke / Sustain'][i];
@@ -2080,12 +2083,12 @@ function zobrazitUvod() {
           'Zapište jak to má vypadat, aby to tak vypadalo vždy. Standard drží výsledek.',
           'Není to projekt, je to návyk. Pravidelné kontroly, zpětná vazba, zlepšování.'
         ][i];
-        return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;">
+        return `<div style="background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;">
           <div style="width:42px;height:42px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-size:13px;font-weight:900;color:var(--dark);flex-shrink:0;">${i+1}S</div>
           <div>
-            <div style="font-family:'Poppins',sans-serif;font-size:14px;font-weight:800;color:var(--white);margin-bottom:2px;">${n}</div>
+            <div style="font-family:'Poppins',sans-serif;font-size:14px;font-weight:800;color:var(--dark);margin-bottom:2px;">${n}</div>
             <div style="font-size:10px;color:var(--light);margin-bottom:6px;">${jp}</div>
-            <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.65;">${popis}</div>
+            <div style="font-size:12px;color:var(--mid);line-height:1.65;">${popis}</div>
           </div>
         </div>`;
       }).join('')}
