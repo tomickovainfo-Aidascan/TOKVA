@@ -121,6 +121,13 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .faq-a{font-size:13px;color:var(--mid);line-height:1.7;}
 .dalsi-nastroje-wrap{max-width:900px;margin:0 auto;text-align:center;padding:0 20px 40px;}
 .dalsi-nastroje-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;}
+.collapse-back{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
+.collapse-back-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;cursor:pointer;}
+.collapse-back-link:hover{text-decoration:underline;}
+.back-to-card{max-width:900px;margin:0 auto;text-align:center;padding:0 20px 40px;}
+.back-to-card-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;}
+.back-to-card-link:hover{text-decoration:underline;}
+
 .dalsi-nastroj-card{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:10px;padding:20px 22px;}
 .dalsi-nastroj-tag{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;}
 .dalsi-nastroj-nazev{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;}
@@ -415,6 +422,10 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
         <div class="kat-info"><strong>Příprava</strong><span>Příprava pracoviště, nástrojů nebo materiálu před operací</span></div>
       </div>
     </div>
+
+    <div class="collapse-back">
+      <a class="collapse-back-link" onclick="const d=this.closest('details'); d.open=false; d.scrollIntoView({behavior:'smooth',block:'start'}); return false;" href="#">↑ Sbalit</a>
+    </div>
   </details>
 
   <!-- NAZEV PROCESU -->
@@ -601,6 +612,10 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
       <a href="../mini-audit-skladu/" target="_blank" class="dalsi-nastroj-btn">Spustit audit</a>
     </div>
   </div>
+</div>
+
+<div class="back-to-card">
+  <a href="https://tokva.cz/?nastroj=meric-free" class="back-to-card-link">← Zpět na kartu appky</a>
 </div>
 
 <div class="modal-overlay" id="modal-notice">
