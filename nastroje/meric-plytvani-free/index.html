@@ -52,6 +52,9 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .page-header::before{content:"";position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:50px solid rgba(233,169,27,.07);pointer-events:none;}
 .page-header-inner{max-width:520px;margin:0 auto;position:relative;z-index:1;}
 .badge{display:inline-block;background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:2px;margin-bottom:10px;}
+.hero-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;}
+.hero-meta span{font-size:12px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:6px;}
+.hero-meta span::before{content:"\25CF";color:var(--gold);font-size:7px;}
 .page-header h1{font-family:"Poppins",sans-serif;font-size:clamp(20px,4vw,28px);font-weight:900;color:white;line-height:1.2;margin-bottom:6px;}
 .page-header h1 em{color:var(--gold);font-style:normal;}
 .page-header p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;}
@@ -260,9 +263,14 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 
 <div class="page-header">
   <div class="page-header-inner">
-    <div class="badge">Zdarma</div>
+    <div class="badge">Vedoucí skladu nebo výroby, co tuší, že se někde ztrácí čas</div>
     <h1>Měřič <em>plýtvání</em></h1>
-    <p>Změřte kde ve vašem procesu vzniká plýtvání. Bez stopek, bez papíru, za 10 minut.</p>
+    <p>Zjistíte skutečnou produktivitu práce ve vašem provozu, kolik času padá na chození, hledání, čekání a papírování.</p>
+    <div class="hero-meta">
+      <span>7 kategorií činností</span>
+      <span>10 minut</span>
+      <span>Výsledek ihned nebo na e-mail</span>
+    </div>
   </div>
 </div>
 
