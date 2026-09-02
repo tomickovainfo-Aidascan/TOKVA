@@ -775,7 +775,7 @@ const TOOLS = [
   { id:"5s-audit", group:"free", name:"5S pro každého smrtelníka", krok:3, oblasti:["sklad","vyroba"], benefit:"Uspořádáte pracoviště krok za krokem, s fotkami před a po.",
     popis:"Krok po kroku uspořádáte jakékoliv pracoviště, s fotkami před a po u všech 5 kroků, zdarma bez omezení.\n\nPřehledný tisk reportu, historie kontrol a úkoly jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu, výroby nebo dílny, co chce uklidit konkrétní pracoviště podle metody 5S krok za krokem, s fotkami jako důkazem, ne jen na oko.",
-    url:"nastroje/5S_audit/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
+    url:"nastroje/5S_audit/", souvisejici:["meric-free","spaghetti-sklad"], prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
     kdyPouzit:{
       otazky:[
         "Chcete uklidit konkrétní pracoviště (dílnu, sklad, kancelář) podle osvědčené metody, ne nazdařbůh?",
@@ -831,7 +831,7 @@ const TOOLS = [
   { id:"5x-proc", group:"free", name:"5x Proč AI kouč", krok:3, oblasti:["sklad","vyroba"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
     popis:"AI kouč vás provede rozhovorem a dovede ke kořenu problému. Strukturovaný výstup s příčinou a prvním krokem, zdarma.\n\nHistorie analýz a navazující úkoly jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu nebo výroby, co řeší furt stejný problém dokola a chce se dostat k tomu, co ho fakt způsobuje, ne jen hasit znovu a znovu.",
-    url:"nastroje/5x-proc-ai-kouc/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
+    url:"nastroje/5x-proc-ai-kouc/", souvisejici:["meric-free","casova-studie"], prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
     kdyPouzit:{
       otazky:[
         "Řešíte problém, který se pořád vrací, i když jste ho už párkrát \"vyřešili\"?",
@@ -885,7 +885,7 @@ const TOOLS = [
     popis:"Skutečný přehled vašeho dne s činnostmi a intervaly. Podklad pro delegování nebo automatizaci, export do CSV.\n\n1 den zdarma. Historie a trendy mezi dny jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu, výroby nebo kdokoli, kdo tuší, že mu den nějak utíká, ale neví přesně kam, a chce si to ověřit čísly, ne pocitem.",
     url:"nastroje/casova-studie/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
-    souvisejici:["kviz-komunikace"],
+    souvisejici:["5x-proc","kalkulacka","kviz-komunikace"],
     kdyPouzit:{
       otazky:[
         "Máte pocit, že vám den utíká, ale nevíte přesně na co?",
