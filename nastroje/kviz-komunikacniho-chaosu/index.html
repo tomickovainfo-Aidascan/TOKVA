@@ -58,6 +58,8 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .modal-close{background:transparent;border:none;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;}
 .modal p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:14px;}
 .modal-save{width:100%;background:var(--gold);border:none;border-radius:10px;padding:13px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:#000;cursor:pointer;transition:all .2s;}
+.modal-notice-btns{display:flex;gap:10px;}
+.modal-cancel{background:transparent;border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:13px;color:rgba(255,255,255,.7);font-family:"DM Sans",sans-serif;font-size:14px;cursor:pointer;flex-shrink:0;}
 .modal-save:hover{background:var(--gold-dark);color:white;}
 .login-err{font-size:12px;color:#e74c3c;min-height:18px;margin-bottom:8px;}
 .login-link{font-size:12px;color:rgba(255,255,255,.35);}
@@ -236,6 +238,18 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   <div class="modal">
     <div class="modal-title"><span>Historie výsledků</span><button class="modal-close" onclick="document.getElementById('modal-historie').style.display='none';">×</button></div>
     <div id="historie-obsah"><div class="historie-prazdno">Načítám...</div></div>
+  </div>
+</div>
+
+<!-- Modal upozorneni/potvrzeni (obecny) -->
+<div class="modal-overlay" id="modal-notice" style="display:none;">
+  <div class="modal">
+    <div class="modal-title"><span id="modal-notice-title">Upozornění</span><button class="modal-close" onclick="zavritModalNotice()">×</button></div>
+    <p id="modal-notice-text"></p>
+    <div class="modal-notice-btns">
+      <button class="modal-cancel" id="modal-notice-cancel" onclick="zavritModalNotice()" style="display:none;">Zrušit</button>
+      <button class="modal-save" id="modal-notice-ok" onclick="potvrdModalNotice()">Rozumím</button>
+    </div>
   </div>
 </div>
 <div class="hero">
@@ -605,7 +619,7 @@ async function klikNaUcet() {
     if (session) { await odhlasit(); return; }
     await vyzadovatPrihlaseni();
   } catch (e) {
-    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    upozornit('Přihlašování teď není dostupné. Zkuste to prosím později.');
     console.warn('Přihlášení/odhlášení se nepovedlo.', e);
   }
 }
@@ -894,8 +908,35 @@ async function renderTymStav(obsah) {
   obsah.appendChild(zavritBtn);
 }
 
-async function zavritKolo(btn) {
-  if (!confirm('Zavřít kolo? Nikdo další už nebude moct přes tenhle odkaz odpovědět.')) return;
+let _modalNoticeCb = null;
+function upozornit(text, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Upozornění';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'none';
+  document.getElementById('modal-notice-ok').textContent = 'Rozumím';
+  _modalNoticeCb = null;
+  document.getElementById('modal-notice').style.display = 'flex';
+}
+function potvrdit(text, oklabel, callback, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Potvrdit akci';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'inline-block';
+  document.getElementById('modal-notice-ok').textContent = oklabel || 'Potvrdit';
+  _modalNoticeCb = callback;
+  document.getElementById('modal-notice').style.display = 'flex';
+}
+function zavritModalNotice() {
+  document.getElementById('modal-notice').style.display = 'none';
+  _modalNoticeCb = null;
+}
+function potvrdModalNotice() {
+  const cb = _modalNoticeCb;
+  zavritModalNotice();
+  if (cb) cb();
+}
+
+function zavritKolo(btn) {
+  potvrdit('Zavřít kolo? Nikdo další už nebude moct přes tenhle odkaz odpovědět.', 'Zavřít kolo', async function() {
   btn.disabled = true;
   try {
     await supabaseClient.from('kviz_tym_kola').update({ uzavreno: true }).eq('id', aktivniKolo.id);
@@ -903,6 +944,7 @@ async function zavritKolo(btn) {
     console.warn('Kolo se nepodařilo zavřít.', e);
   }
   await nacistStavTymu();
+  });
 }
 
 async function zobrazitPorovnani(obsah) {
