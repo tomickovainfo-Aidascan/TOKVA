@@ -80,6 +80,8 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .modal-box-link a{color:var(--gold-dark);font-weight:600;text-decoration:none;}
 .btn-gold{background:var(--gold);color:var(--black);border:none;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;padding:12px 20px;border-radius:6px;cursor:pointer;transition:all .2s;}
 .btn-gold:hover{background:var(--gold-dark);color:white;}
+.modal-box-btns{display:flex;gap:10px;justify-content:flex-end;}
+.btn-modal-cancel{background:transparent;color:var(--mid);border:1px solid var(--border);border-radius:6px;padding:11px 18px;font-family:"DM Sans",sans-serif;font-size:14px;cursor:pointer;}
 
 /* HERO */
 .hero { background:var(--black); padding:56px 40px 48px; position:relative; overflow:hidden; }
@@ -392,6 +394,20 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
     <div class="modal-err" id="pro-err" style="color:var(--mid);"></div>
     <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
     <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://tokva.cz/">Zjistit víc o Tokva Pro</a></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-notice">
+  <div class="modal-box">
+    <div class="modal-box-head">
+      <h3 id="modal-notice-title">Upozornění</h3>
+      <button class="modal-box-close" onclick="zavritModalNotice()">×</button>
+    </div>
+    <p id="modal-notice-text"></p>
+    <div class="modal-box-btns">
+      <button class="btn-modal-cancel" id="modal-notice-cancel" onclick="zavritModalNotice()" style="display:none;">Zrušit</button>
+      <button class="btn-gold" id="modal-notice-ok" onclick="potvrdModalNotice()">Rozumím</button>
+    </div>
   </div>
 </div>
 
@@ -896,7 +912,7 @@ function zobrazVysledkyFinale() {
     document.getElementById('q10').classList.remove('active');
     zobrazVysledky();
   } catch(e) {
-    alert('Chyba: ' + e.message);
+    upozornit('Chyba: ' + e.message);
   }
 }
 
@@ -1025,7 +1041,7 @@ function zobrazVysledky() {
   vysledekUlozen = false;
   ulozitVysledekDoSupabase(skore, maxS).then(renderHistorie);
   renderHistorie();
-  } catch(e) { alert('Chyba zobrazVysledky: ' + e.message); }
+  } catch(e) { upozornit('Chyba zobrazVysledky: ' + e.message); }
 }
 
 function ukazatEmailFormAudit() {
@@ -1142,6 +1158,28 @@ document.addEventListener('click', function (e) {
   if (e.target === document.getElementById('modal-pro')) zavritModalPro();
 });
 
+let _modalNoticeCb = null;
+function upozornit(text, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Upozornění';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'none';
+  document.getElementById('modal-notice-ok').textContent = 'Rozumím';
+  _modalNoticeCb = null;
+  document.getElementById('modal-notice').style.display = 'flex';
+}
+function zavritModalNotice() {
+  document.getElementById('modal-notice').style.display = 'none';
+  _modalNoticeCb = null;
+}
+function potvrdModalNotice() {
+  const cb = _modalNoticeCb;
+  zavritModalNotice();
+  if (cb) cb();
+}
+document.addEventListener('click', function (e) {
+  if (e.target === document.getElementById('modal-notice')) zavritModalNotice();
+});
+
 let posledniToolRunId = null;
 
 async function ulozitVysledekDoSupabase(skore, maxS) {
@@ -1241,7 +1279,7 @@ async function exportovatData() {
       .eq('organization_id', clenstvi.organization_id)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    if (!data || !data.length) { alert('Zatím nemáte žádná uložená data k exportu.'); return; }
+    if (!data || !data.length) { upozornit('Zatím nemáte žádná uložená data k exportu.'); return; }
     const hlavicky = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
     const radky = data.map(r => hlavicky.map(h => {
       const v = r[h] == null ? '' : String(r[h]).replace(/"/g, '""');
@@ -1259,7 +1297,7 @@ async function exportovatData() {
     URL.revokeObjectURL(url);
   } catch (e) {
     console.warn('Export se nepodařil.', e);
-    alert('Export se teď nepodařil, zkuste to prosím znovu.');
+    upozornit('Export se teď nepodařil, zkuste to prosím znovu.');
   }
 }
 

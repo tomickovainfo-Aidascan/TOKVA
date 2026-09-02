@@ -165,6 +165,8 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .btn-outline:hover { border-color:var(--gold); color:var(--gold-dark); }
 .btn-gold { background:var(--gold); border:none; color:var(--black); font-size:13px; font-weight:700; padding:10px 16px; border-radius:6px; cursor:pointer; transition:background .15s; }
 .btn-gold:hover { background:var(--gold-dark); color:white; }
+.modal-box-btns { display:flex; gap:10px; justify-content:flex-end; }
+.btn-modal-cancel { background:transparent; color:var(--mid); border:1px solid var(--border); border-radius:6px; padding:10px 16px; font-family:"DM Sans",sans-serif; font-size:13px; cursor:pointer; }
 .pro-lock-badge { display:inline-flex; align-items:center; font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--gold-dark); background:var(--gold-light); padding:2px 8px; border-radius:10px; margin-left:8px; }
 .ulozeny-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
 .ulozeny-item:last-child { border-bottom:none; }
@@ -941,6 +943,21 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   </div>
 </div>
 
+<!-- Modal upozorneni/potvrzeni (obecny) -->
+<div class="modal-overlay" id="modal-notice" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-box-head">
+      <h3 id="modal-notice-title">Upozornění</h3>
+      <button class="modal-box-close" onclick="zavritModalNotice()">×</button>
+    </div>
+    <p id="modal-notice-text"></p>
+    <div class="modal-box-btns">
+      <button class="btn-modal-cancel" id="modal-notice-cancel" onclick="zavritModalNotice()" style="display:none;">Zrušit</button>
+      <button class="btn-gold" id="modal-notice-ok" onclick="potvrdModalNotice()">Rozumím</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── SCRIPTS ── -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
@@ -1283,7 +1300,7 @@ async function klikNaUcet() {
     }
     await vyzadovatPrihlaseni();
   } catch (e) {
-    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    upozornit('Přihlašování teď není dostupné. Zkuste to prosím později.');
     console.warn('Přihlášení/odhlášení se nepovedlo.', e);
   }
 }
@@ -1307,6 +1324,33 @@ function otevritModalPro() {
   document.getElementById('modal-pro').style.display = 'flex';
 }
 function zavritModalPro() { document.getElementById('modal-pro').style.display = 'none'; }
+
+let _modalNoticeCb = null;
+function upozornit(text, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Upozornění';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'none';
+  document.getElementById('modal-notice-ok').textContent = 'Rozumím';
+  _modalNoticeCb = null;
+  document.getElementById('modal-notice').style.display = 'flex';
+}
+function potvrdit(text, oklabel, callback, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Potvrdit akci';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'inline-block';
+  document.getElementById('modal-notice-ok').textContent = oklabel || 'Potvrdit';
+  _modalNoticeCb = callback;
+  document.getElementById('modal-notice').style.display = 'flex';
+}
+function zavritModalNotice() {
+  document.getElementById('modal-notice').style.display = 'none';
+  _modalNoticeCb = null;
+}
+function potvrdModalNotice() {
+  const cb = _modalNoticeCb;
+  zavritModalNotice();
+  if (cb) cb();
+}
 
 document.addEventListener('click', function(e) {
   var overlay = document.getElementById('modal-pro');
@@ -1375,10 +1419,11 @@ async function odeslatVypocetDoSupabase(polozka) {
 }
 
 function smazatUlozeny(id) {
-  if (!confirm('Smazat tento uložený výpočet?')) return;
-  ulozene = ulozene.filter(function (u) { return u.id !== id; });
-  localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
-  renderUlozene();
+  potvrdit('Smazat tento uložený výpočet?', 'Smazat', function() {
+    ulozene = ulozene.filter(function (u) { return u.id !== id; });
+    localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
+    renderUlozene();
+  });
 }
 
 function renderUlozene() {
@@ -1429,7 +1474,7 @@ function trendInsightHtml() {
 function exportCSV() {
   if (!jePro) { otevritModalPro(); return; }
   if (ulozene.length === 0) {
-    alert('Zatím nemáte žádný uložený výpočet k exportu. Nejdřív nějaký uložte tlačítkem „Uložit tento výpočet".');
+    upozornit('Zatím nemáte žádný uložený výpočet k exportu. Nejdřív nějaký uložte tlačítkem „Uložit tento výpočet".');
     return;
   }
   var radky = [['Název', 'Datum', 'Plocha (m²)', 'Typ', 'Kč/m²/měsíc', 'Kč/měsíc celkem', 'Kč/rok celkem', 'Kč/m²/rok']];
