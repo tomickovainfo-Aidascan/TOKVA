@@ -98,6 +98,8 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
 .content-card{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:20px;}
 .content-card-title{font-family:"Poppins",sans-serif;font-size:12px;font-weight:700;color:var(--dark);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;}
+.priklad-tag{display:inline-block;background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);color:var(--gold-dark);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:3px;margin-left:8px;vertical-align:middle;}
+.priklad-note{font-size:12px;color:var(--light);font-style:italic;margin-bottom:16px;}
 .check-list{list-style:none;display:flex;flex-direction:column;gap:9px;}
 .check-list li{font-size:13px;color:var(--mid);display:flex;gap:9px;align-items:flex-start;line-height:1.6;}
 .check-list li::before{content:"→";color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;}
@@ -546,12 +548,13 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   <button class="btn-znovu" onclick="zacitZnovu()">Začít znovu</button>
 </div>
 
-<div class="post-calc" id="post-vysledek" style="display:none;">
+<div class="post-calc" id="post-vysledek">
   <div class="post-calc-inner">
     <div class="post-calc-grid">
       <div>
-        <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</div>
-        <p id="co-delat-text" style="font-size:14px;color:var(--mid);line-height:1.75;"></p>
+        <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?<span class="priklad-tag" id="priklad-tag">Příklad</span></div>
+        <p class="priklad-note" id="priklad-note">Tohle je jen ukázka. Jakmile appku proženete, přizpůsobí se vašim vlastním číslům.</p>
+        <p id="co-delat-text" style="font-size:14px;color:var(--mid);line-height:1.75;">Běžná rezerva, kterou má většina provozů. Vyberte největší kategorii plýtvání a zkuste jednu konkrétní změnu, pak měřte znovu.</p>
         <div class="faq-block" style="margin-top:24px;">
           <div class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</div>
           <div class="faq-item">
@@ -584,7 +587,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   </div>
 </div>
 
-<div class="dalsi-nastroje-wrap" id="dalsi-nastroje" style="display:none;">
+<div class="dalsi-nastroje-wrap" id="dalsi-nastroje">
   <div class="content-card-title">Navazující nástroje</div>
   <div class="dalsi-nastroje-grid">
     <div class="dalsi-nastroj-card">
@@ -851,10 +854,10 @@ function ukoncit() {
       ? 'Běžná rezerva, kterou má většina provozů. Vyberte největší kategorii plýtvání a zkuste jednu konkrétní změnu, pak měřte znovu.'
       : 'Slušný výsledek. Místo velkého zásahu zkuste doladit tu jednu kategorii, co zbývá.';
   }
-  const postVysledek = document.getElementById('post-vysledek');
-  if (postVysledek) postVysledek.style.display = 'block';
-  const dalsiNastroje = document.getElementById('dalsi-nastroje');
-  if (dalsiNastroje) dalsiNastroje.style.display = 'block';
+  const prikladTag = document.getElementById('priklad-tag');
+  if (prikladTag) prikladTag.style.display = 'none';
+  const prikladNote = document.getElementById('priklad-note');
+  if (prikladNote) prikladNote.style.display = 'none';
   plyEl.innerHTML = `
     <div class="insight-box" style="background:${bgBox};border:1px solid ${barvaBox}33;margin-bottom:10px;">
       <div class="insight-title" style="color:${barvaBox}">Čas mimo přímou práci tvoří ${plyPct}%</div>
@@ -920,8 +923,12 @@ function zacitZnovu() {
   document.getElementById('uloz-list').innerHTML = '';
   document.getElementById('ulozene').style.display = 'none';
   document.getElementById('souhrn').style.display = 'none';
-  document.getElementById('post-vysledek').style.display = 'none';
-  document.getElementById('dalsi-nastroje').style.display = 'none';
+  const prikladTagR = document.getElementById('priklad-tag');
+  if (prikladTagR) prikladTagR.style.display = '';
+  const prikladNoteR = document.getElementById('priklad-note');
+  if (prikladNoteR) prikladNoteR.style.display = '';
+  const coDelatElR = document.getElementById('co-delat-text');
+  if (coDelatElR) coDelatElR.textContent = 'Běžná rezerva, kterou má většina provozů. Vyberte největší kategorii plýtvání a zkuste jednu konkrétní změnu, pak měřte znovu.';
   document.getElementById('setup').style.display = 'block';
   document.getElementById('inp-nazev').value = '';
   document.getElementById('email-form').style.display = 'flex';
