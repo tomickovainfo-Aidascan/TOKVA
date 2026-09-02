@@ -1015,6 +1015,36 @@ nav {
   @page { margin:15mm; }
 }
 
+.setup-krok{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.info-detail summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:700;color:var(--gold-dark);}
+.info-detail summary::-webkit-details-marker{display:none;}
+.info-detail summary::before{content:"";display:inline-block;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--gold-dark);transition:transform .2s;flex-shrink:0;}
+.info-detail[open] summary::before{transform:rotate(180deg);}
+.info-detail[open] summary{margin-bottom:10px;}
+.d-example{background:var(--black);color:var(--white);border-radius:14px;padding:28px 24px;margin-bottom:20px;}
+.d-example-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2.2px;color:var(--gold);margin-bottom:12px;}
+.d-example h4{font-family:"Poppins",sans-serif;font-weight:900;font-size:clamp(18px,2.6vw,22px);line-height:1.2;letter-spacing:-.5px;margin-bottom:16px;}
+.d-example-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;align-items:start;}
+.d-example-text p{font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.8);margin-bottom:10px;}
+.d-example-text p:last-child{margin-bottom:0;}
+.d-example-stat{border-left:3px solid var(--gold);padding-left:16px;}
+.d-example-stat .stat-num{font-family:"Poppins",sans-serif;font-weight:900;font-size:30px;color:var(--gold);line-height:1.05;margin-bottom:8px;}
+.d-example-stat .stat-note{font-size:12px;line-height:1.6;color:rgba(255,255,255,.6);}
+@media (max-width:600px){.d-example-grid{grid-template-columns:1fr;}}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.content-card{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.content-card-title{font-family:"Poppins",sans-serif;font-size:12px;font-weight:700;color:var(--dark);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.check-list li{font-size:13px;color:var(--mid);display:flex;gap:9px;align-items:flex-start;line-height:1.6;}
+.check-list li::before{content:"→";color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;}
+.steps-list{display:flex;flex-direction:column;gap:11px;}
+.step-item{display:flex;gap:11px;align-items:flex-start;}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--gold);color:#1a1000;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-item>div:last-child{font-size:13px;color:var(--mid);line-height:1.6;}
+.no-need-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0;}
+.no-need-item{font-size:13px;color:var(--mid);display:flex;gap:8px;align-items:center;}
+.no-need-item::before{content:"✕";color:var(--light);font-size:11px;}
+@media (max-width:600px){.two-col{grid-template-columns:1fr;}.no-need-grid{grid-template-columns:1fr;}}
 .collapse-back{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
 .collapse-back-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;cursor:pointer;}
 .collapse-back-link:hover{text-decoration:underline;}
@@ -1043,6 +1073,60 @@ nav {
 </div>
 
 <div class="main">
+
+  <!-- CHCI VEDET VIC -->
+  <details class="setup-krok info-detail">
+    <summary>Chci vědět víc</summary>
+
+    <div class="d-example" style="margin-top:14px;">
+      <div class="d-example-eyebrow">Z praxe</div>
+      <h4>Proč měl pocit, že celý den neudělal nic, i když nezastavil?</h4>
+      <div class="d-example-grid">
+        <div class="d-example-text">
+          <p>Majitel menší výrobní firmy si nechal jeden den zaznamenat od asistentky. Měl pocit, že se celý den jen honí od jednoho k druhému a žádnou pořádnou práci neudělal. Do appky mu přibývaly záznamy, maily, telefony s klienty, telefony s montážníky na place, cenové nabídky, kreslení výrobní dokumentace, hovor s účetní.</p>
+          <p>Večer se podíval na přehled a bylo mu jasno. Skoro čtvrtinu dne strávil tím, že něco hledal, doklady v kanceláři, v e-mailu i v autě, náhradní nářadí za reklamované, informace, které měl mít po ruce. Práce, na kterou se celý den těšil, kreslení dokumentace, se mu vešla jen v útržcích mezi telefony.</p>
+        </div>
+        <div class="d-example-stat">
+          <div class="stat-num">23 %</div>
+          <div class="stat-note">dne padlo na hledání, dokladů, nářadí, informací. Ne na práci, kterou chtěl dělat.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="content-card">
+        <div class="content-card-title">Hodí se vám to, pokud:</div>
+        <ul class="check-list">
+          <li>Máte pocit, že celý den něco děláte, a stejně nevíte, kam se ten čas poděl</li>
+          <li>Chcete vidět čísla, ne jen pocit "byl jsem dneska zavalený"</li>
+          <li>Řešíte, co byste mohli delegovat nebo automatizovat, ale nevíte, od čeho začít</li>
+          <li>Chcete si to jen jednou ověřit, ne appku sledovat každý den</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <div class="content-card-title">Tři kroky, žádná věda:</div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div>Ráno appku zapnete a hlasem nebo ručně zapisujete, co zrovna děláte</div></div>
+          <div class="step-item"><div class="step-num">2</div><div>Appka sama měří čas mezi záznamy a řadí je do kategorií</div></div>
+          <div class="step-item"><div class="step-num">3</div><div>Na konci dne uvidíte přehled, kam čas šel a co s tím dál</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card" style="margin-bottom:0;">
+      <div class="content-card-title">Co k tomu nepotřebujete:</div>
+      <div class="no-need-grid">
+        <div class="no-need-item">Papír ani tabulku</div>
+        <div class="no-need-item">Registraci</div>
+        <div class="no-need-item">Žádné školení</div>
+        <div class="no-need-item">Appku hlídat celý den</div>
+      </div>
+    </div>
+
+    <div class="collapse-back">
+      <a class="collapse-back-link" onclick="const d=this.closest('details'); d.open=false; d.scrollIntoView({behavior:'smooth',block:'start'}); return false;" href="#">↑ Sbalit</a>
+    </div>
+  </details>
 
   <!-- FAQ SEKCE -->
   <div class="faq-section">
