@@ -551,6 +551,18 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   </div>
 </div>
 
+<!-- MODAL RESET -->
+<div class="modal-overlay" id="modal-reset">
+  <div class="modal">
+    <h3>Začít úplně znovu?</h3>
+    <p>Všechny trasy budou smazány.</p>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="zavritModalReset()">Zrušit</button>
+      <button class="btn-modal-ok" onclick="potvrditReset()">Smazat a začít znovu</button>
+    </div>
+  </div>
+</div>
+
 
 <footer>
   <div class="footer-brand">Gabriela <span>Tomíčková</span>, AI a Procesní konzultant</div>
@@ -1283,33 +1295,40 @@ function tisknout() {
 }
 
 function resetovat() {
-  if (confirm('Začít úplně znovu? Všechny trasy budou smazány.')) {
-    zakazky = [{ nazev: 'Zakázka 1', barva: BARVY[0], body: [] }];
-    aktivniZakazka = 0;
-    layout = null;
-    meritkoNastaveno = false;
-    kalibraceBody = [];
-    const status = document.getElementById('kalibrace-status');
-    if (status) status.textContent = 'Zatím není nastavené - klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.';
-    const btn = document.getElementById('btn-zacit-kreslit');
-    if (btn) btn.disabled = true;
-    mod = null; // stejna pojistka jako po prvnim nahrani - nekreslit driv, nez se potvrdi meritko
-    zoom = 1; offsetX = 0; offsetY = 0;
-    aplikovatCssTransform();
-    canvas.style.display = 'none';
-    document.getElementById('canvas-outer').style.height = '';
-    document.getElementById('canvas-placeholder').style.display = 'flex';
-    document.getElementById('upload-zone').style.display = 'block';
-    zobrazitChrome();
-    skrytUploadNotice();
-    document.getElementById('setup-panel').style.display = 'none';
-    document.getElementById('stats-bar').style.display = 'none';
-    document.getElementById('toolbar').style.display = 'none';
-    document.getElementById('vysvetlivky').style.display = 'none';
-    document.getElementById('zakazky-panel').style.display = 'none';
-    document.getElementById('export-bar').style.display = 'none';
-    document.getElementById('tip-krokomery').style.display = 'none';
-  }
+  document.getElementById('modal-reset').classList.add('visible');
+}
+
+function zavritModalReset() {
+  document.getElementById('modal-reset').classList.remove('visible');
+}
+
+function potvrditReset() {
+  zavritModalReset();
+  zakazky = [{ nazev: 'Zakázka 1', barva: BARVY[0], body: [] }];
+  aktivniZakazka = 0;
+  layout = null;
+  meritkoNastaveno = false;
+  kalibraceBody = [];
+  const status = document.getElementById('kalibrace-status');
+  if (status) status.textContent = 'Zatím není nastavené - klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.';
+  const btn = document.getElementById('btn-zacit-kreslit');
+  if (btn) btn.disabled = true;
+  mod = null; // stejna pojistka jako po prvnim nahrani - nekreslit driv, nez se potvrdi meritko
+  zoom = 1; offsetX = 0; offsetY = 0;
+  aplikovatCssTransform();
+  canvas.style.display = 'none';
+  document.getElementById('canvas-outer').style.height = '';
+  document.getElementById('canvas-placeholder').style.display = 'flex';
+  document.getElementById('upload-zone').style.display = 'block';
+  zobrazitChrome();
+  skrytUploadNotice();
+  document.getElementById('setup-panel').style.display = 'none';
+  document.getElementById('stats-bar').style.display = 'none';
+  document.getElementById('toolbar').style.display = 'none';
+  document.getElementById('vysvetlivky').style.display = 'none';
+  document.getElementById('zakazky-panel').style.display = 'none';
+  document.getElementById('export-bar').style.display = 'none';
+  document.getElementById('tip-krokomery').style.display = 'none';
 }
 </script>
 
