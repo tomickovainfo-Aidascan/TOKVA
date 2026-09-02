@@ -203,6 +203,22 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 .content-card{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:24px;}
 .content-card-title{font-family:"Poppins",sans-serif;font-size:12px;font-weight:700;color:var(--dark);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;}
+.d-example{background:var(--black);color:var(--white);border-radius:14px;padding:28px 24px;}
+.d-example-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2.2px;color:var(--gold);margin-bottom:12px;}
+.d-example h4{font-family:"Poppins",sans-serif;font-weight:900;font-size:clamp(18px,2.6vw,22px);line-height:1.2;letter-spacing:-.5px;margin-bottom:16px;}
+.d-example-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;align-items:start;}
+.d-example-text p{font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.8);margin-bottom:10px;}
+.d-example-text p:last-child{margin-bottom:0;}
+.d-example-stat{border-left:3px solid var(--gold);padding-left:16px;}
+.d-example-stat .stat-num{font-family:"Poppins",sans-serif;font-weight:900;font-size:30px;color:var(--gold);line-height:1.05;margin-bottom:8px;}
+.d-example-stat .stat-note{font-size:12px;line-height:1.6;color:rgba(255,255,255,.6);}
+@media (max-width:600px){.d-example-grid{grid-template-columns:1fr;}}
+.dalsi-nastroje-col{display:flex;flex-direction:column;gap:14px;}
+.dalsi-nastroj-card{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:10px;padding:20px 22px;}
+.dalsi-nastroj-tag{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;}
+.dalsi-nastroj-nazev{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.dalsi-nastroj-popis{font-size:13px;color:var(--mid);margin-bottom:14px;}
+.dalsi-nastroj-btn{display:inline-block;background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;}
 .check-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
 .check-list li{font-size:14px;color:var(--mid);display:flex;gap:10px;align-items:flex-start;line-height:1.6;}
 .check-list li::before{content:"→";color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;}
@@ -283,11 +299,19 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
     <details class="info-detail">
       <summary class="info-summary">Chci vědět víc</summary>
       <div style="margin-top:22px;display:flex;flex-direction:column;gap:32px;">
-    <div class="story-block">
-      <div class="story-title">Jak to vypadá v praxi?</div>
-      <p>Vedoucí skladu, 15 lidí, na první pohled všechno v pohodě.</p>
-      <p>Po kvízu vyšlo najevo, že nezná náklady na metr čtvereční, nesleduje chyby a tři procesy stojí na jednom člověku, co je ve firmě přes deset let.</p>
-      <p>Nešlo o to, co nefunguje. Šlo o to, co vůbec neví.</p>
+    <div class="d-example">
+      <div class="d-example-eyebrow">Z praxe</div>
+      <h4>Nešlo o to, co nefunguje. Šlo o to, co vůbec nevěděl.</h4>
+      <div class="d-example-grid">
+        <div class="d-example-text">
+          <p>Vedoucí skladu, 15 lidí, na první pohled všechno v pohodě.</p>
+          <p>Po kvízu vyšlo najevo, že nezná náklady na metr čtvereční a nesleduje chyby.</p>
+        </div>
+        <div class="d-example-stat">
+          <div class="stat-num">3</div>
+          <div class="stat-note">klíčové procesy stojí na jednom člověku, co je ve firmě přes deset let - a nikdo jiný neví, jak přesně fungují.</div>
+        </div>
+      </div>
       <div class="trust-line">Otázky vycházejí z věcí, na které narážím v reálných provozech. Slepá místa která mají vedoucí skladu nejčastěji společná.</div>
     </div>
 
@@ -541,10 +565,22 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 <div class="post-kviz">
   <div class="post-kviz-inner">
 
-    <div class="tools-tip">
-      <strong>Chcete jít hlouběji?</strong>
-      <div class="tools-tip-row"><strong>Mini audit skladu:</strong>&nbsp;10 otázek které ukážou kde konkrétně ve skladu vznikají ztráty. <a href="../mini-audit-skladu/" style="color:var(--gold-dark);font-weight:600;text-decoration:none;">&nbsp;Spustit audit</a></div>
-      <div class="tools-tip-row"><strong>Kalkulačka ztrát:</strong>&nbsp;zadejte 5 čísel a za 30 vteřin víte, kolik vás ztráty stojí v korunách. <a href="../kalkulacka-ztrat/" style="color:var(--gold-dark);font-weight:600;text-decoration:none;">&nbsp;Spustit kalkulačku</a></div>
+    <div>
+      <div class="content-card-title">Navazující nástroje</div>
+      <div class="dalsi-nastroje-col">
+        <div class="dalsi-nastroj-card">
+          <div class="dalsi-nastroj-tag">Hlavní další krok</div>
+          <div class="dalsi-nastroj-nazev">Mini audit skladu</div>
+          <div class="dalsi-nastroj-popis">10 otázek, které ukážou, kde konkrétně ve skladu vznikají ztráty.</div>
+          <a href="../mini-audit-skladu/" target="_blank" class="dalsi-nastroj-btn">Spustit audit</a>
+        </div>
+        <div class="dalsi-nastroj-card">
+          <div class="dalsi-nastroj-tag">Když chcete znát cenovku</div>
+          <div class="dalsi-nastroj-nazev">Kalkulačka ztrát</div>
+          <div class="dalsi-nastroj-popis">Zadejte pár čísel a za 30 vteřin víte, kolik vás ztráty stojí v korunách.</div>
+          <a href="../kalkulacka-ztrat/" target="_blank" class="dalsi-nastroj-btn">Spustit kalkulačku</a>
+        </div>
+      </div>
     </div>
 
     <div>
