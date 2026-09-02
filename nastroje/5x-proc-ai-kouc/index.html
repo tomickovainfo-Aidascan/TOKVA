@@ -148,6 +148,11 @@ nav {
   font-size: 22px;
   cursor: pointer;
 }
+.modal p { font-size: 13px; color: var(--mid); line-height: 1.7; margin-bottom: 14px; }
+.modal-notice-btns { display: flex; gap: 10px; }
+.modal-save { width: 100%; background: var(--gold); border: none; border-radius: 10px; padding: 13px; font-family: "Poppins", sans-serif; font-size: 14px; font-weight: 800; color: var(--black); cursor: pointer; transition: all .2s; }
+.modal-save:hover { background: var(--gold-dark); }
+.modal-cancel { background: transparent; border: 1px solid var(--border); border-radius: 10px; padding: 13px; color: var(--mid); font-family: "DM Sans", sans-serif; font-size: 14px; cursor: pointer; flex-shrink: 0; }
 .historie-item {
   background: var(--paper);
   border: 1px solid var(--border);
@@ -633,6 +638,18 @@ nav {
   </div>
 </div>
 
+<!-- Modal upozorneni/potvrzeni (obecny) -->
+<div class="modal-overlay" id="modal-notice" style="display:none;">
+  <div class="modal">
+    <div class="modal-title"><span id="modal-notice-title">Upozornění</span><button class="modal-close" onclick="zavritModalNotice()">×</button></div>
+    <p id="modal-notice-text"></p>
+    <div class="modal-notice-btns">
+      <button class="modal-cancel" id="modal-notice-cancel" onclick="zavritModalNotice()" style="display:none;">Zrušit</button>
+      <button class="modal-save" id="modal-notice-ok" onclick="potvrdModalNotice()">Rozumím</button>
+    </div>
+  </div>
+</div>
+
 <div class="input-wrap">
   <div class="input-inner">
     <textarea class="input-field" id="input" placeholder="Napište co vás trápí..."
@@ -776,7 +793,7 @@ async function klikNaUcet() {
     if (session) { await odhlasit(); return; }
     await vyzadovatPrihlaseni();
   } catch (e) {
-    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    upozornit('Přihlašování teď není dostupné. Zkuste to prosím později.');
     console.warn('Přihlášení/odhlášení se nepovedlo.', e);
   }
 }
@@ -1134,7 +1151,7 @@ function initRecognition() {
   r.onerror = (e) => {
     console.error('Chyba rozpoznávání řeči:', e.error);
     if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-      alert('Nemám povolení k mikrofonu. Povolte mikrofon v nastavení prohlížeče.');
+      upozornit('Nemám povolení k mikrofonu. Povolte mikrofon v nastavení prohlížeče.');
     }
     stopRecording();
   };
@@ -1155,7 +1172,7 @@ function toggleMic() {
   if (!recognition) {
     recognition = initRecognition();
     if (!recognition) {
-      alert('Hlasové ovládání není v tomto prohlížeči podporováno. Zkuste Chrome nebo Edge.');
+      upozornit('Hlasové ovládání není v tomto prohlížeči podporováno. Zkuste Chrome nebo Edge.');
       return;
     }
   }
@@ -1190,14 +1207,42 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+let _modalNoticeCb = null;
+function upozornit(text, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Upozornění';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'none';
+  document.getElementById('modal-notice-ok').textContent = 'Rozumím';
+  _modalNoticeCb = null;
+  document.getElementById('modal-notice').style.display = 'flex';
+}
+function potvrdit(text, oklabel, callback, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Potvrdit akci';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'inline-block';
+  document.getElementById('modal-notice-ok').textContent = oklabel || 'Potvrdit';
+  _modalNoticeCb = callback;
+  document.getElementById('modal-notice').style.display = 'flex';
+}
+function zavritModalNotice() {
+  document.getElementById('modal-notice').style.display = 'none';
+  _modalNoticeCb = null;
+}
+function potvrdModalNotice() {
+  const cb = _modalNoticeCb;
+  zavritModalNotice();
+  if (cb) cb();
+}
+
 function resetChat() {
-  if (!confirm('Začít novou analýzu? Aktuální konverzace bude smazána.')) return;
+  potvrdit('Začít novou analýzu? Aktuální konverzace bude smazána.', 'Začít znovu', function() {
   history = [];
   posledniProblem = '';
   posledniRawVystup = null;
   aktivniRunId = null;
   document.getElementById('chat').innerHTML = '';
   start();
+  });
 }
 
 async function start() {
