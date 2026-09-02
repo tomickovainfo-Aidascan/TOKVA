@@ -962,6 +962,31 @@ nav {
 .back-to-card{max-width:900px;margin:0 auto;text-align:center;padding:24px 20px 40px;}
 .back-to-card-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;}
 .back-to-card-link:hover{text-decoration:underline;}
+
+.vysledek-panel{background:var(--white);border:1px solid rgba(42,122,79,.3);border-radius:14px;padding:22px 22px 20px;margin-bottom:16px;}
+.vysledek-badge{display:inline-block;font-family:"Poppins",sans-serif;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--white);background:var(--green);padding:3px 10px;border-radius:20px;margin-bottom:10px;}
+.vysledek-title{font-family:"Poppins",sans-serif;font-size:16px;font-weight:800;color:var(--dark);margin-bottom:10px;}
+.vysledek-text{font-size:13.5px;color:var(--mid);line-height:1.7;margin-bottom:14px;}
+.vysledek-sub{font-family:"Poppins",sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dark);margin-bottom:8px;margin-top:16px;}
+.vysledek-tip{background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12.5px;color:var(--mid);line-height:1.7;margin-top:14px;}
+.vysledek-tip strong{color:var(--gold-dark);font-size:11px;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:4px;}
+
+.post-calc{background:var(--white);border-top:1px solid var(--border);padding:40px 20px;}
+.post-calc-inner{max-width:1040px;margin:0 auto;}
+.post-calc-grid{display:grid;grid-template-columns:1fr;max-width:640px;margin:0 auto;}
+.faq-block{margin-top:24px;}
+.faq-item{padding:14px 0;border-bottom:1px solid var(--border);}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{font-family:"Poppins",sans-serif;font-size:13.5px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.faq-a{font-size:13.5px;color:var(--mid);line-height:1.7;}
+.dalsi-nastroje-wrap{max-width:900px;margin:0 auto;text-align:center;padding:0 20px 40px;}
+.dalsi-nastroje-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;}
+.dalsi-nastroj-card{background:var(--gold-light);border:1px solid rgba(233,169,27,0.3);border-radius:10px;padding:20px 22px;}
+.dalsi-nastroj-tag{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;}
+.dalsi-nastroj-nazev{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.dalsi-nastroj-popis{font-size:13px;color:var(--mid);margin-bottom:14px;}
+.dalsi-nastroj-btn{display:inline-block;background:var(--dark);color:var(--white);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;}
+@media (max-width:600px){.dalsi-nastroje-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -1061,6 +1086,57 @@ nav {
 </div>
 
 <div class="main" id="main"></div>
+
+<div class="post-calc" id="post-vysledek" style="display:none;">
+  <div class="post-calc-inner">
+    <div class="post-calc-grid">
+      <div>
+        <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</div>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Fotky před a po jsou důkaz, že se něco změnilo. To hlavní ale teprve přijde - jestli to vydrží.</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;">Naplánujte si první kontrolu do pár týdnů a sledujte, jestli pracoviště drží nový standard, nebo se pomalu vrací do starého stavu. Prověřte to časem, ne jen jednou hned po úklidu.</p>
+        <div class="faq-block">
+          <div class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</div>
+          <div class="faq-item">
+            <div class="faq-q">Jak často mám kontrolovat?</div>
+            <div class="faq-a">Zpočátku klidně jednou týdně, později stačí jednou za měsíc. Důležité je nepřestat úplně, jinak se pracoviště pomalu vrátí do starého stavu.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Standard se nedodržuje, co s tím?</div>
+            <div class="faq-a">Hledejte příčinu. Většinou to není lenost, ale že standard nesedí na skutečný provoz - upravte ho, ať ho lidi reálně dodrží.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Musím udělat všech 5 kroků najednou?</div>
+            <div class="faq-a">Ne, appka si pamatuje postup u každého místa zvlášť, můžete se k rozdělané appce kdykoli vrátit.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dalsi-nastroje-wrap" id="dalsi-nastroje" style="display:none;">
+  <div class="content-card-title">Navazující nástroje</div>
+  <div class="dalsi-nastroje-grid">
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Kde se ztrácí čas</div>
+      <div class="dalsi-nastroj-nazev">Měřič plýtvání</div>
+      <div class="dalsi-nastroj-popis">Pořádek je hotový, teď změřte, kde se i tak ztrácí čas.</div>
+      <a href="../meric-plytvani-free/" target="_blank" class="dalsi-nastroj-btn">Spustit měřič</a>
+    </div>
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Standard se nedrží</div>
+      <div class="dalsi-nastroj-nazev">5x Proč AI kouč</div>
+      <div class="dalsi-nastroj-popis">Pomůže najít kořenovou příčinu, proč se lidi vrací ke starému nepořádku.</div>
+      <a href="../5x-proc-ai-kouc/" target="_blank" class="dalsi-nastroj-btn">Spustit kouče</a>
+    </div>
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Hodně chůze kolem místa</div>
+      <div class="dalsi-nastroj-nazev">Spaghetti diagram</div>
+      <div class="dalsi-nastroj-popis">Nakreslete trasu kolem pracoviště a uvidíte, kde se dá zkrátit.</div>
+      <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Spustit diagram</a>
+    </div>
+  </div>
+</div>
 
 <!-- Modal nové místo -->
 <div class="back-to-card">
@@ -1459,6 +1535,13 @@ function renderMain() {
     main.appendChild(card);
   });
 
+  // Souhrn a doporučení, jakmile je místo hotové (všech 5 kroků splněno)
+  if (splneno === 5) {
+    main.appendChild(renderVysledekPanel());
+  }
+  document.getElementById('post-vysledek').style.display = splneno === 5 ? 'block' : 'none';
+  document.getElementById('dalsi-nastroje').style.display = splneno === 5 ? 'block' : 'none';
+
   // Kontroly a úkoly, vždy viditelné (ne jen po 4/5 krocích) — obě jsou Pro.
   // Bez Pro appka ukáže jen jeden společný box s odkazem na obě funkce
   // a jedním tlačítkem, ne dvě samostatné nabídky s dvěma tlačítky.
@@ -1468,6 +1551,29 @@ function renderMain() {
     main.appendChild(renderKontrolySekce(misto));
     main.appendChild(renderUkolySekce(misto));
   }
+}
+
+// Souhrn po dokončení všech 5S na daném místě - co to znamená a co dál
+function renderVysledekPanel() {
+  const div = document.createElement('div');
+  div.className = 'vysledek-panel';
+  div.innerHTML = `
+    <div class="vysledek-badge">Hotovo</div>
+    <div class="vysledek-title">Pracoviště uklizené. Co teď?</div>
+    <div class="vysledek-text">Teď jste zavedli pořádek. Nemusí sedět hned napoprvé, to je normální - jestli standard vydrží, ověříte až časem.</div>
+    <div class="vysledek-sub">Doporučení</div>
+    <ul class="check-list">
+      <li>Kontrolu dělejte pravidelně, ne jen jednou a dost. Zpočátku klidně každý týden, později stačí jednou za měsíc.</li>
+      <li>Pokud standard nesedí, upravte ho. Lepší reálný standard, který lidi dodrží, než dokonalý na papíře, co nikdo nedodržuje.</li>
+      <li>Když standard přestane platit, hledejte proč. Většinou to není lenost, ale že standard nesedí na skutečný provoz.</li>
+    </ul>
+    <div class="vysledek-sub">Co dál</div>
+    <ul class="check-list">
+      <li>Zaveďte krátkou kontrolu při příchodu na pracoviště, hlavně tam kde se střídají směny - lidi se tak hlídají navzájem.</li>
+    </ul>
+    <div class="vysledek-tip"><strong>Tip</strong>Standard pracoviště si vytiskněte a vyvěste přímo na místě, ne jen v appce.</div>
+  `;
+  return div;
 }
 
 // Společná nabídka Pro pro kontroly i úkoly (appka bez Pro)
@@ -2117,6 +2223,9 @@ function zobrazitUvod() {
   document.getElementById('progress-fill').style.width = '0%';
   document.getElementById('progress-pct').textContent = '';
   document.getElementById('progress-label').textContent = 'Vyberte místo pro začátek';
+
+  document.getElementById('post-vysledek').style.display = 'none';
+  document.getElementById('dalsi-nastroje').style.display = 'none';
 }
 
 // ODEMČENÍ PRO
