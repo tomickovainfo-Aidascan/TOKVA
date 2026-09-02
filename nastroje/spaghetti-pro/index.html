@@ -709,6 +709,18 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   </div>
 </div>
 
+<!-- MODAL UPOZORNENI/POTVRZENI (obecny) -->
+<div class="modal-overlay" id="modal-notice">
+  <div class="modal">
+    <h3 id="modal-notice-title">Upozornění</h3>
+    <p id="modal-notice-text"></p>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" id="modal-notice-cancel" onclick="zavritModalNotice()" style="display:none;">Zrušit</button>
+      <button class="btn-modal-ok" id="modal-notice-ok" onclick="potvrdModalNotice()">Rozumím</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="footer-brand">Gabriela <span>Tomíčková</span>, AI a Procesní konzultant</div>
   <div class="footer-legal">Příčná 49, Vrchlabí, IČO: 75905311 &nbsp;·&nbsp; <a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></div>
@@ -721,6 +733,33 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 const BARVY = ['#e9a91b','#e03c3c','#2a9d5c','#3b82f6','#8b5cf6','#f97316','#06b6d4','#ec4899'];
 const TYP_ORDER = ['clovek','material','vozik','dokument','vyrobek'];
 const TYP_NAZEV = { clovek:'Člověk', material:'Materiál', vozik:'Vozík / VZV', dokument:'Dokument', vyrobek:'Výrobek' };
+
+let _modalNoticeCb = null;
+function upozornit(text, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Upozornění';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'none';
+  document.getElementById('modal-notice-ok').textContent = 'Rozumím';
+  _modalNoticeCb = null;
+  document.getElementById('modal-notice').classList.add('visible');
+}
+function potvrdit(text, oklabel, callback, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Potvrdit akci';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'inline-block';
+  document.getElementById('modal-notice-ok').textContent = oklabel || 'Potvrdit';
+  _modalNoticeCb = callback;
+  document.getElementById('modal-notice').classList.add('visible');
+}
+function zavritModalNotice() {
+  document.getElementById('modal-notice').classList.remove('visible');
+  _modalNoticeCb = null;
+}
+function potvrdModalNotice() {
+  const cb = _modalNoticeCb;
+  zavritModalNotice();
+  if (cb) cb();
+}
 
 function pouzivaSeViceTypu() {
   // Typ entity ma smysl zobrazovat v legende jen kdyz se na layoutu sleduje vic ruznych veci najednou,
@@ -999,7 +1038,7 @@ function ulozitKalibraci() {
 
 
 function spustitKresleni() {
-  if (!meritkoNastaveno) { alert('Nejdřív zkalibrujte měřítko kliknutím na plánek.'); return; }
+  if (!meritkoNastaveno) { upozornit('Nejdřív zkalibrujte měřítko kliknutím na plánek.'); return; }
   const nazev = document.getElementById('nazev-zakazky').value || 'Pracovník 1';
   zakazky[0].nazev = nazev;
 
@@ -1037,7 +1076,7 @@ function ulozitSeznamProjektu(seznam) {
     localStorage.setItem(PROJEKTY_KEY, JSON.stringify(seznam));
     return true;
   } catch (e) {
-    alert('Projekt se nepodařilo uložit do prohlížeče - asi došlo místo. Zkuste v seznamu "Otevřít projekt" smazat nějaký starší.');
+    upozornit('Projekt se nepodařilo uložit do prohlížeče - asi došlo místo. Zkuste v seznamu "Otevřít projekt" smazat nějaký starší.');
     return false;
   }
 }
@@ -1145,7 +1184,7 @@ async function synchronizovatProjektySeSupabase() {
 
 function ulozitProjekt() {
   if (!layout || zakazky.every(z => z.body.length < 2)) {
-    alert('Nejdřív nahrajte plánek a nakreslete alespoň jednu trasu, pak bude co uložit.');
+    upozornit('Nejdřív nahrajte plánek a nakreslete alespoň jednu trasu, pak bude co uložit.');
     return;
   }
   const vstup = document.getElementById('projekt-nazev');
@@ -1159,7 +1198,7 @@ function zavritModalUlozitProjekt() {
 
 function potvrditUlozeniProjektu() {
   const nazev = document.getElementById('projekt-nazev').value.trim();
-  if (!nazev) { alert('Zadejte název projektu.'); return; }
+  if (!nazev) { upozornit('Zadejte název projektu.'); return; }
   const seznam = nacistSeznamProjektu();
   const id = aktualniProjektId || (Date.now() + '-' + Math.random().toString(36).slice(2, 8));
   const zaznam = {
@@ -1179,7 +1218,7 @@ function potvrditUlozeniProjektu() {
     seznam[existujiciIdx] = zaznam;
   } else {
     if (seznam.length >= MAX_PROJEKTU) {
-      alert('Máte uloženo už ' + MAX_PROJEKTU + ' projektů - to je zatím limit. Otevřete "Otevřít projekt" a nějaký starší smažte, než uložíte další.');
+      upozornit('Máte uloženo už ' + MAX_PROJEKTU + ' projektů - to je zatím limit. Otevřete "Otevřít projekt" a nějaký starší smažte, než uložíte další.');
       return;
     }
     seznam.push(zaznam);
@@ -1284,7 +1323,7 @@ function duplikovatProjekt(id, e) {
   const p = seznam.find(z => z.id === id);
   if (!p) return;
   if (seznam.length >= MAX_PROJEKTU) {
-    alert('Máte uloženo už ' + MAX_PROJEKTU + ' projektů - to je zatím limit. Nejdřív nějaký starší smažte.');
+    upozornit('Máte uloženo už ' + MAX_PROJEKTU + ' projektů - to je zatím limit. Nejdřív nějaký starší smažte.');
     return;
   }
   const kopie = JSON.parse(JSON.stringify(p));
@@ -1302,13 +1341,14 @@ function smazatProjekt(id, e) {
   const seznam = nacistSeznamProjektu();
   const p = seznam.find(z => z.id === id);
   if (!p) return;
-  if (!confirm('Smazat uložený projekt "' + p.nazev + '"? Tohle nejde vzít zpět.')) return;
-  const novy = seznam.filter(z => z.id !== id);
-  if (!ulozitSeznamProjektu(novy)) return;
-  if (aktualniProjektId === id) aktualniProjektId = null;
-  otevritSeznamProjektu();
-  aktualizovatMojeProjektyBar();
-  smazatProjektZeSupabase(id);
+  potvrdit('Smazat uložený projekt "' + p.nazev + '"? Tohle nejde vzít zpět.', 'Smazat projekt', function() {
+    const novy = seznam.filter(z => z.id !== id);
+    if (!ulozitSeznamProjektu(novy)) return;
+    if (aktualniProjektId === id) aktualniProjektId = null;
+    otevritSeznamProjektu();
+    aktualizovatMojeProjektyBar();
+    smazatProjektZeSupabase(id);
+  });
 }
 
 // =============================================
@@ -1615,11 +1655,11 @@ function zpetKrok() {
 }
 
 function smazatAktualniTrasu() {
-  if (confirm('Smazat celou trasu aktuální pracovníci?')) {
+  potvrdit('Smazat celou trasu aktuální pracovníci?', 'Smazat trasu', function() {
     zakazky[aktivniZakazka].body = [];
     kreslit();
     updateStats();
-  }
+  });
 }
 
 function novyPracovnik() {
@@ -1656,13 +1696,13 @@ function prepnoutZakazku(i) {
 function smazatZakazku(i, e) {
   e.stopPropagation();
   if (zakazky.length === 1) { zakazky[0].body = []; kreslit(); updateStats(); return; }
-  if (confirm('Smazat pracovníka "' + zakazky[i].nazev + '"?')) {
+  potvrdit('Smazat pracovníka "' + zakazky[i].nazev + '"?', 'Smazat pracovníka', function() {
     zakazky.splice(i, 1);
     aktivniZakazka = Math.min(aktivniZakazka, zakazky.length - 1);
     obnovitZakazkyList();
     updateStats();
     kreslit();
-  }
+  });
 }
 
 function duplikovatZakazku(i, e) {
@@ -1924,7 +1964,7 @@ function pridatZastavku() {
   // Zastávka se přidá na poslední bod aktivního pracovníka
   const az = zakazky[aktivniZakazka];
   if (!az || az.body.length === 0) {
-    alert('Nejdříve nakreslete část trasy pracovníka.');
+    upozornit('Nejdříve nakreslete část trasy pracovníka.');
     return;
   }
   const posledni = az.body[az.body.length - 1];
@@ -2419,7 +2459,7 @@ function tisknout() {
 }
 
 function resetovat() {
-  if (confirm('Začít úplně znovu? Všechny trasy budou smazány.')) {
+  potvrdit('Začít úplně znovu? Všechny trasy budou smazány.', 'Smazat a začít znovu', function() {
     zakazky = [{ nazev: 'Pracovník 1', barva: BARVY[0], body: [], role: null, frek: { opakovani: 0, smeny: 0, dny: 0 }, typ: 'clovek', viditelna: true }];
     aktivniZakazka = 0;
     zastavky = [];
@@ -2452,7 +2492,7 @@ function resetovat() {
     document.getElementById('srovnani-card').style.display = 'none';
     document.getElementById('poznamky-panel').style.display = 'none';
     aktualizovatMojeProjektyBar();
-  }
+  });
 }
 </script>
 
