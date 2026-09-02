@@ -210,6 +210,24 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .check-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
 .check-list li { font-size:14px; color:var(--mid); display:flex; gap:10px; align-items:flex-start; line-height:1.6; }
 .check-list li::before { content:"→"; color:var(--gold); font-weight:700; flex-shrink:0; margin-top:1px; }
+.d-example{background:var(--black);color:var(--white);border-radius:14px;padding:28px 24px;}
+.d-example-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2.2px;color:var(--gold);margin-bottom:12px;}
+.d-example h4{font-family:"Poppins",sans-serif;font-weight:900;font-size:clamp(18px,2.6vw,22px);line-height:1.2;letter-spacing:-.5px;margin-bottom:16px;}
+.d-example-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;align-items:start;}
+.d-example-text p{font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.8);margin-bottom:10px;}
+.d-example-text p:last-child{margin-bottom:0;}
+.d-example-stat{border-left:3px solid var(--gold);padding-left:16px;}
+.d-example-stat .stat-num{font-family:"Poppins",sans-serif;font-weight:900;font-size:30px;color:var(--gold);line-height:1.05;margin-bottom:8px;}
+.d-example-stat .stat-note{font-size:12px;line-height:1.6;color:rgba(255,255,255,.6);}
+@media (max-width:600px){.d-example-grid{grid-template-columns:1fr;}}
+.steps-list{display:flex;flex-direction:column;gap:11px;}
+.step-item{display:flex;gap:11px;align-items:flex-start;}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--gold);color:#1a1000;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-item>div:last-child{font-size:13px;color:var(--mid);line-height:1.6;}
+.no-need-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.no-need-item{font-size:13px;color:var(--mid);display:flex;gap:8px;align-items:center;}
+.no-need-item::before{content:"✕";color:var(--light);font-size:11px;}
+@media (max-width:600px){.no-need-grid{grid-template-columns:1fr;}}
 
 /* ── POST-CALC ── */
 .post-calc { background:var(--white); border-top:1px solid var(--border); padding:40px; }
@@ -307,12 +325,23 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
     <details class="info-detail">
       <summary class="info-summary">Chci vědět víc</summary>
       <div style="margin-top:22px;display:flex;flex-direction:column;gap:32px;">
-    <div class="story-block">
-      <div class="story-title">Proč to vůbec počítat?</div>
-      <p>Většina majitelů skladů zná nájem. Málokdo ví, kolik k tomu přidají energie, revize, pojištění a opotřebení rackingu. Čísla co jsem viděla v praxi? Reálné náklady bývají 1,5 až 2× vyšší než samotný nájem.</p>
-      <p>Pokud fakturujete skladování zákazníkům, nebo se rozhodujete mezi pronájmem a vlastní budovou – tohle číslo potřebujete znát.</p>
-      <div class="trust-line">Kategorie nákladů vycházejí z českých právních předpisů: zákon 586/1992 Sb. o daních, NV 378/2001 Sb. o zdvihacích zařízeních, ČSN 33 1500 pro elektrorevize a další.</div>
+
+    <div class="d-example">
+      <div class="d-example-eyebrow">Z praxe</div>
+      <h4>Proč nájem není celá pravda o tom, co vás sklad stojí?</h4>
+      <div class="d-example-grid">
+        <div class="d-example-text">
+          <p>Většina majitelů skladů zná nájem. Málokdo ví, kolik k tomu přidají energie, revize, pojištění a opotřebení rackingu.</p>
+          <p>Pokud fakturujete skladování zákazníkům, nebo se rozhodujete mezi pronájmem a vlastní budovou, tohle číslo potřebujete znát, ne jen to na nájemní smlouvě.</p>
+        </div>
+        <div class="d-example-stat">
+          <div class="stat-num">1,5-2×</div>
+          <div class="stat-note">vyšší bývají reálné náklady oproti samotnému nájmu, podle toho, co jsem viděla v praxi.</div>
+        </div>
+      </div>
+      <div class="trust-line" style="margin-top:20px;">Kategorie nákladů vycházejí z českých právních předpisů: zákon 586/1992 Sb. o daních, NV 378/2001 Sb. o zdvihacích zařízeních, ČSN 33 1500 pro elektrorevize a další.</div>
     </div>
+
     <div class="two-col">
       <div class="content-card">
         <div class="content-card-title">Hodí se vám to, pokud:</div>
@@ -324,6 +353,17 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </ul>
       </div>
       <div class="content-card">
+        <div class="content-card-title">Tři kroky, žádná věda:</div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div>Zvolíte, jestli sklad platíte nájmem, nebo vlastníte budovu</div></div>
+          <div class="step-item"><div class="step-num">2</div><div>Zadáte plochu a čísla, která znáte, u zbytku appka počítá s reálnými odhady</div></div>
+          <div class="step-item"><div class="step-num">3</div><div>Výsledek se počítá průběžně, uvidíte celkový náklad na m² i rozpad podle kategorie</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="content-card">
         <div class="content-card-title">Co kalkulačka zahrnuje:</div>
         <ul class="check-list">
           <li>Nájem nebo ekonomický odpis vlastní budovy</li>
@@ -334,9 +374,19 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <li>Provozní služby: úklid, ostraha, odvoz odpadu</li>
         </ul>
       </div>
-    </div>
+      <div class="content-card">
+        <div class="content-card-title">Co k tomu nepotřebujete:</div>
+        <div class="no-need-grid">
+          <div class="no-need-item">Faktury po ruce, jde to i orientačně</div>
+          <div class="no-need-item">Registraci</div>
+          <div class="no-need-item">Žádné školení</div>
+          <div class="no-need-item">Excel ani kalkulačku vedle appky</div>
+        </div>
       </div>
-    
+    </div>
+
+      </div>
+
     <div class="collapse-back">
       <a class="collapse-back-link" onclick="const d=this.closest('details'); d.open=false; d.scrollIntoView({behavior:'smooth',block:'start'}); return false;" href="#">↑ Sbalit</a>
     </div>
@@ -925,9 +975,9 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </div>
       </div>
       <div class="tip-box">
-        <strong>Tušíte, kde plýtváte, ale nevíte kde začít?</strong>
-        <p>Kalkulačka vám říká, kolik vás sklad stojí. Pokud chcete vědět, kde přesně odchází čas a kde zlepšení dá největší výsledek – na to je Měřič plýtvání.</p>
-        <a href="../meric-plytvani-free/">Spustit Měřič plýtvání →</a>
+        <strong>Využíváte tenhle drahý prostor dobře?</strong>
+        <p>Kalkulačka vám říká, kolik vás sklad stojí. Jestli chcete vědět, jestli za ty peníze prostor opravdu využíváte, kudy se zbytečně chodí a kde je zabraný prostor, na to je Spaghetti diagram.</p>
+        <a href="../spaghetti-free/">Spustit Spaghetti diagram →</a>
         <p style="margin-top:14px;margin-bottom:0;">Nebo si rovnou domluvte procesní audit – přijdu se podívat přímo do provozu.</p>
       </div>
     </div>
