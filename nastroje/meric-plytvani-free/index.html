@@ -52,6 +52,15 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .page-header::before{content:"";position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:50px solid rgba(233,169,27,.07);pointer-events:none;}
 .page-header-inner{max-width:520px;margin:0 auto;position:relative;z-index:1;}
 .badge{display:inline-block;background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:2px;margin-bottom:10px;}
+/* MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.visible { display:flex; }
+.modal { background:var(--white); border-radius:12px; padding:28px; max-width:440px; width:100%; }
+.modal h3 { font-family:"Poppins",sans-serif; font-size:17px; font-weight:700; margin-bottom:8px; }
+.modal p { font-size:14px; color:var(--mid); margin-bottom:18px; line-height:1.7; }
+.modal-btns { display:flex; gap:10px; justify-content:flex-end; }
+.btn-modal-ok { background:var(--gold); color:var(--black); border:none; border-radius:6px; padding:9px 20px; font-family:"DM Sans",sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
+.btn-modal-cancel { background:transparent; color:var(--mid); border:1px solid var(--border); border-radius:6px; padding:9px 16px; font-family:"DM Sans",sans-serif; font-size:13px; cursor:pointer; }
 .hero-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;}
 .hero-meta span{font-size:12px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:6px;}
 .hero-meta span::before{content:"\25CF";color:var(--gold);font-size:7px;}
@@ -433,6 +442,17 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   <button class="btn-znovu" onclick="zacitZnovu()">Začít znovu</button>
 </div>
 
+<div class="modal-overlay" id="modal-notice">
+  <div class="modal">
+    <h3 id="modal-notice-title">Upozornění</h3>
+    <p id="modal-notice-text"></p>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" id="modal-notice-cancel" onclick="zavritModalNotice()" style="display:none;">Zrušit</button>
+      <button class="btn-modal-ok" id="modal-notice-ok" onclick="potvrdModalNotice()">Rozumím</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="footer-brand">Gabriela <span>Tomíčková</span></div>
   <div class="footer-legal"><a href="https://gdpr.gabrielatomickova.cz">Zásady ochrany osobních údajů</a></div>
@@ -530,9 +550,28 @@ function updateKat() {
   if (el) el.textContent = pad(Math.floor(s/60)) + ':' + pad(s%60);
 }
 
+let _modalNoticeCb = null;
+function upozornit(text, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Upozornění';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'none';
+  document.getElementById('modal-notice-ok').textContent = 'Rozumím';
+  _modalNoticeCb = null;
+  document.getElementById('modal-notice').classList.add('visible');
+}
+function zavritModalNotice() {
+  document.getElementById('modal-notice').classList.remove('visible');
+  _modalNoticeCb = null;
+}
+function potvrdModalNotice() {
+  const cb = _modalNoticeCb;
+  zavritModalNotice();
+  if (cb) cb();
+}
+
 function stopCyklus() {
   if (!cyklusStart) {
-    alert('Nejdřív klikněte na některou činnost, pak můžete cyklus ukončit.');
+    upozornit('Nejdřív klikněte na některou činnost, pak můžete cyklus ukončit.');
     return;
   }
   clearInterval(timerInt); clearInterval(katInt);
