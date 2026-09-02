@@ -48,10 +48,10 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .nav-brand span{color:var(--gold);}
 .nav-pro{font-size:12px;font-weight:700;color:var(--pro);text-decoration:none;padding:5px 12px;border:1px solid var(--pro);border-radius:4px;}
 
-.page-header{background:var(--black);padding:28px 20px 24px;position:relative;overflow:hidden;}
-.page-header::before{content:"";position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:50px solid rgba(233,169,27,.07);pointer-events:none;}
-.page-header-inner{max-width:520px;margin:0 auto;position:relative;z-index:1;}
-.badge{display:inline-block;background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:2px;margin-bottom:10px;}
+.hero{background:var(--black);padding:52px 24px 44px;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:50px solid rgba(233,169,27,.07);pointer-events:none;}
+.hero-inner{max-width:1040px;margin:0 auto;position:relative;z-index:1;}
+.badge{display:inline-block;background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:18px;}
 /* MODAL */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; align-items:center; justify-content:center; padding:20px; }
 .modal-overlay.visible { display:flex; }
@@ -61,16 +61,16 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .modal-btns { display:flex; gap:10px; justify-content:flex-end; }
 .btn-modal-ok { background:var(--gold); color:var(--black); border:none; border-radius:6px; padding:9px 20px; font-family:"DM Sans",sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
 .btn-modal-cancel { background:transparent; color:var(--mid); border:1px solid var(--border); border-radius:6px; padding:9px 16px; font-family:"DM Sans",sans-serif; font-size:13px; cursor:pointer; }
-.hero-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;}
+.hero-meta{display:flex;gap:18px;flex-wrap:wrap;}
 .hero-meta span{font-size:12px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:6px;}
 .hero-meta span::before{content:"\25CF";color:var(--gold);font-size:7px;}
 .nav-tool{font-size:12px;color:var(--light);font-weight:500;margin-left:10px;padding-left:10px;border-left:1px solid var(--border);}
 @media (max-width:600px){.nav-tool{display:none;}}
-.page-header h1{font-family:"Poppins",sans-serif;font-size:clamp(20px,4vw,28px);font-weight:900;color:white;line-height:1.2;margin-bottom:6px;}
-.page-header h1 em{color:var(--gold);font-style:normal;}
-.page-header p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;}
+.hero h1{font-family:"Poppins",sans-serif;font-size:clamp(22px,4vw,36px);font-weight:900;color:white;line-height:1.15;letter-spacing:-.5px;margin-bottom:14px;}
+.hero h1 em{color:var(--gold);font-style:normal;}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.5);max-width:520px;line-height:1.75;margin-bottom:22px;font-weight:300;}
 
-.main{max-width:520px;margin:0 auto;padding:24px 16px 4px;}
+.main{max-width:660px;margin:0 auto;padding:32px 20px 4px;}
 
 /* SETUP */
 .setup-krok{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px;}
@@ -85,6 +85,31 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .info-detail summary::before{content:"";display:inline-block;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--gold-dark);transition:transform .2s;flex-shrink:0;}
 .info-detail[open] summary::before{transform:rotate(180deg);}
 .info-detail[open] summary{margin-bottom:10px;}
+.d-example{background:var(--black);color:var(--white);border-radius:14px;padding:28px 24px;margin-bottom:20px;}
+.d-example-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2.2px;color:var(--gold);margin-bottom:12px;}
+.d-example h4{font-family:"Poppins",sans-serif;font-weight:900;font-size:clamp(18px,2.6vw,22px);line-height:1.2;letter-spacing:-.5px;margin-bottom:16px;}
+.d-example-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;align-items:start;}
+.d-example-text p{font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.8);margin-bottom:10px;}
+.d-example-text p:last-child{margin-bottom:0;}
+.d-example-stat{border-left:3px solid var(--gold);padding-left:16px;}
+.d-example-stat .stat-num{font-family:"Poppins",sans-serif;font-weight:900;font-size:30px;color:var(--gold);line-height:1.05;margin-bottom:8px;}
+.d-example-stat .stat-note{font-size:12px;line-height:1.6;color:rgba(255,255,255,.6);}
+@media (max-width:600px){.d-example-grid{grid-template-columns:1fr;}}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.content-card{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.content-card-title{font-family:"Poppins",sans-serif;font-size:12px;font-weight:700;color:var(--dark);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px;}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.check-list li{font-size:13px;color:var(--mid);display:flex;gap:9px;align-items:flex-start;line-height:1.6;}
+.check-list li::before{content:"→";color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;}
+.steps-list{display:flex;flex-direction:column;gap:11px;}
+.step-item{display:flex;gap:11px;align-items:flex-start;}
+.step-num{width:20px;height:20px;border-radius:50%;background:var(--gold);color:#1a1000;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-item>div:last-child{font-size:13px;color:var(--mid);line-height:1.6;}
+.no-need-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0;}
+.no-need-item{font-size:13px;color:var(--mid);display:flex;gap:8px;align-items:center;}
+.no-need-item::before{content:"✕";color:var(--light);font-size:11px;}
+@media (max-width:600px){.two-col{grid-template-columns:1fr;}.no-need-grid{grid-template-columns:1fr;}}
+.howto-divider-title{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:1px;margin:4px 0 14px;padding-top:20px;border-top:1px solid var(--border);}
 .field input{width:100%;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
 .field input:focus{border-color:var(--gold);background:white;}
 .field+.field{margin-top:12px;}
@@ -239,9 +264,9 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 .footer-legal{font-size:10px;color:rgba(255,255,255,.15);}
 .footer-legal a{color:rgba(255,255,255,.15);text-decoration:none;}
 
-@media(max-width:520px){
-  nav,.main,.mereni,.souhrn{padding-left:14px;padding-right:14px;}
-  .page-header{padding:24px 14px 20px;}
+@media(max-width:600px){
+  nav,.main,.mereni,.souhrn{padding-left:16px;padding-right:16px;}
+  .hero{padding:36px 16px 32px;}
 }
 </style>
 
@@ -272,11 +297,11 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   <a href="../meric-plytvani-pro/" class="nav-pro">Tokva Pro</a>
 </nav>
 
-<div class="page-header">
-  <div class="page-header-inner">
+<div class="hero">
+  <div class="hero-inner">
     <div class="badge">Vedoucí skladu nebo výroby, co tuší, že se někde ztrácí čas</div>
     <h1>Měřič <em>plýtvání</em></h1>
-    <p>Zjistíte skutečnou produktivitu práce ve vašem provozu, kolik času padá na chození, hledání, čekání a papírování.</p>
+    <p class="hero-sub">Zjistíte skutečnou produktivitu práce ve vašem provozu, kolik času padá na chození, hledání, čekání a papírování.</p>
     <div class="hero-meta">
       <span>7 kategorií činností</span>
       <span>10 minut</span>
@@ -291,7 +316,58 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   <!-- INFO ROZBALOVACI -->
   <details class="setup-krok info-detail">
     <summary>Chci vědět víc</summary>
-    <div class="krok-popis">Vždy klikněte na tlačítko <strong>na začátku</strong> dané činnosti - ne na konci. Aplikace měří jak dlouho trvá než kliknete na další tlačítko.</div>
+
+    <div class="d-example" style="margin-top:14px;">
+      <div class="d-example-eyebrow">Z praxe</div>
+      <h4>Kam se ztrácí čas, o kterém nikdo neví?</h4>
+      <div class="d-example-grid">
+        <div class="d-example-text">
+          <p>Vedoucí skladu byl přesvědčený, že lidi na vychystávání makají skoro pořád. Změřil tři cykly stopkami v appce a vyšlo mu, že skoro třetina času padá na chození pro materiál, který ležel na druhém konci skladu.</p>
+          <p>Stačilo přesunout pár nejčastěji vychystávaných položek blíž k výdeji. Beze změny směn, beze změny lidí.</p>
+        </div>
+        <div class="d-example-stat">
+          <div class="stat-num">31 %</div>
+          <div class="stat-note">času padalo na chození pro materiál, který stačilo mít blíž po ruce.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="content-card">
+        <div class="content-card-title">Hodí se vám to, pokud:</div>
+        <ul class="check-list">
+          <li>Tušíte, že se někde ztrácí čas, ale nevíte přesně kde</li>
+          <li>Chcete čísla, ne odhad "myslím, že tak polovinu času"</li>
+          <li>Řešíte, jestli přidat lidi, nebo napřed zjistit, kde končí ten stávající čas</li>
+          <li>Potřebujete podklad, než začnete cokoliv měnit</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <div class="content-card-title">Tři kroky, žádná věda:</div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div>Napíšete, jaký proces měříte, a klikáte na tlačítko podle toho, co pracovník zrovna dělá</div></div>
+          <div class="step-item"><div class="step-num">2</div><div>Appka sama měří čas mezi kliknutími, stačí přepínat kategorie</div></div>
+          <div class="step-item"><div class="step-num">3</div><div>Po pár cyklech uvidíte rozložení času a kolik to reálně stojí</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card" style="margin-bottom:0;">
+      <div class="content-card-title">Co k tomu nepotřebujete:</div>
+      <div class="no-need-grid">
+        <div class="no-need-item">Stopky ani papír</div>
+        <div class="no-need-item">Registraci</div>
+        <div class="no-need-item">Žádné školení</div>
+        <div class="no-need-item">Žádný speciální software</div>
+      </div>
+    </div>
+
+    <div class="howto-divider-title">Jak appka funguje krok za krokem</div>
+    <div class="steps-list" style="margin-bottom:18px;">
+      <div class="step-item"><div class="step-num">1</div><div>Zapište název procesu, který měříte, a klikněte na tlačítko dané činnosti vždy <strong>na začátku</strong>, ne na konci</div></div>
+      <div class="step-item"><div class="step-num">2</div><div>Appka automaticky ukončí předchozí činnost a začne měřit novou, jakmile klikněte na další tlačítko</div></div>
+      <div class="step-item"><div class="step-num">3</div><div>Po dokončení cyklu klikněte STOP, appka nabídne další cyklus nebo rovnou výsledek</div></div>
+    </div>
     <div class="kat-prehled">
       <div class="kat-item">
         <div class="kat-dot" style="background:var(--prace)"></div>
