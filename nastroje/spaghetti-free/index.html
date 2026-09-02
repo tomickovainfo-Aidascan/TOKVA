@@ -169,8 +169,6 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
   overflow:hidden; position:relative; cursor:crosshair;
 }
 .canvas-outer.no-layout { min-height:300px; display:flex; align-items:center; justify-content:center; }
-.canvas-placeholder { text-align:center; color:var(--light); }
-.canvas-placeholder p { font-size:14px; margin-top:8px; }
 #canvas-outer { overflow:hidden; width:100%; cursor:crosshair; margin:0 auto; }
 #main-canvas { display:block; transform-origin:0 0; touch-action:none; }
 
@@ -491,10 +489,6 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 
   <!-- CANVAS -->
   <div class="canvas-outer" id="canvas-outer">
-    <div class="canvas-placeholder" id="canvas-placeholder">
-      <div style="font-size:48px;opacity:0.2;">🏭</div>
-      <p>Nejprve nahrajte plánek</p>
-    </div>
     <canvas id="main-canvas" style="display:none;"></canvas>
   </div>
 
@@ -763,7 +757,6 @@ function inicializovat() {
   document.getElementById('upload-zone').style.display = 'none';
   document.getElementById('setup-panel').style.display = 'block';
   skrytChromePriPraci();
-  document.getElementById('canvas-placeholder').style.display = 'none';
   canvas.style.display = 'block';
 
   // Nastav canvas
@@ -1318,7 +1311,6 @@ function potvrditReset() {
   aplikovatCssTransform();
   canvas.style.display = 'none';
   document.getElementById('canvas-outer').style.height = '';
-  document.getElementById('canvas-placeholder').style.display = 'flex';
   document.getElementById('upload-zone').style.display = 'block';
   zobrazitChrome();
   skrytUploadNotice();
