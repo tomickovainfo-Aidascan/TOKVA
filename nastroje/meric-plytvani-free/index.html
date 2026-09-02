@@ -110,6 +110,23 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .no-need-item::before{content:"✕";color:var(--light);font-size:11px;}
 @media (max-width:600px){.two-col{grid-template-columns:1fr;}.no-need-grid{grid-template-columns:1fr;}}
 .howto-divider-title{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:1px;margin:4px 0 14px;padding-top:20px;border-top:1px solid var(--border);}
+.post-calc{background:var(--white);border-top:1px solid var(--border);padding:40px 20px;}
+.post-calc-inner{max-width:1040px;margin:0 auto;}
+.post-calc-grid{display:grid;grid-template-columns:1fr;max-width:640px;margin:0 auto;}
+.faq-block{}
+.faq-item{border-bottom:1px solid var(--border);padding:16px 0;}
+.faq-item:first-child{padding-top:0;}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:6px;}
+.faq-a{font-size:13px;color:var(--mid);line-height:1.7;}
+.dalsi-nastroje-wrap{max-width:900px;margin:0 auto;text-align:center;padding:0 20px 40px;}
+.dalsi-nastroje-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;}
+.dalsi-nastroj-card{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:10px;padding:20px 22px;}
+.dalsi-nastroj-tag{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;}
+.dalsi-nastroj-nazev{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.dalsi-nastroj-popis{font-size:13px;color:var(--mid);margin-bottom:14px;}
+.dalsi-nastroj-btn{display:inline-block;background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;}
+@media (max-width:600px){.dalsi-nastroje-grid{grid-template-columns:1fr;}}
 .field input{width:100%;border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
 .field input:focus{border-color:var(--gold);background:white;}
 .field+.field{margin-top:12px;}
@@ -518,6 +535,74 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   <button class="btn-znovu" onclick="zacitZnovu()">Začít znovu</button>
 </div>
 
+<div class="post-calc" id="post-vysledek" style="display:none;">
+  <div class="post-calc-inner">
+    <div class="post-calc-grid">
+      <div>
+        <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</div>
+        <p id="co-delat-text" style="font-size:14px;color:var(--mid);line-height:1.75;"></p>
+        <div class="faq-block" style="margin-top:24px;">
+          <div class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</div>
+          <div class="faq-item">
+            <div class="faq-q">Jak přesné to měření je?</div>
+            <div class="faq-a">Přesné natolik, kolik dovolí to, jak přesně a včas klikáte. Neměříte odhadem jako u kalkulačky, měříte reálný čas mezi kliknutími. Čím víc cyklů změříte, tím spolehlivější je průměr.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Co když zapomenu kliknout na začátku činnosti?</div>
+            <div class="faq-a">Ten čas se přičte k předchozí kategorii, protože appka měří do dalšího kliknutí. U jednoho zapomenutého kliknutí to výsledek zásadně nepokazí, jen buďte při měření o to pozornější.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Kolik cyklů mám změřit, abych tomu mohl věřit?</div>
+            <div class="faq-a">Tři cykly stačí na první orientaci. Pokud se jednotlivé cykly hodně liší (appka to ukáže v sekci Variabilita cyklů), doměřte klidně další.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Je tohle to samé jako klasická časová studie?</div>
+            <div class="faq-a">Princip je stejný, jen bez stopek a papíru. Appka dělá to samé, co byste jinak dělali ručně, jen automaticky měří a rovnou spočítá rozložení času.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Můžu appku použít pro víc pracovníků na stejném procesu?</div>
+            <div class="faq-a">Ano, změřte proces u víc lidí postupně a porovnejte výsledky ručně. Automatické porovnání cyklů mezi sebou je ve verzi Pro.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">Hodí se to i mimo sklad, třeba ve výrobě?</div>
+            <div class="faq-a">Ano, kategorie (práce, přesun, hledání, čekání, administrativa, kontrola, příprava) sedí na jakoukoliv opakující se operaci, ve skladu i na lince.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="dalsi-nastroje-wrap" id="dalsi-nastroje" style="display:none;">
+  <div class="content-card-title">Navazující nástroje</div>
+  <div class="dalsi-nastroje-grid">
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Hodně chůze a přesunů</div>
+      <div class="dalsi-nastroj-nazev">Spaghetti diagram</div>
+      <div class="dalsi-nastroj-popis">Nakreslete skutečnou trasu do plánku a uvidíte, kde se dá zkrátit.</div>
+      <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Spustit diagram</a>
+    </div>
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Rychlý odhad v Kč</div>
+      <div class="dalsi-nastroj-nazev">Kalkulačka ztrát</div>
+      <div class="dalsi-nastroj-popis">Odhad ztráty napříč celým provozem, ne jen u jednoho procesu.</div>
+      <a href="../kalkulacka-ztrat/" target="_blank" class="dalsi-nastroj-btn">Spustit kalkulačku</a>
+    </div>
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Proč se to pořád opakuje</div>
+      <div class="dalsi-nastroj-nazev">5x Proč AI kouč</div>
+      <div class="dalsi-nastroj-popis">Víte, kde to bolí. Kouč vám pomůže najít kořenovou příčinu.</div>
+      <a href="../5x-proc-ai-kouc/" target="_blank" class="dalsi-nastroj-btn">Spustit kouče</a>
+    </div>
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Širší pohled na sklad</div>
+      <div class="dalsi-nastroj-nazev">Mini audit skladu</div>
+      <div class="dalsi-nastroj-popis">10 otázek, které odhalí, kde všude ve skladu to skřípe.</div>
+      <a href="../mini-audit-skladu/" target="_blank" class="dalsi-nastroj-btn">Spustit audit</a>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-notice">
   <div class="modal">
     <h3 id="modal-notice-title">Upozornění</h3>
@@ -742,6 +827,19 @@ function ukoncit() {
   let cls = plyPct > 40 ? 'alert' : plyPct > 20 ? 'warning' : 'ok';
   const barvaBox = cls==='ok'?'#2a7a4f':cls==='warning'?'#b45309':'#c0392b';
   const bgBox = cls==='ok'?'#e8f5ee':cls==='warning'?'#fff3e0':'#fee2e2';
+
+  const coDelatEl = document.getElementById('co-delat-text');
+  if (coDelatEl) {
+    coDelatEl.textContent = cls === 'alert'
+      ? 'Tohle není drobná neefektivita, tohle je hlavní zdroj ztráty. Podívejte se, která kategorie táhne číslo nahoru, a řešte ji jako první.'
+      : cls === 'warning'
+      ? 'Běžná rezerva, kterou má většina provozů. Vyberte největší kategorii plýtvání a zkuste jednu konkrétní změnu, pak měřte znovu.'
+      : 'Slušný výsledek. Místo velkého zásahu zkuste doladit tu jednu kategorii, co zbývá.';
+  }
+  const postVysledek = document.getElementById('post-vysledek');
+  if (postVysledek) postVysledek.style.display = 'block';
+  const dalsiNastroje = document.getElementById('dalsi-nastroje');
+  if (dalsiNastroje) dalsiNastroje.style.display = 'block';
   plyEl.innerHTML = `
     <div class="insight-box" style="background:${bgBox};border:1px solid ${barvaBox}33;margin-bottom:10px;">
       <div class="insight-title" style="color:${barvaBox}">Čas mimo přímou práci tvoří ${plyPct}%</div>
@@ -807,6 +905,8 @@ function zacitZnovu() {
   document.getElementById('uloz-list').innerHTML = '';
   document.getElementById('ulozene').style.display = 'none';
   document.getElementById('souhrn').style.display = 'none';
+  document.getElementById('post-vysledek').style.display = 'none';
+  document.getElementById('dalsi-nastroje').style.display = 'none';
   document.getElementById('setup').style.display = 'block';
   document.getElementById('inp-nazev').value = '';
   document.getElementById('email-form').style.display = 'flex';
