@@ -695,7 +695,7 @@ nav {
 
 <div class="chat-wrap" id="chat"></div>
 
-<div class="post-calc" id="post-vysledek" style="display:none;">
+<div class="post-calc" id="post-vysledek">
   <div class="post-calc-inner">
     <div class="post-calc-grid">
       <div>
@@ -721,7 +721,7 @@ nav {
   </div>
 </div>
 
-<div class="dalsi-nastroje-wrap" id="dalsi-nastroje" style="display:none;">
+<div class="dalsi-nastroje-wrap" id="dalsi-nastroje">
   <div class="content-card-title">Podle čeho pokračovat</div>
   <div class="dalsi-nastroje-grid">
     <div class="dalsi-nastroj-card">
@@ -1191,9 +1191,6 @@ function renderOutput(raw, ulozit = true) {
   chat.appendChild(card);
   chat.scrollTop = chat.scrollHeight;
 
-  document.getElementById('post-vysledek').style.display = 'block';
-  document.getElementById('dalsi-nastroje').style.display = 'block';
-
   if (ulozit) ulozitStavAnalyzy(true, raw);
 }
 
@@ -1384,8 +1381,6 @@ function resetChat() {
   posledniRawVystup = null;
   aktivniRunId = null;
   document.getElementById('chat').innerHTML = '';
-  document.getElementById('post-vysledek').style.display = 'none';
-  document.getElementById('dalsi-nastroje').style.display = 'none';
   start();
   });
 }
