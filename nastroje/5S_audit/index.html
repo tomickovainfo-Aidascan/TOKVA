@@ -910,13 +910,14 @@ nav {
 #ukol-kdo { flex: 1; min-width: 90px; }
 
 /* HERO + CHCI VEDET VIC (sjednoceno s ostatnimi appkami) */
-.hero { background:var(--dark); padding:44px 24px 36px; position:relative; overflow:hidden; }
+.hero { background:var(--dark); padding:52px 24px 44px; position:relative; overflow:hidden; }
 .hero::before { content:""; position:absolute; top:-80px; right:-80px; width:320px; height:320px; border-radius:50%; border:60px solid rgba(233,169,27,0.07); pointer-events:none; }
 .hero-inner { max-width:1040px; margin:0 auto; position:relative; z-index:1; }
 .tool-badge { display:inline-block; background:rgba(233,169,27,0.15); border:1px solid rgba(233,169,27,0.3); color:var(--gold); font-size:10px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase; padding:4px 12px; border-radius:2px; margin-bottom:16px; }
-.hero h1 { font-family:"Poppins",sans-serif; font-size:clamp(22px,3.6vw,34px); font-weight:900; color:var(--white); line-height:1.2; letter-spacing:-0.4px; margin-bottom:12px; }
+.hero h1 { font-family:"Poppins",sans-serif; font-size:clamp(22px,4vw,36px); font-weight:900; color:var(--white); line-height:1.2; letter-spacing:-0.5px; margin-bottom:14px; }
 .hero h1 em { color:var(--gold); font-style:normal; }
-.hero p { font-size:14.5px; color:rgba(255,255,255,0.55); max-width:600px; line-height:1.7; font-weight:300; }
+.hero p { font-size:15px; color:rgba(255,255,255,0.5); max-width:520px; line-height:1.75; font-weight:300; }
+@media (max-width:600px) { .hero{padding:36px 16px 32px;} }
 
 .content-block { background:var(--white); border-bottom:1px solid var(--border); padding:28px 24px; }
 .content-inner { max-width:1040px; margin:0 auto; }
