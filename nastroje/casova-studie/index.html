@@ -548,6 +548,8 @@ nav {
   color:var(--mid);
   margin-bottom:16px;
 }
+.priklad-tag{display:inline-block;background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);color:var(--gold-dark);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:3px;margin-left:8px;vertical-align:middle;}
+.priklad-note{font-size:12px;color:var(--light);font-style:italic;margin-bottom:16px;}
 .summary-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
 .summary-card {
   background:var(--paper);
@@ -1201,8 +1203,9 @@ nav {
   </div>
 
   <!-- Shrnutí -->
-  <div class="summary" id="summary" style="display:none;">
-    <div class="summary-title">Přehled dne</div>
+  <div class="summary" id="summary">
+    <div class="summary-title">Přehled dne<span class="priklad-tag" id="priklad-tag">Příklad</span></div>
+    <p class="priklad-note" id="priklad-note">Tohle je jen ukázka, jak přehled vypadá. Jakmile zaznamenáte aspoň dvě činnosti, přepočítá se na váš skutečný den.</p>
     <div class="hodnota-hodiny-row">
       <label for="hodnota-hodiny">Hodnota vaší hodiny (nepovinné, jen pro přepočet na Kč)</label>
       <div class="hodnota-hodiny-input-wrap">
@@ -1210,7 +1213,68 @@ nav {
         <span>Kč/hod</span>
       </div>
     </div>
-    <div class="summary-stats" id="summary-stats"></div>
+    <div class="summary-stats" id="summary-stats">
+      <div class="produktivni-pomer">
+        <div class="produktivni-cislo">58%</div>
+        <div>
+          <div class="produktivni-label">Produktivní práce</div>
+          <div class="produktivni-sub">4h 20m ze 7h 30m</div>
+        </div>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-card-val">16</div>
+          <div class="summary-card-label">Zaznamenaných aktivit</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-val">7h 30m</div>
+          <div class="summary-card-label">Celková doba záznamu</div>
+        </div>
+      </div>
+      <div class="kat-bars">
+        <div class="kat-bar-row">
+          <div class="kat-bar-name">Produktivní práce</div>
+          <div class="kat-bar-bg"><div class="kat-bar-fill" style="width:58%;background:#6ee7a8;"></div></div>
+          <div class="kat-bar-val">4h 20m</div>
+        </div>
+        <div class="kat-bar-row">
+          <div class="kat-bar-name">🔥 Hašení problémů</div>
+          <div class="kat-bar-bg"><div class="kat-bar-fill" style="width:15%;background:#e05032;"></div></div>
+          <div class="kat-bar-val">1h 10m</div>
+        </div>
+        <div class="kat-bar-row">
+          <div class="kat-bar-name">Komunikace</div>
+          <div class="kat-bar-bg"><div class="kat-bar-fill" style="width:12%;background:#7ec8f5;"></div></div>
+          <div class="kat-bar-val">55m</div>
+        </div>
+        <div class="kat-bar-row">
+          <div class="kat-bar-name">Administrativa</div>
+          <div class="kat-bar-bg"><div class="kat-bar-fill" style="width:9%;background:#c4a8f5;"></div></div>
+          <div class="kat-bar-val">40m</div>
+        </div>
+      </div>
+      <div class="nejdelsi-blok">Nejdelší soustředěný pracovní blok: <strong>1h 45m</strong></div>
+      <div class="preruseni-info">Pracovní bloky byly přerušeny <strong>5x</strong></div>
+      <div class="top3-card">
+        <div class="top3-card-title">Tři největší rezervy dneška</div>
+        <div class="top3-item">
+          <div class="top3-item-head">
+            <div class="top3-item-name">🔥 Hašení problémů</div>
+            <div class="top3-item-val">1h 10m</div>
+          </div>
+          <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> Opakované hašení stejného typu problému je signál, že se řeší jen důsledek, ne kořenová příčina.</div>
+          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../5x-proc-ai-kouc/" target="_blank" rel="noopener" class="top3-item-link">Spustit 5x Proč AI kouč →</a>
+        </div>
+        <div class="top3-item">
+          <div class="top3-item-head">
+            <div class="top3-item-name">Komunikace</div>
+            <div class="top3-item-val">55m</div>
+          </div>
+          <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> Čas v komunikaci jde často zkrátit - kratší porady, jasnější pravidlo kdo koho a kdy kontaktuje.</div>
+          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../kviz-komunikacniho-chaosu/" target="_blank" rel="noopener" class="top3-item-link">Spustit Kvíz komunikačního chaosu →</a>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Historie dní (Pro) -->
@@ -1467,6 +1531,77 @@ function formatDuration(ms) {
   return h + 'h ' + (m > 0 ? m + 'min' : '');
 }
 
+const PRIKLAD_SOUHRN_HTML = `
+      <div class="produktivni-pomer">
+        <div class="produktivni-cislo">58%</div>
+        <div>
+          <div class="produktivni-label">Produktivní práce</div>
+          <div class="produktivni-sub">4h 20m ze 7h 30m</div>
+        </div>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-card-val">16</div>
+          <div class="summary-card-label">Zaznamenaných aktivit</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-val">7h 30m</div>
+          <div class="summary-card-label">Celková doba záznamu</div>
+        </div>
+      </div>
+      <div class="kat-bars">
+        <div class="kat-bar-row">
+          <div class="kat-bar-name">Produktivní práce</div>
+          <div class="kat-bar-bg"><div class="kat-bar-fill" style="width:58%;background:#6ee7a8;"></div></div>
+          <div class="kat-bar-val">4h 20m</div>
+        </div>
+        <div class="kat-bar-row">
+          <div class="kat-bar-name">🔥 Hašení problémů</div>
+          <div class="kat-bar-bg"><div class="kat-bar-fill" style="width:15%;background:#e05032;"></div></div>
+          <div class="kat-bar-val">1h 10m</div>
+        </div>
+        <div class="kat-bar-row">
+          <div class="kat-bar-name">Komunikace</div>
+          <div class="kat-bar-bg"><div class="kat-bar-fill" style="width:12%;background:#7ec8f5;"></div></div>
+          <div class="kat-bar-val">55m</div>
+        </div>
+        <div class="kat-bar-row">
+          <div class="kat-bar-name">Administrativa</div>
+          <div class="kat-bar-bg"><div class="kat-bar-fill" style="width:9%;background:#c4a8f5;"></div></div>
+          <div class="kat-bar-val">40m</div>
+        </div>
+      </div>
+      <div class="nejdelsi-blok">Nejdelší soustředěný pracovní blok: <strong>1h 45m</strong></div>
+      <div class="preruseni-info">Pracovní bloky byly přerušeny <strong>5x</strong></div>
+      <div class="top3-card">
+        <div class="top3-card-title">Tři největší rezervy dneška</div>
+        <div class="top3-item">
+          <div class="top3-item-head">
+            <div class="top3-item-name">🔥 Hašení problémů</div>
+            <div class="top3-item-val">1h 10m</div>
+          </div>
+          <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> Opakované hašení stejného typu problému je signál, že se řeší jen důsledek, ne kořenová příčina.</div>
+          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../5x-proc-ai-kouc/" target="_blank" rel="noopener" class="top3-item-link">Spustit 5x Proč AI kouč →</a>
+        </div>
+        <div class="top3-item">
+          <div class="top3-item-head">
+            <div class="top3-item-name">Komunikace</div>
+            <div class="top3-item-val">55m</div>
+          </div>
+          <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> Čas v komunikaci jde často zkrátit - kratší porady, jasnější pravidlo kdo koho a kdy kontaktuje.</div>
+          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../kviz-komunikacniho-chaosu/" target="_blank" rel="noopener" class="top3-item-link">Spustit Kvíz komunikačního chaosu →</a>
+        </div>
+      </div>`;
+
+function ukazatPrikladSouhrnu() {
+  const tag = document.getElementById('priklad-tag');
+  const note = document.getElementById('priklad-note');
+  if (tag) tag.style.display = '';
+  if (note) note.style.display = '';
+  const stats = document.getElementById('summary-stats');
+  if (stats) stats.innerHTML = PRIKLAD_SOUHRN_HTML;
+}
+
 function renderZaznamy() {
   const container = document.getElementById('zaznamy');
 
@@ -1475,7 +1610,7 @@ function renderZaznamy() {
       <div class="empty-icon">🎙️</div>
       <div class="empty-text">Zatím žádné záznamy.<br>Stiskněte mikrofon a řekněte co právě děláte.</div>
     </div>`;
-    document.getElementById('summary').style.display = 'none';
+    ukazatPrikladSouhrnu();
     return;
   }
 
@@ -1502,8 +1637,12 @@ function renderZaznamy() {
     </div>`;
   }).join('');
 
-  // Rozšířený souhrn
-  if (zaznamy.length > 1) {
+  // Rozšířený souhrn - potřebuje aspoň 2 záznamy, jinak necháme příklad
+  if (zaznamy.length <= 1) {
+    ukazatPrikladSouhrnu();
+    return;
+  }
+  {
     const total = zaznamy[zaznamy.length-1].timestamp - zaznamy[0].timestamp;
 
     // Spočítat čas v kategoriích
@@ -1663,7 +1802,10 @@ function renderZaznamy() {
         ${klasSouhrnHtml}
       </div>`;
 
-    document.getElementById('summary').style.display = 'block';
+    const prikladTag = document.getElementById('priklad-tag');
+    if (prikladTag) prikladTag.style.display = 'none';
+    const prikladNote = document.getElementById('priklad-note');
+    if (prikladNote) prikladNote.style.display = 'none';
     document.getElementById('summary-stats').innerHTML = `
       <div class="produktivni-pomer">
         <div class="produktivni-cislo">${produktivniPct}%</div>
