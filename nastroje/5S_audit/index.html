@@ -954,6 +954,13 @@ nav {
 .no-need-item { font-size:13.5px; color:var(--mid); display:flex; gap:8px; align-items:center; }
 .no-need-item::before { content:"✕"; color:var(--light); font-size:11px; }
 @media (max-width:600px) { .two-col { grid-template-columns:1fr; } .no-need-grid { grid-template-columns:1fr; } }
+
+.collapse-back{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
+.collapse-back-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;cursor:pointer;}
+.collapse-back-link:hover{text-decoration:underline;}
+.back-to-card{max-width:900px;margin:0 auto;text-align:center;padding:24px 20px 40px;}
+.back-to-card-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;}
+.back-to-card-link:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -1032,7 +1039,11 @@ nav {
         </div>
 
       </div>
-    </details>
+    
+    <div class="collapse-back">
+      <a class="collapse-back-link" onclick="const d=this.closest('details'); d.open=false; d.scrollIntoView({behavior:'smooth',block:'start'}); return false;" href="#">↑ Sbalit</a>
+    </div>
+  </details>
   </div>
 </div>
 
@@ -1051,6 +1062,10 @@ nav {
 <div class="main" id="main"></div>
 
 <!-- Modal nové místo -->
+<div class="back-to-card">
+  <a href="https://tokva.cz/?nastroj=5s-audit" class="back-to-card-link">← Zpět na kartu appky</a>
+</div>
+
 <div class="modal-overlay" id="modal-misto" style="display:none;">
   <div class="modal">
     <div class="modal-title">

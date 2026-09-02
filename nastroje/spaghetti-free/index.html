@@ -248,6 +248,13 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 @media (pointer:coarse) {
   #btn-posouvat { display:none; }
 }
+
+.collapse-back{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
+.collapse-back-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;cursor:pointer;}
+.collapse-back-link:hover{text-decoration:underline;}
+.back-to-card{max-width:900px;margin:0 auto;text-align:center;padding:24px 20px 40px;}
+.back-to-card-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;}
+.back-to-card-link:hover{text-decoration:underline;}
 </style>
 
 <style id="cookies-css">
@@ -368,7 +375,11 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
           </div>
         </div>
       </div>
-    </details>
+    
+    <div class="collapse-back">
+      <a class="collapse-back-link" onclick="const d=this.closest('details'); d.open=false; d.scrollIntoView({behavior:'smooth',block:'start'}); return false;" href="#">↑ Sbalit</a>
+    </div>
+  </details>
   </div>
 </div>
 
@@ -569,6 +580,10 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   </div>
 </div>
 
+
+<div class="back-to-card">
+  <a href="https://tokva.cz/?nastroj=spaghetti-sklad" class="back-to-card-link">← Zpět na kartu appky</a>
+</div>
 
 <footer>
   <div class="footer-brand">Gabriela <span>Tomíčková</span>, AI a Procesní konzultant</div>

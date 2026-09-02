@@ -183,6 +183,13 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   nav,.main,.vysledek{padding-left:14px;padding-right:14px;}
   .page-header{padding:20px 14px 16px;}
 }
+
+.collapse-back{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
+.collapse-back-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;cursor:pointer;}
+.collapse-back-link:hover{text-decoration:underline;}
+.back-to-card{max-width:900px;margin:0 auto;text-align:center;padding:24px 20px 40px;}
+.back-to-card-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;}
+.back-to-card-link:hover{text-decoration:underline;}
 </style>
 <style id="cookies-css">
 .cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
@@ -316,7 +323,11 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
         </div>
 
       </div>
-    </details>
+    
+    <div class="collapse-back">
+      <a class="collapse-back-link" onclick="const d=this.closest('details'); d.open=false; d.scrollIntoView({behavior:'smooth',block:'start'}); return false;" href="#">↑ Sbalit</a>
+    </div>
+  </details>
   </div>
 </div>
 <div class="main" id="kviz">
@@ -372,6 +383,10 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   </div>
   <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);" onclick="zacitZnovu()">Spustit kvíz znovu</button>
 </div>
+<div class="back-to-card">
+  <a href="https://tokva.cz/?nastroj=kviz-komunikace" class="back-to-card-link">← Zpět na kartu appky</a>
+</div>
+
 <footer>
   <div class="footer-brand">Gabriela <span>Tomíčková</span></div>
   <div class="footer-legal">IČO: 75905311 · <a href="https://gdpr.gabrielatomickova.cz">GDPR</a></div>

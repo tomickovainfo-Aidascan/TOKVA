@@ -550,6 +550,13 @@ nav {
 }
 .login-link a { color: #e9a91b; text-decoration: none; }
 
+
+.collapse-back{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
+.collapse-back-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;cursor:pointer;}
+.collapse-back-link:hover{text-decoration:underline;}
+.back-to-card{max-width:900px;margin:0 auto;text-align:center;padding:24px 20px 40px;}
+.back-to-card-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;}
+.back-to-card-link:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -598,7 +605,11 @@ nav {
         </div>
 
       </div>
-    </details>
+    
+    <div class="collapse-back">
+      <a class="collapse-back-link" onclick="const d=this.closest('details'); d.open=false; d.scrollIntoView({behavior:'smooth',block:'start'}); return false;" href="#">↑ Sbalit</a>
+    </div>
+  </details>
   </div>
 </div>
 
@@ -626,6 +637,10 @@ nav {
 
 
 <div class="chat-wrap" id="chat"></div>
+
+<div class="back-to-card">
+  <a href="https://tokva.cz/?nastroj=5x-proc" class="back-to-card-link">← Zpět na kartu appky</a>
+</div>
 
 <!-- Modal historie uložených analýz (jen Pro) -->
 <div class="modal-overlay" id="modal-historie" style="display:none;">
