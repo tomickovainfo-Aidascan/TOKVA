@@ -159,6 +159,24 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 .two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 .content-card { background:var(--paper); border:1px solid var(--border); border-radius:12px; padding:24px; }
 .content-card-title { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:var(--dark); margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
+.d-example{background:var(--black);color:var(--white);border-radius:14px;padding:28px 24px;}
+.d-example-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2.2px;color:var(--gold);margin-bottom:12px;}
+.d-example h4{font-family:"Poppins",sans-serif;font-weight:900;font-size:clamp(18px,2.6vw,22px);line-height:1.2;letter-spacing:-.5px;margin-bottom:16px;}
+.d-example-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;align-items:start;}
+.d-example-text p{font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.8);margin-bottom:10px;}
+.d-example-text p:last-child{margin-bottom:0;}
+.d-example-stat{border-left:3px solid var(--gold);padding-left:16px;}
+.d-example-stat .stat-num{font-family:"Poppins",sans-serif;font-weight:900;font-size:30px;color:var(--gold);line-height:1.05;margin-bottom:8px;}
+.d-example-stat .stat-note{font-size:12px;line-height:1.6;color:rgba(255,255,255,.6);}
+@media (max-width:600px){.d-example-grid{grid-template-columns:1fr;}}
+.dalsi-nastroje-wrap{max-width:900px;margin:0 auto;text-align:center;padding:0 20px 40px;}
+.dalsi-nastroje-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;}
+.dalsi-nastroj-card{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:10px;padding:20px 22px;}
+.dalsi-nastroj-tag{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;}
+.dalsi-nastroj-nazev{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.dalsi-nastroj-popis{font-size:13px;color:var(--mid);margin-bottom:14px;}
+.dalsi-nastroj-btn{display:inline-block;background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;}
+@media (max-width:600px){.dalsi-nastroje-grid{grid-template-columns:1fr;}}
 .check-list { list-style:none; display:flex; flex-direction:column; gap:10px; }
 .check-list li { font-size:14px; color:var(--mid); display:flex; gap:10px; align-items:flex-start; line-height:1.6; }
 .check-list li::before { content:"→"; color:var(--gold); font-weight:700; flex-shrink:0; margin-top:1px; }
@@ -254,11 +272,19 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <summary class="info-summary">Chci vědět víc</summary>
       <div style="margin-top:22px;display:flex;flex-direction:column;gap:32px;">
 
-    <div class="story-block">
-      <div class="story-title">Jak to vypadá v praxi?</div>
-      <p>Sklad, 5 lidí, jedna směna. Špatně rozmístěné zboží, přepisování dodacích listů, čekání na informaci. Nikdo v tom neviděl problém, prostě běžný provoz.</p>
-      <p>Po sečtení čísel: 303 100 Kč ročně za práci, která nikam nevedla.</p>
-      <p>Stačilo přeskládat zboží a zjednodušit jeden formulář.</p>
+    <div class="d-example">
+      <div class="d-example-eyebrow">Z praxe</div>
+      <h4>Jak to vypadá, když nikdo v tom neviděl problém?</h4>
+      <div class="d-example-grid">
+        <div class="d-example-text">
+          <p>Sklad, 5 lidí, jedna směna. Špatně rozmístěné zboží, přepisování dodacích listů, čekání na informaci. Nikdo v tom neviděl problém, prostě běžný provoz.</p>
+          <p>Stačilo přeskládat zboží a zjednodušit jeden formulář.</p>
+        </div>
+        <div class="d-example-stat">
+          <div class="stat-num">303 100 Kč</div>
+          <div class="stat-note">ročně stála práce, která nikam nevedla - po sečtení čísel z tohohle skladu.</div>
+        </div>
+      </div>
       <div class="trust-line">Čísla v kalkulačce vycházejí z měření, která jsem dělala ručně se stopkami přes 10 let přímo v provozu.</div>
     </div>
 
@@ -488,22 +514,20 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   </div>
 </div>
 
-<div class="main" style="padding-top:0;padding-bottom:24px;">
-  <div style="max-width:640px;margin:0 auto;text-align:center;">
-    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:14px;">Navazující nástroje</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;">
-      <div style="background:var(--gold-light);border:1px solid rgba(233,169,27,0.3);border-radius:10px;padding:20px 22px;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;">Pro sklad</div>
-        <div style="font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;">Mini audit skladu</div>
-        <div style="font-size:13px;color:var(--mid);margin-bottom:14px;">10 otázek, konkrétní tipy, výsledek zdarma.</div>
-        <a href="../mini-audit-skladu/" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;">Spustit audit</a>
-      </div>
-      <div style="background:var(--gold-light);border:1px solid rgba(233,169,27,0.3);border-radius:10px;padding:20px 22px;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;">Pro výrobu</div>
-        <div style="font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;">Měřič plýtvání</div>
-        <div style="font-size:13px;color:var(--mid);margin-bottom:14px;">Změřte ztráty přímo v provozu. Za jednu směnu víte kde začít.</div>
-        <a href="../meric-plytvani-free/" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;">Spustit měřič</a>
-      </div>
+<div class="dalsi-nastroje-wrap">
+  <div class="content-card-title">Navazující nástroje</div>
+  <div class="dalsi-nastroje-grid">
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Hlavní další krok</div>
+      <div class="dalsi-nastroj-nazev">Měřič plýtvání</div>
+      <div class="dalsi-nastroj-popis">Změřte ztráty přímo v provozu. Za jednu směnu víte, kde přesně se ztrácí čas.</div>
+      <a href="../meric-plytvani-free/" target="_blank" class="dalsi-nastroj-btn">Spustit měřič</a>
+    </div>
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Když jde hlavně o pohyb</div>
+      <div class="dalsi-nastroj-nazev">Spaghetti diagram</div>
+      <div class="dalsi-nastroj-popis">Nakreslete skutečnou trasu do plánku a uvidíte, kde se dá zkrátit.</div>
+      <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Spustit diagram</a>
     </div>
   </div>
 </div>
