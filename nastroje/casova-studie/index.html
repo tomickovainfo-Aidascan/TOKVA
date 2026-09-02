@@ -910,6 +910,8 @@ nav {
   transition:all .2s;
 }
 .modal-save:hover { background:var(--gold-dark); }
+.modal-notice-btns { display:flex; gap:10px; }
+.modal-cancel { background:transparent; border:1px solid var(--border); border-radius:8px; padding:12px; color:var(--mid); font-family:'DM Sans',sans-serif; font-size:14px; cursor:pointer; flex-shrink:0; }
 
 /* WARNING */
 .warning {
@@ -1258,7 +1260,7 @@ async function klikNaUcet() {
     }
     await vyzadovatPrihlaseni();
   } catch (e) {
-    alert('Přihlašování teď není dostupné. Zkuste to prosím později.');
+    upozornit('Přihlašování teď není dostupné. Zkuste to prosím později.');
     console.warn('Přihlášení/odhlášení se nepovedlo.', e);
   }
 }
@@ -1887,26 +1889,26 @@ function naplanovatPrubezneUlozeni() {
 // hromadily donekonečna, i mezi různými dny. Tohle je oprava i pro Free (jen
 // smaže dnešní záznamy), Pro navíc den nejdřív synchronizuje (finálně, včetně
 // measurements) do historie.
-async function novyDen() {
+function novyDen() {
   if (zaznamy.length === 0) return;
   const text = jePro
     ? 'Uložit dnešní den do historie a začít nový? Dnešní záznamy z appky zmizí, v historii zůstanou.'
     : 'Smazat dnešní záznamy a začít nový den?';
-  if (!confirm(text)) return;
+  potvrdit(text, 'Ano, začít nový den', async function() {
+    clearTimeout(autosaveTimer);
+    if (jePro) await ulozitNeboAktualizovatDen(true);
 
-  clearTimeout(autosaveTimer);
-  if (jePro) await ulozitNeboAktualizovatDen(true);
-
-  zaznamy = [];
-  editingId = null;
-  denRunId = null;
-  denMereniZapsano = false;
-  localStorage.removeItem('cs_den_run_id');
-  localStorage.removeItem('cs_den_mereni_zapsano');
-  ulozit();
-  document.getElementById('btn-konec').textContent = 'Konec';
-  document.getElementById('btn-konec').disabled = false;
-  renderZaznamy();
+    zaznamy = [];
+    editingId = null;
+    denRunId = null;
+    denMereniZapsano = false;
+    localStorage.removeItem('cs_den_run_id');
+    localStorage.removeItem('cs_den_mereni_zapsano');
+    ulozit();
+    document.getElementById('btn-konec').textContent = 'Konec';
+    document.getElementById('btn-konec').disabled = false;
+    renderZaznamy();
+  });
 }
 
 // Sekce Historie dní - u nepřihlášeného/bez Pro ukáže zamčenou nabídku, u Pro
@@ -1982,7 +1984,7 @@ function toggleNotif() {
         document.getElementById('notif-toggle').classList.add('on');
         resetNotifTimer();
       } else {
-        alert('Povolte notifikace v prohlížeči pro tuto funkci.');
+        upozornit('Povolte notifikace v prohlížeči pro tuto funkci.');
       }
     });
   } else {
@@ -2056,6 +2058,33 @@ function zavritModal() {
 
 function zavritModalOverlay(e) {
   if (e.target === document.getElementById('modal')) zavritModal();
+}
+
+let _modalNoticeCb = null;
+function upozornit(text, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Upozornění';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'none';
+  document.getElementById('modal-notice-ok').textContent = 'Rozumím';
+  _modalNoticeCb = null;
+  document.getElementById('modal-notice').style.display = 'flex';
+}
+function potvrdit(text, oklabel, callback, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Potvrdit akci';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'inline-block';
+  document.getElementById('modal-notice-ok').textContent = oklabel || 'Potvrdit';
+  _modalNoticeCb = callback;
+  document.getElementById('modal-notice').style.display = 'flex';
+}
+function zavritModalNotice() {
+  document.getElementById('modal-notice').style.display = 'none';
+  _modalNoticeCb = null;
+}
+function potvrdModalNotice() {
+  const cb = _modalNoticeCb;
+  zavritModalNotice();
+  if (cb) cb();
 }
 
 function pridatModalRow() {
@@ -2158,6 +2187,21 @@ nacistPrihlaseniStav();
     <p class="login-err" id="pro-err" style="color:var(--mid);"></p>
     <button class="modal-save" id="pro-btn" onclick="klikVModaluPro()">Přihlásit se</button>
     <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Tokva Pro? <a href="https://tokva.cz">Zjistit víc o Tokva Pro</a></div>
+  </div>
+</div>
+
+<!-- Modal upozorneni/potvrzeni (obecny) -->
+<div class="modal-overlay" id="modal-notice" style="display:none;" onclick="if(event.target===this) zavritModalNotice()">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modal-notice-title">Upozornění</span>
+      <button class="modal-close" onclick="zavritModalNotice()">×</button>
+    </div>
+    <p id="modal-notice-text" style="font-size:13px;color:var(--mid);margin-bottom:14px;line-height:1.7;"></p>
+    <div class="modal-notice-btns">
+      <button class="modal-cancel" id="modal-notice-cancel" onclick="zavritModalNotice()" style="display:none;">Zrušit</button>
+      <button class="modal-save" id="modal-notice-ok" onclick="potvrdModalNotice()">Rozumím</button>
+    </div>
   </div>
 </div>
 
