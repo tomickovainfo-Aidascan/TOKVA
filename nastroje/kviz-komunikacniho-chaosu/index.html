@@ -69,12 +69,6 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .historie-shrnuti{font-size:13px;color:rgba(255,255,255,.85);line-height:1.5;}
 .historie-prazdno{font-size:13px;color:rgba(255,255,255,.4);text-align:center;padding:20px 0;}
 .historie-trend{font-size:12px;color:var(--gold);margin-top:8px;line-height:1.6;}
-.page-header{background:var(--black);padding:24px 20px 20px;position:relative;overflow:hidden;}
-.page-header::before{content:"";position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;border:50px solid rgba(233,169,27,.07);pointer-events:none;}
-.page-header-inner{max-width:560px;margin:0 auto;position:relative;z-index:1;}
-.page-header h1{font-family:"Poppins",sans-serif;font-size:clamp(20px,4vw,28px);font-weight:900;color:white;line-height:1.2;margin-bottom:6px;}
-.page-header h1 em{color:var(--gold);font-style:normal;}
-.page-header p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;}
 .main{max-width:560px;margin:0 auto;padding:20px 16px 80px;}
 .intro-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 20px;margin-bottom:14px;}
 .intro-card p{font-size:14px;color:var(--mid);margin-bottom:10px;}
@@ -84,14 +78,14 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
 .info-summary::before { content:""; display:inline-block; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--gold-dark); transition:transform .2s; }
 .info-detail[open] .info-summary::before { transform:rotate(180deg); }
-.hero{background:var(--black);padding:44px 24px 36px;position:relative;overflow:hidden;}
+.hero{background:var(--black);padding:52px 24px 44px;position:relative;overflow:hidden;}
 .hero::before { content:""; position:absolute; top:-70px; right:-70px; width:240px; height:240px; border-radius:50%; border:42px solid rgba(233,169,27,0.07); pointer-events:none; }
 .hero-inner{max-width:1040px;margin:0 auto;position:relative;z-index:1;}
-.tool-badge{display:inline-block;background:rgba(233,169,27,0.15);border:1px solid rgba(233,169,27,0.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:16px;}
-.hero h1{font-family:"Poppins",sans-serif;font-size:clamp(22px,3.6vw,34px);font-weight:900;color:var(--white);line-height:1.2;letter-spacing:-0.4px;margin-bottom:12px;}
+.tool-badge{display:inline-block;background:rgba(233,169,27,0.15);border:1px solid rgba(233,169,27,0.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:18px;}
+.hero h1{font-family:"Poppins",sans-serif;font-size:clamp(22px,4vw,36px);font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-0.5px;margin-bottom:14px;}
 .hero h1 em{color:var(--gold);font-style:normal;}
-.hero p{font-size:14.5px;color:rgba(255,255,255,0.55);max-width:640px;line-height:1.7;font-weight:300;}
-.hero-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:20px;}
+.hero p{font-size:15px;color:rgba(255,255,255,0.5);max-width:520px;line-height:1.75;font-weight:300;margin-bottom:22px;}
+.hero-meta{display:flex;gap:18px;flex-wrap:wrap;}
 .hero-meta span{font-size:12px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:6px;}
 .hero-meta span::before{content:"\25CF";color:var(--gold);font-size:7px;}
 .content-block{background:var(--white);border-bottom:1px solid var(--border);padding:28px 24px;}
@@ -99,6 +93,21 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
 .content-card{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:22px;}
 .content-card-title{font-family:"Poppins",sans-serif;font-size:12.5px;font-weight:700;color:var(--dark);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;}
+.post-kviz{background:var(--white);border-top:1px solid var(--border);padding:40px 24px;}
+.post-kviz-inner{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px;}
+.faq-block{}
+.faq-item{border-bottom:1px solid var(--border);padding:16px 0;}
+.faq-item:first-child{padding-top:0;}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:6px;}
+.faq-a{font-size:13px;color:var(--mid);line-height:1.7;}
+.dalsi-nastroje-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.dalsi-nastroj-card{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:10px;padding:20px 22px;}
+.dalsi-nastroj-tag{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;}
+.dalsi-nastroj-nazev{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.dalsi-nastroj-popis{font-size:13px;color:var(--mid);margin-bottom:14px;}
+.dalsi-nastroj-btn{display:inline-block;background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;}
+@media (max-width:600px){.dalsi-nastroje-grid{grid-template-columns:1fr;}.post-kviz{padding:28px 20px;}}
 .check-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
 .check-list li{font-size:13.5px;color:var(--mid);display:flex;gap:10px;align-items:flex-start;line-height:1.6;}
 .check-list li::before{content:"\2192";color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;}
@@ -181,7 +190,9 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 .footer-legal a{color:rgba(255,255,255,.15);text-decoration:none;}
 @media(max-width:560px){
   nav,.main,.vysledek{padding-left:14px;padding-right:14px;}
-  .page-header{padding:20px 14px 16px;}
+}
+@media(max-width:600px){
+  .hero{padding:36px 16px 32px;}
 }
 
 .collapse-back{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
@@ -383,6 +394,53 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   </div>
   <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);" onclick="zacitZnovu()">Spustit kvíz znovu</button>
 </div>
+
+<div class="post-kviz">
+  <div class="post-kviz-inner">
+
+    <div>
+      <div class="content-card-title">Navazující nástroje</div>
+      <div class="dalsi-nastroje-grid">
+        <div class="dalsi-nastroj-card">
+          <div class="dalsi-nastroj-tag">Hlavní další krok</div>
+          <div class="dalsi-nastroj-nazev">5x Proč AI kouč</div>
+          <div class="dalsi-nastroj-popis">Zeptá se vás postupně, dokud společně nenajdete, proč se informace ve firmě ztrácejí a co s tím.</div>
+          <a href="../5x-proc-ai-kouc/" target="_blank" class="dalsi-nastroj-btn">Spustit kouče</a>
+        </div>
+        <div class="dalsi-nastroj-card">
+          <div class="dalsi-nastroj-tag">Když jde hlavně o čas</div>
+          <div class="dalsi-nastroj-nazev">Časová studie mého dne</div>
+          <div class="dalsi-nastroj-popis">Zjistíte, kolik z vašeho dne skutečně padá na komunikaci a dohledávání informací.</div>
+          <a href="../casova-studie/" target="_blank" class="dalsi-nastroj-btn">Spustit studii</a>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="content-card-title">Časté otázky</div>
+      <div class="faq-block">
+        <div class="faq-item">
+          <div class="faq-q">Musím zadat e-mail?</div>
+          <div class="faq-a">Ne. Kvíz spustíte rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte jen pokud chcete i podrobnější rozbor poslat na později.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Je to test znalostí?</div>
+          <div class="faq-a">Ne, jde o to, jak si ve firmě reálně předáváte informace, ne co byste teoreticky měli dělat. Odpovídejte podle skutečnosti, ne podle toho, jak by to mělo vypadat.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Co znamená skóre a pásmo?</div>
+          <div class="faq-a">Čím víc bodů, tím větší chaos v předávání informací. Kvíz vám navíc ukáže, která z 6 oblastí (e-maily, WhatsApp, předání mezi lidmi, zodpovědnosti...) vás brzdí nejvíc.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
+          <div class="faq-a">Pro uloží výsledek do vašeho účtu. Kvíz zopakujete za čas a hned vidíte, jestli se komunikace zlepšuje, nebo je pořád stejná. Samotný kvíz je pořád celý zdarma, Pro jen přidává historii.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <div class="back-to-card">
   <a href="https://tokva.cz/?nastroj=kviz-komunikace" class="back-to-card-link">← Zpět na kartu appky</a>
 </div>
