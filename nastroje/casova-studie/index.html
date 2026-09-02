@@ -82,6 +82,8 @@ nav {
   color:var(--black);
 }
 .nav-brand span { color:var(--gold); }
+.nav-tool { font-size:12px; color:var(--light); font-weight:500; margin-left:10px; padding-left:10px; border-left:1px solid var(--border); }
+@media (max-width:600px) { .nav-tool { display:none; } }
 
 .nav-date {
   font-family:'DM Mono',monospace;
@@ -1015,7 +1017,7 @@ nav {
 <body>
 
 <nav>
-  <a href="https://tokva.cz/?nastroj=casova-studie" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a>
+  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/?nastroj=casova-studie" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Časová studie mého dne</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>

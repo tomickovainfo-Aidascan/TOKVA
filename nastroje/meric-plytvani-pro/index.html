@@ -43,8 +43,10 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--dark);min-height:100vh;line-height:1.6;}
 
-nav{background:var(--black);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
-.nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:white;}
+nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--black);}
+.nav-tool{font-size:12px;color:var(--mid);font-weight:500;margin-left:10px;padding-left:10px;border-left:1px solid var(--border);}
+@media (max-width:600px){.nav-tool{display:none;}}
 .nav-brand span{color:var(--gold);}
 .nav-badge{font-size:10px;font-weight:700;color:var(--pro);background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);padding:3px 8px;border-radius:3px;}
 .nav-right{display:flex;align-items:center;gap:12px;}
@@ -313,7 +315,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 </div>
 
 <nav>
-  <a href="https://tokva.cz/?nastroj=meric-pro" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a>
+  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/?nastroj=meric-pro" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Měřič plýtvání Pro</span></div>
   <div class="nav-right">
     <span class="nav-badge">Pro verze</span>
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>

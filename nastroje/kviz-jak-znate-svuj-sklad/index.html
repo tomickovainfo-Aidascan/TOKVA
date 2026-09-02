@@ -48,6 +48,8 @@ body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--dark);
 nav{background:var(--white);border-bottom:2px solid var(--gold);padding:13px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.05);}
 .nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--black);}
 .nav-brand span{color:var(--gold);}
+.nav-tool{font-size:12px;color:var(--light);font-weight:500;margin-left:10px;padding-left:10px;border-left:1px solid var(--border);}
+@media (max-width:600px){.nav-tool{display:none;}}
 .nav-web{font-size:13px;font-weight:600;color:var(--mid);text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:4px;transition:all .2s;}
 .nav-web:hover{border-color:var(--gold);color:var(--gold-dark);}
 .nav-right{display:flex;align-items:center;gap:12px;}
@@ -235,7 +237,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 </div>
 
 <nav>
-  <a href="https://tokva.cz/?nastroj=kviz-sklad" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a>
+  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/?nastroj=kviz-sklad" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Jak dobře znáte svůj sklad</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
