@@ -557,6 +557,18 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   </div>
 </div>
 
+<!-- MODAL POTVRZENI (obecny) -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal">
+    <h3 id="modal-confirm-title"></h3>
+    <p id="modal-confirm-text"></p>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="zavritModalConfirm()">Zrušit</button>
+      <button class="btn-modal-ok" id="modal-confirm-ok" onclick="potvrditModalConfirm()">Smazat</button>
+    </div>
+  </div>
+</div>
+
 
 <footer>
   <div class="footer-brand">Gabriela <span>Tomíčková</span>, AI a Procesní konzultant</div>
@@ -1106,11 +1118,11 @@ function zpetKrok() {
 }
 
 function smazatAktualniTrasu() {
-  if (confirm('Smazat celou trasu aktuální zakázky?')) {
+  otevritModalConfirm('Smazat trasu?', 'Smazat celou trasu aktuální zakázky?', 'Smazat trasu', function() {
     zakazky[aktivniZakazka].body = [];
     kreslit();
     updateStats();
-  }
+  });
 }
 
 function novaZakazka() {
@@ -1147,13 +1159,13 @@ function prepnoutZakazku(i) {
 function smazatZakazku(i, e) {
   e.stopPropagation();
   if (zakazky.length === 1) { zakazky[0].body = []; kreslit(); updateStats(); return; }
-  if (confirm('Smazat zakázku "' + zakazky[i].nazev + '"?')) {
+  otevritModalConfirm('Smazat zakázku?', 'Smazat zakázku "' + zakazky[i].nazev + '"?', 'Smazat zakázku', function() {
     zakazky.splice(i, 1);
     aktivniZakazka = Math.min(aktivniZakazka, zakazky.length - 1);
     obnovitZakazkyList();
     updateStats();
     kreslit();
-  }
+  });
 }
 
 function obnovitZakazkyList() {
@@ -1285,6 +1297,25 @@ function tisknout() {
   printWin.document.close();
   printWin.focus();
   setTimeout(() => printWin.print(), 500);
+}
+
+let modalConfirmCallback = null;
+function otevritModalConfirm(nadpis, text, oklabel, callback) {
+  document.getElementById('modal-confirm-title').textContent = nadpis;
+  document.getElementById('modal-confirm-text').textContent = text;
+  document.getElementById('modal-confirm-ok').textContent = oklabel;
+  modalConfirmCallback = callback;
+  document.getElementById('modal-confirm').classList.add('visible');
+}
+function zavritModalConfirm() {
+  document.getElementById('modal-confirm').classList.remove('visible');
+  modalConfirmCallback = null;
+}
+function potvrditModalConfirm() {
+  const cb = modalConfirmCallback;
+  document.getElementById('modal-confirm').classList.remove('visible');
+  modalConfirmCallback = null;
+  if (cb) cb();
 }
 
 function resetovat() {
