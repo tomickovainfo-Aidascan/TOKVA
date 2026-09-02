@@ -563,7 +563,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <h3 id="modal-confirm-title"></h3>
     <p id="modal-confirm-text"></p>
     <div class="modal-btns">
-      <button class="btn-modal-cancel" onclick="zavritModalConfirm()">Zrušit</button>
+      <button class="btn-modal-cancel" id="modal-confirm-cancel" onclick="zavritModalConfirm()">Zrušit</button>
       <button class="btn-modal-ok" id="modal-confirm-ok" onclick="potvrditModalConfirm()">Smazat</button>
     </div>
   </div>
@@ -848,7 +848,7 @@ function ulozitKalibraci() {
 
 
 function spustitKresleni() {
-  if (!meritkoNastaveno) { alert('Nejdřív zkalibrujte měřítko kliknutím na plánek.'); return; }
+  if (!meritkoNastaveno) { upozornit('Nejdřív zkalibrujte měřítko kliknutím na plánek.'); return; }
   const nazev = document.getElementById('nazev-zakazky').value || 'Zakázka 1';
   zakazky[0].nazev = nazev;
 
@@ -1303,8 +1303,17 @@ let modalConfirmCallback = null;
 function otevritModalConfirm(nadpis, text, oklabel, callback) {
   document.getElementById('modal-confirm-title').textContent = nadpis;
   document.getElementById('modal-confirm-text').textContent = text;
+  document.getElementById('modal-confirm-cancel').style.display = '';
   document.getElementById('modal-confirm-ok').textContent = oklabel;
   modalConfirmCallback = callback;
+  document.getElementById('modal-confirm').classList.add('visible');
+}
+function upozornit(text, nadpis) {
+  document.getElementById('modal-confirm-title').textContent = nadpis || 'Upozornění';
+  document.getElementById('modal-confirm-text').textContent = text;
+  document.getElementById('modal-confirm-cancel').style.display = 'none';
+  document.getElementById('modal-confirm-ok').textContent = 'Rozumím';
+  modalConfirmCallback = null;
   document.getElementById('modal-confirm').classList.add('visible');
 }
 function zavritModalConfirm() {
