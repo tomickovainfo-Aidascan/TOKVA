@@ -244,6 +244,12 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .tip-box p { font-size:13px; color:var(--mid); line-height:1.7; margin-bottom:14px; }
 .tip-box a { display:inline-block; background:var(--black); color:var(--white); font-size:13px; font-weight:600; padding:9px 18px; border-radius:4px; text-decoration:none; transition:background 0.2s; }
 .tip-box a:hover { background:var(--gold); color:var(--black); }
+.dalsi-nastroje-col{display:flex;flex-direction:column;gap:14px;}
+.dalsi-nastroj-card{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:10px;padding:20px 22px;}
+.dalsi-nastroj-tag{font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;}
+.dalsi-nastroj-nazev{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+.dalsi-nastroj-popis{font-size:13px;color:var(--mid);margin-bottom:14px;}
+.dalsi-nastroj-btn{display:inline-block;background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;}
 
 /* ── FOOTER ── */
 footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
@@ -974,11 +980,23 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           </div>
         </div>
       </div>
-      <div class="tip-box">
-        <strong>Využíváte tenhle drahý prostor dobře?</strong>
-        <p>Kalkulačka vám říká, kolik vás sklad stojí. Jestli chcete vědět, jestli za ty peníze prostor opravdu využíváte, kudy se zbytečně chodí a kde je zabraný prostor, na to je Spaghetti diagram.</p>
-        <a href="../spaghetti-free/">Spustit Spaghetti diagram →</a>
-        <p style="margin-top:14px;margin-bottom:0;">Nebo si rovnou domluvte procesní audit – přijdu se podívat přímo do provozu.</p>
+      <div>
+        <div class="content-card-title" style="margin-bottom:14px;">Navazující nástroje</div>
+        <div class="dalsi-nastroje-col">
+          <div class="dalsi-nastroj-card">
+            <div class="dalsi-nastroj-tag">Využíváte prostor dobře?</div>
+            <div class="dalsi-nastroj-nazev">Spaghetti diagram</div>
+            <div class="dalsi-nastroj-popis">Nakreslete skutečnou trasu do plánku a uvidíte, kudy se zbytečně chodí a kde je zabraný prostor.</div>
+            <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Spustit diagram</a>
+          </div>
+          <div class="dalsi-nastroj-card">
+            <div class="dalsi-nastroj-tag">Problém je v uspořádání?</div>
+            <div class="dalsi-nastroj-nazev">5S pro každého smrtelníka</div>
+            <div class="dalsi-nastroj-popis">Pokud vysoký náklad souvisí s tím, jak je sklad uspořádaný, tady dáte věcem systém.</div>
+            <a href="../5S_audit/" target="_blank" class="dalsi-nastroj-btn">Spustit 5S</a>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-top:14px;">Nebo si rovnou domluvte procesní audit – přijdu se podívat přímo do provozu.</p>
       </div>
     </div>
   </div>
