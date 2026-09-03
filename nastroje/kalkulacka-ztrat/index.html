@@ -55,6 +55,9 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .nav-cta:hover { background:var(--gold-dark); color:white; }
 .nav-tool { font-size:12px; color:var(--light); font-weight:500; margin-left:10px; padding-left:10px; border-left:1px solid var(--border); }
 @media (max-width:600px) { .nav-tool { display:none; } }
+.nav-right { display:flex; align-items:center; gap:12px; }
+.nav-btn { background:transparent; border:1px solid var(--border); color:var(--mid); font-size:12px; padding:7px 14px; border-radius:4px; cursor:pointer; font-family:"DM Sans",sans-serif; transition:all .2s; white-space:nowrap; }
+.nav-btn:hover { border-color:var(--gold); color:var(--gold-dark); }
 
 .hero { background:var(--black); padding:56px 40px 48px; position:relative; overflow:hidden; }
 .hero::before { content:""; position:absolute; top:-70px; right:-70px; width:240px; height:240px; border-radius:50%; border:42px solid rgba(233,169,27,0.07); pointer-events:none; }
@@ -132,11 +135,6 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .breakdown-bar { height:100%; background:var(--gold); border-radius:2px; transition:width 0.5s ease; }
 .breakdown-val { font-family:"DM Mono",monospace; font-size:12px; font-weight:500; color:var(--mid); min-width:52px; text-align:right; }
 
-.cta-box { background:var(--gold-light); border:1px solid rgba(233,169,27,0.3); border-radius:12px; padding:22px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-.cta-box-text strong { font-size:14px; font-weight:700; color:var(--dark); display:block; margin-bottom:3px; }
-.cta-box-text span { font-size:13px; color:var(--mid); }
-.cta-box a { background:var(--black); color:var(--white); font-size:13px; font-weight:600; padding:10px 20px; border-radius:6px; text-decoration:none; white-space:nowrap; transition:background 0.2s; flex-shrink:0; }
-.cta-box a:hover { background:var(--gold); color:var(--black); }
 
 footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
 .footer-brand { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:rgba(255,255,255,0.4); }
@@ -250,6 +248,10 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
 <nav>
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/?nastroj=kalkulacka" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Kalkulačka ztrát</span></div>
+  <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+  </div>
 </nav>
 
 <div class="hero">
@@ -476,13 +478,6 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <a class="top-loss-cta" id="top-loss-cta" href="#" target="_blank" style="display:none;">Zjistit teď →</a>
       </div>
 
-      <div class="cta-box">
-        <div class="cta-box-text">
-          <strong>Nechcete to řešit úplně sami?</strong>
-          <span>Domluvte si 30min hovor zdarma. Podíváme se na čísla spolu.</span>
-        </div>
-        <a href="https://calendly.com/tomickova-info/30min" target="_blank">Chci 30min hovor zdarma</a>
-      </div>
     </div>
   </div>
 </div>
@@ -495,7 +490,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</div>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Číslo vás překvapilo? Nebo přesně potvrdilo, co jste tušili?</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Teď víte, kolik vás rutina stojí. Kalkulačka ukáže, co vychází nejdráž - chůze, administrativa, čekání nebo expedice.</p>
-        <p style="font-size:14px;color:var(--mid);line-height:1.75;">Další krok je podívat se na největší položku zblízka. Pokud na to chcete druhý pohled, domluvte si 30 minut zdarma.</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;">Další krok je podívat se na největší položku zblízka - appka vám ukáže, kam se podívat nejdřív.</p>
         <div class="faq-block" style="margin-top:24px;">
           <div class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</div>
           <div class="faq-item">
@@ -529,6 +524,12 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="dalsi-nastroj-popis">Nakreslete skutečnou trasu do plánku a uvidíte, kde se dá zkrátit.</div>
       <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Spustit diagram</a>
     </div>
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Když jde hlavně o administrativu</div>
+      <div class="dalsi-nastroj-nazev">Časová studie dne</div>
+      <div class="dalsi-nastroj-popis">Zaznamenejte celý den a zjistěte, kolik z něj je administrativa a hašení problémů.</div>
+      <a href="../casova-studie/" target="_blank" class="dalsi-nastroj-btn">Spustit studii</a>
+    </div>
   </div>
 </div>
 
@@ -541,6 +542,9 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   <div class="footer-legal">Příčná 49, Vrchlabí - IČO: 75905311 &nbsp;·&nbsp; <a href="https://gdpr.gabrielatomickova.cz" style="color:rgba(255,255,255,0.35);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#e9a91b'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Zásady ochrany osobních údajů</a></div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth.js"></script>
 <script>
 function fmt(n) { return Math.round(n).toLocaleString("cs-CZ"); }
 
@@ -568,7 +572,7 @@ function syncFromNumber(id) {
 const CILE = {
   chuze:   { nazev: "Zbytečná chůze a přesuny", text: "Zmapujte skutečnou trasu a najděte, kde se dá zkrátit.", url: "../spaghetti-free/", cta: "Spustit Spaghetti diagram →" },
   prostoje:{ nazev: "Čekání a prostoje", text: "Změřte přímo v provozu, během které části procesu se čeká.", url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání →" },
-  admin:   { nazev: "Ruční administrativa", text: "Časová studie dne umí rozklíčovat, kolik z toho je administrativa a hašení — appka zatím nemá vlastní veřejný odkaz, brzy přibude.", url: null, cta: null },
+  admin:   { nazev: "Ruční administrativa", text: "Časová studie dne rozklíčuje, kolik z toho je administrativa a kolik hašení problémů.", url: "../casova-studie/", cta: "Spustit Časovou studii →" },
   kamion:  { nazev: "Dodávky a expedice", text: "Změřte proces příjmu nebo expedice přímo v provozu.", url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání →" },
   vse:     { nazev: "Rozloženo napříč více oblastmi", text: "Když nic výrazně nepřevažuje, problém většinou není jedna činnost, ale celkové fungování provozu.", url: "../mini-audit-skladu/", cta: "Spustit Mini audit skladu →" }
 };
@@ -652,6 +656,56 @@ function aktualizovatNejvetsiZtratu(hodnoty, celkem) {
 }
 
 update();
+
+// Sdílený účet Tokva Pro (Supabase, viz auth.js/supabase-client.js) - appka
+// sama žádný Pro obsah neodemyká, jen ukazuje přihlašovací stav konzistentně
+// se zbytkem appek.
+let session = null;
+let clenstvi = null;
+
+async function nacistPrihlaseniStav() {
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+  } catch (e) {
+    console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál jako nepřihlášená (zdarma).', e);
+    session = null;
+    clenstvi = null;
+  }
+  renderUcetNav();
+}
+
+function renderUcetNav() {
+  const btn = document.getElementById('nav-ucet-btn');
+  const info = document.getElementById('nav-ucet-info');
+  if (!session) {
+    btn.textContent = 'Přihlásit se';
+    btn.style.display = '';
+    info.style.display = 'none';
+    return;
+  }
+  btn.textContent = 'Odhlásit';
+  btn.style.display = '';
+  info.style.display = '';
+  const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
+  info.textContent = maAktivniPro(clenstvi) ? (nazevFirmy + ' \u00b7 Pro') : nazevFirmy;
+}
+
+async function klikNaUcet() {
+  try {
+    if (session) {
+      await odhlasit();
+      session = null; clenstvi = null;
+      renderUcetNav();
+      return;
+    }
+    await vyzadovatPrihlaseni();
+  } catch (e) {
+    console.warn('Přihlášení/odhlášení se nepovedlo.', e);
+  }
+}
+
+nacistPrihlaseniStav();
 </script>
 
 <script>
