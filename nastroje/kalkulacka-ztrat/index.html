@@ -37,6 +37,24 @@
       "author": { "@type": "Person", "name": "Gabriela Tomíčková" }
     }
   </script>
+  <script type="application/ld+json">
+  {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Je výsledek kalkulačky ztrát přesný?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Není - a záměrně. Cílem není přesný audit, ale rychlá orientace v číslech. Pokud vás výsledek překvapí, teprve pak má smysl měřit přesněji, například appkou Měřič plýtvání." }
+        },
+        {
+          "@type": "Question",
+          "name": "Potřebuji pro kalkulačku ztrát znát přesné minuty?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ne. Zadejte odhad - vedoucí, který v provozu stojí denně, ho má v hlavě. Výsledek bude dostatečně blízko realitě." }
+        }
+      ]
+    }
+  </script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -292,7 +310,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
     <div class="two-col">
       <div class="content-card">
-        <div class="content-card-title">Hodí se vám to, pokud:</div>
+        <h3 class="content-card-title">Hodí se vám to, pokud:</h3>
         <ul class="check-list">
           <li>Tušíte, že někde teče čas, ale nevíte přesně kde - a nemáte čas to stopovat</li>
           <li>Chcete přijít za vedením nebo majitelem s číslem, ne s pocitem</li>
@@ -300,7 +318,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </ul>
       </div>
       <div class="content-card">
-        <div class="content-card-title">Tři kroky, žádná věda:</div>
+        <h3 class="content-card-title">Tři kroky, žádná věda:</h3>
         <div class="steps-list">
           <div class="step-item"><div class="step-num">1</div><div>Zadáte čísla ze svého provozu - počet lidí, směny, kolik minut denně odchází zbytečnou chůzí, čekáním a administrativou</div></div>
           <div class="step-item"><div class="step-num">2</div><div>Kalkulačka propočítá ztráty - v korunách za měsíc, hodinách za týden a kilometrech navíc za rok</div></div>
@@ -310,13 +328,13 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
     </div>
 
     <div class="output-preview-block">
-      <div class="content-card-title">Takto vypadá výsledek:</div>
+      <h3 class="content-card-title">Takto vypadá výsledek:</h3>
       <img src="/preview.jpg" alt="Ukázka výsledku kalkulačky ztrát" style="width:100%;max-width:460px;border-radius:12px;display:block;margin:12px auto 0;">
       <p style="font-size:12px;color:var(--light);text-align:center;margin-top:8px;">Čísla jsou z ukázkového výpočtu. Váš výsledek bude odpovídat číslům, která zadáte.</p>
     </div>
 
     <div class="content-card">
-      <div class="content-card-title">Co k tomu nepotřebujete:</div>
+      <h3 class="content-card-title">Co k tomu nepotřebujete:</h3>
       <div class="no-need-grid">
         <div class="no-need-item">Konzultanta ani poradce</div>
         <div class="no-need-item">Excel ani software</div>
@@ -425,10 +443,10 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="km-note">Kilometry: orientační přepočet rychlostí cca 4 km/h, 5 pracovních dní v týdnu, pro všechny zadané pracovníky dohromady.</div>
 
       <div class="breakdown">
-        <div class="breakdown-title">
+        <h2 class="breakdown-title">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
           Kde ztráty vznikají
-        </div>
+        </h2>
 
         <div class="breakdown-row">
           <div class="breakdown-icon-box"></div>
@@ -487,12 +505,12 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
     <div class="post-calc-grid">
 
       <div>
-        <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</div>
+        <h2 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h2>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Číslo vás překvapilo? Nebo přesně potvrdilo, co jste tušili?</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Teď víte, kolik vás rutina stojí. Kalkulačka ukáže, co vychází nejdráž - chůze, administrativa, čekání nebo expedice.</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;">Další krok je podívat se na největší položku zblízka - appka vám ukáže, kam se podívat nejdřív.</p>
         <div class="faq-block" style="margin-top:24px;">
-          <div class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</div>
+          <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
           <div class="faq-item">
             <div class="faq-q">Je výsledek přesný?</div>
             <div class="faq-a">Není - a záměrně. Cílem není přesný audit, ale rychlá orientace. Pokud vás výsledek překvapí, teprve pak má smysl měřit přesněji.</div>
@@ -510,7 +528,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 </div>
 
 <div class="dalsi-nastroje-wrap">
-  <div class="content-card-title">Navazující nástroje</div>
+  <h2 class="content-card-title">Navazující nástroje</h2>
   <div class="dalsi-nastroje-grid">
     <div class="dalsi-nastroj-card">
       <div class="dalsi-nastroj-tag">Hlavní další krok</div>
