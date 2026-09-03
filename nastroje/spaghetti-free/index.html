@@ -59,7 +59,7 @@
       {
         "@type": "Question",
         "name": "Co dostanu navíc v Pro verzi?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Pro zaznamená pohyb víc lidí najednou, ve skladu i ve výrobě, včetně zastávek na trase. Free verze zůstává celá zdarma pro jednu osobu a jednu trasu v čase." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Poznámky k místům na plánku, porovnání současného stavu s návrhem v jedné mapě a přepočet na Kč podle frekvence a nákladů na zaměstnance. Free verze zůstává celá zdarma pro jednu osobu a jednu trasu v čase." }
       }
     ]
   }
@@ -81,6 +81,9 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .nav-brand span { color:var(--gold); }
 .nav-tool { font-size:12px; color:var(--light); font-weight:500; margin-left:10px; padding-left:10px; border-left:1px solid var(--border); }
 @media (max-width:600px) { .nav-tool { display:none; } }
+.nav-right { display:flex; align-items:center; gap:12px; }
+.nav-btn { background:transparent; border:1px solid var(--border); color:var(--mid); font-size:12px; padding:7px 14px; border-radius:4px; cursor:pointer; font-family:"DM Sans",sans-serif; transition:all .2s; white-space:nowrap; }
+.nav-btn:hover { border-color:var(--gold); color:var(--gold-dark); }
 
 .hero { background:var(--black); padding:52px 24px 44px; position:relative; overflow:hidden; }
 .hero::before { content:""; position:absolute; top:-70px; right:-70px; width:240px; height:240px; border-radius:50%; border:42px solid rgba(233,169,27,0.07); pointer-events:none; }
@@ -383,7 +386,11 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 
 <nav id="site-nav">
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/?nastroj=spaghetti-sklad" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Spaghetti diagram</span></div>
-  <a href="../spaghetti-pro/" class="nav-pro" style="font-size:12px;font-weight:700;color:var(--gold-dark);text-decoration:none;padding:5px 12px;border:1px solid var(--gold-dark);border-radius:4px;">Tokva Pro</a>
+  <div class="nav-right">
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+    <a href="../spaghetti-pro/" class="nav-pro" style="font-size:12px;font-weight:700;color:var(--gold-dark);text-decoration:none;padding:5px 12px;border:1px solid var(--gold-dark);border-radius:4px;">Tokva Pro</a>
+  </div>
 </nav>
 
 <div class="hero" id="page-header">
@@ -673,7 +680,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
         </div>
         <div class="faq-item">
           <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
-          <div class="faq-a">Pro zaznamená pohyb víc lidí najednou, ve skladu i ve výrobě, včetně zastávek na trase. Free verze zůstává celá zdarma pro jednu osobu a jednu trasu v čase.</div>
+          <div class="faq-a">Poznámky k místům na plánku, porovnání současného stavu s návrhem v jedné mapě a přepočet na Kč podle frekvence a nákladů na zaměstnance. Free verze zůstává celá zdarma pro jednu osobu a jednu trasu v čase.</div>
         </div>
       </div>
     </div>
@@ -685,15 +692,22 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
         <div class="pro-final-item">
           <div class="pro-final-item-icon">✓</div>
           <div>
-            <div class="pro-final-item-title">Víc lidí najednou</div>
-            <div class="pro-final-item-desc">Zaznamenáte trasy víc lidí v jednom plánku, ne jen jednu osobu.</div>
+            <div class="pro-final-item-title">Poznámky do plánku</div>
+            <div class="pro-final-item-desc">Ke konkrétnímu místu na půdorysu si napíšete poznámku (třeba "vybudovat dveře"), nezávisle na trase. Objeví se i v exportu a na tisku.</div>
           </div>
         </div>
         <div class="pro-final-item">
           <div class="pro-final-item-icon">✓</div>
           <div>
-            <div class="pro-final-item-title">Zastávky na trase</div>
-            <div class="pro-final-item-desc">Appka rozliší chůzi od zastávek a počítá je zvlášť, ne jen celkovou délku trasy.</div>
+            <div class="pro-final-item-title">Porovnání návrhů v jedné mapě</div>
+            <div class="pro-final-item-desc">Nakreslíte současný stav a návrh vedle sebe, appka sama spočítá úsporu v metrech i procentech.</div>
+          </div>
+        </div>
+        <div class="pro-final-item">
+          <div class="pro-final-item-icon">✓</div>
+          <div>
+            <div class="pro-final-item-title">Přepočet na Kč</div>
+            <div class="pro-final-item-desc">Zadáte frekvenci trasy a náklady na zaměstnance, appka spočítá roční km, hodiny i korunovou úsporu.</div>
           </div>
         </div>
       </div>
@@ -1586,6 +1600,79 @@ function cookiesOdmitnout() {
   localStorage.setItem('cookies_souhlas', 'ne');
   document.getElementById('cookies-bar').style.display = 'none';
 }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth.js"></script>
+<script>
+// Sdílený účet Tokva Pro (Supabase, viz auth.js/supabase-client.js) - appka
+// sama žádný Pro obsah neodemyká (Pro je samostatná appka na ../spaghetti-pro/),
+// jen ukazuje přihlašovací stav konzistentně se zbytkem appek.
+let ucetSession = null;
+let ucetClenstvi = null;
+
+async function nacistPrihlaseniStav() {
+  try {
+    ucetSession = await ziskatSession();
+    ucetClenstvi = ucetSession ? await ziskatMojiOrganizaci() : null;
+  } catch (e) {
+    console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál jako nepřihlášená (zdarma).', e);
+    ucetSession = null;
+    ucetClenstvi = null;
+  }
+  renderUcetNav();
+}
+
+function renderUcetNav() {
+  const btn = document.getElementById('nav-ucet-btn');
+  const info = document.getElementById('nav-ucet-info');
+  if (!ucetSession) {
+    btn.textContent = 'Přihlásit se';
+    btn.style.display = '';
+    info.style.display = 'none';
+    return;
+  }
+  btn.textContent = 'Odhlásit';
+  btn.style.display = '';
+  info.style.display = '';
+  const nazevFirmy = ucetClenstvi && ucetClenstvi.organizations ? ucetClenstvi.organizations.name : ucetSession.user.email;
+  info.textContent = maAktivniPro(ucetClenstvi) ? (nazevFirmy + ' \u00b7 Pro') : nazevFirmy;
+}
+
+async function klikNaUcet() {
+  try {
+    if (ucetSession) {
+      await odhlasit();
+      ucetSession = null; ucetClenstvi = null;
+      renderUcetNav();
+      return;
+    }
+    await vyzadovatPrihlaseni();
+  } catch (e) {
+    console.warn('Přihlášení/odhlášení se nepovedlo.', e);
+  }
+}
+
+nacistPrihlaseniStav();
+</script>
+
+<!-- Enter jako potvrzení - v modálech klikne na hlavní tlačítko (btn-modal-ok),
+     u úvodního nastavení zakázky spustí kreslení, ať se nemusí sahat na myš. -->
+<script>
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Enter') return;
+  const otevrenyModal = document.querySelector('.modal-overlay.visible');
+  if (otevrenyModal) {
+    const btn = otevrenyModal.querySelector('.btn-modal-ok');
+    if (btn && !btn.disabled) { e.preventDefault(); btn.click(); }
+    return;
+  }
+  if (e.target && e.target.id === 'nazev-zakazky') {
+    const btn = document.getElementById('btn-zacit-kreslit');
+    if (btn && !btn.disabled) { e.preventDefault(); btn.click(); }
+  }
+});
 </script>
 <script>
 (function(){
