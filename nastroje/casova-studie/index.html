@@ -115,6 +115,9 @@ nav {
 .badge{display:inline-block;background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:18px;}
 .hero h1{font-family:'Poppins',sans-serif;font-size:clamp(22px,4vw,36px);font-weight:900;color:var(--white);line-height:1.15;letter-spacing:-.5px;margin-bottom:14px;}
 .hero h1 em{color:var(--gold);font-style:normal;}
+.hero-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;}
+.hero-meta span{font-size:12px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:6px;}
+.hero-meta span::before{content:"\25CF";color:var(--gold);font-size:7px;}
 .hero-sub{font-size:15px;color:rgba(255,255,255,.5);max-width:520px;line-height:1.75;margin-bottom:0;font-weight:300;}
 @media (max-width:600px){.hero{padding:36px 16px 32px;}}
 
@@ -197,6 +200,9 @@ nav {
   background:var(--light);
   flex-shrink:0;
   transition:background .3s;
+}
+.status-dot.bezi {
+  background:var(--green);
 }
 .status-dot.listening {
   background:var(--gold);
@@ -1027,7 +1033,6 @@ nav {
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
-    <div class="nav-date" id="nav-date"></div>
   </div>
 </nav>
 
@@ -1036,6 +1041,11 @@ nav {
     <div class="badge">Časová studie dne</div>
     <h1>Kam vám <em>mizí čas?</em></h1>
     <p class="hero-sub">Zaznamenávejte aktivity hlasem nebo ručně po celý den. Na konci uvidíte nejen kde čas šel, ale i co s tím dál - co dělat sami, co delegovat a co automatizovat.</p>
+    <div class="hero-meta">
+      <span>Záznam hlasem</span>
+      <span>9 kategorií činností</span>
+      <span>Naměřené součty jednotlivých činností</span>
+    </div>
   </div>
 </div>
 
@@ -1047,7 +1057,7 @@ nav {
 
     <div class="d-example" style="margin-top:14px;">
       <div class="d-example-eyebrow">Z praxe</div>
-      <h4>Proč měl pocit, že celý den neudělal nic, i když nezastavil?</h4>
+      <h4>Proč měl pocit, že celý den neudělal nic, i když se nezastavil?</h4>
       <div class="d-example-grid">
         <div class="d-example-text">
           <p>Filip si nechal jeden den zaznamenat od asistentky, chtěl přesně vědět, kam mu čas mizí, protože měl pocit, že dnes vlastně nic neudělal. Zapisovala mu do appky každou činnost. Řešil maily, telefonoval s klienty, telefonoval se zaměstnanci na montáži, připravoval cenové nabídky a kreslil výrobní dokumentaci, podle které jeho lidi vyrábí. Mezi tím volal účetní, dohledával doklady v kanceláři, v mailu i v autě, a řešil reklamaci nářadí, ke které musel sehnat náhradu.</p>
@@ -1086,7 +1096,6 @@ nav {
         <div class="no-need-item">Papír ani tabulku</div>
         <div class="no-need-item">Registraci</div>
         <div class="no-need-item">Žádné školení</div>
-        <div class="no-need-item">Appku hlídat celý den</div>
       </div>
     </div>
 
@@ -1096,8 +1105,10 @@ nav {
   </details>
 
   <!-- FAQ SEKCE -->
-  <div class="faq-section">
-    <div class="faq-section-title">Jak na to?</div>
+  <details class="setup-krok info-detail">
+    <summary>Jak na to?</summary>
+
+    <div class="faq-section" style="margin-top:14px;">
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFaq(this)">Jak zaznamenat aktivitu?<span class="faq-arrow"></span></button>
       <div class="faq-a">Klepněte na mikrofon a řekněte co právě děláte. Aplikace zapíše čas automaticky. Nebo napište aktivitu do pole pod mikrofonem a potvrďte tlačítkem Přidat nebo klávesou Enter.</div>
@@ -1138,7 +1149,12 @@ nav {
       <button class="faq-q" onclick="toggleFaq(this)">Co dostanu navíc v Pro verzi?<span class="faq-arrow"></span></button>
       <div class="faq-a">Jeden den zůstává navždy 100% zdarma, přesně jak appka funguje dnes. Pro navíc po přihlášení průběžně ukládá rozpracovaný den do vašeho účtu (nemusíte na nic klikat, appka to hlídá sama i při zavření appky) a v sekci Historie dní ukáže, jak se procento produktivní práce mění napříč dny.</div>
     </div>
-  </div>
+    </div>
+
+    <div class="collapse-back">
+      <a class="collapse-back-link" onclick="const d=this.closest('details'); d.open=false; d.scrollIntoView({behavior:'smooth',block:'start'}); return false;" href="#">↑ Sbalit</a>
+    </div>
+  </details>
 
   <div class="warning" id="warning">
     Hlasové rozpoznávání nefunguje v tomto prohlížeči. Použijte Chrome nebo Edge. Ruční zadávání funguje normálně.
@@ -1162,6 +1178,14 @@ nav {
     </div>
   </div>
 
+  <!-- Manuální vstup -->
+  <div class="manual-wrap">
+    <input type="text" class="manual-input" id="manual-input"
+      placeholder="Nebo napište ručně..."
+      onkeydown="if(event.key==='Enter') pridatRucne()">
+    <button class="manual-btn" onclick="pridatRucne()">Přidat</button>
+  </div>
+
   <!-- Nastavení upozornění -->
   <div class="notif-bar">
     <label>Upozornit pokud nezaznamenám změnu déle než</label>
@@ -1173,14 +1197,6 @@ nav {
       <option value="60">1 hod</option>
     </select>
     <button class="notif-toggle" id="notif-toggle" onclick="toggleNotif()">Zapnout</button>
-  </div>
-
-  <!-- Manuální vstup -->
-  <div class="manual-wrap">
-    <input type="text" class="manual-input" id="manual-input"
-      placeholder="Nebo napište ručně..."
-      onkeydown="if(event.key==='Enter') pridatRucne()">
-    <button class="manual-btn" onclick="pridatRucne()">Přidat</button>
   </div>
 
   <!-- Záznamy -->
@@ -1406,11 +1422,6 @@ async function klikVModaluPro() {
 function otevritModalPro() { document.getElementById('modal-pro').style.display = 'flex'; }
 function zavritModalPro() { document.getElementById('modal-pro').style.display = 'none'; }
 
-// Datum
-const now = new Date();
-document.getElementById('nav-date').textContent =
-  now.toLocaleDateString('cs-CZ', { weekday: 'long', day: 'numeric', month: 'long' });
-
 // Hodiny
 function updateClock() {
   const t = new Date();
@@ -1604,6 +1615,10 @@ function ukazatPrikladSouhrnu() {
 
 function renderZaznamy() {
   const container = document.getElementById('zaznamy');
+
+  const dot = document.getElementById('status-dot');
+  const bezi = zaznamy.length > 0 && zaznamy[zaznamy.length - 1].text !== 'Konec';
+  dot.classList.toggle('bezi', bezi);
 
   if (zaznamy.length === 0) {
     container.innerHTML = `<div class="empty-state">
