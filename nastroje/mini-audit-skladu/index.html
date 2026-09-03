@@ -274,20 +274,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .vysledek-body.bx { color:var(--blue); }
 
 /* CTA FINAL */
-.cta-final { background:var(--black); border-radius:12px; padding:32px 28px; }
-.cta-final-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
-.cta-final h2 { font-family:"Poppins",sans-serif; font-size:clamp(18px,2.5vw,24px); font-weight:800; color:white; line-height:1.25; margin-bottom:14px; }
-.cta-final p { font-size:14px; color:rgba(255,255,255,0.55); line-height:1.75; margin-bottom:20px; max-width:480px; }
 .cta-final-btns { display:flex; gap:12px; flex-wrap:wrap; }
-.btn-diagnostika {
-  background:var(--gold); color:var(--black);
-  font-family:"DM Sans",sans-serif; font-size:14px; font-weight:700;
-  padding:13px 24px; border-radius:4px; text-decoration:none;
-  transition:all 0.2s; display:inline-block;
-}
-.btn-diagnostika:hover { background:var(--gold-dark); color:white; }
-.btn-znovu { background:transparent; color:rgba(255,255,255,0.5); font-family:"DM Sans",sans-serif; font-size:13px; font-weight:500; padding:13px 20px; border-radius:4px; border:1px solid rgba(255,255,255,0.15); cursor:pointer; transition:all 0.2s; }
-.btn-znovu:hover { color:var(--gold); border-color:var(--gold); }
 
 footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-top:60px; }
 .footer-brand { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:rgba(255,255,255,0.4); }
@@ -326,6 +313,8 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 .nemereno-otazka { font-size:13px; font-weight:600; color:var(--dark); line-height:1.4; }
 .nemereno-text { font-size:13px; color:var(--mid); line-height:1.7; padding-left:30px; }
 .nemereno-text strong { color:var(--blue); }
+.tip-cta-link { display:inline-block; margin-top:8px; margin-left:30px; font-size:12.5px; font-weight:700; color:var(--gold-dark); text-decoration:none; }
+.tip-cta-link:hover { color:var(--gold); }
 
 
 @media print {
@@ -408,6 +397,57 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 .collapse-back{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
 .collapse-back-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;cursor:pointer;}
 .collapse-back-link:hover{text-decoration:underline;}
+
+.pro-final-panel {
+  background: linear-gradient(135deg, #000, #1a1400);
+  border-radius: 16px;
+  padding: 24px 22px 22px;
+}
+.pro-final-badge {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dark);
+  background: var(--gold);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.pro-final-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 16px;
+}
+.pro-final-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+.pro-final-item { display: flex; gap: 12px; align-items: flex-start; }
+.pro-final-item-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(233,169,27,.18); color: var(--gold);
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.pro-final-item-title { font-size: 13.5px; font-weight: 700; color: white; margin-bottom: 3px; }
+.pro-final-item-desc { font-size: 12.5px; color: rgba(255,255,255,.55); line-height: 1.6; }
+.pro-final-cta {
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all .2s;
+}
+.pro-final-cta:hover { background: var(--gold-dark); }
 .back-to-card{max-width:900px;margin:0 auto;text-align:center;padding:24px 20px 40px;}
 .back-to-card-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;}
 .back-to-card-link:hover{text-decoration:underline;}
@@ -763,7 +803,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
     <div class="top3-sekce" id="top3-wrap" style="display:none;">
       <div class="top3-header">
         <span class="kat-arrow-small"></span>
-        Kde ztrácíte nejvíc - konkrétní tipy
+        Kde ztrácíte nejvíc - tipy pro optimalizaci skladu
       </div>
       <div id="top3-rows"></div>
     </div>
@@ -771,7 +811,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
     <div class="nemereno-sekce" id="nemereno-wrap" style="display:none;">
       <div class="nemereno-header">
         <span class="kat-arrow-small modra"></span>
-        Nevíte a chcete zjistit
+        Nevíte a chcete zjistit - podklad pro zlepšení skladových procesů
       </div>
       <div id="nemereno-rows"></div>
     </div>
@@ -806,16 +846,13 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
       </div>
     </div>
 
-    <div class="cta-final">
-      <div class="cta-final-label">Další krok</div>
-      <h2>Výsledek vás překvapil?</h2>
-      <p>Pošlete mi skóre a podíváme se na něj spolu. 30 minut, zdarma, bez závazku. Řekneme si, co má smysl řešit jako první a jak na to.</p>
-      <div class="cta-final-btns">
-        <a href="https://calendly.com/tomickova-info/30min" target="_blank" class="btn-diagnostika">Chci 30min hovor zdarma</a>
-        <button class="btn-znovu" onclick="window.print()">Vytisknout výsledky</button>
-        <button class="btn-znovu" onclick="zacitZnovu()">Vyplnit znovu</button>
+    <div class="vysledky-detail">
+      <div style="padding:20px 22px;">
+      <div class="cta-final-btns" style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="btn-zpet" onclick="window.print()">Vytisknout výsledky</button>
+        <button class="btn-zpet" onclick="zacitZnovu()">Vyplnit znovu</button>
         <div style="width:100%;">
-          <button type="button" class="btn-znovu" id="btn-poslat-email-audit" onclick="ukazatEmailFormAudit()">Poslat výsledek e-mailem</button>
+          <button type="button" class="btn-gold" id="btn-poslat-email-audit" onclick="ukazatEmailFormAudit()">Poslat výsledek e-mailem</button>
           <div id="email-form-wrap-audit" style="display:none;margin-top:10px;width:100%;">
             <iframe name="brevo-frame-audit" style="display:none;" title="odeslani formulare"></iframe>
             <form id="email-form-audit" action="https://2f524664.sibforms.com/serve/MUIFADBV1wG0TwfPwo6aLvF8QiCGo6beKuaY7Y_J9UVHScSZonk4OYFHztETmh9gsYuOHXybCcbEGGzyxTIa5yCZkR8flFL4CLi0Sqi54gkoIVUm_ujs_E6IKWgLrOKsiBoTzxNHFerZooLnOvEDiTR7fC1KbJEDem4IEeXMXM7Sd83jRtyVsfvj8IveWheVJkdNZlwGM3kSdOw-sw==" method="POST" target="brevo-frame-audit" onsubmit="return odeslatEmailAudit(event)" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
@@ -824,11 +861,12 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
               <input type="hidden" name="locale" value="en">
               <input type="hidden" name="SKORE" id="hid-audit-skore" value="">
               <input type="hidden" name="SKORE_POPIS" id="hid-audit-skore-popis" value="">
-              <button type="submit" class="btn-znovu">Odeslat</button>
+              <button type="submit" class="btn-gold">Odeslat</button>
             </form>
             <div id="email-ok-audit" style="display:none;font-size:13px;color:var(--mid);margin-top:8px;">Díky, posíláme vám to na e-mail.</div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -876,6 +914,35 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
       </div>
     </div>
 
+    <div class="pro-final-panel">
+      <div class="pro-final-badge">Tokva Pro</div>
+      <div class="pro-final-title">Co appka umí navíc v Pro</div>
+      <div class="pro-final-list">
+        <div class="pro-final-item">
+          <div class="pro-final-item-icon">✓</div>
+          <div>
+            <div class="pro-final-item-title">Historie auditů</div>
+            <div class="pro-final-item-desc">Výsledek se uloží do vašeho účtu. Audit zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se stav skladu zlepšuje, nebo je pořád stejný.</div>
+          </div>
+        </div>
+        <div class="pro-final-item">
+          <div class="pro-final-item-icon">✓</div>
+          <div>
+            <div class="pro-final-item-title">Zařazení k projektu</div>
+            <div class="pro-final-item-desc">Výsledek najdete pohromadě s ostatními appkami a měřeními, které se týkají stejné věci.</div>
+          </div>
+        </div>
+        <div class="pro-final-item">
+          <div class="pro-final-item-icon">✓</div>
+          <div>
+            <div class="pro-final-item-title">Export dat</div>
+            <div class="pro-final-item-desc">Vaše odpovědi a výsledek si stáhnete jako CSV a zpracujete si je dál po svém.</div>
+          </div>
+        </div>
+      </div>
+      <button class="pro-final-cta" onclick="otevritModalPro()">Odemknout Tokva Pro</button>
+    </div>
+
   </div>
 </div>
 
@@ -918,6 +985,21 @@ const PRVNI_KROK = {
   8: "Vypište posledních 10 reklamací a zkuste u nich najít společnou příčinu.",
   9: "Napište, co by se zítra nestihlo, kdyby jeden konkrétní člověk byl na 3 měsíce pryč.",
   10: "Zvolte 3 čísla, která začnete od pondělí zapisovat.",
+};
+
+// Odkaz na appku, která pomůže danou oblast změřit/vyřešit dál - appka
+// zatím neměla žádné konkrétní napojení na ostatní nástroje Tokvy, jen
+// obecný blok Navazujících nástrojů dole. U některých otázek (7, 4) není
+// jasný odpovídající nástroj, tam zůstává jen text bez odkazu.
+const CTA_ODKAZ = {
+  1: { url: "../5S_audit/", cta: "Spustit 5S audit" },
+  2: { url: "../spaghetti-free/", cta: "Spustit Spaghetti diagram" },
+  3: { url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání" },
+  5: { url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání" },
+  6: { url: "../casova-studie/", cta: "Spustit Časovou studii" },
+  8: { url: "../5x-proc-ai-kouc/", cta: "Spustit 5x Proč kouče" },
+  9: { url: "../5S_audit/", cta: "Spustit 5S audit" },
+  10: { url: "../kalkulacka-ztrat/", cta: "Spustit Kalkulačku ztrát" },
 };
 
 // Stav kvízu
@@ -1085,6 +1167,7 @@ function zobrazVysledky() {
         </div>
         <div class="tip-text">${TIPY[q]}</div>
         <div class="tip-first-step"><strong>Udělejte zítra:</strong> ${PRVNI_KROK[q]}</div>
+        ${CTA_ODKAZ[q] ? `<a class="tip-cta-link" href="${CTA_ODKAZ[q].url}" target="_blank">${CTA_ODKAZ[q].cta} →</a>` : ''}
       `;
       top3rows.appendChild(row);
     });
@@ -1107,6 +1190,7 @@ function zobrazVysledky() {
           <span class="nemereno-otazka">${OTAZKY[q-1]}</span>
         </div>
         <div class="nemereno-text"><strong>Jak to zjistit:</strong> ${PRVNI_KROK[q]}</div>
+        ${CTA_ODKAZ[q] ? `<a class="tip-cta-link" href="${CTA_ODKAZ[q].url}" target="_blank">${CTA_ODKAZ[q].cta} →</a>` : ''}
       `;
       nemerenoRows.appendChild(row);
     });
