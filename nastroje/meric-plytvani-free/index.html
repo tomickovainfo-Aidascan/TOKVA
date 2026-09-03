@@ -273,13 +273,14 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .insight-text{font-size:13px;line-height:1.7;color:var(--mid);}
 
 /* PRO CTA */
-.pro-cta{background:linear-gradient(135deg,#1e1b4b,#2e1065);border-radius:12px;padding:22px 18px;margin-bottom:12px;text-align:center;}
+.pro-cta{background:linear-gradient(135deg,#1e1b4b,#2e1065);border-radius:12px;padding:22px 18px;margin-bottom:12px;text-align:left;}
+.pro-cta-badge{display:inline-block;font-family:"Poppins",sans-serif;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#1e1b4b;background:#c4b5fd;padding:3px 10px;border-radius:20px;margin-bottom:10px;}
 .pro-cta h3{font-family:"Poppins",sans-serif;font-size:16px;font-weight:800;color:white;margin-bottom:8px;}
 .pro-cta p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:16px;}
-.pro-cta-features{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;text-align:left;}
-.pro-cta-features span{font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:8px;}
-.pro-cta-features span::before{content:"";width:14px;height:9px;background:#c4b5fd;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;}
-.btn-pro{display:block;background:var(--pro);color:white;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;padding:13px 20px;border-radius:6px;text-decoration:none;transition:all .2s;}
+.pro-cta-features{display:flex;flex-direction:column;gap:12px;margin-bottom:18px;text-align:left;}
+.pro-cta-features span{font-size:13px;color:rgba(255,255,255,.75);display:flex;align-items:center;gap:10px;}
+.pro-cta-features span::before{content:"✓";width:20px;height:20px;border-radius:50%;background:rgba(196,181,253,.18);color:#c4b5fd;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.btn-pro{display:block;text-align:center;background:var(--pro);color:white;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;padding:13px 20px;border-radius:6px;text-decoration:none;transition:all .2s;}
 .btn-pro:hover{background:#7c3aed;}
 
 .btn-znovu{width:100%;background:transparent;color:var(--mid);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;margin-top:8px;}
@@ -532,6 +533,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 
   <!-- PRO CTA -->
   <div class="pro-cta">
+    <div class="pro-cta-badge">Tokva Pro</div>
     <h3>Chcete měřit bez omezení?</h3>
     <p>Přejděte na Měřič plýtvání Pro a získejte plný přístup ke všem funkcím.</p>
     <div class="pro-cta-features">
@@ -554,12 +556,12 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
       <div>
         <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</div>
         <p class="priklad-note" id="priklad-note">Konkrétní tipy zde najdete po měření, přizpůsobí se vašim vlastním číslům.</p>
-        <p id="co-delat-text" style="font-size:14px;color:var(--mid);line-height:1.75;">Obecně: Vyberte nejvýznamnější kategorii plýtvání a půjdete na další doporučený krok. Až zjistíte příčinu a napravíte ji, změříte stejný proces znovu.</p>
+        <p id="co-delat-text" style="font-size:14px;color:var(--mid);line-height:1.75;">Obecně: Vyberete nejvýznamnější kategorii plýtvání a půjdete na další doporučený krok. Až zjistíte příčinu a napravíte ji, změříte stejný proces znovu.</p>
         <div class="faq-block" style="margin-top:24px;">
           <div class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</div>
           <div class="faq-item">
             <div class="faq-q">Jak přesné to měření je?</div>
-            <div class="faq-a">Přesné natolik, kolik dovolí to, jak přesně a včas klikáte. Neměříte odhadem jako u kalkulačky, měříte reálný čas mezi kliknutími. Čím víc cyklů změříte, tím spolehlivější je průměr.</div>
+            <div class="faq-a">Podle toho, jak klikáte. Pokud jste přesní vy, je přesný i výsledek. Neměříte odhadem jako u kalkulačky, měříte reálný čas mezi kliknutími. Čím víc cyklů změříte, tím spolehlivější je průměr.</div>
           </div>
           <div class="faq-item">
             <div class="faq-q">Co když zapomenu kliknout na začátku činnosti?</div>
