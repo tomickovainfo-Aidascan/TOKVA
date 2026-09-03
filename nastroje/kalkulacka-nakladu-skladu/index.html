@@ -30,6 +30,19 @@
   "author": {"@type": "Person", "name": "Gabriela Tomíčková"}
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Je výsledek přesný?", "acceptedAnswer": { "@type": "Answer", "text": "Přesnost záleží na tom, co zadáte. Použijte skutečné číslice z faktur a smluv – pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku." } },
+    { "@type": "Question", "name": "Proč jsou tam odpisy vybavení?", "acceptedAnswer": { "@type": "Answer", "text": "Racking za 250 000 Kč rozložený na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad, jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé." } },
+    { "@type": "Question", "name": "Co je oportunitní náklad kapitálu u vlastní budovy?", "acceptedAnswer": { "@type": "Answer", "text": "Peníze vázané v nemovitosti mohly být investovány jinam. Oportunitní náklad ukazuje, co \"stojí\" vlastnit budovu oproti pronájmu, i když reálně žádné nájemné neplatíte." } },
+    { "@type": "Question", "name": "Neznám přesné výše revizí. Co mám zadat?", "acceptedAnswer": { "@type": "Answer", "text": "Výchozí hodnoty jsou orientační průměry z regionálních provozů (300–800 m²). Pro první orientaci je klidně nechte tak, jak jsou. Pro rozhodování o konkrétní investici použijte skutečná čísla ze svých smluv a faktur." } },
+    { "@type": "Question", "name": "Co dostanu navíc v Pro verzi?", "acceptedAnswer": { "@type": "Answer", "text": "Pro appka uloží víc výpočtů vedle sebe a umí je exportovat do CSV. Samotný výpočet zůstává navždy celý zdarma, bez přihlášení." } }
+  ]
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -48,8 +61,6 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .nav-brand span { color:var(--gold); }
 .nav-tool { font-size:12px; color:var(--light); font-weight:500; margin-left:10px; padding-left:10px; border-left:1px solid var(--border); }
 @media (max-width:600px) { .nav-tool { display:none; } }
-.nav-cta { background:var(--gold); color:var(--black); font-size:13px; font-weight:600; padding:8px 20px; border-radius:4px; text-decoration:none; transition:background 0.2s; white-space:nowrap; }
-.nav-cta:hover { background:var(--gold-dark); color:white; }
 
 /* NAV ÚČET (Tokva Pro) */
 .nav-right { display:flex; align-items:center; gap:12px; }
@@ -140,11 +151,6 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .breakdown-val { font-family:"DM Mono",monospace; font-size:11px; font-weight:500; color:var(--mid); min-width:60px; text-align:right; flex-shrink:0; }
 
 /* ── CTA ── */
-.cta-box { background:var(--gold-light); border:1px solid rgba(233,169,27,0.3); border-radius:12px; padding:22px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-.cta-box-text strong { font-size:14px; font-weight:700; color:var(--dark); display:block; margin-bottom:3px; }
-.cta-box-text span { font-size:13px; color:var(--mid); }
-.cta-box a { background:var(--black); color:var(--white); font-size:13px; font-weight:600; padding:10px 20px; border-radius:6px; text-decoration:none; white-space:nowrap; transition:background 0.2s; flex-shrink:0; }
-.cta-box a:hover { background:var(--gold); color:var(--black); }
 
 /* ── RYCHLÝ VÝPOČET VS. ZPŘESNĚNÍ ── */
 .rychly-box { background:var(--gold-light); border-bottom:1px solid var(--border); padding:16px 24px; }
@@ -233,7 +239,66 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 
 /* ── POST-CALC ── */
 .post-calc { background:var(--white); border-top:1px solid var(--border); padding:40px; }
-.post-calc-inner { max-width:1040px; margin:0 auto; }
+.pro-final-panel {
+  background: linear-gradient(135deg, #000, #1a1400);
+  border-radius: 16px;
+  padding: 24px 22px 22px;
+  margin-top: 20px;
+}
+.pro-final-badge {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dark);
+  background: var(--gold);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.pro-final-soon {
+  display: inline-block; font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--gold); background: rgba(233,169,27,.15); border: 1px solid rgba(233,169,27,.3);
+  padding: 3px 10px; border-radius: 20px;
+  margin-left: 6px; vertical-align: middle;
+}
+.pro-final-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 16px;
+}
+.pro-final-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+.pro-final-item { display: flex; gap: 12px; align-items: flex-start; }
+.pro-final-item-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(233,169,27,.18); color: var(--gold);
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.pro-final-item-title { font-size: 13.5px; font-weight: 700; color: white; margin-bottom: 3px; }
+.pro-final-item-desc { font-size: 12.5px; color: rgba(255,255,255,.55); line-height: 1.6; }
+.pro-final-cta {
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all .2s;
+}
+.pro-final-cta:hover { background: var(--gold-dark); }
+.main-pro-final { max-width:700px; margin:0 auto; padding:0 20px 20px; }
+.post-calc-inner { max-width:700px; margin:0 auto; }
 .post-calc-grid { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
 .faq-block {}
 .faq-item { border-bottom:1px solid var(--border); padding:16px 0; }
@@ -285,7 +350,6 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   .content-block, .post-calc { padding:24px 20px; }
   footer { padding:20px; flex-direction:column; text-align:center; }
   .result-grid { grid-template-columns:1fr; }
-  .nav-cta { display:none; }
 }
 
 .collapse-back{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
@@ -313,7 +377,6 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
-    <a href="https://calendly.com/tomickova-info/30min" target="_blank" class="nav-cta">Chci 30min hovor zdarma</a>
   </div>
 </nav>
 
@@ -352,7 +415,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
     <div class="two-col">
       <div class="content-card">
-        <div class="content-card-title">Hodí se vám to, pokud:</div>
+        <h3 class="content-card-title">Hodí se vám to, pokud:</h3>
         <ul class="check-list">
           <li>Chcete vědět, kolik vás skutečně stojí 1 m² – ne jen nájem</li>
           <li>Zvažujete pronájem vs. vlastní budovu a chcete srovnání</li>
@@ -361,7 +424,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </ul>
       </div>
       <div class="content-card">
-        <div class="content-card-title">Tři kroky, žádná věda:</div>
+        <h3 class="content-card-title">Tři kroky, žádná věda:</h3>
         <div class="steps-list">
           <div class="step-item"><div class="step-num">1</div><div>Zvolíte, jestli sklad platíte nájmem, nebo vlastníte budovu</div></div>
           <div class="step-item"><div class="step-num">2</div><div>Zadáte plochu a čísla, která znáte, u zbytku appka počítá s reálnými odhady</div></div>
@@ -372,7 +435,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
     <div class="two-col">
       <div class="content-card">
-        <div class="content-card-title">Co kalkulačka zahrnuje:</div>
+        <h3 class="content-card-title">Co kalkulačka zahrnuje:</h3>
         <ul class="check-list">
           <li>Nájem nebo ekonomický odpis vlastní budovy</li>
           <li>Energie: elektřina, vytápění, voda</li>
@@ -383,7 +446,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </ul>
       </div>
       <div class="content-card">
-        <div class="content-card-title">Co k tomu nepotřebujete:</div>
+        <h3 class="content-card-title">Co k tomu nepotřebujete:</h3>
         <div class="no-need-grid">
           <div class="no-need-item">Faktury po ruce, jde to i orientačně</div>
           <div class="no-need-item">Registraci</div>
@@ -938,15 +1001,6 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </div>
       </div>
 
-      <!-- CTA -->
-      <div class="cta-box">
-        <div class="cta-box-text">
-          <strong>Chcete snížit náklady na budovu?</strong>
-          <span>Domluvte si 30min hovor zdarma. Podíváme se na čísla spolu.</span>
-        </div>
-        <a href="https://calendly.com/tomickova-info/30min" target="_blank">Chci 30min hovor zdarma</a>
-      </div>
-
     </div>
     <!-- ══ / RESULTS ══ -->
 
@@ -958,12 +1012,11 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   <div class="post-calc-inner">
     <div class="post-calc-grid">
       <div>
-        <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</div>
+        <h3 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h3>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Překvapilo vás číslo? Nebo potvrdilo, co jste tušili?</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Podívejte se na rozpad – která kategorie tvoří největší podíl. Tam se dá nejrychleji ušetřit. Energie? Zkontrolujte tarif a izolaci. Revize? Srovnejte nabídky. Odpisy? Přehodnoťte, co opravdu potřebujete.</p>
-        <p style="font-size:14px;color:var(--mid);line-height:1.75;">Chcete druhý pohled? Domluvte si 30 minut zdarma.</p>
         <div class="faq-block" style="margin-top:24px;">
-          <div class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</div>
+          <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
           <div class="faq-item">
             <div class="faq-q">Je výsledek přesný?</div>
             <div class="faq-a">Přesnost záleží na tom, co zadáte. Použijte skutečné číslice z faktur a smluv – pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku.</div>
@@ -980,10 +1033,14 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
             <div class="faq-q">Neznám přesné výše revizí. Co mám zadat?</div>
             <div class="faq-a">Výchozí hodnoty jsou orientační průměry z regionálních provozů (300–800 m²). Pro první orientaci je klidně nechte tak, jak jsou. Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) ale použijte skutečná čísla ze svých smluv a faktur – u každé položky uvidíte, jestli počítáte s vaším číslem, nebo s odhadem.</div>
           </div>
+          <div class="faq-item">
+            <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
+            <div class="faq-a">Pro appka uloží víc výpočtů vedle sebe a umí je exportovat do CSV, viz panel Tokva Pro níže. Samotný výpočet zůstává navždy celý zdarma, bez přihlášení.</div>
+          </div>
         </div>
       </div>
       <div>
-        <div class="content-card-title" style="margin-bottom:14px;">Navazující nástroje</div>
+        <h2 class="content-card-title" style="margin-bottom:14px;">Navazující nástroje</h2>
         <div class="dalsi-nastroje-col">
           <div class="dalsi-nastroj-card">
             <div class="dalsi-nastroj-tag">Využíváte prostor dobře?</div>
@@ -998,9 +1055,30 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
             <a href="../5S_audit/" target="_blank" class="dalsi-nastroj-btn">Spustit 5S</a>
           </div>
         </div>
-        <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-top:14px;">Nebo si rovnou domluvte procesní audit – přijdu se podívat přímo do provozu.</p>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="main-pro-final" id="main-pro-final">
+  <div class="pro-final-panel">
+    <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Připravujeme</span>
+    <div class="pro-final-title">Co appka umí navíc v Pro</div>
+    <div class="pro-final-list">
+      <div class="pro-final-item">
+        <div class="pro-final-item-icon">✓</div>
+        <div><div class="pro-final-item-title">Uložené výpočty</div><div class="pro-final-item-desc">Uložíte víc výpočtů vedle sebe, různé sklady nebo období.</div></div>
+      </div>
+      <div class="pro-final-item">
+        <div class="pro-final-item-icon">✓</div>
+        <div><div class="pro-final-item-title">Porovnání</div><div class="pro-final-item-desc">Uložené výpočty appka zobrazí vedle sebe, hned vidíte rozdíl.</div></div>
+      </div>
+      <div class="pro-final-item">
+        <div class="pro-final-item-icon">✓</div>
+        <div><div class="pro-final-item-title">Export do CSV</div><div class="pro-final-item-desc">Porovnání výpočtů appka vyexportuje do CSV k dalšímu zpracování.</div></div>
+      </div>
+    </div>
+    <button class="pro-final-cta" onclick="otevritModalPro()">Přihlásit se do Pro</button>
   </div>
 </div>
 
@@ -1372,6 +1450,8 @@ function renderUcetNav() {
   info.style.display = '';
   const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
   info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
+  const proFinal = document.getElementById('main-pro-final');
+  if (proFinal) proFinal.style.display = jePro ? 'none' : '';
 }
 
 async function klikNaUcet() {
