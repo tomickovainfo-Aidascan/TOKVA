@@ -1138,6 +1138,8 @@ nav {
   </div>
 </div>
 
+<div class="main-pro-final" id="main-pro-final"></div>
+
 <!-- Modal nové místo -->
 <div class="back-to-card">
   <a href="https://tokva.cz/?nastroj=5s-audit" class="back-to-card-link">← Zpět na kartu appky</a>
@@ -1543,11 +1545,16 @@ function renderMain() {
   // Kontroly a úkoly, vždy viditelné (ne jen po 4/5 krocích) — obě jsou Pro.
   // Bez Pro appka ukáže jen jeden společný box s odkazem na obě funkce
   // a jedním tlačítkem, ne dvě samostatné nabídky s dvěma tlačítky.
+  // Vykresluje se do samostatného kontejneru na konci appky (za Navazující
+  // nástroje), ne do main, aby Pro panel byl vždy poslední věc před
+  // "Zpět na kartu appky" - jednotné umístění napříč appkami.
+  const mainProFinal = document.getElementById('main-pro-final');
+  mainProFinal.innerHTML = '';
   if (!jePro) {
-    main.appendChild(renderProTeaserKontrolyUkoly());
+    mainProFinal.appendChild(renderProTeaserKontrolyUkoly());
   } else {
-    main.appendChild(renderKontrolySekce(misto));
-    main.appendChild(renderUkolySekce(misto));
+    mainProFinal.appendChild(renderKontrolySekce(misto));
+    mainProFinal.appendChild(renderUkolySekce(misto));
   }
 }
 
