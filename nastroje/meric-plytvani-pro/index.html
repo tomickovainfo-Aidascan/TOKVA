@@ -1558,5 +1558,21 @@ function cookiesOdmitnout() {
   document.getElementById('cookies-bar').style.display = 'none';
 }
 </script>
+<!-- Enter jako potvrzení - v otevřeném modálu/upozornění klikne na hlavní
+     tlačítko, ať se nemusí sahat na myš. Nezasahuje do psaní ve víceřádkových
+     polích ani do polí, co už mají vlastní Enter chování. -->
+<script>
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Enter') return;
+  if (e.target && e.target.tagName === 'TEXTAREA') return;
+  if (e.target && e.target.hasAttribute && e.target.hasAttribute('onkeydown')) return;
+  var otevreny = Array.prototype.find.call(document.querySelectorAll('.modal-overlay, .notice-overlay'), function(el){
+    return getComputedStyle(el).display !== 'none';
+  });
+  if (!otevreny) return;
+  var btn = otevreny.querySelector('.modal-save:not(:disabled), .btn-modal-ok:not(:disabled), #modal-notice-ok, #notice-btn-ok, #pro-btn');
+  if (btn && !btn.disabled) { e.preventDefault(); btn.click(); }
+});
+</script>
 </body>
 </html>
