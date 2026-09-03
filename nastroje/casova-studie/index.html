@@ -981,9 +981,16 @@ nav {
   .setup-krok, .back-to-card { display:none !important; }
   body { background:white; }
   .main { padding:0; }
-  .zaznamy { display:flex !important; }
-  .summary { display:block !important; border:none; padding:16px 0; }
-  .zaznam { border:1px solid #ddd; margin-bottom:4px; }
+  .zaznamy { display:flex !important; flex-direction:column; }
+  .zaznam { background:none; border:none; border-radius:0; box-shadow:none; padding:4px 0; border-bottom:1px solid #ddd; gap:8px; }
+  .zaznam:hover { box-shadow:none; }
+  .summary { display:block !important; background:none; border:none; padding:16px 0 0; margin-top:8px; border-top:1px solid #ddd; }
+  .summary-grid { grid-template-columns:1fr; gap:0; }
+  .summary-card { background:none; border:none; border-radius:0; padding:2px 0; display:flex; align-items:baseline; gap:8px; }
+  .summary-card-val { font-size:13px; }
+  .produktivni-pomer { background:none; border:none; border-radius:0; padding:2px 0; }
+  .nejdelsi-blok, .preruseni-info { background:none; border:none; border-radius:0; padding:2px 0; }
+  .kat-bar-row { margin-bottom:3px; }
   .kat-bar-fill { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .produktivni-pomer { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   @page { margin:15mm; }
