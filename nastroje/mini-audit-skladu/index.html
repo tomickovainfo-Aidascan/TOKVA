@@ -72,6 +72,7 @@
 }
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
 <style>
 :root {
   --gold: #e9a91b;
@@ -315,6 +316,14 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 .nemereno-text strong { color:var(--blue); }
 .tip-cta-link { display:inline-block; margin-top:8px; margin-left:30px; font-size:12.5px; font-weight:700; color:var(--gold-dark); text-decoration:none; }
 .tip-cta-link:hover { color:var(--gold); }
+#sib-form-container { width:100%; }
+#sib-form-container .sib-form-message-panel { font-family:"DM Sans",sans-serif; font-size:13px; padding:10px 14px; border-radius:8px; margin-bottom:10px; text-align:left; }
+#sib-container { max-width:none !important; background:transparent !important; border:none !important; padding:0 !important; text-align:left !important; }
+#sib-container .sib-form-block, #sib-container .sib-form__declaration, #sib-container .entry__specification { display:none !important; }
+#sib-container .form__entry { display:inline-block; }
+#sib-container .entry__label { display:none; }
+#sib-container .entry__field input, #sib-container input[type="email"] { font-family:"DM Sans",sans-serif; font-size:14px; padding:10px 14px; border-radius:8px; border:1px solid var(--border); }
+#sib-container button[type="submit"] { background:var(--gold) !important; color:var(--black) !important; font-family:"DM Sans",sans-serif !important; font-size:14px !important; font-weight:700 !important; padding:12px 20px !important; border-radius:6px !important; border:none !important; }
 
 
 @media print {
@@ -854,16 +863,32 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
         <div style="width:100%;">
           <button type="button" class="btn-gold" id="btn-poslat-email-audit" onclick="ukazatEmailFormAudit()">Poslat výsledek e-mailem</button>
           <div id="email-form-wrap-audit" style="display:none;margin-top:10px;width:100%;">
-            <iframe name="brevo-frame-audit" style="display:none;" title="odeslani formulare"></iframe>
-            <form id="email-form-audit" action="https://2f524664.sibforms.com/serve/MUIFADBV1wG0TwfPwo6aLvF8QiCGo6beKuaY7Y_J9UVHScSZonk4OYFHztETmh9gsYuOHXybCcbEGGzyxTIa5yCZkR8flFL4CLi0Sqi54gkoIVUm_ujs_E6IKWgLrOKsiBoTzxNHFerZooLnOvEDiTR7fC1KbJEDem4IEeXMXM7Sd83jRtyVsfvj8IveWheVJkdNZlwGM3kSdOw-sw==" method="POST" target="brevo-frame-audit" onsubmit="return odeslatEmailAudit(event)" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-              <input type="email" id="inp-email-audit" name="EMAIL" placeholder="vas@email.cz" required style="flex:1;min-width:180px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;">
-              <input type="hidden" name="email_address_check" value="">
-              <input type="hidden" name="locale" value="en">
-              <input type="hidden" name="SKORE" id="hid-audit-skore" value="">
-              <input type="hidden" name="SKORE_POPIS" id="hid-audit-skore-popis" value="">
-              <button type="submit" class="btn-gold">Odeslat</button>
-            </form>
-            <div id="email-ok-audit" style="display:none;font-size:13px;color:var(--mid);margin-top:8px;">Díky, posíláme vám to na e-mail.</div>
+            <div id="sib-form-container" class="sib-form-container">
+              <div id="error-message" class="sib-form-message-panel" style="font-family:'DM Sans',sans-serif; color:#661d1d; background-color:#ffeded; border:1px solid #ff4949;">
+                Něco se nepovedlo. Zkuste to prosím znovu.
+              </div>
+              <div id="success-message" class="sib-form-message-panel" style="font-family:'DM Sans',sans-serif; color:#085229; background-color:#e7faf0; border:1px solid #13ce66;">
+                Díky, posíláme vám výsledek na e-mail.
+              </div>
+              <div id="sib-container">
+                <form id="sib-form" method="POST" action="https://2f524664.sibforms.com/serve/MUIFADBV1wG0TwfPwo6aLvF8QiCGo6beKuaY7Y_J9UVHScSZonk4OYFHztETmh9gsYuOHXybCcbEGGzyxTIa5yCZkR8flFL4CLi0Sqi54gkoIVUm_ujs_E6IKWgLrOKsiBoTzxNHFerZooLnOvEDiTR7fC1KbJEDem4IEeXMXM7Sd83jRtyVsfvj8IveWheVJkdNZlwGM3kSdOw-sw==" data-type="subscription" onsubmit="pripravitEmailAudit()" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+                  <div class="sib-input sib-form-block">
+                    <div class="form__entry entry_block">
+                      <div class="form__label-row">
+                        <div class="entry__field">
+                          <input class="input" type="email" id="EMAIL" name="EMAIL" autocomplete="off" placeholder="vas@email.cz" data-required="true" required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <input type="hidden" id="SKORE" name="SKORE" value="">
+                  <input type="hidden" id="SKORE_POPIS" name="SKORE_POPIS" value="">
+                  <input type="text" name="email_address_check" value="" class="input--hidden" style="display:none !important;">
+                  <input type="hidden" name="locale" value="en">
+                  <button form="sib-form" type="submit" class="btn-gold">Odeslat</button>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1213,15 +1238,15 @@ function ukazatEmailFormAudit() {
   document.getElementById('email-form-wrap-audit').style.display = 'block';
 }
 
-function odeslatEmailAudit(e) {
-  const email = document.getElementById('inp-email-audit').value.trim();
-  if (!email) { e.preventDefault(); return false; }
-  document.getElementById('hid-audit-skore').value = document.getElementById('skore-cislo').textContent.trim();
-  document.getElementById('hid-audit-skore-popis').value = document.getElementById('skore-label').textContent + '. ' + document.getElementById('skore-popis').textContent;
-  document.getElementById('email-form-audit').style.display = 'none';
-  document.getElementById('email-ok-audit').style.display = 'block';
+// Vyplní skryté SKORE/SKORE_POPIS těsně před odesláním. Samotné odeslání a
+// zobrazení error/success panelu (#error-message/#success-message) obstarává
+// oficiální Brevo main.js (viz script tagy před </body>) - appka sama formulář
+// neposílá, jen připraví data. Vlastní POST napřímo appka posílala dřív, ale
+// Brevo ho odmítalo (chyba 400) - tenhle formulář funguje jen přes jejich JS.
+function pripravitEmailAudit() {
+  document.getElementById('SKORE').value = document.getElementById('skore-cislo').textContent.trim();
+  document.getElementById('SKORE_POPIS').value = document.getElementById('skore-label').textContent + '. ' + document.getElementById('skore-popis').textContent;
   if (typeof gtag === 'function') { gtag('event', 'lead_email_submit', { source: 'mini_audit_skladu' }); }
-  return true;
 }
 
 function zacitZnovu() {
@@ -1549,5 +1574,28 @@ function cookiesOdmitnout() {
   document.getElementById('cookies-bar').style.display = 'none';
 }
 </script>
+
+<!-- Brevo formulář "Poslat výsledek e-mailem" - oficiální submit skript,
+     bez něj Brevo POST odmítá (viz komentář u pripravitEmailAudit) -->
+<script>
+  window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
+  window.LOCALE = 'en';
+  window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "Zadejte prosím platnou e-mailovou adresu.";
+  window.REQUIRED_ERROR_MESSAGE = "Toto pole je povinné.";
+  window.GENERIC_INVALID_MESSAGE = "Zadejte prosím platnou e-mailovou adresu.";
+  window.INVALID_NUMBER = "Zadejte prosím platnou e-mailovou adresu.";
+  window.INVALID_DATE = "Please enter a valid date";
+  window.REQUIRED_MULTISELECT_MESSAGE = 'Please select at least 1 option';
+  window.translation = {
+    common: {
+      selectedList: '{quantity} list selected',
+      selectedLists: '{quantity} lists selected',
+      selectedOption: '{quantity} selected',
+      selectedOptions: '{quantity} selected',
+    }
+  };
+  var AUTOHIDE = Boolean(0);
+</script>
+<script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
 </body>
 </html>
