@@ -28,6 +28,18 @@
   "inLanguage": "cs"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Kolik to trvá?", "acceptedAnswer": { "@type": "Answer", "text": "Jedna kompletní analýza zabere zhruba 10-15 minut rozhovoru." } },
+    { "@type": "Question", "name": "Musím znát odpověď hned?", "acceptedAnswer": { "@type": "Answer", "text": "Ne, appka se ptá postupně. Klidně odpovězte i \"nevím\", kouč vám pomůže to rozkrýt dál." } },
+    { "@type": "Question", "name": "Co mám dělat s výsledkem?", "acceptedAnswer": { "@type": "Answer", "text": "Vyberte si navazující nástroj podle toho, kam kořenová příčina spadá (karty níž), nebo rovnou zkuste doporučený první krok z výstupu." } },
+    { "@type": "Question", "name": "Co dostanu navíc v Pro verzi?", "acceptedAnswer": { "@type": "Answer", "text": "Pro appka uloží historii analýz a založí z výstupu rovnou navazující úkoly. Jedna kompletní analýza zdarma zůstává bez omezení dál." } }
+  ]
+}
+</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -573,14 +585,73 @@ nav {
 .back-to-card-link:hover{text-decoration:underline;}
 
 .post-calc{background:var(--white);border-top:1px solid var(--border);padding:40px 20px;}
-.post-calc-inner{max-width:1040px;margin:0 auto;}
+.pro-final-panel {
+  background: linear-gradient(135deg, #000, #1a1400);
+  border-radius: 16px;
+  padding: 24px 22px 22px;
+  margin-top: 20px;
+}
+.pro-final-badge {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dark);
+  background: var(--gold);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.pro-final-soon {
+  display: inline-block; font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--gold); background: rgba(233,169,27,.15); border: 1px solid rgba(233,169,27,.3);
+  padding: 3px 10px; border-radius: 20px;
+  margin-left: 6px; vertical-align: middle;
+}
+.pro-final-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 16px;
+}
+.pro-final-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+.pro-final-item { display: flex; gap: 12px; align-items: flex-start; }
+.pro-final-item-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(233,169,27,.18); color: var(--gold);
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.pro-final-item-title { font-size: 13.5px; font-weight: 700; color: white; margin-bottom: 3px; }
+.pro-final-item-desc { font-size: 12.5px; color: rgba(255,255,255,.55); line-height: 1.6; }
+.pro-final-cta {
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all .2s;
+}
+.pro-final-cta:hover { background: var(--gold-dark); }
+.main-pro-final{max-width:700px;margin:0 auto;padding:0 20px 20px;}
+.post-calc-inner{max-width:700px;margin:0 auto;}
 .post-calc-grid{display:grid;grid-template-columns:1fr;max-width:680px;margin:0 auto;}
 .faq-block{margin-top:24px;}
 .faq-item{padding:14px 0;border-bottom:1px solid var(--border);}
 .faq-item:last-child{border-bottom:none;}
 .faq-q{font-family:"Poppins",sans-serif;font-size:13.5px;font-weight:700;color:var(--dark);margin-bottom:6px;}
 .faq-a{font-size:13.5px;color:var(--mid);line-height:1.7;}
-.dalsi-nastroje-wrap{max-width:1040px;margin:0 auto;text-align:center;padding:0 20px 40px;}
+.dalsi-nastroje-wrap{max-width:700px;margin:0 auto;text-align:center;padding:0 20px 40px;}
 .dalsi-nastroje-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;text-align:left;}
 .dalsi-nastroj-card{background:var(--gold-light);border:1px solid rgba(233,169,27,0.3);border-radius:10px;padding:18px 20px;}
 .dalsi-nastroj-tag{font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;}
@@ -634,7 +705,7 @@ nav {
 
         <div class="two-col">
           <div class="content-card">
-            <div class="content-card-title">Hodí se vám to, pokud:</div>
+            <h3 class="content-card-title">Hodí se vám to, pokud:</h3>
             <ul class="check-list">
               <li>Řešíte problém, který se pořád vrací, i když jste ho už párkrát "vyřešili"</li>
               <li>Chcete se dostat od výmluv a prvních dojmů ke skutečné příčině v procesu, ne k viníkovi</li>
@@ -642,7 +713,7 @@ nav {
             </ul>
           </div>
           <div class="content-card">
-            <div class="content-card-title">Tři kroky, žádná věda:</div>
+            <h3 class="content-card-title">Tři kroky, žádná věda:</h3>
             <div class="steps-list">
               <div class="step-item"><div class="step-num">1</div><div>Zadáte e-mail a spustíte analýzu zdarma (1 kompletní analýza)</div></div>
               <div class="step-item"><div class="step-num">2</div><div>Popíšete problém a odpovídáte na otázky AI kouče, jednu po druhé</div></div>
@@ -652,7 +723,7 @@ nav {
         </div>
 
         <div class="content-card" style="margin-bottom:0;">
-          <div class="content-card-title">Co k tomu nepotřebujete:</div>
+          <h3 class="content-card-title">Co k tomu nepotřebujete:</h3>
           <div class="no-need-grid">
             <div class="no-need-item">Facilitátora ani školení na metodu</div>
             <div class="no-need-item">Přesná fakta hned na začátku</div>
@@ -699,10 +770,10 @@ nav {
   <div class="post-calc-inner">
     <div class="post-calc-grid">
       <div>
-        <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</div>
+        <h3 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h3>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Doporučené opatření a první krok máte přímo ve výstupu výš. Kořenová příčina navíc většinou spadá do jedné z oblastí níž - podle toho pokračujte konkrétním nástrojem, ne nazdařbůh.</p>
         <div class="faq-block">
-          <div class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</div>
+          <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
           <div class="faq-item">
             <div class="faq-q">Kolik to trvá?</div>
             <div class="faq-a">Jedna kompletní analýza zabere zhruba 10-15 minut rozhovoru.</div>
@@ -715,6 +786,10 @@ nav {
             <div class="faq-q">Co mám dělat s výsledkem?</div>
             <div class="faq-a">Vyberte si navazující nástroj podle toho, kam kořenová příčina spadá (karty níž), nebo rovnou zkuste doporučený první krok z výstupu.</div>
           </div>
+          <div class="faq-item">
+            <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
+            <div class="faq-a">Pro appka uloží historii analýz a založí z výstupu rovnou navazující úkoly, viz panel Tokva Pro níže. Jedna kompletní analýza zdarma zůstává bez omezení dál.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -722,7 +797,7 @@ nav {
 </div>
 
 <div class="dalsi-nastroje-wrap" id="dalsi-nastroje">
-  <div class="content-card-title">Podle čeho pokračovat</div>
+  <h2 class="content-card-title">Podle čeho pokračovat</h2>
   <div class="dalsi-nastroje-grid">
     <div class="dalsi-nastroj-card">
       <div class="dalsi-nastroj-tag">Uspořádání, hledání, chybí standard</div>
@@ -760,6 +835,28 @@ nav {
       <div class="dalsi-nastroj-popis">Odhadnete, kolik vás problém stojí v Kč.</div>
       <a href="../kalkulacka-ztrat/" target="_blank" class="dalsi-nastroj-btn">Spustit kalkulačku</a>
     </div>
+  </div>
+</div>
+
+<div class="main-pro-final" id="main-pro-final">
+  <div class="pro-final-panel">
+    <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Připravujeme</span>
+    <div class="pro-final-title">Co appka umí navíc v Pro</div>
+    <div class="pro-final-list">
+      <div class="pro-final-item">
+        <div class="pro-final-item-icon">✓</div>
+        <div><div class="pro-final-item-title">Neomezené analýzy</div><div class="pro-final-item-desc">Free appka dá 1 kompletní analýzu na e-mail, Pro appku spustíte kolikrát chcete.</div></div>
+      </div>
+      <div class="pro-final-item">
+        <div class="pro-final-item-icon">✓</div>
+        <div><div class="pro-final-item-title">Historie analýz</div><div class="pro-final-item-desc">Appka uloží každou analýzu do vašeho účtu, kdykoli se k ní vrátíte.</div></div>
+      </div>
+      <div class="pro-final-item">
+        <div class="pro-final-item-icon">✓</div>
+        <div><div class="pro-final-item-title">Navazující úkoly</div><div class="pro-final-item-desc">Z kořenové příčiny a doporučeného opatření appka rovnou založí úkol k řešení.</div></div>
+      </div>
+    </div>
+    <button class="pro-final-cta" onclick="otevritProLogin()">Přihlásit se do Pro</button>
   </div>
 </div>
 
@@ -926,6 +1023,8 @@ function renderUcetNav() {
   const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
   info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
   historieBtn.style.display = jePro ? '' : 'none';
+  const proFinal = document.getElementById('main-pro-final');
+  if (proFinal) proFinal.style.display = jePro ? 'none' : '';
 }
 
 async function klikNaUcet() {
@@ -1422,6 +1521,19 @@ function prepnoutKodBlok() {
   const zobrazitKod = kod.style.display === 'none';
   zdarma.style.display = zobrazitKod ? 'none' : 'block';
   kod.style.display = zobrazitKod ? 'block' : 'none';
+}
+
+// CTA v panelu "Co appka umí navíc v Pro" (appka nemá modal-pro jako ostatní
+// appky, přihlášení řeší přes login-overlay nad chatem) - znovu ho zobrazí a
+// přepne rovnou na kód/přihlášení, ať uživatel nemusí hledat.
+function otevritProLogin() {
+  const overlay = document.getElementById('login-overlay');
+  const zdarma = document.getElementById('zdarma-blok');
+  const kod = document.getElementById('kod-blok');
+  overlay.style.display = 'flex';
+  zdarma.style.display = 'none';
+  kod.style.display = 'block';
+  overlay.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Free = 1 živá analýza na e-mail. Kontrola duplicit (jestli tenhle e-mail
