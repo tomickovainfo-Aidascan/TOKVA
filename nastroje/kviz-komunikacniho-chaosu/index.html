@@ -453,7 +453,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <h3>Všech 6 oblastí</h3>
     <div id="v-oblasti-rows"></div>
   </div>
-  <div class="v-card" id="v-ulozit-card">
+  <div class="v-card" id="v-ulozit-card" style="display:none;">
     <h3>Uložit a sledovat vývoj</h3>
     <p style="margin-bottom:12px;">Uložte si tenhle výsledek a příště uvidíte, jestli se komunikace ve firmě zlepšuje.</p>
     <button class="btn-spustit" id="btn-ulozit-vysledek" onclick="klikUlozitVysledek()">Uložit tento výsledek</button>
@@ -901,13 +901,15 @@ function renderUlozitNeboTym() {
   const card = document.getElementById('v-ulozit-card');
   if (!card) return;
   if (tymKod) {
+    card.style.display = '';
     card.innerHTML = `<h3>Týmové porovnání</h3>
       <p style="margin-bottom:12px;">Vaše odpovědi teď můžete anonymně odeslat vedení - appka nikdy neukáže, kdo přesně co napsal, jen průměr celého týmu.</p>
       <button class="btn-spustit" id="btn-odeslat-tym" onclick="odeslatDoTymu(document.getElementById('btn-odeslat-tym'))">Odeslat anonymně do týmu</button>`;
   } else {
-    card.innerHTML = `<h3>Uložit a sledovat vývoj</h3>
-      <p style="margin-bottom:12px;">Uložte si tenhle výsledek a příště uvidíte, jestli se komunikace ve firmě zlepšuje.</p>
-      <button class="btn-spustit" id="btn-ulozit-vysledek" onclick="klikUlozitVysledek()">Uložit tento výsledek</button>`;
+    // Uložení výsledku je čistě Pro funkce a appka ji teď nabízí přes panel
+    // "Co appka umí navíc v Pro" na konci stránky, tahle karta je tak pro
+    // běžné (netýmové) vyplnění zbytečná duplicita.
+    card.style.display = 'none';
   }
 }
 
