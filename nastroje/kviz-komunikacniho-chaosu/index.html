@@ -1346,12 +1346,21 @@ function vykreslitOtazky(){
   document.getElementById('progres-bar').style.width = Math.round(i/OTAZKY.length*100)+'%';
 }
 
+// Rolování jen na začátek karty s otázkou (ne na úplný vrch stránky), ať
+// se po každé otázce nemusí znovu rolovat dolů přes hero a navigaci.
+function rolovatNaKviz(){
+  const el = document.getElementById('kviz');
+  if(!el) return;
+  const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
+  window.scrollTo({top: Math.max(y, 0), behavior:'smooth'});
+}
+
 function dalOtazka(){
   if(!jeOtazkaZodpovezena(OTAZKY[aktualniOtazka])) return;
   if(aktualniOtazka < OTAZKY.length - 1){
     aktualniOtazka++;
     vykreslitOtazky();
-    window.scrollTo({top:0,behavior:'smooth'});
+    rolovatNaKviz();
   }
 }
 
@@ -1359,9 +1368,21 @@ function zpetOtazka(){
   if(aktualniOtazka > 0){
     aktualniOtazka--;
     vykreslitOtazky();
-    window.scrollTo({top:0,behavior:'smooth'});
+    rolovatNaKviz();
   }
 }
+
+// Enter potvrdí aktuální otázku stejně jako kliknutí na "Další" / "Zobrazit
+// výsledek", ať nemusíte sahat na myš, když je odpověď vybraná. Neplete se
+// do psaní do textových polí (vlastní odpověď u "Jinak").
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Enter') return;
+  if(e.target && (e.target.tagName === 'TEXTAREA' || (e.target.tagName === 'INPUT' && e.target.type === 'text'))) return;
+  const kvizEl = document.getElementById('kviz');
+  if(!kvizEl || kvizEl.style.display === 'none') return;
+  const btn = document.getElementById('btn-dal');
+  if(btn && !btn.disabled){ e.preventDefault(); btn.click(); }
+});
 
 function vybrat(qid, typ, oi, el){
   if(typ==='radio'){
