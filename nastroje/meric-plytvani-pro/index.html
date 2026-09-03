@@ -38,7 +38,7 @@
   --green:#2a7a4f; --green-light:#e8f5ee;
   --prace:#2a7a4f; --presun:#1a6aaa; --hledani:#d97706;
   --cekani:#c0392b; --papiry:#7c3aed; --priprava:#545454; --kontrola:#0891b2;
-  --pro:#8b5cf6;
+  --pro:#c48e10;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--dark);min-height:100vh;line-height:1.6;}
@@ -48,7 +48,7 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .nav-tool{font-size:12px;color:var(--mid);font-weight:500;margin-left:10px;padding-left:10px;border-left:1px solid var(--border);}
 @media (max-width:600px){.nav-tool{display:none;}}
 .nav-brand span{color:var(--gold);}
-.nav-badge{font-size:10px;font-weight:700;color:var(--pro);background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);padding:3px 8px;border-radius:3px;}
+.nav-badge{font-size:10px;font-weight:700;color:var(--pro);background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);padding:3px 8px;border-radius:3px;}
 .nav-right{display:flex;align-items:center;gap:12px;}
 .nav-btn{background:transparent;border:1px solid var(--border);color:var(--mid);font-size:12px;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;white-space:nowrap;}
 .nav-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
@@ -240,9 +240,9 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .hist-meta{font-size:11px;color:var(--light);}
 .hist-ply{font-family:"DM Mono",monospace;font-size:11px;font-weight:600;}
 .hist-check{flex-shrink:0;width:16px;height:16px;cursor:pointer;}
-.btn-porovnat{width:100%;background:var(--pro);color:white;border:none;border-radius:6px;padding:9px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;opacity:.5;}
+.btn-porovnat{width:100%;background:var(--pro);color:var(--black);border:none;border-radius:6px;padding:9px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;opacity:.5;}
 .btn-porovnat.active{opacity:1;}
-.pred-po-box{background:#f5f0ff;border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:14px;margin-bottom:12px;}
+.pred-po-box{background:var(--gold-light);border:1px solid rgba(233,169,27,.35);border-radius:10px;padding:14px;margin-bottom:12px;}
 .pred-po-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--pro);margin-bottom:10px;}
 .pred-po-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;}
 .pp-col{text-align:center;}
@@ -251,7 +251,7 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .pp-val{font-family:"DM Mono",monospace;font-size:20px;font-weight:700;color:var(--dark);}
 .pp-sub{font-size:10px;color:var(--light);margin-top:2px;}
 .pp-arrow{font-size:18px;color:var(--pro);text-align:center;}
-.pp-delta{grid-column:1/-1;text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(139,92,246,.2);font-size:13px;color:var(--dark);}
+.pp-delta{grid-column:1/-1;text-align:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(233,169,27,.3);font-size:13px;color:var(--dark);}
 .pp-delta strong{color:var(--pro);}
 
 /* CYKLUS: poznamky a anomalie */
