@@ -28,6 +28,102 @@
   "author": { "@type": "Person", "name": "Gabriela Tomíčková" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Jak zaznamenat aktivitu v Časové studii dne?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Klepněte na mikrofon a řekněte co právě děláte. Aplikace zapíše čas automaticky. Nebo napište aktivitu do pole pod mikrofonem a potvrďte tlačítkem Přidat nebo klávesou Enter."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jak změnit nebo opravit záznam?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dvakrát klepněte na jakýkoliv záznam. Změníte čas i popis."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "K čemu jsou kategorie v appce?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Každý záznam dostane kategorii automaticky podle textu. V souhrnu pak vidíte kolik času šlo do produktivní práce, komunikace, administrativy nebo přestávek. Klepnutím na štítek kategorii změníte."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Zapomněl jsem zaznamenat aktivitu, co teď?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Klepněte na tlačítko doplnit historii v sekci Záznamy dne. Zadáte čas a popis zpětně, aplikace záznamy zařadí na správné místo. Výsledek nebude tak přesný, ale obraz dne stále užitečný."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jak ukončit měření?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tlačítko Konec zapíše čas ukončení. Poslední aktivita tím dostane délku trvání a zobrazí se finální souhrn. Chcete pokračovat později? Stačí přidat nový záznam, měření navazuje."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co udělá tlačítko Nový den?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Smaže dnešní záznamy z appky a začne se počítat znovu od nuly. Appka se před smazáním vždy zeptá, jestli si to opravdu přejete. V Pro verzi navíc den nejdřív uloží do historie, takže se procento produktivní práce dá sledovat i dřívějším dnům, ve Free verzi zmizí bez uložení."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jak získat přesnější výsledky časové studie?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Zapněte si připomínku přímo v aplikaci. Tlačítko Zapnout najdete hned pod mikrofonem. Nastavte interval 15 až 20 minut. Nebo nechte jeden den zaznamenávat kolegu nebo asistentku. Výsledek bývá překvapivě jiný než vlastní odhad."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jak uložit nebo vytisknout výsledky?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Export CSV uloží celý den do tabulky. Vytisknout přehled vypíše záznamy a souhrn kategorií na tiskárnu nebo do PDF."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co je kategorie Hašení problémů?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Samostatná kategorie pro reklamace, poruchy, havárie a další věci, které jste museli vyřešit narychlo a neplánovaně. Appka ji rozpozná automaticky podle textu (např. \"reklamace\", \"porucha\", \"havárie\", \"výpadek\"), kategorii jde kdykoliv ručně změnit. Vysoký podíl hašení bývá signál, že se řeší jen důsledek, ne kořenová příčina."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "K čemu je klasifikace Já / Delegovat / Automatizovat / Zrušit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Procento produktivní práce samo o sobě neřekne, jestli byste tu práci měli dělat zrovna vy. V přehledu dne appka seskupí opakující se činnosti a u každé si můžete vybrat, jestli ji musíte dělat vy, jde delegovat, automatizovat, nebo úplně zrušit. Se zadanou hodnotou hodiny appka spočítá i orientační dopad v Kč."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co appka nabízí navíc v Pro verzi?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Jeden den zůstává navždy 100% zdarma, přesně jak appka funguje dnes. Pro navíc po přihlášení průběžně ukládá rozpracovaný den do vašeho účtu (nemusíte na nic klikat, appka to hlídá sama i při zavření appky) a v sekci Historie dní ukáže, jak se procento produktivní práce mění napříč dny."
+      }
+    }
+  ]
+}
+</script>
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1140,7 +1236,7 @@ nav {
 
     <div class="two-col">
       <div class="content-card">
-        <div class="content-card-title">Hodí se vám to, pokud:</div>
+        <h3 class="content-card-title">Hodí se vám to, pokud:</h3>
         <ul class="check-list">
           <li>Máte pocit, že celý den něco děláte, a stejně nevíte, kam se ten čas poděl</li>
           <li>Chcete vidět čísla, ne jen pocit "byl jsem dneska zavalený"</li>
@@ -1149,7 +1245,7 @@ nav {
         </ul>
       </div>
       <div class="content-card">
-        <div class="content-card-title">Tři kroky, žádná věda:</div>
+        <h3 class="content-card-title">Tři kroky, žádná věda:</h3>
         <div class="steps-list">
           <div class="step-item"><div class="step-num">1</div><div>Ráno appku zapnete a hlasem nebo ručně zapisujete, co zrovna děláte</div></div>
           <div class="step-item"><div class="step-num">2</div><div>Appka sama měří čas mezi záznamy a řadí je do kategorií</div></div>
@@ -1159,7 +1255,7 @@ nav {
     </div>
 
     <div class="content-card" style="margin-bottom:0;">
-      <div class="content-card-title">Co k tomu nepotřebujete:</div>
+      <h3 class="content-card-title">Co k tomu nepotřebujete:</h3>
       <div class="no-need-grid">
         <div class="no-need-item">Papír ani tabulku</div>
         <div class="no-need-item">Registraci</div>
@@ -1273,7 +1369,7 @@ nav {
 
   <!-- Záznamy -->
   <div class="section-title">
-    <span>Záznamy dne</span>
+    <h2 style="display:inline;font:inherit;">Záznamy dne</h2>
     <div class="section-title-btns">
       <button class="export-btn" onclick="otevritModal()">+ Doplnit historii</button>
       <button class="btn-konec" id="btn-konec" onclick="konecMereni()">Konec</button>
