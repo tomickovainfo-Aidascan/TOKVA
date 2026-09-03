@@ -786,6 +786,57 @@ nav {
   transition:all .2s;
 }
 .historie-lock button:hover { background:var(--gold-dark); }
+.pro-final-panel {
+  background: linear-gradient(160deg, rgba(233,169,27,.10), rgba(233,169,27,.03));
+  border: 1px solid rgba(233,169,27,.35);
+  border-radius: 16px;
+  padding: 24px 22px 22px;
+}
+.pro-final-badge {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dark);
+  background: var(--gold);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.pro-final-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 16px;
+}
+.pro-final-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+.pro-final-item { display: flex; gap: 12px; align-items: flex-start; }
+.pro-final-item-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(233,169,27,.18); color: var(--gold);
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.pro-final-item-title { font-size: 13.5px; font-weight: 700; color: var(--dark); margin-bottom: 3px; }
+.pro-final-item-desc { font-size: 12.5px; color: var(--mid); line-height: 1.6; }
+.pro-final-cta {
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all .2s;
+}
+.pro-final-cta:hover { background: var(--gold-dark); }
 .historie-day-row { padding:9px 0; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; }
 .historie-day-row:first-child { border-top:none; padding-top:0; }
 .historie-day-date { font-size:12px; color:var(--mid); min-width:80px; flex-shrink:0; }
@@ -1048,7 +1099,7 @@ nav {
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="badge">Časová studie dne</div>
+    <div class="badge">Manažeři a vedoucí, kteří mají pocit, že zase dnes nic neudělali</div>
     <h1>Kam vám <em>mizí čas?</em></h1>
     <p class="hero-sub">Zaznamenávejte aktivity hlasem nebo ručně po celý den. Na konci uvidíte nejen kde čas šel, ale i co s tím dál - co dělat sami, co delegovat a co automatizovat.</p>
     <div class="hero-meta">
@@ -2151,9 +2202,26 @@ async function renderHistorie() {
   const body = document.getElementById('historie-body');
   if (!jePro || !clenstvi) {
     sub.textContent = 'Uložit uzavřený den do účtu a vidět trend napříč dny je součástí Pro.';
-    body.innerHTML = `<div class="historie-lock">
-      <p>Jeden den zůstává vždy zdarma přesně jako dnes. Tokva Pro navíc uloží každý uzavřený den a ukáže, jak se procento produktivní práce mění v čase.</p>
-      <button onclick="otevritModalPro()">Odemknout Pro</button>
+    body.innerHTML = `<div class="pro-final-panel">
+      <div class="pro-final-badge">Tokva Pro</div>
+      <div class="pro-final-title">Co appka umí navíc v Pro</div>
+      <div class="pro-final-list">
+        <div class="pro-final-item">
+          <div class="pro-final-item-icon">✓</div>
+          <div>
+            <div class="pro-final-item-title">Rozpracovaný den se ukládá sám</div>
+            <div class="pro-final-item-desc">Appka po přihlášení průběžně ukládá rozpracovaný den do vašeho účtu. Nemusíte na nic klikat, appka to hlídá sama i při zavření appky.</div>
+          </div>
+        </div>
+        <div class="pro-final-item">
+          <div class="pro-final-item-icon">✓</div>
+          <div>
+            <div class="pro-final-item-title">Historie dní a trend produktivity</div>
+            <div class="pro-final-item-desc">Uvidíte, jak se procento produktivní práce mění napříč dny, ne jen jedno číslo za dnešek.</div>
+          </div>
+        </div>
+      </div>
+      <button class="pro-final-cta" onclick="otevritModalPro()">Odemknout Tokva Pro</button>
     </div>`;
     return;
   }
