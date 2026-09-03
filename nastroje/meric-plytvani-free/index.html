@@ -28,6 +28,62 @@
   "author": { "@type": "Person", "name": "Gabriela Tomíčková" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Jak přesné je měření v appce Měřič plýtvání?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Podle toho, jak klikáte. Pokud jste přesní vy, je přesný i výsledek. Neměříte odhadem jako u kalkulačky, měříte reálný čas mezi kliknutími. Čím víc cyklů změříte, tím spolehlivější je průměr."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co když zapomenu kliknout na začátku činnosti?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ten čas se přičte k předchozí kategorii, protože appka měří do dalšího kliknutí. U jednoho zapomenutého kliknutí to výsledek zásadně nepokazí, jen buďte při měření o to pozornější."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kolik cyklů mám změřit, abych tomu mohl věřit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tři cykly stačí na první orientaci. Pokud se jednotlivé cykly hodně liší (appka to ukáže v sekci Variabilita cyklů), doměřte klidně další."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Je Měřič plýtvání to samé jako klasická časová studie?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Princip je stejný, jen bez stopek a papíru. Appka dělá to samé, co byste jinak dělali ručně, jen automaticky měří a rovnou spočítá rozložení času."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Můžu appku použít pro víc pracovníků na stejném procesu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ano, změřte proces u víc lidí postupně a porovnejte výsledky ručně. Automatické porovnání cyklů mezi sebou je ve verzi Pro."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hodí se Měřič plýtvání i mimo sklad, třeba ve výrobě?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ano, kategorie (práce, přesun, hledání, čekání, administrativa, kontrola, příprava) sedí na jakoukoliv opakující se operaci, ve skladu i na lince."
+      }
+    }
+  ]
+}
+</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -364,7 +420,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 
     <div class="two-col">
       <div class="content-card">
-        <div class="content-card-title">Hodí se vám to, pokud:</div>
+        <h3 class="content-card-title">Hodí se vám to, pokud:</h3>
         <ul class="check-list">
           <li>Tušíte, že se někde ztrácí čas, ale nevíte přesně kde</li>
           <li>Chcete čísla, ne odhad "myslím, že tak polovinu času"</li>
@@ -373,7 +429,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
         </ul>
       </div>
       <div class="content-card">
-        <div class="content-card-title">Tři kroky, žádná věda:</div>
+        <h3 class="content-card-title">Tři kroky, žádná věda:</h3>
         <div class="steps-list">
           <div class="step-item"><div class="step-num">1</div><div>Napíšete, jaký proces měříte, a klikáte na tlačítko podle toho, co pracovník zrovna dělá</div></div>
           <div class="step-item"><div class="step-num">2</div><div>Appka sama měří čas mezi kliknutími, stačí přepínat kategorie</div></div>
@@ -383,7 +439,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
     </div>
 
     <div class="content-card" style="margin-bottom:0;">
-      <div class="content-card-title">Co k tomu nepotřebujete:</div>
+      <h3 class="content-card-title">Co k tomu nepotřebujete:</h3>
       <div class="no-need-grid">
         <div class="no-need-item">Stopky ani papír</div>
         <div class="no-need-item">Registraci</div>
@@ -392,7 +448,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
       </div>
     </div>
 
-    <div class="howto-divider-title">Jak appka funguje krok za krokem</div>
+    <h2 class="howto-divider-title">Jak appka funguje krok za krokem</h2>
     <div class="steps-list" style="margin-bottom:18px;">
       <div class="step-item"><div class="step-num">1</div><div>Zapište název procesu, který měříte, a klikněte na tlačítko dané činnosti vždy <strong>na začátku</strong>, ne na konci</div></div>
       <div class="step-item"><div class="step-num">2</div><div>Appka automaticky ukončí předchozí činnost a začne měřit novou, jakmile klikněte na další tlačítko</div></div>
@@ -541,11 +597,11 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   <div class="post-calc-inner">
     <div class="post-calc-grid">
       <div>
-        <div class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</div>
+        <h2 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h2>
         <p class="priklad-note" id="priklad-note">Konkrétní tipy zde najdete po měření, přizpůsobí se vašim vlastním číslům.</p>
         <p id="co-delat-text" style="font-size:14px;color:var(--mid);line-height:1.75;">Obecně: Vyberete nejvýznamnější kategorii plýtvání a půjdete na další doporučený krok. Až zjistíte příčinu a napravíte ji, změříte stejný proces znovu.</p>
         <div class="faq-block" style="margin-top:24px;">
-          <div class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</div>
+          <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
           <div class="faq-item">
             <div class="faq-q">Jak přesné to měření je?</div>
             <div class="faq-a">Podle toho, jak klikáte. Pokud jste přesní vy, je přesný i výsledek. Neměříte odhadem jako u kalkulačky, měříte reálný čas mezi kliknutími. Čím víc cyklů změříte, tím spolehlivější je průměr.</div>
@@ -577,7 +633,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 </div>
 
 <div class="dalsi-nastroje-wrap" id="dalsi-nastroje">
-  <div class="content-card-title">Navazující nástroje</div>
+  <h2 class="content-card-title">Navazující nástroje</h2>
   <div class="dalsi-nastroje-grid">
     <div class="dalsi-nastroj-card">
       <div class="dalsi-nastroj-tag">Hodně chůze a přesunů</div>
