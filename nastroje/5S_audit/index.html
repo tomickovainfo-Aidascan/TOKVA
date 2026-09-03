@@ -14,13 +14,13 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="5S audit pracoviště, checklist zdarma">
+<meta name="twitter:title" content="5S pro každého smrtelníka | Gabriela Tomíčková">
 <meta name="twitter:description" content="5S audit pracoviště krok za krokem, checklist zdarma, report v Tokva Pro.">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "5S audit",
+  "name": "5S pro každého smrtelníka",
   "description": "5S audit pracoviště krok za krokem. Checklist a fotodokumentace před/po zdarma, report v Tokva Pro.",
   "url": "https://tokva.cz/nastroje/5S_audit/",
   "applicationCategory": "BusinessApplication",
@@ -975,6 +975,8 @@ nav {
 .vysledek-sub{font-family:"Poppins",sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dark);margin-bottom:8px;margin-top:16px;}
 .vysledek-tip{background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12.5px;color:var(--mid);line-height:1.7;margin-top:14px;}
 .vysledek-tip strong{color:var(--gold-dark);font-size:11px;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:4px;}
+.vysledek-tisk-btn{margin-top:16px;background:var(--gold);border:none;border-radius:8px;padding:11px 18px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;color:var(--dark);cursor:pointer;}
+.vysledek-tisk-btn:hover{background:var(--gold-dark);}
 
 .post-calc{background:var(--white);border-top:1px solid var(--border);padding:40px 20px;}
 .post-calc-inner{max-width:1040px;margin:0 auto;}
@@ -999,12 +1001,10 @@ nav {
 
 
 <nav>
-  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/?nastroj=5s-audit" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">5S audit</span></div>
+  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/?nastroj=5s-audit" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">5S pro každého smrtelníka</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
-    <button class="nav-btn" onclick="tiskNeboPro()">Tisk reportu</button>
-    <button class="nav-btn primary" onclick="novaMista()">+ Nové místo</button>
   </div>
 </nav>
 
@@ -1588,6 +1588,7 @@ function renderVysledekPanel() {
       <li>Zaveďte krátkou kontrolu při příchodu na pracoviště, hlavně tam kde se střídají směny - lidi se tak hlídají navzájem.</li>
     </ul>
     <div class="vysledek-tip"><strong>Tip</strong>Standard pracoviště si vytiskněte a vyvěste přímo na místě, ne jen v appce.</div>
+    <button class="vysledek-tisk-btn" onclick="tiskNeboPro()">Tisk reportu</button>
   `;
   return div;
 }
