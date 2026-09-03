@@ -1314,7 +1314,9 @@ function ukazatEmailFormAudit() {
 // Brevo ho odmítalo (chyba 400) - tenhle formulář funguje jen přes jejich JS.
 function pripravitEmailAudit() {
   document.getElementById('SKORE').value = document.getElementById('skore-cislo').textContent.trim();
-  document.getElementById('SKORE_POPIS').value = document.getElementById('skore-label').textContent + '. ' + document.getElementById('skore-popis').textContent;
+  var popisText = document.getElementById('skore-label').textContent + '. ' + document.getElementById('skore-popis').textContent;
+  if (popisText.length > 195) { popisText = popisText.slice(0, 195) + '...'; }
+  document.getElementById('SKORE_POPIS').value = popisText;
   if (typeof gtag === 'function') { gtag('event', 'lead_email_submit', { source: 'mini_audit_skladu' }); }
 }
 
