@@ -13,8 +13,8 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kvíz: Kde se vám ve firmě ztrácí informace?">
-<meta name="twitter:description" content="Test komunikace ve firmě, zjistíte za 5 minut, kde se láme tok informací mezi lidmi. Kvíz odhalí vaši nejslabší oblast.">
+<meta name="twitter:title" content="Kvíz: máte problém s interní komunikací?">
+<meta name="twitter:description" content="Test interní komunikace ve firmě. Za 5 minut zjistíte, kde se láme tok informací mezi lidmi a co s tím dál. Zdarma.">
 <link rel="canonical" href="https://tokva.cz/nastroje/kviz-komunikacniho-chaosu/">
 <script type="application/ld+json">
 {
@@ -28,8 +28,37 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CZK" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Musím zadat e-mail?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Ne. Kvíz spustíte rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte jen pokud chcete i podrobnější rozbor poslat na později." }
+    },
+    {
+      "@type": "Question",
+      "name": "Je to test znalostí?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Ne, jde o to, jak si ve firmě reálně předáváte informace, ne co byste teoreticky měli dělat. Odpovídejte podle skutečnosti, ne podle toho, jak by to mělo vypadat." }
+    },
+    {
+      "@type": "Question",
+      "name": "Co znamená skóre a pásmo?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Čím víc bodů, tím větší chaos v předávání informací. Kvíz vám navíc ukáže, která z 6 oblastí (e-maily, WhatsApp, předání mezi lidmi, zodpovědnosti...) vás brzdí nejvíc." }
+    },
+    {
+      "@type": "Question",
+      "name": "Co dostanu navíc v Pro verzi?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Pro uloží výsledek do vašeho účtu. Kvíz zopakujete za čas a hned vidíte, jestli se komunikace zlepšuje, nebo je pořád stejná. Samotný kvíz je pořád celý zdarma, Pro jen přidává historii." }
+    }
+  ]
+}
+</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
 <style>
 :root {
   --gold:#e9a91b; --gold-dark:#c48e10; --gold-light:#fdf3d9;
@@ -94,7 +123,7 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .content-card{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:22px;}
 .content-card-title{font-family:"Poppins",sans-serif;font-size:12.5px;font-weight:700;color:var(--dark);margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;}
 .post-kviz{background:var(--white);border-top:1px solid var(--border);padding:40px 24px;}
-.post-kviz-inner{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:28px;}
+.post-kviz-inner{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:28px;}
 .faq-block{}
 .faq-item{border-bottom:1px solid var(--border);padding:16px 0;}
 .faq-item:first-child{padding-top:0;}
@@ -178,11 +207,70 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .email-status{font-size:12px;margin-top:8px;display:none;}
 .email-status.ok{color:var(--green);display:block;}
 .email-status.err{color:var(--cekani);display:block;}
-.cta-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;text-align:center;}
-.cta-card h3{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--dark);margin-bottom:6px;}
-.cta-card p{font-size:13px;color:var(--mid);margin-bottom:14px;line-height:1.6;}
-.btn-cta{display:inline-block;background:var(--dark);color:white;border:none;border-radius:8px;padding:12px 22px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;cursor:pointer;text-decoration:none;}
-.btn-cta:hover{background:#000;}
+.pro-final-panel {
+  background: linear-gradient(135deg, #000, #1a1400);
+  border-radius: 16px;
+  padding: 24px 22px 22px;
+  margin-bottom: 12px;
+}
+.pro-final-badge {
+  display: inline-block;
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dark);
+  background: var(--gold);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.pro-final-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 16px;
+}
+.pro-final-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+.pro-final-item { display: flex; gap: 12px; align-items: flex-start; }
+.pro-final-item-icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(233,169,27,.18); color: var(--gold);
+  font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.pro-final-item-title { font-size: 13.5px; font-weight: 700; color: white; margin-bottom: 3px; }
+.pro-final-item-desc { font-size: 12.5px; color: rgba(255,255,255,.55); line-height: 1.6; }
+.pro-final-cta {
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all .2s;
+}
+.pro-final-cta:hover { background: var(--gold-dark); }
+#sib-form-container{width:100%;}
+#sib-form-container .sib-form-message-panel{display:none;font-family:"DM Sans",sans-serif;font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:10px;text-align:left;}
+#sib-form-container .sib-form-message-panel__text{display:flex;align-items:center;gap:8px;}
+#sib-form-container .sib-icon{width:18px;height:18px;flex-shrink:0;}
+#sib-container{max-width:none !important;background:transparent !important;border:none !important;padding:0 !important;text-align:left !important;}
+#sib-container form#sib-form{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start;}
+#sib-container .tokva-sib-hide,#sib-container .sib-form__declaration,#sib-container .entry__specification{display:none !important;}
+#sib-container .sib-input.sib-form-block{padding:0 !important;}
+#sib-container .entry__label{display:none;}
+#sib-container .entry__field input,#sib-container input[type="text"],#sib-container input[type="email"]{font-family:"DM Sans",sans-serif;font-size:14px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);}
+#sib-container .entry__error{display:block;font-size:11px;color:#c0392b;margin-top:4px;}
+#sib-container .sib-form-block__button{background:var(--gold) !important;color:var(--black) !important;font-family:"DM Sans",sans-serif !important;font-size:14px !important;font-weight:700 !important;padding:12px 20px !important;border-radius:6px !important;border:none !important;display:inline-flex !important;align-items:center;gap:6px;cursor:pointer;}
+#sib-container .sib-form-block__button svg{width:14px;height:14px;}
 footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:40px;}
 .footer-brand{font-family:"Poppins",sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.3);}
 .footer-brand span{color:var(--gold);}
@@ -305,7 +393,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 
         <div class="two-col">
           <div class="content-card">
-            <div class="content-card-title">Hodí se vám to, pokud:</div>
+            <h3 class="content-card-title">Hodí se vám to, pokud:</h3>
             <ul class="check-list">
               <li>Běží k jedné zakázce informace přes e-mail, WhatsApp, papírový lístek i telefon, a nikdo si není jistý, co platí naposled</li>
               <li>Slyšíte často větu "to mi nikdo neřekl", a nikdo přesně neví, čí to byla chyba</li>
@@ -314,7 +402,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
             </ul>
           </div>
           <div class="content-card">
-            <div class="content-card-title">Čtyři kroky, žádná věda:</div>
+            <h3 class="content-card-title">Čtyři kroky, žádná věda:</h3>
             <div class="steps-list">
               <div class="step-item"><div class="step-num">1</div><div>Spustíte kvíz, žádný e-mail na start nepotřebujete</div></div>
               <div class="step-item"><div class="step-num">2</div><div>Odpovíte na 11 otázek o tom, jak si ve firmě předáváte informace</div></div>
@@ -325,7 +413,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
         </div>
 
         <div class="content-card" style="margin-bottom:0;">
-          <div class="content-card-title">Co k tomu nepotřebujete:</div>
+          <h3 class="content-card-title">Co k tomu nepotřebujete:</h3>
           <div class="no-need-grid">
             <div class="no-need-item">Žádnou metodu ani terminologii</div>
             <div class="no-need-item">Podklady nebo přípravu předem</div>
@@ -375,22 +463,100 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <p>Na e-mail vám pošlu váš výsledek i s doporučením, co s vaší nejslabší oblastí dělat jako první.</p>
     <button type="button" class="btn-spustit" id="btn-poslat-email-chaos" onclick="ukazatEmailFormChaos()">Poslat podrobný výsledek na e-mail</button>
     <div id="email-form-wrap-chaos" style="display:none;margin-top:10px;">
-      <iframe name="brevo-frame-chaos" style="display:none;" title="odeslani formulare"></iframe>
-      <form id="email-form-chaos" action="https://2f524664.sibforms.com/serve/MUIFAAZSh_d9R9x2DkfCoFwGuwnffSfr9H_TVd-cRK8togquhMeGPysYWxwxka3uQylxclCyIBNOn-vYsismU-ZWxQUyAUGLAwM3ML1vaXKMeRYCJCg4OijBXECTPj_ndl2ALGMldyRLECjgxmLVyEuPRMcDlP7lMXX9LAfrgdt5x-bXob6hUl0EcDqHttODmGuyQ7EmV5_AI2VEjQ==" method="POST" target="brevo-frame-chaos" onsubmit="return odeslatEmailChaos(event)" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-        <input type="email" id="inp-email-chaos" name="EMAIL" placeholder="vas@email.cz" required style="flex:1;min-width:180px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;">
-        <input type="hidden" name="email_address_check" value="">
-        <input type="hidden" name="locale" value="en">
-        <input type="hidden" name="SKORE" id="hid-chaos-skore" value="">
-        <input type="hidden" name="SKORE_POPIS" id="hid-chaos-skore-popis" value="">
-        <button type="submit" class="btn-spustit">Odeslat</button>
-      </form>
-      <div id="email-ok-chaos" style="display:none;font-size:13px;color:var(--mid);margin-top:8px;">Díky, posíláme vám to na e-mail.</div>
+      <div id="sib-form-container" class="sib-form-container">
+        <div id="error-message" class="sib-form-message-panel" style="font-family:'DM Sans',sans-serif; color:#661d1d; background-color:#ffeded; border:1px solid #ff4949;">
+          <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+            <svg viewBox="0 0 512 512" class="sib-icon sib-notification__icon"><path d="M256 40c118.621 0 216 96.075 216 216 0 119.291-96.61 216-216 216-119.244 0-216-96.562-216-216 0-119.203 96.602-216 216-216m0-32C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm-11.49 120h22.979c6.823 0 12.274 5.682 11.99 12.5l-7 168c-.268 6.428-5.556 11.5-11.99 11.5h-8.979c-6.433 0-11.722-5.073-11.99-11.5l-7-168c-.283-6.818 5.167-12.5 11.99-12.5zM256 340c-15.464 0-28 12.536-28 28s12.536 28 28 28 28-12.536 28-28-12.536-28-28-28z"/></svg>
+            <span class="sib-form-message-panel__inner-text">Něco se nepovedlo. Zkuste to prosím znovu.</span>
+          </div>
+        </div>
+        <div id="success-message" class="sib-form-message-panel" style="font-family:'DM Sans',sans-serif; color:#085229; background-color:#e7faf0; border:1px solid #13ce66;">
+          <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+            <svg viewBox="0 0 512 512" class="sib-icon sib-notification__icon"><path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 464c-118.664 0-216-96.055-216-216 0-118.663 96.055-216 216-216 118.664 0 216 96.055 216 216 0 118.663-96.055 216-216 216zm141.63-274.961L217.15 376.071c-4.705 4.667-12.303 4.637-16.97-.068l-85.878-86.572c-4.667-4.705-4.637-12.303.068-16.97l8.52-8.451c4.705-4.667 12.303-4.637 16.97.068l68.976 69.533 163.441-162.13c4.705-4.667 12.303-4.637 16.97.068l8.451 8.52c4.668 4.705 4.637 12.303-.068 16.97z"/></svg>
+            <span class="sib-form-message-panel__inner-text">Díky, posíláme vám podrobný rozbor na e-mail.</span>
+          </div>
+        </div>
+        <div id="sib-container" class="sib-container--large sib-container--vertical">
+          <form id="sib-form" method="POST" action="https://2f524664.sibforms.com/serve/MUIFAAZSh_d9R9x2DkfCoFwGuwnffSfr9H_TVd-cRK8togquhMeGPysYWxwxka3uQylxclCyIBNOn-vYsismU-ZWxQUyAUGLAwM3ML1vaXKMeRYCJCg4OijBXECTPj_ndl2ALGMldyRLECjgxmLVyEuPRMcDlP7lMXX9LAfrgdt5x-bXob6hUl0EcDqHttODmGuyQ7EmV5_AI2VEjQ==" data-type="subscription" onsubmit="pripravitEmailChaos()">
+            <div class="tokva-sib-hide">
+              <div class="sib-form-block"><p>Chcete podrobnější rozbor?</p></div>
+            </div>
+            <div class="tokva-sib-hide">
+              <div class="sib-form-block"><div class="sib-text-form-block"><p>Na e-mail vám pošlu váš výsledek i s doporučením, co s vaší nejslabší oblastí dělat jako první.</p></div></div>
+            </div>
+            <div class="tokva-sib-email-field">
+              <div class="sib-input sib-form-block">
+                <div class="form__entry entry_block">
+                  <div class="form__label-row">
+                    <label class="entry__label" for="EMAIL" data-required="*">E-mail</label>
+                    <div class="entry__field">
+                      <input class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="off" value="" placeholder="vas@email.cz" data-required="true" required>
+                    </div>
+                  </div>
+                  <label class="entry__error entry__error--primary"></label>
+                  <label class="entry__specification">Zadejte e-mail ve formátu např. abc@xyz.cz</label>
+                </div>
+              </div>
+            </div>
+            <div class="tokva-sib-hide">
+              <div class="sib-input sib-form-block">
+                <div class="form__entry entry_block">
+                  <div class="form__label-row">
+                    <label class="entry__label" for="SKORE">SKORE</label>
+                    <div class="entry__field"><input class="input" maxlength="200" type="text" id="SKORE" name="SKORE" autocomplete="off" placeholder="SKORE"></div>
+                  </div>
+                  <label class="entry__error entry__error--primary"></label>
+                  <label class="entry__specification"></label>
+                </div>
+              </div>
+            </div>
+            <div class="tokva-sib-hide">
+              <div class="sib-input sib-form-block">
+                <div class="form__entry entry_block">
+                  <div class="form__label-row">
+                    <label class="entry__label" for="SKORE_POPIS">SKORE_POPIS</label>
+                    <div class="entry__field"><input class="input" maxlength="200" type="text" id="SKORE_POPIS" name="SKORE_POPIS" autocomplete="off" placeholder="SKORE_POPIS"></div>
+                  </div>
+                  <label class="entry__error entry__error--primary"></label>
+                  <label class="entry__specification"></label>
+                </div>
+              </div>
+            </div>
+            <div class="tokva-sib-hide">
+              <div class="sib-form-block"><div class="sib-text-form-block">
+                <p>Odesláním formuláře souhlasíte se zasláním praktických tipů k tématu procesů, komunikace a automatizace.</p>
+                <p>Z odběru se odhlásíte kdykoli jedním kliknutím.</p>
+              </div></div>
+            </div>
+            <div class="tokva-sib-hide">
+              <div class="sib-form__declaration">
+                <div class="declaration-block-icon">
+                  <svg class="icon__SVG" width="0" height="0" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <symbol id="svgIcon-sphere" viewBox="0 0 63 63">
+                        <path class="path1" d="M31.54 0l1.05 3.06 3.385-.01-2.735 1.897 1.05 3.042-2.748-1.886-2.738 1.886 1.044-3.05-2.745-1.897h3.393zm13.97 3.019L46.555 6.4l3.384.01-2.743 2.101 1.048 3.387-2.752-2.1-2.752 2.1 1.054-3.382-2.745-2.105h3.385zm9.998 10.056l1.039 3.382h3.38l-2.751 2.1 1.05 3.382-2.744-2.091-2.743 2.091 1.054-3.381-2.754-2.1h3.385zM58.58 27.1l1.04 3.372h3.379l-2.752 2.096 1.05 3.387-2.744-2.091-2.75 2.092 1.054-3.387-2.747-2.097h3.376zm-3.076 14.02l1.044 3.364h3.385l-2.743 2.09 1.05 3.392-2.744-2.097-2.743 2.097 1.052-3.377-2.752-2.117 3.385-.01zm-9.985 9.91l1.045 3.364h3.393l-2.752 2.09 1.05 3.393-2.745-2.097-2.743 2.097 1.05-3.383-2.751-2.1 3.384-.01zM31.45 55.01l1.044 3.043 3.393-.008-2.752 1.9L34.19 63l-2.744-1.895-2.748 1.891 1.054-3.05-2.743-1.9h3.384zm-13.934-3.98l1.036 3.364h3.402l-2.752 2.09 1.053 3.393-2.747-2.097-2.752 2.097 1.053-3.382-2.743-2.1 3.384-.01zm-9.981-9.91l1.045 3.364h3.398l-2.748 2.09 1.05 3.392-2.753-2.1-2.752 2.096 1.053-3.382-2.743-2.102 3.384-.009zM4.466 27.1l1.038 3.372H8.88l-2.752 2.097 1.053 3.387-2.743-2.09-2.748 2.09 1.053-3.387L0 30.472h3.385zm3.069-14.025l1.045 3.382h3.395L9.23 18.56l1.05 3.381-2.752-2.09-2.752 2.09 1.053-3.381-2.744-2.1h3.384zm9.99-10.056L18.57 6.4l3.393.01-2.743 2.1 1.05 3.373-2.754-2.092-2.751 2.092 1.053-3.382-2.744-2.1h3.384zm24.938 19.394l-10-4.22a2.48 2.48 0 00-1.921 0l-10 4.22A2.529 2.529 0 0019 24.75c0 10.47 5.964 17.705 11.537 20.057a2.48 2.48 0 001.921 0C36.921 42.924 44 36.421 44 24.75a2.532 2.532 0 00-1.537-2.336zm-2.46 6.023l-9.583 9.705a.83.83 0 01-1.177 0l-5.416-5.485a.855.855 0 010-1.192l1.177-1.192a.83.83 0 011.177 0l3.65 3.697 7.819-7.916a.83.83 0 011.177 0l1.177 1.191a.843.843 0 010 1.192z" fill="#0092FF"></path>
+                      </symbol>
+                    </defs>
+                  </svg>
+                  <svg class="svgIcon-sphere" style="width:63px; height:63px;"><use xlink:href="#svgIcon-sphere"></use></svg>
+                </div>
+                <div><p>Jako marketingovou platformu používám Brevo. Odesláním formuláře souhlasíte s tím, že zadané údaje budou předány společnosti Brevo ke zpracování v souladu se zásadami ochrany osobních údajů Brevo. <a target="_blank" href="https://www.brevo.com/en/legal/privacypolicy/" rel="nofollow noopener">Brevo's Privacy Policy.</a></p></div>
+              </div>
+            </div>
+            <div class="tokva-sib-submit-wrap">
+              <div class="sib-form-block" style="text-align:center">
+                <button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
+                  <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512"><path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z"/></svg>
+                  Poslat rozbor
+                </button>
+              </div>
+            </div>
+            <input type="text" name="email_address_check" value="" class="input--hidden">
+            <input type="hidden" name="locale" value="en">
+          </form>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="cta-card">
-    <h3>Chcete se na to podívat společně?</h3>
-    <p>Mapa toku informací ve vaší firmě, kde uvidíte přesně, kde se co ztrácí a co s tím udělat.</p>
-    <a href="https://calendly.com/tomickova-info/30min" target="_blank" class="btn-cta">Chci se domluvit na hovoru</a>
   </div>
   <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);" onclick="zacitZnovu()">Spustit kvíz znovu</button>
 </div>
@@ -399,7 +565,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   <div class="post-kviz-inner">
 
     <div>
-      <div class="content-card-title">Navazující nástroje</div>
+      <h2 class="content-card-title">Navazující nástroje</h2>
       <div class="dalsi-nastroje-grid">
         <div class="dalsi-nastroj-card">
           <div class="dalsi-nastroj-tag">Hlavní další krok</div>
@@ -417,7 +583,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     </div>
 
     <div>
-      <div class="content-card-title">Časté otázky</div>
+      <h3 class="content-card-title">Časté otázky</h3>
       <div class="faq-block">
         <div class="faq-item">
           <div class="faq-q">Musím zadat e-mail?</div>
@@ -436,6 +602,21 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
           <div class="faq-a">Pro uloží výsledek do vašeho účtu. Kvíz zopakujete za čas a hned vidíte, jestli se komunikace zlepšuje, nebo je pořád stejná. Samotný kvíz je pořád celý zdarma, Pro jen přidává historii.</div>
         </div>
       </div>
+    </div>
+
+    <div class="pro-final-panel">
+      <div class="pro-final-badge">Tokva Pro</div>
+      <div class="pro-final-title">Co appka umí navíc v Pro</div>
+      <div class="pro-final-list">
+        <div class="pro-final-item">
+          <div class="pro-final-item-icon">✓</div>
+          <div>
+            <div class="pro-final-item-title">Historie kvízů</div>
+            <div class="pro-final-item-desc">Výsledek se uloží do vašeho účtu. Kvíz zopakujete za čas a hned vidíte, jestli se komunikace zlepšuje, nebo je pořád stejná.</div>
+          </div>
+        </div>
+      </div>
+      <button class="pro-final-cta" onclick="document.getElementById('modal-pro').style.display='flex';">Odemknout Tokva Pro</button>
     </div>
 
   </div>
@@ -1360,10 +1541,11 @@ function ukazatEmailFormChaos(){
   document.getElementById('email-form-wrap-chaos').style.display = 'block';
 }
 
-function odeslatEmailChaos(e){
-  const email = document.getElementById('inp-email-chaos').value.trim();
-  if(!email){ e.preventDefault(); return false; }
-  document.getElementById('hid-chaos-skore').value = document.getElementById('v-skore').textContent.trim();
+// Vyplní skryté SKORE/SKORE_POPIS těsně před odesláním. Samotné odeslání a
+// zobrazení error/success panelu obstarává oficiální Brevo main.js (viz
+// script tagy před </body>) - appka sama formulář neposílá.
+function pripravitEmailChaos(){
+  document.getElementById('SKORE').value = document.getElementById('v-skore').textContent.trim();
   const pasmo = document.getElementById('v-pasmo').textContent.trim();
   const doporuceni = document.getElementById('v-doporuceni').textContent.trim();
   let popis = pasmo + '. ' + doporuceni;
@@ -1371,12 +1553,10 @@ function odeslatEmailChaos(e){
   if(klic && OBLASTI[klic]){
     popis += ' Nejslabší oblast: ' + OBLASTI[klic].nazev + '. ' + (RADY_OBLAST[klic] || OBLASTI[klic].popis);
   }
-  document.getElementById('hid-chaos-skore-popis').value = popis;
-  document.getElementById('email-form-chaos').style.display = 'none';
-  document.getElementById('email-ok-chaos').style.display = 'block';
+  if (popis.length > 195) { popis = popis.slice(0, 195) + '...'; }
+  document.getElementById('SKORE_POPIS').value = popis;
   if(typeof fbq === 'function') fbq('track', 'Lead');
   if(typeof gtag === 'function') { gtag('event', 'lead_email_submit', { source: 'kviz_komunikacniho_chaosu' }); }
-  return true;
 }
 
 function zacitZnovu(){
@@ -1390,9 +1570,7 @@ function zacitZnovu(){
   document.getElementById('progres-bar').style.width='0%';
   document.getElementById('btn-poslat-email-chaos').style.display='block';
   document.getElementById('email-form-wrap-chaos').style.display='none';
-  document.getElementById('email-form-chaos').style.display='flex';
-  document.getElementById('email-ok-chaos').style.display='none';
-  document.getElementById('inp-email-chaos').value='';
+  document.getElementById('EMAIL').value='';
   const ulozitBtn = document.getElementById('btn-ulozit-vysledek');
   if (ulozitBtn) { ulozitBtn.disabled = false; ulozitBtn.textContent = 'Uložit tento výsledek'; }
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1438,5 +1616,28 @@ function cookiesOdmitnout() {
   document.getElementById('cookies-bar').style.display = 'none';
 }
 </script>
+
+<!-- Brevo formulář "Poslat podrobný výsledek na e-mail" - oficiální submit
+     skript, bez něj Brevo POST odmítá. -->
+<script>
+  window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
+  window.LOCALE = 'en';
+  window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "Zadejte prosím platnou e-mailovou adresu.";
+  window.REQUIRED_ERROR_MESSAGE = "Toto pole je povinné.";
+  window.GENERIC_INVALID_MESSAGE = "Zadejte prosím platnou e-mailovou adresu.";
+  window.INVALID_NUMBER = "Zadejte prosím platnou e-mailovou adresu.";
+  window.INVALID_DATE = "Please enter a valid date";
+  window.REQUIRED_MULTISELECT_MESSAGE = 'Please select at least 1 option';
+  window.translation = {
+    common: {
+      selectedList: '{quantity} list selected',
+      selectedLists: '{quantity} lists selected',
+      selectedOption: '{quantity} selected',
+      selectedOptions: '{quantity} selected',
+    }
+  };
+  var AUTOHIDE = Boolean(0);
+</script>
+<script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
 </body>
 </html>
