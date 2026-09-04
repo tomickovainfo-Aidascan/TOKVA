@@ -468,9 +468,9 @@ nav {
 .hero h1 { font-family:"Poppins",sans-serif; font-size:clamp(22px,4vw,36px); font-weight:900; color:var(--white); line-height:1.2; letter-spacing:-0.5px; margin-bottom:14px; }
 .hero h1 em { color:var(--gold); font-style:normal; }
 .hero p { font-size:15px; color:rgba(255,255,255,0.5); max-width:640px; line-height:1.75; font-weight:300; }
-.hero-flow { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:16px; font-size:13px; color:rgba(255,255,255,.55); font-weight:500; }
-.hero-flow-num { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:rgba(233,169,27,.15); border:1px solid rgba(233,169,27,.35); color:var(--gold); font-size:10px; font-weight:700; margin-right:6px; }
-.hero-flow-dot { color:rgba(255,255,255,.25); }
+.hero-meta { display:flex; gap:18px; flex-wrap:wrap; margin-top:22px; }
+.hero-meta span { font-size:12px; color:rgba(255,255,255,0.35); display:flex; align-items:center; gap:6px; }
+.hero-meta span::before { content:"\25CF"; color:var(--gold); font-size:7px; }
 @media (max-width:600px) { .hero{padding:36px 16px 32px;} }
 .content-block { background:var(--white); border-bottom:1px solid rgba(0,0,0,.08); padding:28px 24px; }
 .content-inner { max-width:1040px; margin:0 auto; }
@@ -681,14 +681,12 @@ nav {
   <div class="hero-inner">
     <div class="tool-badge">Vedoucí skladu nebo výroby, co řeší furt stejný problém dokola</div>
     <h1>Od výmluvy <em>ke skutečné příčině</em></h1>
-    <div class="hero-flow">
-      <span><span class="hero-flow-num">1</span>Problém</span>
-      <span class="hero-flow-dot">·</span>
-      <span><span class="hero-flow-num">2</span>Logická analýza</span>
-      <span class="hero-flow-dot">·</span>
-      <span><span class="hero-flow-num">3</span>Kořenová příčina a doporučení</span>
-    </div>
     <p>AI kouč vás provede rozhovorem metodou 5x Proč a dovede ke kořenu problému, ne jen k příznaku. Na konci dostanete strukturovaný výstup s příčinou a prvním krokem. Stačí e-mail, 1 kompletní analýza zdarma.</p>
+    <div class="hero-meta">
+      <span>Problém</span>
+      <span>Logická analýza</span>
+      <span>Kořenová příčina a doporučení</span>
+    </div>
   </div>
 </div>
 
