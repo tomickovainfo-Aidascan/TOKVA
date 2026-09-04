@@ -524,7 +524,7 @@ const TOOLS = [
     ],
     faq:[
       { q:"Musím zadat e-mail?", a:"Ne. Audit spustíte rovnou bez e-mailu a výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit." },
-      { q:"Co když nevím odpověď na některou otázku?", a:"Zvolte odpověď, která je nejblíž realitě. Nevíte-li vůbec, je to samo o sobě výsledek, pokud o situaci ve svém skladu nevíte, je to červená." },
+      { q:"Co když nevím odpověď na některou otázku?", a:"Zvolte \"Nevím / nemáme data\". Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku - protože nevědět je samo o sobě důležité zjištění, ne totéž co \"nemáme problém\"." },
       { q:"Musím projít celý audit najednou?", a:"Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte, 5 minut najdete vždy." }
     ],
     design2a:{
@@ -676,7 +676,8 @@ const TOOLS = [
       "Zadejte měřítko: naměřenou vzdálenost na plánku a odpovídající reálnou délku v metrech (třeba délku regálu).",
       "Pojmenujte zakázku a klikněte Začít kreslit trasu.",
       "Klikejte body přesně tam, kudy se při vychystávání pohybujete.",
-      "Sledujte statistiky (počet bodů, délku trasy, počet zakázek, celkem) a diagram stáhněte nebo vytiskněte."
+      "Podle potřeby si plánek přibližte, oddalte nebo posuňte, zoom nemění naměřené vzdálenosti.",
+      "Přidejte další zakázku vlastní barvou, sledujte statistiky a diagram stáhněte nebo vytiskněte."
     ],
     vstupy:"Fotka nebo obrázek plánku skladu nebo výroby (JPG, PNG), a jedna známá vzdálenost pro měřítko, třeba délka regálu nebo šířka uličky.",
     vystupy:"Spaghetti diagram ke stažení jako obrázek nebo k vytisknutí, délka trasy v metrech pro každou zakázku i celkem, počet zaznamenaných bodů a zakázek.",
@@ -689,7 +690,7 @@ const TOOLS = [
     faq:[
       { q:"Je nástroj opravdu celý zdarma?", a:"Ano, bez registrace a bez e-mailu. Nahrajete plánek, zakreslíte trasu, stáhnete nebo vytisknete diagram." },
       { q:"Kolik tras nebo zakázek můžu zaznamenat?", a:"Kolik potřebujete, každá má svou barvu a appka spočítá délku každé zvlášť i součet všech dohromady." },
-      { q:"Co když potřebuju sledovat i zastávky, kde se pracovník u něčeho zastaví, ne jen prochází?", a:"To umí placená verze, Spaghetti diagram Pro, určená pro víc lidí najednou, ve skladu i ve výrobě." }
+      { q:"Co když potřebuju sledovat i zastávky, kde se pracovník u něčeho zastaví, ne jen prochází, nebo víc lidí najednou?", a:"To umí placená appka Spaghetti diagram Pro - zaznamená pohyb víc lidí najednou včetně zastávek, porovná dva návrhy vedle sebe s výpočtem úspory a přepočítá trasu na Kč." }
     ],
     design2a:{
       heroLines:["Kolik lidé","reálně nachodí?"],
@@ -697,12 +698,12 @@ const TOOLS = [
       ctaLabel:"Nakreslit spaghetti diagram zdarma",
       stats:[
         {num:"0", lbl:"Kč, nástroj je celý zdarma"},
-        {num:"5", lbl:"kroků od nahrání plánku po hotový diagram"},
+        {num:"6", lbl:"kroků od nahrání plánku po hotový diagram"},
         {num:"4", lbl:"metriky v reálném čase: body, délka, zakázky, celkem"},
         {num:"44", lbl:"% kratší trasa po přesunu pár položek, reálný případ ze skladu"}
       ],
       recognizeClose:"Pokud se poznáváte aspoň v jedné, stačí nahrát plánek a pár kliknutí, a uvidíte to, co jste dřív jen tušili.",
-      how:{ chipsLabel:"5 kroků k hotovému diagramu", chips:["Nahrát plánek","Zadat měřítko","Pojmenovat zakázku","Zaklikat trasu","Stáhnout nebo vytisknout"] },
+      how:{ chipsLabel:"6 kroků k hotovému diagramu", chips:["Nahrát plánek","Zadat měřítko","Pojmenovat zakázku","Zaklikat trasu","Přiblížit a posunout plánek","Stáhnout nebo vytisknout"] },
       example:{
         headline:"Kolik uleví přesunutí pár položek v regálu?",
         stat:{ num:"44", note:"% kratší trasa u reálné zaměstnankyně ve skladu, ze 7,5 km na 4,2 km za směnu, jen přesunem šesti položek v regálu, bez jakékoli investice." }
@@ -893,11 +894,11 @@ const TOOLS = [
         "Potřebujete podklad, se kterým přijdete k vedení, ne jen dojem?"
       ],
       zaver:[
-        "Appka rozezná kategorie (produktivní práce, komunikace, administrativa, přestávky, hašení problémů) automaticky podle textu záznamu, kategorii jde kdykoli ručně přeřadit.",
+        "Appka rozezná 9 kategorií (hašení problémů, produktivní práce, komunikace, administrativa, přestávka, rodina a péče, přesun, osobní, ostatní) automaticky podle textu záznamu, kategorii jde kdykoli ručně přeřadit.",
         "Vysoký podíl kategorie Hašení problémů (reklamace, poruchy, havárie) bývá signál, že se řeší jen důsledek, ne kořenová příčina."
       ]
     },
-    ucelMetoda:"Časová studie mého dne zaznamenává vaše aktivity během celého dne, hlasem nebo ručně, a automaticky je třídí do kategorií. Na konci dne appka ukáže, kolik času šlo do produktivní práce, komunikace, administrativy, přestávek a hašení problémů (reklamace, poruchy, havárie).\n\nU opakujících se činností appka navíc nabídne klasifikaci, jestli tu práci musíte dělat vy, jde delegovat, automatizovat, nebo úplně zrušit, a se zadanou hodinovou sazbou spočítá orientační dopad v korunách.",
+    ucelMetoda:"Časová studie mého dne zaznamenává vaše aktivity během celého dne, hlasem nebo ručně, a automaticky je třídí do 9 kategorií (hašení problémů, produktivní práce, komunikace, administrativa, přestávka, rodina a péče, přesun, osobní, ostatní). Na konci dne appka ukáže, kolik času šlo kam.\n\nU opakujících se činností appka navíc nabídne klasifikaci, jestli tu práci musíte dělat vy, jde delegovat, automatizovat, nebo úplně zrušit, a se zadanou hodinovou sazbou spočítá orientační dopad v korunách.",
     princip:"Klepnete na mikrofon a řeknete, co právě děláte, appka zapíše čas automaticky, nebo aktivitu napíšete ručně. Každý záznam dostane kategorii podle textu, kategorii jde kdykoli přeřadit klepnutím na štítek. Na konci dne appka spočítá souhrn podle kategorií a nabídne klasifikaci Já/Delegovat/Automatizovat/Zrušit u opakujících se činností.",
     postup:[
       "Klepněte na mikrofon nebo napište aktivitu ručně, appka zaznamená čas.",
@@ -905,7 +906,7 @@ const TOOLS = [
       "Na konci dne klepněte na Konec, appka spočítá souhrn podle kategorií, s tabulkou Já/Delegovat/Automatizovat/Zrušit a exportem do CSV nebo tiskem."
     ],
     vstupy:"Aktivity zaznamenané hlasem nebo ručně během dne, volitelně hodinová sazba pro výpočet dopadu delegování nebo automatizace v korunách.",
-    vystupy:"Souhrn dne podle kategorií (produktivní práce, komunikace, administrativa, přestávky, hašení problémů), tabulka opakujících se činností s klasifikací Já/Delegovat/Automatizovat/Zrušit a orientačním dopadem v Kč, export do CSV a tisk přehledu. V Pro navíc historie dní se sledováním trendu.",
+    vystupy:"Souhrn dne podle 9 kategorií (hašení problémů, produktivní práce, komunikace, administrativa, přestávka, rodina a péče, přesun, osobní, ostatní), tabulka opakujících se činností s klasifikací Já/Delegovat/Automatizovat/Zrušit a orientačním dopadem v Kč, export do CSV a tisk přehledu. V Pro navíc historie dní se sledováním trendu.",
     priklad:"Filip přijde ráno do práce s tím, že dneska konečně dokreslí dokumentaci, na kterou čeká výroba. Nedokreslí. Nejdřív přijde mail, pak telefon od klienta, pak volá zaměstnanec z montáže, že mu něco nefunguje. Filip mu radí po telefonu, mezitím mu chodí další mail. V poledne zjistí, že nářadí, co poslal na reklamaci, potřebuje výroba hned teď, takže shání náhradu, telefonuje dodavateli, hledá doklad k reklamaci, nejdřív v kanceláři, pak v mailu, pak si vzpomene, že ho má v autě.\n\nOdpoledne konečně sedne ke kreslení. Po deseti minutách zazvoní telefon, účetní potřebuje něco k fakturám. Filip položí tužku.\n\nVečer sedí doma a má pocit, že se celý den jen honil, a přitom nic pořádného neudělal. Žádnou velkou chybu neudělal. Prostě jenom zase nestihl to jediné, kvůli čemu do práce vlastně chodí.\n\nNechal si tedy jeden den zapisovat od asistentky, každou činnost, každou minutu, chtěl vědět, kam se mu ten den doopravdy poděl. Skoro třetina dne padla na hašení a hledání, reklamace nářadí, dohledávání dokladů, věci, které nikdy neplánoval řešit a přesto mu sežraly půl odpoledne. Kreslení dokumentace, ta jediná práce, na kterou se ráno těšil, se mu vešlo jen v útržcích mezi telefony.",
     chyby:[
       "Zaznamenávat jen občas, ne průběžně. Appka umí doplnit záznam i zpětně, ale výsledek pak není tak přesný jako průběžné zaznamenávání.",
@@ -913,7 +914,7 @@ const TOOLS = [
       "Zaměřit se jen na procento produktivní práce a přehlédnout tabulku Já/Delegovat/Automatizovat/Zrušit, právě ta říká, co s tím dál dělat, ne jen kde čas mizí."
     ],
     faq:[
-      { q:"K čemu jsou kategorie?", a:"Každý záznam dostane kategorii automaticky podle textu. V souhrnu pak vidíte, kolik času šlo do produktivní práce, komunikace, administrativy nebo přestávek. Klepnutím na štítek kategorii změníte." },
+      { q:"K čemu jsou kategorie?", a:"Každý záznam dostane kategorii automaticky podle textu, appka jich rozeznává 9 (hašení problémů, produktivní práce, komunikace, administrativa, přestávka, rodina a péče, přesun, osobní, ostatní). Klepnutím na štítek kategorii změníte." },
       { q:"Jak získat přesnější výsledky?", a:"Zapněte si připomínku přímo v aplikaci, tlačítko Zapnout najdete hned pod mikrofonem, a nastavte interval 15 až 20 minut. Nebo nechte jeden den zaznamenávat kolegu nebo asistentku, výsledek bývá překvapivě jiný než vlastní odhad." },
       { q:"Co je kategorie Hašení problémů?", a:"Samostatná kategorie pro reklamace, poruchy, havárie a další věci, které jste museli vyřešit narychlo a neplánovaně. Vysoký podíl hašení bývá signál, že se řeší jen důsledek, ne kořenová příčina." },
       { q:"Co dostanu navíc v Pro verzi?", a:"Jeden den zůstává navždy 100% zdarma, přesně jak appka funguje dnes. Pro navíc po přihlášení průběžně ukládá rozpracovaný den do vašeho účtu a v sekci Historie dní ukáže, jak se procento produktivní práce mění napříč dny." }
@@ -923,7 +924,7 @@ const TOOLS = [
       heroNote:"1 den zdarma navždy · hlas nebo ručně<br>žádná instalace, appka běží v prohlížeči",
       ctaLabel:"Chci zmapovat svůj den",
       stats:[
-        {num:"5", lbl:"kategorií aktivit, appka je pozná sama"},
+        {num:"9", lbl:"kategorií aktivit, appka je pozná sama"},
         {num:"4", lbl:"možnosti u každé činnosti, Já/Delegovat/Automatizovat/Zrušit"},
         {num:"1", lbl:"den zdarma, navždy"},
         {num:"0", lbl:"instalace, appka běží v prohlížeči"}
