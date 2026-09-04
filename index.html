@@ -951,25 +951,25 @@ const TOOLS = [
       ]
     },
     ucelMetoda:"Kalkulačka nákladů provozu na m² spočítá, kolik vás sklad měsíčně a ročně stojí, když k nájmu nebo odpisu budovy přičtete energie, povinné revize, pojištění, daň z nemovitosti, odpisy vybavení a provozní služby.\n\nPočítá jen náklady na budovu a její provoz. Mzdové náklady a mobilní techniku (VZV) appka nezahrnuje.",
-    princip:"Appka nabízí rychlý odhad, vyplníte jen to, co znáte (plochu, nájem), zbytek appka doplní orientačními hodnotami. U každé položky uvidíte, jestli počítáte s vaším skutečným číslem, nebo s odhadem. Kdykoli můžete kliknout na \"Chci zpřesnit výsledek\" a rozepsat všechny kategorie zvlášť.",
+    princip:"Appka nabízí rychlý odhad: vyplníte jen to, co znáte (plochu, nájem nebo odpisy budovy). Ostatní kategorie appka nechává na nule, žádné typické průměry netvrdí. Dokud čísla nedoplníte, počítejte s tím, že výsledek je nižší, než reálný náklad na m². Kdykoli můžete kliknout na \"Chci zpřesnit výsledek\" a rozepsat všechny kategorie zvlášť.",
     postup:[
       "Zadejte plochu skladu a zvolte, jestli sklad platíte nájmem, nebo vlastníte budovu.",
-      "Doplňte, co znáte, energie, revize, pojištění, odpisy vybavení. Co nevíte, appka doplní orientačním odhadem.",
+      "Doplňte, co znáte, energie, revize, pojištění, odpisy vybavení. Co nevyplníte, appka počítá jako nulu.",
       "Dostanete náklad na m² za měsíc i za rok, s rozpadem podle kategorie, kde se dá nejrychleji ušetřit."
     ],
-    vstupy:"Plocha skladu, nájem nebo hodnota budovy a pozemku, energie, revize, pojištění, daň z nemovitosti, hodnota a stáří vybavení. Co nezadáte, appka doplní orientačním odhadem.",
+    vstupy:"Plocha skladu, nájem nebo hodnota budovy a pozemku, energie, revize, pojištění, daň z nemovitosti, hodnota a stáří vybavení. Co nezadáte, appka počítá jako nulu.",
     vystupy:"Náklad na m² za měsíc i za rok, celkové roční náklady budovy, rozpad podle kategorie (základní náklad, energie, pojištění, revize, provoz, odpisy, ostatní) a podíl základního nákladu na celku.",
-    priklad:"Sklad 600 m² v nájmu za 60 000 Kč měsíčně. Samotný nájem vychází na 105 Kč na metr čtvereční.\n\nKdyž se přičtou energie, revize, pojištění, daň z nemovitosti, odpisy vybavení a provozní služby, celkový náklad vyskočí na 177 Kč na m² měsíčně, skoro 1,7× víc než samotný nájem.\n\nRočně to dělá přes 1,27 milionu Kč za budovu, ne jen ty téměř 720 000 Kč za nájem, co je vidět na první pohled.",
+    priklad:"Sklad 450 m² v nájmu za 54 000 Kč měsíčně. Samotný nájem vychází na 120 Kč na metr čtvereční.\n\nKdyž se přičtou energie, revize, pojištění, daň z nemovitosti, odpisy vybavení a provozní služby, celkový náklad vyskočí na 204 Kč na m² měsíčně, skoro 1,7× víc než samotný nájem.\n\nRočně to dělá přes 1,1 milionu Kč za budovu, ne jen těch necelých 650 000 Kč za nájem, co je vidět na první pohled.",
     chyby:[
       "Nezapočítat odpisy vybavení, protože nejsou na měsíční faktuře. Racking za 250 000 Kč rozložený na 15 let stojí přes 1 300 Kč měsíčně, i když ho nikde neplatíte najednou.",
-      "Nechat všechny hodnoty na výchozím odhadu, když se rozhodujete o konkrétní investici (stěhování, koupě, pronájem). Pro první orientaci odhad stačí, pro rozhodnutí použijte skutečná čísla ze svých smluv a faktur.",
+      "Nechat kategorie na nule, když se rozhodujete o konkrétní investici (stěhování, koupě, pronájem) - výsledek pak bude podhodnocený. Pro rozhodnutí použijte skutečná čísla ze svých smluv a faktur.",
       "Zapomenout, že appka nepočítá mzdy ani mobilní techniku (VZV), jen náklady budovy a jejího provozu."
     ],
     faq:[
       { q:"Je výsledek přesný?", a:"Přesnost záleží na tom, co zadáte. Použijte skutečné číslice z faktur a smluv, pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku." },
       { q:"Proč jsou tam odpisy vybavení?", a:"Racking za 250 000 Kč rozložený na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad, jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé." },
       { q:"Co je oportunitní náklad kapitálu u vlastní budovy?", a:"Peníze vázané v nemovitosti mohly být investované jinam. Oportunitní náklad ukazuje, co \"stojí\" vlastnit budovu oproti pronájmu, i když reálně žádné nájemné neplatíte." },
-      { q:"Neznám přesné výše revizí. Co mám zadat?", a:"Výchozí hodnoty jsou orientační průměry z regionálních provozů (300 až 800 m²). Pro první orientaci je klidně nechte tak, jak jsou. Pro rozhodování o konkrétní investici ale použijte skutečná čísla ze svých smluv a faktur." }
+      { q:"Neznám přesné výše revizí. Co mám zadat?", a:"Pole necháváme na nule - žádné typické průměry přesně neznáme, aby appka netvrdila víc, než ví. Když číslo nemáte, nechte pole na nule a počítejte s tím, že výsledek bude nižší, než reálný náklad na m². Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) použijte skutečná čísla ze svých smluv a faktur." }
     ],
     design2a:{
       heroLines:["Kolik vás reálně","stojí 1 m² skladu?"],
@@ -984,7 +984,7 @@ const TOOLS = [
       recognizeClose:"Reálné náklady bývají 1,5 až 2× vyšší než samotný nájem.",
       example:{
         headline:"Kolik je nájem doopravdy?",
-        stat:{ num:"177 Kč/m²/měsíc", note:"u skladu 600 m² s nájmem 60 000 Kč, po připočtení energií, revizí, pojištění a odpisů vybavení, skoro 1,7× víc než samotný nájem." }
+        stat:{ num:"204 Kč/m²/měsíc", note:"u skladu 450 m² s nájmem 54 000 Kč, po připočtení energií, revizí, pojištění a odpisů vybavení, skoro 1,7× víc než samotný nájem." }
       }
     } },
 ];
