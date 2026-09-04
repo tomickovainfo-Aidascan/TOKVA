@@ -670,7 +670,7 @@ nav {
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
     <button class="nav-btn" id="nav-historie-btn" onclick="otevritHistorii()" style="display:none;">Historie</button>
-    <button class="nav-reset" onclick="resetChat()">Nová analýza</button>
+    <button class="nav-reset" id="nav-reset-btn" onclick="resetChat()" style="display:none;">Nová analýza</button>
   </div>
 </nav>
 
@@ -765,6 +765,19 @@ nav {
 
 
 <div class="chat-wrap" id="chat"></div>
+
+<div class="input-wrap">
+  <div class="input-inner">
+    <textarea class="input-field" id="input" placeholder="Napište co vás trápí..."
+      rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();odeslat();}"
+      oninput="autoResize(this)"></textarea>
+    <button class="mic-btn" id="mic-btn" onclick="toggleMic()" title="Mluvit místo psaní">🎤</button>
+    <button class="send-btn" id="send-btn" onclick="odeslat()">➤</button>
+  </div>
+  <div class="input-hint" id="input-hint">Enter = odeslat &nbsp;·&nbsp; Shift+Enter = nový řádek &nbsp;·&nbsp; 🎤 = mluvit</div>
+</div>
+
 
 <div class="post-calc" id="post-vysledek">
   <div class="post-calc-inner">
@@ -885,18 +898,6 @@ nav {
       <button class="modal-save" id="modal-notice-ok" onclick="potvrdModalNotice()">Rozumím</button>
     </div>
   </div>
-</div>
-
-<div class="input-wrap">
-  <div class="input-inner">
-    <textarea class="input-field" id="input" placeholder="Napište co vás trápí..."
-      rows="1"
-      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();odeslat();}"
-      oninput="autoResize(this)"></textarea>
-    <button class="mic-btn" id="mic-btn" onclick="toggleMic()" title="Mluvit místo psaní">🎤</button>
-    <button class="send-btn" id="send-btn" onclick="odeslat()">➤</button>
-  </div>
-  <div class="input-hint" id="input-hint">Enter = odeslat &nbsp;·&nbsp; Shift+Enter = nový řádek &nbsp;·&nbsp; 🎤 = mluvit</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1487,6 +1488,8 @@ function resetChat() {
 async function start() {
   const iw = document.querySelector('.input-wrap');
   if (iw) iw.style.display = 'block';
+  const rb = document.getElementById('nav-reset-btn');
+  if (rb) rb.style.display = '';
   isLoading = true;
   showTyping();
 
@@ -1563,7 +1566,7 @@ async function spustitZdarma() {
       document.getElementById('login-overlay').style.display = 'none';
       start();
     } else {
-      err.textContent = data.zprava || 'Tenhle e-mail už jednu analýzu zdarma vyzkoušel. Napište mi na tomickova.info@gmail.com ohledně přístupu Pro.';
+      err.textContent = data.zprava || 'Tenhle e-mail už jednu analýzu zdarma vyzkoušel. Pro více analýz se registrujte do Tokva Pro.';
       btn.disabled = false;
       btn.textContent = 'Chci spustit analýzu zdarma';
     }
