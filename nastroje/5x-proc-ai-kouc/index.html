@@ -93,19 +93,6 @@ nav {
 .nav-tool { font-size:12px; color:var(--light); font-weight:500; margin-left:10px; padding-left:10px; border-left:1px solid var(--border); }
 @media (max-width:600px) { .nav-tool { display:none; } }
 
-.nav-reset {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--light);
-  font-size: 11px;
-  padding: 5px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: all .2s;
-}
-.nav-reset:hover { border-color: var(--gold); color: var(--gold); }
-
 .nav-right { display: flex; gap: 8px; align-items: center; }
 .nav-btn {
   background: transparent;
@@ -673,7 +660,6 @@ nav {
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
     <button class="nav-btn" id="nav-historie-btn" onclick="otevritHistorii()" style="display:none;">Historie</button>
-    <button class="nav-reset" id="nav-reset-btn" onclick="resetChat()" style="display:none;">Nová analýza</button>
   </div>
 </nav>
 
@@ -1276,6 +1262,13 @@ function renderOutput(raw, ulozit = true) {
   exportBtn.onclick = () => exportTxt(raw);
   btnRow.appendChild(exportBtn);
 
+  const novaBtn = document.createElement('button');
+  novaBtn.className = 'export-output';
+  novaBtn.style.marginTop = '0';
+  novaBtn.textContent = 'Nová analýza';
+  novaBtn.onclick = () => resetChat();
+  btnRow.appendChild(novaBtn);
+
   if (jePro) {
     const ukolyBtn = document.createElement('button');
     ukolyBtn.className = 'export-output';
@@ -1496,8 +1489,6 @@ function resetChat() {
 async function start() {
   const iw = document.querySelector('.input-wrap');
   if (iw) iw.style.display = 'block';
-  const rb = document.getElementById('nav-reset-btn');
-  if (rb) rb.style.display = '';
   isLoading = true;
   showTyping();
 
