@@ -38,7 +38,7 @@
     { "@type": "Question", "name": "Je výsledek přesný?", "acceptedAnswer": { "@type": "Answer", "text": "Přesnost záleží na tom, co zadáte. Použijte skutečné číslice z faktur a smluv – pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku." } },
     { "@type": "Question", "name": "Proč jsou tam odpisy vybavení?", "acceptedAnswer": { "@type": "Answer", "text": "Racking za 250 000 Kč rozložený na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad, jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé." } },
     { "@type": "Question", "name": "Co je oportunitní náklad kapitálu u vlastní budovy?", "acceptedAnswer": { "@type": "Answer", "text": "Peníze vázané v nemovitosti mohly být investovány jinam. Oportunitní náklad ukazuje, co \"stojí\" vlastnit budovu oproti pronájmu, i když reálně žádné nájemné neplatíte." } },
-    { "@type": "Question", "name": "Neznám přesné výše revizí. Co mám zadat?", "acceptedAnswer": { "@type": "Answer", "text": "Výchozí hodnoty jsou orientační průměry z regionálních provozů (300–800 m²). Pro první orientaci je klidně nechte tak, jak jsou. Pro rozhodování o konkrétní investici použijte skutečná čísla ze svých smluv a faktur." } },
+    { "@type": "Question", "name": "Neznám přesné výše revizí. Co mám zadat?", "acceptedAnswer": { "@type": "Answer", "text": "Pole necháváme na nule – žádné typické průměry přesně neznáme, aby appka netvrdila víc, než ví. Když číslo nemáte, nechte pole na nule a počítejte s tím, že výsledek bude nižší, než reálný náklad na m². Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) použijte skutečná čísla ze svých smluv a faktur." } },
     { "@type": "Question", "name": "Co dostanu navíc v Pro verzi?", "acceptedAnswer": { "@type": "Answer", "text": "Pro appka uloží víc výpočtů vedle sebe a umí je exportovat do CSV. Samotný výpočet zůstává navždy celý zdarma, bez přihlášení." } }
   ]
 }
@@ -482,7 +482,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
       <!-- Rychlý výpočet vs. zpřesnění -->
       <div class="rychly-box">
-        <p><strong>Rychlý odhad:</strong> vyplňte, co znáte (plocha, nájem). Zbytek necháme na orientačních hodnotách níž – u každé uvidíte, jestli je vaše, nebo odhad.</p>
+        <p><strong>Rychlý odhad:</strong> vyplňte, co znáte. Ostatní položky nechte na nule – počítejte s tím, že výsledek pak bude nižší, než reálný náklad na m², dokud čísla nedoplníte.</p>
         <button type="button" onclick="otevritVsechnySekce()">Chci zpřesnit výsledek – otevřít všechny kategorie</button>
       </div>
 
@@ -586,7 +586,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Elektřina <span class="input-hint">Kč/měsíc průměr</span></div>
             <div class="input-row">
-              <input type="range" id="elektrina" min="3000" max="80000" value="12000" step="1000" oninput="update()">
+              <input type="range" id="elektrina" min="3000" max="80000" value="0" step="1000" oninput="update()">
               <span class="input-val input-val-xl" id="elektrina-val">12 000 Kč</span>
             </div>
             <div class="input-note">Osvětlení, nabíjení VZV, vrata, alarm, IT</div>
@@ -594,7 +594,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Vytápění / chlazení <span class="input-hint">Kč/měsíc průměr za rok</span></div>
             <div class="input-row">
-              <input type="range" id="vytapeni" min="0" max="60000" value="8000" step="500" oninput="update()">
+              <input type="range" id="vytapeni" min="0" max="60000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="vytapeni-val">8 000 Kč</span>
             </div>
             <div class="input-note">Průměr: v létě nižší, v zimě vyšší. Nevytápěný sklad = 0.</div>
@@ -602,7 +602,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Voda a kanalizace <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="voda" min="200" max="8000" value="1200" step="100" oninput="update()">
+              <input type="range" id="voda" min="200" max="8000" value="0" step="100" oninput="update()">
               <span class="input-val input-val-xl" id="voda-val">1 200 Kč</span>
             </div>
           </div>
@@ -638,7 +638,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Pojištění odpovědnosti <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="poj_odp" min="0" max="30000" value="8000" step="500" oninput="update()">
+              <input type="range" id="poj_odp" min="0" max="30000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="poj_odp-val">8 000 Kč</span>
             </div>
           </div>
@@ -658,14 +658,14 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Běžná údržba a opravy <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="udrzba" min="0" max="25000" value="3000" step="500" oninput="update()">
+              <input type="range" id="udrzba" min="0" max="25000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="udrzba-val">3 000 Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Elektrorevize <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="elektrorevize" min="0" max="15000" value="5000" step="500" oninput="update()">
+              <input type="range" id="elektrorevize" min="0" max="15000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="elektrorevize-val">5 000 Kč</span>
             </div>
             <div class="input-note"><a class="zdroj-link" href="https://seznamcsn.agentura-cas.cz/vyhledavani.aspx" target="_blank" rel="noopener">ČSN 33 1500</a> – každé 3–5 let, zadejte roční průměr</div>
@@ -673,7 +673,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Revize EPS <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="eps" min="0" max="12000" value="4000" step="500" oninput="update()">
+              <input type="range" id="eps" min="0" max="12000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="eps-val">4 000 Kč</span>
             </div>
             <div class="input-note">Elektrická požární signalizace – <a class="zdroj-link" href="https://seznamcsn.agentura-cas.cz/vyhledavani.aspx" target="_blank" rel="noopener">ČSN EN 54-14</a>, 1× ročně</div>
@@ -681,7 +681,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Revize EZS <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="ezs" min="0" max="10000" value="3000" step="500" oninput="update()">
+              <input type="range" id="ezs" min="0" max="10000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="ezs-val">3 000 Kč</span>
             </div>
             <div class="input-note">Elektrické zabezpečovací systémy – <a class="zdroj-link" href="https://seznamcsn.agentura-cas.cz/vyhledavani.aspx" target="_blank" rel="noopener">ČSN P CLC/TS 50131-7</a></div>
@@ -689,7 +689,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Revize zdvihacích zařízení <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="zdvihaci" min="0" max="20000" value="5000" step="500" oninput="update()">
+              <input type="range" id="zdvihaci" min="0" max="20000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="zdvihaci-val">5 000 Kč</span>
             </div>
             <div class="input-note">Nakládací rampy, plošiny, sekční vrata – <a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/2001-378" target="_blank" rel="noopener">NV 378/2001 Sb.</a>, 1× ročně</div>
@@ -697,7 +697,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Revize hasicích přístrojů <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="hasici" min="0" max="8000" value="3000" step="500" oninput="update()">
+              <input type="range" id="hasici" min="0" max="8000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="hasici-val">3 000 Kč</span>
             </div>
             <div class="input-note"><a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/2001-246" target="_blank" rel="noopener">Vyhl. 246/2001 Sb.</a> – 1× ročně</div>
@@ -713,7 +713,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Ostatní revize a zkoušky <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="ostatni_rev" min="0" max="10000" value="1500" step="500" oninput="update()">
+              <input type="range" id="ostatni_rev" min="0" max="10000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="ostatni_rev-val">1 500 Kč</span>
             </div>
             <div class="input-note">Hromosvod, regálové inspekce, tlakové nádoby, vzduchotechnika</div>
@@ -734,14 +734,14 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Úklid a čištění <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="uklid" min="0" max="15000" value="3500" step="500" oninput="update()">
+              <input type="range" id="uklid" min="0" max="15000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="uklid-val">3 500 Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Ostraha / bezpečnostní systém <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="ostraha" min="0" max="20000" value="2000" step="500" oninput="update()">
+              <input type="range" id="ostraha" min="0" max="20000" value="0" step="500" oninput="update()">
               <span class="input-val input-val-xl" id="ostraha-val">2 000 Kč</span>
             </div>
             <div class="input-note">Monitoring poplachového systému nebo fyzická ostraha</div>
@@ -749,7 +749,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Odvoz odpadu <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="odpad" min="0" max="8000" value="1600" step="200" oninput="update()">
+              <input type="range" id="odpad" min="0" max="8000" value="0" step="200" oninput="update()">
               <span class="input-val input-val-xl" id="odpad-val">1 600 Kč</span>
             </div>
             <div class="input-note">Komunální, karton, průmyslový odpad</div>
@@ -765,7 +765,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Deratizace a dezinsekce <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="deratizace" min="0" max="5000" value="500" step="100" oninput="update()">
+              <input type="range" id="deratizace" min="0" max="5000" value="0" step="100" oninput="update()">
               <span class="input-val input-val-xl" id="deratizace-val">500 Kč</span>
             </div>
           </div>
@@ -785,42 +785,42 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Regálový systém – pořizovací cena <span class="input-hint">Kč</span></div>
             <div class="input-row">
-              <input type="range" id="regaly" min="0" max="1500000" value="250000" step="10000" oninput="update()">
+              <input type="range" id="regaly" min="0" max="1500000" value="0" step="10000" oninput="update()">
               <span class="input-val input-val-xl" id="regaly-val">250 tis. Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Doba odepisování regálů <span class="input-hint">let</span></div>
             <div class="input-row">
-              <input type="range" id="odpis_regaly" min="10" max="20" value="15" step="5" oninput="update()">
+              <input type="range" id="odpis_regaly" min="10" max="20" value="0" step="5" oninput="update()">
               <span class="input-val" id="odpis_regaly-val">15 let</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Dokovací technika (rampy, plošiny) <span class="input-hint">Kč</span></div>
             <div class="input-row">
-              <input type="range" id="dok_technika" min="0" max="500000" value="60000" step="5000" oninput="update()">
+              <input type="range" id="dok_technika" min="0" max="500000" value="0" step="5000" oninput="update()">
               <span class="input-val input-val-xl" id="dok_technika-val">60 tis. Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">LED osvětlení – instalace <span class="input-hint">Kč</span></div>
             <div class="input-row">
-              <input type="range" id="led" min="0" max="300000" value="50000" step="5000" oninput="update()">
+              <input type="range" id="led" min="0" max="300000" value="0" step="5000" oninput="update()">
               <span class="input-val input-val-xl" id="led-val">50 tis. Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Průmyslová vrata a sekční dveře <span class="input-hint">Kč</span></div>
             <div class="input-row">
-              <input type="range" id="vrata" min="0" max="300000" value="40000" step="5000" oninput="update()">
+              <input type="range" id="vrata" min="0" max="300000" value="0" step="5000" oninput="update()">
               <span class="input-val input-val-xl" id="vrata-val">40 tis. Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Ostatní fixní vybavení <span class="input-hint">Kč</span></div>
             <div class="input-row">
-              <input type="range" id="ostatni_vyb" min="0" max="300000" value="20000" step="5000" oninput="update()">
+              <input type="range" id="ostatni_vyb" min="0" max="300000" value="0" step="5000" oninput="update()">
               <span class="input-val input-val-xl" id="ostatni_vyb-val">20 tis. Kč</span>
             </div>
             <div class="input-note">Nabíjecí stanice, příčky, vzduchotechnika, ostatní</div>
@@ -828,7 +828,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Doba odepisování vybavení <span class="input-hint">let (mimo regály)</span></div>
             <div class="input-row">
-              <input type="range" id="odpis_vybaveni" min="5" max="20" value="12" step="1" oninput="update()">
+              <input type="range" id="odpis_vybaveni" min="5" max="20" value="0" step="1" oninput="update()">
               <span class="input-val" id="odpis_vybaveni-val">12 let</span>
             </div>
           </div>
@@ -848,14 +848,14 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Internet a telekomunikace <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="internet" min="0" max="5000" value="1200" step="100" oninput="update()">
+              <input type="range" id="internet" min="0" max="5000" value="0" step="100" oninput="update()">
               <span class="input-val input-val-xl" id="internet-val">1 200 Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Certifikace a licence <span class="input-hint">Kč/měsíc průměr</span></div>
             <div class="input-row">
-              <input type="range" id="certifikace" min="0" max="8000" value="500" step="100" oninput="update()">
+              <input type="range" id="certifikace" min="0" max="8000" value="0" step="100" oninput="update()">
               <span class="input-val input-val-xl" id="certifikace-val">500 Kč</span>
             </div>
             <div class="input-note">ISO, ADR, potravinová certifikace – roční poplatek ÷ 12</div>
@@ -863,7 +863,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Rezerva na nepředvídané náklady <span class="input-hint">% z celku</span></div>
             <div class="input-row">
-              <input type="range" id="rezerva" min="0" max="15" value="5" step="1" oninput="update()">
+              <input type="range" id="rezerva" min="0" max="15" value="0" step="1" oninput="update()">
               <span class="input-val" id="rezerva-val">5 %</span>
             </div>
             <div class="input-note">Doporučeno 3–7 %. Zahrnuje neplánované opravy a výpadky.</div>
@@ -1039,7 +1039,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           </div>
           <div class="faq-item">
             <div class="faq-q">Neznám přesné výše revizí. Co mám zadat?</div>
-            <div class="faq-a">Výchozí hodnoty jsou orientační průměry z regionálních provozů (300–800 m²). Pro první orientaci je klidně nechte tak, jak jsou. Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) ale použijte skutečná čísla ze svých smluv a faktur – u každé položky uvidíte, jestli počítáte s vaším číslem, nebo s odhadem.</div>
+            <div class="faq-a">Pole necháváme na nule – žádné typické průměry přesně neznáme, aby appka netvrdila víc, než ví. Když číslo nemáte, nechte pole na nule a počítejte s tím, že výsledek bude nižší, než reálný náklad na m². Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) použijte skutečná čísla ze svých smluv a faktur.</div>
           </div>
           <div class="faq-item">
             <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
@@ -1188,8 +1188,8 @@ function oznacitPresnost() {
   const presnostEl = document.getElementById('presnost-vysledku');
   if (!presnostEl) return;
   presnostEl.textContent = vasich === 0
-    ? 'Zatím počítáte jen s ' + celkem + ' orientačními odhady. Pro rozhodování zadejte skutečná čísla ze smluv a faktur.'
-    : 'Přesnost výsledku: ' + vasich + ' z ' + celkem + ' hodnot je vašich skutečných údajů, ' + (celkem - vasich) + ' používá orientační odhad.';
+    ? 'Zatím máte vyplněná jen základní čísla (plocha, nájem/odpisy). Zbylých ' + celkem + ' položek je na nule – výsledek proto bude nižší, než reálný náklad na m².'
+    : 'Vyplněno ' + vasich + ' z ' + celkem + ' položek. Zbylých ' + (celkem - vasich) + ' je na nule – výsledek proto bude nižší, než reálný náklad na m².';
 }
 
 function getVal(id) { return +document.getElementById(id).value; }
