@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJWW5ZX4J9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJWW5ZX4J9');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jak zlepšit sklad, když nevíte, kde začít | Tokva</title>
+<meta name="description" content="Málo místa, zbytečné chození, pomalá expedice nebo vysoké náklady? Vyberte, co vás ve skladu nejvíc trápí, a appka vám ukáže cestu. Zdarma, bez registrace.">
+<meta name="author" content="Gabriela Tomíčková">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tokva.cz/sklad/">
+<meta property="og:title" content="Jak zlepšit sklad, když nevíte, kde začít | Tokva">
+<meta property="og:description" content="Málo místa, zbytečné chození, pomalá expedice nebo vysoké náklady? Appka vám ukáže cestu. Zdarma, bez registrace.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jak zlepšit sklad, když nevíte, kde začít | Tokva">
+<meta name="twitter:description" content="Málo místa, zbytečné chození, pomalá expedice nebo vysoké náklady? Appka vám ukáže cestu. Zdarma, bez registrace.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b; --gold-dark: #976e12; --gold-light: #fdf3d9;
+  --black: #000000; --dark: #111111; --mid: #545454; --silver: #a8a6a6;
+  --white: #ffffff; --paper: #fafaf8; --border: #e8e8e8;
+  --border2: #e8e6e0; --border-strong: #e2e0da;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--dark); line-height:1.7; font-size:16px; }
+
+.topbar { background:var(--black); color:var(--white); padding:14px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:200; border-bottom:2px solid var(--gold); }
+.topbar .brand { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; text-decoration:none; color:var(--white); }
+.topbar .brand span { color:var(--gold); }
+.topbar-login { color:var(--gold); text-decoration:none; font-size:13px; font-weight:700; border:1px solid var(--gold); padding:7px 16px; border-radius:6px; }
+
+.main { padding:44px 24px 100px; max-width:820px; margin:0 auto; }
+.back-link { display:inline-block; font-size:13px; font-weight:600; color:var(--mid); text-decoration:none; margin-bottom:22px; }
+.back-link:hover { color:var(--gold-dark); }
+.eyebrow { font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-dark); margin-bottom:14px; }
+h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,38px); font-weight:900; letter-spacing:-0.5px; margin-bottom:26px; line-height:1.2; }
+.intro-sub { font-size:16.5px; color:var(--mid); margin-bottom:10px; max-width:680px; }
+.intro-proof { font-size:13.5px; font-weight:700; color:var(--gold-dark); letter-spacing:.2px; margin-bottom:40px; }
+
+.krok-block { margin-bottom:36px; }
+.krok-head { margin-bottom:16px; }
+.krok-head h2 { font-family:'Poppins',sans-serif; font-weight:800; font-size:18px; margin-bottom:4px; }
+.krok-head p { font-size:14px; color:var(--mid); margin:0; max-width:600px; }
+.krok-list { display:grid; gap:10px; }
+.krok-row { display:flex; align-items:center; justify-content:space-between; gap:18px; width:100%; text-align:left; background:var(--white); border:1.5px solid var(--border2); border-radius:10px; padding:16px 20px; text-decoration:none; font-family:'DM Sans',sans-serif; transition:border-color .15s, transform .15s; }
+.krok-row:hover { border-color:var(--gold); transform:translateX(2px); }
+.krok-row .krok-benefit { font-size:14.5px; font-weight:600; color:var(--dark); line-height:1.5; }
+.krok-row .krok-meta { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.krok-row .krok-name { font-size:12px; color:var(--silver); white-space:nowrap; }
+.krok-row .krok-tag { font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:1px; padding:4px 8px; border-radius:100px; background:var(--gold-light); color:var(--gold-dark); white-space:nowrap; }
+.krok-row .arr { display:inline-block; width:11px; height:7px; min-width:11px; background:currentColor; clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%); color:var(--gold-dark); }
+.krok-row.paid { background:#1c1c1c; border-color:#1c1c1c; }
+.krok-row.paid .krok-benefit { color:var(--white); }
+.krok-row.paid .krok-name { color:rgba(255,255,255,.45); }
+.krok-row.paid .krok-tag { background:rgba(233,169,27,.15); color:var(--gold); }
+.krok-row.paid .arr { color:var(--gold); }
+.krok-row.paid:hover { border-color:var(--gold); }
+
+.overit { margin-top:44px; background:var(--white); border:1.5px solid var(--gold-border,var(--border2)); border-left:3px solid var(--gold); border-radius:0 10px 10px 0; padding:24px 26px; }
+.overit h2 { font-family:'Poppins',sans-serif; font-weight:800; font-size:17px; margin-bottom:8px; }
+.overit p { font-size:14.5px; color:var(--mid); margin-bottom:14px; max-width:620px; }
+.overit a { color:var(--gold-dark); font-weight:700; text-decoration:none; font-size:13.5px; }
+.overit a:hover { text-decoration:underline; }
+
+.dalsi { margin-top:36px; padding-top:28px; border-top:1px solid var(--border2); display:grid; gap:10px; }
+.dalsi p { font-size:14.5px; }
+.dalsi a { color:var(--gold-dark); font-weight:700; text-decoration:none; }
+.dalsi a:hover { text-decoration:underline; }
+
+@media (max-width:600px) {
+  .topbar { padding:12px 16px; }
+  .main { padding:32px 16px 80px; }
+  .krok-row { flex-direction:column; align-items:flex-start; }
+  .krok-row .krok-meta { width:100%; justify-content:space-between; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="https://tokva.cz/">Tokva <span>Gabriela Tomíčková</span></a>
+  <a class="topbar-login" href="https://tokva.cz/prihlaseni.html">Moje Tokva</a>
+</div>
+
+<main class="main">
+  <a class="back-link" href="https://tokva.cz/">← Zpět na Tokvu</a>
+  <div class="eyebrow">Sklad</div>
+  <h1>Jak zlepšit sklad, když nevíte, kde začít</h1>
+  <p class="intro-sub">Málo místa, zbytečné chození, pomalá expedice nebo vysoké náklady? Vyberte, co vás ve skladu nejvíc trápí. Tokva vám pomůže problém najít, změřit a rozhodnout, co má cenu změnit.</p>
+  <p class="intro-proof">První výsledek za pár minut · část nástrojů zdarma · bez znalosti Kaizenu</p>
+
+  <div class="krok-block">
+    <div class="krok-head"><h2>Nevím, kde je problém</h2><p>Máte pocit, že sklad nefunguje tak dobře, jak by mohl, ale nevíte přesně proč. Začněte rychlou diagnostikou.</p></div>
+    <div class="krok-list">
+      <a class="krok-row" href="https://tokva.cz/nastroje/mini-audit-skladu/"><span class="krok-benefit">Za 5 minut zjistíte, kde váš sklad ztrácí čas, kapacitu nebo přehled.</span><span class="krok-meta"><span class="krok-name">Mini audit skladu</span><span class="arr"></span></span></a>
+      <a class="krok-row" href="https://tokva.cz/nastroje/kviz-jak-znate-svuj-sklad/"><span class="krok-benefit">Odhalíte slepá místa a zjistíte, co o vlastním skladu vlastně nevíte.</span><span class="krok-meta"><span class="krok-name">Kvíz: Jak dobře znáte svůj sklad</span><span class="arr"></span></span></a>
+    </div>
+  </div>
+
+  <div class="krok-block">
+    <div class="krok-head"><h2>Lidé příliš chodí a hledají</h2><p>Ve skladu se hodně chodí, čeká nebo hledá materiál? Změřte, kolik času a peněz v pohybu skutečně mizí.</p></div>
+    <div class="krok-list">
+      <a class="krok-row" href="https://tokva.cz/nastroje/meric-plytvani-free/"><span class="krok-benefit">Zjistíte, kolik času lidé tráví prací a kolik chozením, čekáním nebo hledáním.</span><span class="krok-meta"><span class="krok-name">Měřič plýtvání</span><span class="arr"></span></span></a>
+      <a class="krok-row" href="https://tokva.cz/nastroje/spaghetti-free/"><span class="krok-benefit">Uvidíte na plánku, kudy lidé skutečně chodí a kolik metrů nachodí zbytečně.</span><span class="krok-meta"><span class="krok-name">Spaghetti diagram</span><span class="arr"></span></span></a>
+      <a class="krok-row" href="https://tokva.cz/nastroje/kalkulacka-ztrat/"><span class="krok-benefit">Převedete zbytečné minuty a pohyb na konkrétní roční náklady.</span><span class="krok-meta"><span class="krok-name">Kalkulačka ztrát</span><span class="arr"></span></span></a>
+    </div>
+  </div>
+
+  <div class="krok-block">
+    <div class="krok-head"><h2>Ve skladu není místo</h2><p>Než začnete hledat větší halu nebo další regály, zjistěte, kolik vás současný prostor skutečně stojí a kde může být problém.</p></div>
+    <div class="krok-list">
+      <a class="krok-row" href="https://tokva.cz/nastroje/kalkulacka-nakladu-skladu/"><span class="krok-benefit">Spočítáte skutečné náklady jednoho metru čtverečního skladu, nejen nájem.</span><span class="krok-meta"><span class="krok-name">Kalkulačka nákladů provozu na m²</span><span class="arr"></span></span></a>
+      <a class="krok-row" href="https://tokva.cz/nastroje/mini-audit-skladu/"><span class="krok-benefit">Prověříte využití prostoru, zásoby, uspořádání a další slabá místa.</span><span class="krok-meta"><span class="krok-name">Mini audit skladu</span><span class="arr"></span></span></a>
+    </div>
+  </div>
+
+  <div class="krok-block">
+    <div class="krok-head"><h2>Expedice nebo příjem nestíhá</h2><p>Fronty, přesčasy, čekání, zmatky při vychystávání nebo příjmu? Nejdřív zjistěte, kde proces zpomaluje.</p></div>
+    <div class="krok-list">
+      <a class="krok-row" href="https://tokva.cz/nastroje/mini-audit-skladu/"><span class="krok-benefit">Rychlá diagnostika procesů a organizace skladu.</span><span class="krok-meta"><span class="krok-name">Mini audit skladu</span><span class="arr"></span></span></a>
+      <a class="krok-row" href="https://tokva.cz/nastroje/meric-plytvani-free/"><span class="krok-benefit">Změříte, kde pracovní doba mizí.</span><span class="krok-meta"><span class="krok-name">Měřič plýtvání</span><span class="arr"></span></span></a>
+      <a class="krok-row" href="https://tokva.cz/nastroje/5x-proc-ai-kouc/"><span class="krok-benefit">Když už víte, co se děje, pomůže vám najít skutečnou příčinu.</span><span class="krok-meta"><span class="krok-name">5× Proč AI kouč</span><span class="arr"></span></span></a>
+    </div>
+  </div>
+
+  <div class="krok-block">
+    <div class="krok-head"><h2>Vím, co je špatně. Potřebuju to napravit.</h2><p>Když už problém znáte, můžete přejít od měření ke změně.</p></div>
+    <div class="krok-list">
+      <a class="krok-row" href="https://tokva.cz/nastroje/5x-proc-ai-kouc/"><span class="krok-benefit">Dostane vás od příznaku ke kořenové příčině.</span><span class="krok-meta"><span class="krok-name">5× Proč AI kouč</span><span class="arr"></span></span></a>
+      <a class="krok-row" href="https://tokva.cz/nastroje/5S_audit/"><span class="krok-benefit">Pomůže uspořádat pracoviště a nastavit jednoduchý standard, který vydrží.</span><span class="krok-meta"><span class="krok-name">5S pro každého smrtelníka</span><span class="arr"></span></span></a>
+      <a class="krok-row paid" href="https://tokva.cz/nastroje/meric-plytvani-pro/"><span class="krok-benefit">Pro přesnější měření, vlastní kroky procesu a ukládání výsledků.</span><span class="krok-meta"><span class="krok-name">Měřič plýtvání Pro</span><span class="krok-tag">🔒</span><span class="arr"></span></span></a>
+      <a class="krok-row paid" href="https://tokva.cz/nastroje/spaghetti-pro/"><span class="krok-benefit">Pro sledování více lidí, zastávek a podrobnější analýzu pohybu.</span><span class="krok-meta"><span class="krok-name">Spaghetti diagram Pro</span><span class="krok-tag">🔒</span><span class="arr"></span></span></a>
+    </div>
+  </div>
+
+  <div class="overit">
+    <h2>Už jste něco změnili?</h2>
+    <p>Nejdůležitější není změnu jen udělat, ale ověřit, že skutečně zabrala. Zopakujte stejné měření a porovnejte výsledek před a po. V Tokva Pro budete mít výsledky, projekty a akční kroky uložené na jednom místě.</p>
+    <a href="https://tokva.cz/">Zjistit více o Tokva Pro →</a>
+  </div>
+
+  <div class="dalsi">
+    <p>Nevíte, jestli je problém opravdu ve skladu? → <a href="https://tokva.cz/reseni-problemu/">Nevím, kde začít</a></p>
+    <p>Chcete si projít všechny dostupné nástroje? → <a href="https://tokva.cz/">Všechny nástroje</a></p>
+  </div>
+</main>
+
+</body>
+</html>

@@ -70,7 +70,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 /* oblast filtr */
 .oblast-label { font-family:'Poppins',sans-serif; font-size:12px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold-dark); margin-bottom:12px; }
 .oblast-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px; }
-.chip { background:var(--white); border:1.5px solid var(--border-strong); border-radius:100px; padding:9px 16px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; color:var(--dark); cursor:pointer; transition:all .15s; }
+.chip { background:var(--white); border:1.5px solid var(--border-strong); border-radius:100px; padding:9px 16px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; color:var(--dark); cursor:pointer; transition:all .15s; text-decoration:none; display:inline-block; }
 .chip:hover { border-color:var(--gold); }
 .chip.active { background:var(--dark); border-color:var(--dark); color:var(--gold); }
 
@@ -98,7 +98,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 
 /* sidebar - oblasti a sbalitelný seznam */
 .sb-areas { display:flex; flex-direction:column; gap:4px; }
-.sb-area { display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:none; border:none; border-radius:8px; padding:9px 10px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:600; color:var(--dark); transition:background .15s, color .15s; }
+.sb-area { display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:none; border:none; border-radius:8px; padding:9px 10px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:600; color:var(--dark); transition:background .15s, color .15s; text-decoration:none; }
 .sb-area:hover { background:var(--gold-light); }
 .sb-area.active { background:var(--gold-dark); color:var(--white); }
 .sb-toggle { display:flex; align-items:center; justify-content:space-between; width:100%; background:none; border:none; cursor:pointer; padding:14px 10px 10px; font-family:'Poppins',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dark); }
@@ -1005,8 +1005,11 @@ const KROKY = [
 let activeArea = "";
 
 function chipsHtml() {
-  const all = `<button class="chip${!activeArea ? " active" : ""}" data-area="">Nevím, čím začít</button>`;
-  return all + OBLASTI.map(o => `<button class="chip${activeArea === o.key ? " active" : ""}" data-area="${o.key}">${o.label}</button>`).join("");
+  const all = `<a class="chip" href="/reseni-problemu/">Nevím, čím začít</a>`;
+  return all + OBLASTI.map(o => o.key === "sklad"
+    ? `<a class="chip" href="/sklad/">${o.label}</a>`
+    : `<button class="chip${activeArea === o.key ? " active" : ""}" data-area="${o.key}">${o.label}</button>`
+  ).join("");
 }
 
 function krokRowHtml(t) {
@@ -1032,8 +1035,11 @@ function renderCesta() {
 }
 
 function sbAreasHtml() {
-  const all = `<button class="sb-area${!activeArea ? " active" : ""}" data-area="">Nevím, čím začít</button>`;
-  return all + OBLASTI.map(o => `<button class="sb-area${activeArea === o.key ? " active" : ""}" data-area="${o.key}">${o.label}</button>`).join("");
+  const all = `<a class="sb-area" href="/reseni-problemu/">Nevím, čím začít</a>`;
+  return all + OBLASTI.map(o => o.key === "sklad"
+    ? `<a class="sb-area" href="/sklad/">${o.label}</a>`
+    : `<button class="sb-area${activeArea === o.key ? " active" : ""}" data-area="${o.key}">${o.label}</button>`
+  ).join("");
 }
 
 function sbAllListHtml() {
