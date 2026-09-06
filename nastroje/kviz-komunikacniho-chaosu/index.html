@@ -465,6 +465,34 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <p style="margin-bottom:12px;">Uložte si tenhle výsledek a příště uvidíte, jestli se komunikace ve firmě zlepšuje.</p>
     <button class="btn-spustit" id="btn-ulozit-vysledek" onclick="klikUlozitVysledek()">Uložit tento výsledek</button>
   </div>
+  <div class="v-card" id="projekt-panel" style="display:none;">
+    <h3>Zařadit k projektu</h3>
+    <p style="margin-bottom:10px;">Nepovinné. Pomůže vám tenhle výsledek pozdějí najít pohromadě s ostatními nástroji.</p>
+    <select id="projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
+      <option value="">Bez projektu</option>
+      <option value="__novy__">+ Nový projekt…</option>
+    </select>
+    <input id="projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <button class="btn-spustit" style="width:100%;" onclick="ulozitZarazeniProjektu()">Uložit zařazení</button>
+    <div id="projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+  </div>
+  <div class="v-card" id="akcni-panel" style="display:none;">
+    <h3>Přidat do akčního plánu</h3>
+    <p style="margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle výsledek. Projekt je nepovinný.</p>
+    <p style="font-size:12px;color:var(--light);line-height:1.5;margin-bottom:10px;">Tohle je rychlé založení. Odhadovaný přínos i pozdější ověření výsledku doplníte, když úkol otevřete přímo v Akčním plánu.</p>
+    <input id="akce-nazev" type="text" placeholder="Co se má udělat" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <select id="akce-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
+      <option value="">Bez projektu</option>
+      <option value="__novy__">+ Nový projekt…</option>
+    </select>
+    <input id="akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <input id="akce-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+      <input id="akce-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+    </div>
+    <button class="btn-spustit" style="width:100%;" onclick="pridatDoAkcnihoPlanu()">+ Přidat do akčního plánu</button>
+    <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+  </div>
   <div class="email-card">
     <h3>Chcete podrobnější rozbor?</h3>
     <p>Na e-mail vám pošlu váš výsledek i s doporučením, co s vaší nejslabší oblastí dělat jako první.</p>
@@ -838,6 +866,7 @@ let session = null;
 let clenstvi = null;
 let jePro = false;
 let posledniVysledek = null; // { skore, maxSkore, nejslabsiKey, oblastiVysledky } z posledního zobrazeného výsledku
+let posledniToolRunId = null;
 
 async function nacistPrihlaseniStav() {
   // try/catch schválně: kvíz musí fungovat i při výpadku Supabase/CDN
@@ -913,10 +942,12 @@ function renderUlozitNeboTym() {
       <p style="margin-bottom:12px;">Vaše odpovědi teď můžete anonymně odeslat vedení - appka nikdy neukáže, kdo přesně co napsal, jen průměr celého týmu.</p>
       <button class="btn-spustit" id="btn-odeslat-tym" onclick="odeslatDoTymu(document.getElementById('btn-odeslat-tym'))">Odeslat anonymně do týmu</button>`;
   } else {
-    // Uložení výsledku je čistě Pro funkce a appka ji teď nabízí přes panel
-    // "Co appka umí navíc v Pro" na konci stránky, tahle karta je tak pro
-    // běžné (netýmové) vyplnění zbytečná duplicita.
-    card.style.display = 'none';
+    // Dřív appka tuhle kartu pro běžné (netýmové) vyplnění schovávala s tím,
+    // že ukládání appka nabízí jinde - ve skutečnosti tak ale Pro uživatel
+    // neměl vůbec jak výsledek uložit (jen v FAQ/upsellu bylo napsáno, že to
+    // appka umí). Karta teď zůstává vidět vždy, klikUlozitVysledek() sama
+    // řeší jak Pro (uloží), tak Free (nabídne Pro) případ.
+    card.style.display = '';
   }
 }
 
@@ -935,7 +966,7 @@ async function ulozitVysledek() {
   const { skore, maxSkore, nejslabsiKey, oblastiVysledky } = posledniVysledek;
   const nazevNejslabsi = nejslabsiKey ? OBLASTI[nejslabsiKey].nazev : 'nezjištěno';
   try {
-    await supabaseClient.from('tool_runs').insert({
+    const { data, error } = await supabaseClient.from('tool_runs').insert({
       organization_id: clenstvi.organization_id,
       nastroj: 'kviz-komunikacniho-chaosu',
       nazev: 'Kvíz komunikačního chaosu — ' + skore + '/' + maxSkore,
@@ -944,12 +975,142 @@ async function ulozitVysledek() {
       hlavni_hodnota_jednotka: 'z ' + maxSkore + ' bodů',
       hlavni_hodnota_typ: 'skore',
       data: { skore, maxSkore, nejslabsiKey, oblastiVysledky }
-    });
+    }).select().single();
+    if (error) throw error;
+    posledniToolRunId = data ? data.id : null;
     btn.textContent = 'Uloženo ✓';
+    const projektPanel = document.getElementById('projekt-panel');
+    const akcniPanel = document.getElementById('akcni-panel');
+    if (projektPanel) { projektPanel.style.display = 'block'; nacistProjekty(); }
+    if (akcniPanel) {
+      akcniPanel.style.display = 'block';
+      const akceNazevPole = document.getElementById('akce-nazev');
+      if (akceNazevPole && !akceNazevPole.value && nejslabsiKey) akceNazevPole.value = 'Zlepšit: ' + nazevNejslabsi.toLowerCase();
+    }
   } catch (e) {
     console.warn('Výsledek se nepodařilo uložit do historie (Supabase).', e);
     btn.disabled = false;
     btn.textContent = 'Nepodařilo se, zkusit znovu';
+  }
+}
+
+async function nacistProjekty() {
+  if (!clenstvi) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('projects')
+      .select('id, name')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    ['projekt-select', 'akce-projekt-select'].forEach(id => {
+      const select = document.getElementById(id);
+      if (!select) return;
+      const puvodniHodnota = select.value;
+      select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
+      (data || []).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        opt.setAttribute('data-projekt', '1');
+        select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+      });
+      if ([...select.options].some(o => o.value === puvodniHodnota)) select.value = puvodniHodnota;
+    });
+    const zdrojSelect = document.getElementById('projekt-select');
+    const cilSelect = document.getElementById('akce-projekt-select');
+    if (zdrojSelect && cilSelect && !cilSelect.dataset.dotceno && zdrojSelect.value && zdrojSelect.value !== '__novy__') {
+      cilSelect.value = zdrojSelect.value;
+    }
+  } catch (e) {
+    console.warn('Projekty se nepodařilo načíst.', e);
+  }
+}
+
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'projekt-select') {
+    const novyInput = document.getElementById('projekt-novy-nazev');
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+  if (e.target && e.target.id === 'akce-projekt-select') {
+    e.target.dataset.dotceno = '1';
+    const novyInput = document.getElementById('akce-projekt-novy-nazev');
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+});
+
+async function ulozitZarazeniProjektu() {
+  const stav = document.getElementById('projekt-stav');
+  const select = document.getElementById('projekt-select');
+  if (!posledniToolRunId || !clenstvi || !select) return;
+  stav.textContent = 'Ukládám…';
+  try {
+    let projektId = select.value || null;
+    if (projektId === '__novy__') {
+      const nazev = (document.getElementById('projekt-novy-nazev').value || '').trim();
+      if (!nazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data, error } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: nazev
+      }).select('id').single();
+      if (error) throw error;
+      projektId = data.id;
+    }
+    const { error: chybaUpdate } = await supabaseClient
+      .from('tool_runs')
+      .update({ project_id: projektId })
+      .eq('id', posledniToolRunId);
+    if (chybaUpdate) throw chybaUpdate;
+    stav.textContent = projektId ? 'Uloženo, výsledek patří k projektu.' : 'Uloženo, bez projektu.';
+    await nacistProjekty();
+  } catch (e) {
+    console.warn('Zařazení k projektu se nepodařilo uložit.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
+async function pridatDoAkcnihoPlanu() {
+  const stav = document.getElementById('akce-stav');
+  const nazevInput = document.getElementById('akce-nazev');
+  const nazev = (nazevInput.value || '').trim();
+  if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Výsledek se ještě neuložil, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    const selectProjekt = document.getElementById('akce-projekt-select');
+    let projektId = (selectProjekt && selectProjekt.value && selectProjekt.value !== '__novy__') ? selectProjekt.value : null;
+    if (selectProjekt && selectProjekt.value === '__novy__') {
+      const novyNazev = (document.getElementById('akce-projekt-novy-nazev').value || '').trim();
+      if (!novyNazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data: novyProjekt, error: chybaProjekt } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: novyNazev
+      }).select('id').single();
+      if (chybaProjekt) throw chybaProjekt;
+      projektId = novyProjekt.id;
+    }
+    const { error } = await supabaseClient.from('actions').insert({
+      organization_id: clenstvi.organization_id,
+      project_id: projektId,
+      tool_run_id: posledniToolRunId,
+      title: nazev,
+      reason: 'Výsledek Kvízu komunikačního chaosu ze dne ' + new Date().toLocaleDateString('cs-CZ'),
+      responsible_person: (document.getElementById('akce-osoba').value || '').trim() || null,
+      due_date: document.getElementById('akce-termin').value || null,
+      status: 'novy',
+      created_by: session.user.id
+    });
+    if (error) throw error;
+    stav.innerHTML = 'Přidáno. <a href="https://tokva.cz/akcni-plan/' + (projektId ? ('?projekt=' + projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;">Otevřít akční plán →</a>';
+    nazevInput.value = '';
+    document.getElementById('akce-osoba').value = '';
+    document.getElementById('akce-termin').value = '';
+    document.getElementById('akce-projekt-novy-nazev').value = '';
+    document.getElementById('akce-projekt-novy-nazev').style.display = 'none';
+    await nacistProjekty();
+  } catch (e) {
+    console.warn('Přidání do akčního plánu se nepodařilo.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
   }
 }
 
@@ -1592,6 +1753,11 @@ function pripravitEmailChaos(){
 function zacitZnovu(){
   Object.keys(odpovedi).forEach(k=>delete odpovedi[k]);
   posledniVysledek = null;
+  posledniToolRunId = null;
+  const projektPanelReset = document.getElementById('projekt-panel');
+  const akcniPanelReset = document.getElementById('akcni-panel');
+  if (projektPanelReset) projektPanelReset.style.display = 'none';
+  if (akcniPanelReset) akcniPanelReset.style.display = 'none';
   document.getElementById('vysledek').style.display='none';
   document.getElementById('kviz').style.display='block';
   aktualniOtazka = 0;
