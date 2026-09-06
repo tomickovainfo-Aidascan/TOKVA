@@ -734,6 +734,29 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   </div>
 </div>
 
+<!-- MODAL PRIDAT DO AKCNIHO PLANU -->
+<div class="modal-overlay" id="modal-akcni-plan">
+  <div class="modal">
+    <h3>Přidat do akčního plánu</h3>
+    <p style="margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle projekt. Projekt v Akčním plánu je nepovinný (jiná věc než projekt tras zde).</p>
+    <input id="ap-nazev" type="text" placeholder="Co se má udělat" class="modal-input" style="margin-bottom:10px;">
+    <select id="ap-projekt-select" class="modal-input" style="margin-bottom:8px;">
+      <option value="">Bez projektu</option>
+      <option value="__novy__">+ Nový projekt…</option>
+    </select>
+    <input id="ap-projekt-novy-nazev" type="text" placeholder="Název nového projektu" class="modal-input" style="display:none;margin-bottom:8px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+      <input id="ap-osoba" type="text" placeholder="Odpovědná osoba" class="modal-input" style="margin-bottom:0;">
+      <input id="ap-termin" type="date" class="modal-input" style="margin-bottom:0;">
+    </div>
+    <div id="ap-stav" style="font-size:12px;color:var(--mid);margin-bottom:10px;"></div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="zavritModalAkcniPlan()">Zrušit</button>
+      <button class="btn-modal-ok" onclick="pridatDoAkcnihoPlanu()">+ Přidat</button>
+    </div>
+  </div>
+</div>
+
 <div class="back-to-card">
   <a href="https://tokva.cz/nastroje/?nastroj=spaghetti-vyroba" class="back-to-card-link">← Zpět na kartu appky</a>
 </div>
@@ -1267,6 +1290,7 @@ function otevritSeznamProjektu() {
         <div class="pracovnik-dot" style="background:${(p.zakazky && p.zakazky[0]) ? p.zakazky[0].barva : '#e9a91b'}"></div>
         <span class="pracovnik-nazev">${escapeHtml(p.nazev)}</span>
         <span class="pracovnik-metro">${pocetTras} ${pocetTras === 1 ? 'trasa' : (pocetTras >= 2 && pocetTras <= 4 ? 'trasy' : 'tras')} · ${datum}</span>
+        <span class="pracovnik-dup" onclick="otevritModalAkcniPlan('${p.id}', event)" title="Přidat do akčního plánu" style="color:var(--gold-dark);">+</span>
         <span class="pracovnik-dup" onclick="duplikovatProjekt('${p.id}', event)" title="Uložit jako kopii pod novým názvem">⧉</span>
         <span class="pracovnik-smazat" onclick="smazatProjekt('${p.id}', event)">×</span>
       </div>
@@ -1351,6 +1375,119 @@ function duplikovatProjekt(id, e) {
   if (!ulozitSeznamProjektu(seznam)) return;
   otevritSeznamProjektu();
   ulozitProjektDoSupabase(kopie);
+}
+
+let akcniPlanAktivniProjektId = null;
+let akcniPlanAktivniToolRunId = null;
+
+async function otevritModalAkcniPlan(id, e) {
+  if (e) e.stopPropagation();
+  if (!jePro || !clenstvi) return;
+  const seznam = nacistSeznamProjektu();
+  const p = seznam.find(z => z.id === id);
+  if (!p) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('id')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'spaghetti-pro')
+      .eq('data->>id', id)
+      .limit(1);
+    if (error) throw error;
+    akcniPlanAktivniToolRunId = (data && data[0]) ? data[0].id : null;
+  } catch (err) {
+    console.warn('Nepodařilo se najít uložený výsledek k tomuhle projektu.', err);
+    akcniPlanAktivniToolRunId = null;
+  }
+  if (!akcniPlanAktivniToolRunId) {
+    upozornit('Tenhle projekt se ještě nesynchronizoval do účtu, zkuste to prosím za chvíli.');
+    return;
+  }
+  akcniPlanAktivniProjektId = id;
+  document.getElementById('ap-nazev').value = 'Přemístit / zkrátit trasu: ' + p.nazev;
+  document.getElementById('ap-osoba').value = '';
+  document.getElementById('ap-termin').value = '';
+  document.getElementById('ap-stav').textContent = '';
+  document.getElementById('ap-projekt-novy-nazev').value = '';
+  document.getElementById('ap-projekt-novy-nazev').style.display = 'none';
+  document.getElementById('modal-akcni-plan').classList.add('visible');
+  nacistProjektySpaghetti();
+}
+function zavritModalAkcniPlan() {
+  document.getElementById('modal-akcni-plan').classList.remove('visible');
+  akcniPlanAktivniProjektId = null;
+  akcniPlanAktivniToolRunId = null;
+}
+
+async function nacistProjektySpaghetti() {
+  if (!clenstvi) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('projects')
+      .select('id, name')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    const select = document.getElementById('ap-projekt-select');
+    if (!select) return;
+    select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
+    (data || []).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name;
+      opt.setAttribute('data-projekt', '1');
+      select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+    });
+  } catch (e) {
+    console.warn('Projekty se nepodařilo načíst.', e);
+  }
+}
+
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'ap-projekt-select') {
+    const novyInput = document.getElementById('ap-projekt-novy-nazev');
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+});
+
+async function pridatDoAkcnihoPlanu() {
+  const stav = document.getElementById('ap-stav');
+  const nazevInput = document.getElementById('ap-nazev');
+  const nazev = (nazevInput.value || '').trim();
+  if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
+  if (!akcniPlanAktivniToolRunId || !clenstvi) { stav.textContent = 'Projekt se ještě nesynchronizoval do účtu, zkuste to prosím znovu.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    const selectProjekt = document.getElementById('ap-projekt-select');
+    let projektId = (selectProjekt && selectProjekt.value && selectProjekt.value !== '__novy__') ? selectProjekt.value : null;
+    if (selectProjekt && selectProjekt.value === '__novy__') {
+      const novyNazev = (document.getElementById('ap-projekt-novy-nazev').value || '').trim();
+      if (!novyNazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data: novyProjekt, error: chybaProjekt } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: novyNazev
+      }).select('id').single();
+      if (chybaProjekt) throw chybaProjekt;
+      projektId = novyProjekt.id;
+    }
+    const { error } = await supabaseClient.from('actions').insert({
+      organization_id: clenstvi.organization_id,
+      project_id: projektId,
+      tool_run_id: akcniPlanAktivniToolRunId,
+      title: nazev,
+      reason: 'Výsledek Spaghetti diagramu Pro ze dne ' + new Date().toLocaleDateString('cs-CZ'),
+      responsible_person: (document.getElementById('ap-osoba').value || '').trim() || null,
+      due_date: document.getElementById('ap-termin').value || null,
+      status: 'novy',
+      created_by: session.user.id
+    });
+    if (error) throw error;
+    stav.innerHTML = 'Přidáno. <a href="https://tokva.cz/akcni-plan/' + (projektId ? ('?projekt=' + projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;">Otevřít akční plán →</a>';
+  } catch (e) {
+    console.warn('Přidání do akčního plánu se nepodařilo.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
 }
 
 function smazatProjekt(id, e) {
