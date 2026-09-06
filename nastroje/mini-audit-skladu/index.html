@@ -123,6 +123,16 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .btn-gold:hover{background:var(--gold-dark);color:white;}
 .modal-box-btns{display:flex;gap:10px;justify-content:flex-end;}
 .btn-modal-cancel{background:transparent;color:var(--mid);border:1px solid var(--border);border-radius:6px;padding:11px 18px;font-family:"DM Sans",sans-serif;font-size:14px;cursor:pointer;}
+.detail-otazka{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid #f0f0f0;font-size:13px;}
+.detail-otazka:last-child{border-bottom:none;}
+.detail-otazka-text{color:var(--dark);line-height:1.5;}
+.detail-otazka-odp{flex-shrink:0;font-weight:700;font-size:11.5px;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.detail-otazka-odp.dobre{background:#e3f3ea;color:#2a7a4f;}
+.detail-otazka-odp.stredni{background:#fdf1de;color:#b45309;}
+.detail-otazka-odp.spatne{background:#fde8e8;color:#b91c1c;}
+.detail-otazka-odp.nevim{background:#eee;color:#666;}
+.vysledek-row{cursor:pointer;}
+.vysledek-row:hover{background:var(--paper,#faf9f6);}
 
 /* HERO */
 .hero { background:var(--black); padding:52px 24px 44px; position:relative; overflow:hidden; }
@@ -528,6 +538,17 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
       <button class="btn-modal-cancel" id="modal-notice-cancel" onclick="zavritModalNotice()" style="display:none;">Zrušit</button>
       <button class="btn-gold" id="modal-notice-ok" onclick="potvrdModalNotice()">Rozumím</button>
     </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-detail-vysledku">
+  <div class="modal-box" style="max-width:560px;max-height:82vh;overflow-y:auto;">
+    <div class="modal-box-head">
+      <h3>Detail auditu</h3>
+      <button class="modal-box-close" onclick="zavritModalDetailVysledku()">×</button>
+    </div>
+    <div id="detail-vysledku-datum" style="font-size:12px;color:var(--light);margin-bottom:14px;"></div>
+    <div id="detail-vysledku-seznam"></div>
   </div>
 </div>
 
@@ -1684,14 +1705,15 @@ async function renderHistorie() {
       obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--mid);">Zatím žádná historie, tenhle výsledek je první uložený.</div>';
       return;
     }
-    obsah.innerHTML = data.map(r => {
+    posledniHistorie = data;
+    obsah.innerHTML = data.map((r, i) => {
       const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
       const s = r.hlavni_hodnota_cislo;
       const jednotka = r.hlavni_hodnota_jednotka || '';
       const max = parseInt((jednotka.match(/\d+/) || [30])[0], 10);
       const pomer = max > 0 ? s / max : 0;
       const barva = pomer <= 7/30 ? '#2a7a4f' : pomer <= 15/30 ? '#d97706' : pomer <= 23/30 ? '#b45309' : '#b91c1c';
-      return '<div class="vysledek-row">' +
+      return '<div class="vysledek-row" onclick="otevritModalDetailVysledku(' + i + ')">' +
         '<div class="vysledek-arrow" style="background:' + barva + '"></div>' +
         '<div class="vysledek-text"><strong>' + datum + '</strong><span>' + s + ' ' + jednotka + '</span></div>' +
         '</div>';
@@ -1700,6 +1722,35 @@ async function renderHistorie() {
     console.warn('Historii se nepodařilo načíst.', e);
     obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--mid);">Historii se teď nepodařilo načíst.</div>';
   }
+}
+
+let posledniHistorie = [];
+
+function otevritModalDetailVysledku(i) {
+  const r = posledniHistorie[i];
+  if (!r) return;
+  const d = r.data || {};
+  const odp = d.odpovedi || {};
+  const nevim = (d.nevim || []).map(String);
+  const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
+  document.getElementById('detail-vysledku-datum').textContent = datum + ' · ' + (r.shrnuti || (r.hlavni_hodnota_cislo + ' ' + (r.hlavni_hodnota_jednotka || '')));
+  document.getElementById('detail-vysledku-seznam').innerHTML = OTAZKY.map((text, idx) => {
+    const q = String(idx + 1);
+    let znacka, trida;
+    if (nevim.includes(q)) { znacka = 'Nevím'; trida = 'nevim'; }
+    else {
+      const hodnota = odp[q];
+      znacka = MOZNOSTI[hodnota] != null ? MOZNOSTI[hodnota] : '—';
+      trida = hodnota === 0 ? 'dobre' : hodnota === 1 ? 'stredni' : 'spatne';
+    }
+    return '<div class="detail-otazka"><div class="detail-otazka-text">' + text + '</div>' +
+      '<div class="detail-otazka-odp ' + trida + '">' + znacka + '</div></div>';
+  }).join('');
+  document.getElementById('modal-detail-vysledku').style.display = 'flex';
+}
+
+function zavritModalDetailVysledku() {
+  document.getElementById('modal-detail-vysledku').style.display = 'none';
 }
 
 updateProgress();
