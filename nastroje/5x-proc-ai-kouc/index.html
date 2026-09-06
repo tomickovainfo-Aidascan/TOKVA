@@ -1002,6 +1002,7 @@ async function nacistPrihlaseniStav() {
     session = await ziskatSession();
     clenstvi = session ? await ziskatMojiOrganizaci() : null;
     jePro = maAktivniPro(clenstvi);
+    prepnoutOdkazyNaPro(jePro);
   } catch (e) {
     console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál (Free přes Apps Script funguje beze změny).', e);
     session = null;

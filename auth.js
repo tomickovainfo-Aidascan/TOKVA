@@ -78,6 +78,21 @@ async function zalozitOrganizaci(nazevFirmy) {
   return data;
 }
 
+// Přepíše odkazy na Měřič plýtvání / Spaghetti diagram na jejich Pro variantu,
+// pokud je uživatel přihlášený jako Pro. Appky doporučují tyhle dva nástroje
+// napříč výsledky (mini audit, 5x Proč, časová studie...), a jen tyhle dva mají
+// oddělenou Pro appku - volej znovu po každém překreslení výsledků, protože
+// odkazy se v appkách staví dynamicky.
+function prepnoutOdkazyNaPro(jePro) {
+  if (!jePro) return;
+  document.querySelectorAll('a[href*="meric-plytvani-free/"]').forEach(a => {
+    a.href = a.href.replace('meric-plytvani-free/', 'meric-plytvani-pro/');
+  });
+  document.querySelectorAll('a[href*="spaghetti-free/"]').forEach(a => {
+    a.href = a.href.replace('spaghetti-free/', 'spaghetti-pro/');
+  });
+}
+
 // Odhlášení, s přesměrováním zpátky na přihlašovací stránku.
 async function odhlasit() {
   await supabaseClient.auth.signOut();

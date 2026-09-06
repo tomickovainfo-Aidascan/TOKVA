@@ -1520,6 +1520,7 @@ async function nacistPrihlaseniStav() {
     session = await ziskatSession();
     clenstvi = session ? await ziskatMojiOrganizaci() : null;
     jePro = maAktivniPro(clenstvi);
+    prepnoutOdkazyNaPro(jePro);
   } catch (e) {
     console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál jako nepřihlášená (zdarma).', e);
     session = null;
@@ -2021,6 +2022,7 @@ function renderZaznamy() {
       ${top3Html}
       ${klasCardHtml}
     `;
+    prepnoutOdkazyNaPro(jePro);
   }
 }
 

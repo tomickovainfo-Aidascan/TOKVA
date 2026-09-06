@@ -1327,6 +1327,7 @@ function zobrazVysledky() {
   vysledekUlozen = false;
   ulozitVysledekDoSupabase(skore, maxS).then(renderHistorie);
   renderHistorie();
+  prepnoutOdkazyNaPro(jePro);
   } catch(e) { upozornit('Chyba zobrazVysledky: ' + e.message); }
 }
 
@@ -1370,6 +1371,7 @@ async function nacistPrihlaseniStav() {
     session = await ziskatSession();
     clenstvi = session ? await ziskatMojiOrganizaci() : null;
     jePro = maAktivniPro(clenstvi);
+    prepnoutOdkazyNaPro(jePro);
   } catch (e) {
     console.warn('Přihlašovací vrstva se nepodařila načíst, appka jede jako nepřihlášená.', e);
     session = null; clenstvi = null; jePro = false;

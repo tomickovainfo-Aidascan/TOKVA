@@ -2527,6 +2527,7 @@ async function nacistPrihlaseniStav() {
     session = await ziskatSession();
     clenstvi = session ? await ziskatMojiOrganizaci() : null;
     jePro = maAktivniPro(clenstvi);
+    prepnoutOdkazyNaPro(jePro);
   } catch (e) {
     console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
     session = null; clenstvi = null; jePro = false;
