@@ -76,9 +76,25 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 /* TOOLBAR */
 .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:18px;}
 .toolbar-filtry{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+#toolbar-filtry-vyber{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
 .toolbar-filtry select{border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-family:"DM Sans",sans-serif;font-size:13px;background:var(--white);color:var(--dark);outline:none;}
 .toolbar-filtry select:focus{border-color:var(--gold);}
 .toolbar-akce{display:flex;gap:8px;flex-wrap:wrap;}
+.prepinac-zobrazeni{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.prepinac-btn{background:var(--white);border:none;padding:8px 14px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--mid);cursor:pointer;}
+.prepinac-btn+.prepinac-btn{border-left:1px solid var(--border);}
+.prepinac-btn.active{background:var(--gold);color:var(--black);font-weight:700;}
+.tabulka-wrap{overflow-x:auto;background:var(--white);border:1px solid var(--border);border-radius:10px;}
+.tabulka-ap{width:100%;border-collapse:collapse;font-size:13px;}
+.tabulka-ap th,.tabulka-ap td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.tabulka-ap thead tr.tabulka-hlavicka-radek th{cursor:pointer;font-family:"Poppins",sans-serif;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--mid);user-select:none;}
+.tabulka-ap thead tr.tabulka-hlavicka-radek th:hover{color:var(--gold-dark);}
+.tabulka-ap tr.tabulka-filtry-radek th{padding:6px 8px;background:var(--paper);}
+.tabulka-ap tr.tabulka-filtry-radek input,.tabulka-ap tr.tabulka-filtry-radek select{width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:5px 7px;font-family:"DM Sans",sans-serif;font-size:12.5px;background:var(--white);outline:none;}
+.tabulka-ap tbody tr:hover{background:var(--paper);}
+.tabulka-akce-bunka{white-space:nowrap;}
+.sort-sipka{font-size:10px;margin-left:3px;color:var(--gold-dark);}
+
 .btn-gold{background:var(--gold);color:var(--black);border:none;border-radius:6px;padding:9px 16px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .btn-gold:hover{background:var(--gold-dark);color:white;}
 .btn-secondary{background:var(--white);color:var(--dark);border:1px solid var(--border);border-radius:6px;padding:9px 16px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
@@ -190,15 +206,21 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 
   <div class="toolbar">
     <div class="toolbar-filtry">
-      <select id="filtr-projekt" onchange="zmenitFiltrProjekt()"></select>
-      <select id="filtr-status" onchange="renderSeznam()">
-        <option value="vse">Všechny stavy</option>
-        <option value="novy">Nový</option>
-        <option value="probiha">Probíhá</option>
-        <option value="hotovo">Hotovo</option>
-        <option value="overit_vysledek">Ověřit výsledek</option>
-        <option value="uzavreno">Uzavřeno</option>
-      </select>
+      <div class="prepinac-zobrazeni">
+        <button type="button" class="prepinac-btn active" id="btn-zobr-karty" onclick="prepnoutZobrazeni('karty')">Karty</button>
+        <button type="button" class="prepinac-btn" id="btn-zobr-tabulka" onclick="prepnoutZobrazeni('tabulka')">Tabulka</button>
+      </div>
+      <div id="toolbar-filtry-vyber">
+        <select id="filtr-projekt" onchange="zmenitFiltrProjekt()"></select>
+        <select id="filtr-status" onchange="renderSeznam()">
+          <option value="vse">Všechny stavy</option>
+          <option value="novy">Nový</option>
+          <option value="probiha">Probíhá</option>
+          <option value="hotovo">Hotovo</option>
+          <option value="overit_vysledek">Ověřit výsledek</option>
+          <option value="uzavreno">Uzavřeno</option>
+        </select>
+      </div>
     </div>
     <div class="toolbar-akce">
       <button class="btn-secondary" onclick="otevritModalNovyProjekt()">+ Nový projekt</button>
@@ -207,6 +229,13 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
   </div>
 
   <div id="seznam-akci"></div>
+
+  <div class="tabulka-wrap" id="tabulka-wrap" style="display:none;">
+    <table class="tabulka-ap">
+      <thead id="tabulka-thead"></thead>
+      <tbody id="tabulka-tbody"></tbody>
+    </table>
+  </div>
 
 </div>
 
@@ -329,6 +358,11 @@ let projekty = [];
 let akce = [];
 let filtrProjektId = 'vse';
 let editovanaAkceId = null;
+let zobrazeniAP = 'karty';
+let tabFiltr = { co: '', projekt: 'vse', stav: 'vse', osoba: '', termin: '' };
+let tabRazeniSloupec = null;
+let tabRazeniSmer = 1;
+let posledniZakladniSeznam = [];
 
 async function nacistPrihlaseniStav() {
   try {
@@ -500,6 +534,25 @@ function renderSouhrn(seznam) {
 function renderSeznam() {
   const seznam = filtrovaneAkce();
   renderSouhrn(seznam);
+  posledniZakladniSeznam = seznam;
+  if (zobrazeniAP === 'tabulka') {
+    renderTabulka(seznam);
+  } else {
+    renderKarty(seznam);
+  }
+}
+
+function prepnoutZobrazeni(rezim) {
+  zobrazeniAP = rezim;
+  document.getElementById('btn-zobr-karty').classList.toggle('active', rezim === 'karty');
+  document.getElementById('btn-zobr-tabulka').classList.toggle('active', rezim === 'tabulka');
+  document.getElementById('seznam-akci').style.display = rezim === 'karty' ? 'block' : 'none';
+  document.getElementById('tabulka-wrap').style.display = rezim === 'tabulka' ? 'block' : 'none';
+  document.getElementById('toolbar-filtry-vyber').style.display = rezim === 'karty' ? 'flex' : 'none';
+  renderSeznam();
+}
+
+function renderKarty(seznam) {
   const el = document.getElementById('seznam-akci');
 
   if (seznam.length === 0) {
@@ -539,6 +592,113 @@ function renderSeznam() {
         '</div>' +
       '</div>' +
     '</div>';
+  }).join('');
+}
+
+// =============================================
+// TABULKA (zobrazení jako v Excelu, s filtry a řazením)
+// =============================================
+const TABULKA_SLOUPCE = [
+  { klic: 'title', nazev: 'Co' },
+  { klic: 'projekt', nazev: 'Projekt' },
+  { klic: 'status', nazev: 'Stav' },
+  { klic: 'responsible_person', nazev: 'Odpovědná osoba' },
+  { klic: 'due_date', nazev: 'Termín' }
+];
+
+function renderTabulka(seznam) {
+  const thead = document.getElementById('tabulka-thead');
+
+  let projektOptions = '<option value="vse">Všechny projekty</option><option value="bez">Bez projektu</option>';
+  projekty.forEach(p => { projektOptions += '<option value="' + p.id + '"' + (tabFiltr.projekt === p.id ? ' selected' : '') + '>' + escapovat(p.name) + '</option>'; });
+
+  let stavOptions = '<option value="vse">Všechny stavy</option>';
+  Object.keys(NAZVY_STAVU).forEach(s => { stavOptions += '<option value="' + s + '"' + (tabFiltr.stav === s ? ' selected' : '') + '>' + NAZVY_STAVU[s] + '</option>'; });
+
+  const sipka = (klic) => tabRazeniSloupec === klic ? '<span class="sort-sipka">' + (tabRazeniSmer === 1 ? '▲' : '▼') + '</span>' : '';
+
+  thead.innerHTML =
+    '<tr class="tabulka-hlavicka-radek">' +
+      TABULKA_SLOUPCE.map(s => '<th onclick="seraditTabulku(\'' + s.klic + '\')">' + s.nazev + sipka(s.klic) + '</th>').join('') +
+      '<th></th>' +
+    '</tr>' +
+    '<tr class="tabulka-filtry-radek">' +
+      '<th><input type="text" placeholder="Hledat…" value="' + escapovat(tabFiltr.co) + '" oninput="zmenitTabFiltr(\'co\', this.value)"></th>' +
+      '<th><select onchange="zmenitTabFiltr(\'projekt\', this.value)">' + projektOptions + '</select></th>' +
+      '<th><select onchange="zmenitTabFiltr(\'stav\', this.value)">' + stavOptions + '</select></th>' +
+      '<th><input type="text" placeholder="Hledat…" value="' + escapovat(tabFiltr.osoba) + '" oninput="zmenitTabFiltr(\'osoba\', this.value)"></th>' +
+      '<th><input type="text" placeholder="Hledat…" value="' + escapovat(tabFiltr.termin) + '" oninput="zmenitTabFiltr(\'termin\', this.value)"></th>' +
+      '<th></th>' +
+    '</tr>';
+
+  aktualizovatTabulkuRadky();
+}
+
+function zmenitTabFiltr(pole, hodnota) {
+  tabFiltr[pole] = hodnota;
+  aktualizovatTabulkuRadky();
+}
+
+function seraditTabulku(sloupec) {
+  if (tabRazeniSloupec === sloupec) {
+    tabRazeniSmer *= -1;
+  } else {
+    tabRazeniSloupec = sloupec;
+    tabRazeniSmer = 1;
+  }
+  renderTabulka(posledniZakladniSeznam);
+}
+
+function aktualizovatTabulkuRadky() {
+  const tbody = document.getElementById('tabulka-tbody');
+
+  let f = posledniZakladniSeznam.filter(a => {
+    if (tabFiltr.co && !a.title.toLowerCase().includes(tabFiltr.co.toLowerCase())) return false;
+    if (tabFiltr.projekt === 'bez' && a.project_id) return false;
+    if (tabFiltr.projekt !== 'vse' && tabFiltr.projekt !== 'bez' && a.project_id !== tabFiltr.projekt) return false;
+    if (tabFiltr.stav !== 'vse' && a.status !== tabFiltr.stav) return false;
+    if (tabFiltr.osoba && !(a.responsible_person || '').toLowerCase().includes(tabFiltr.osoba.toLowerCase())) return false;
+    if (tabFiltr.termin) {
+      const datumTxt = a.due_date ? formatDatum(a.due_date) : '';
+      if (!datumTxt.includes(tabFiltr.termin)) return false;
+    }
+    return true;
+  });
+
+  if (tabRazeniSloupec) {
+    f = f.slice().sort((x, y) => {
+      let vx, vy;
+      if (tabRazeniSloupec === 'projekt') {
+        vx = x.projects ? x.projects.name : '';
+        vy = y.projects ? y.projects.name : '';
+      } else if (tabRazeniSloupec === 'status') {
+        vx = NAZVY_STAVU[x.status] || '';
+        vy = NAZVY_STAVU[y.status] || '';
+      } else {
+        vx = x[tabRazeniSloupec] || '';
+        vy = y[tabRazeniSloupec] || '';
+      }
+      if (vx < vy) return -1 * tabRazeniSmer;
+      if (vx > vy) return 1 * tabRazeniSmer;
+      return 0;
+    });
+  }
+
+  if (f.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--mid);padding:24px;">Nic nevyhovuje filtru.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = f.map(a => {
+    const projektJmeno = a.projects ? a.projects.name : '—';
+    return '<tr>' +
+      '<td>' + escapovat(a.title) + '</td>' +
+      '<td>' + escapovat(projektJmeno) + '</td>' +
+      '<td><span class="akce-status status-' + a.status + '">' + NAZVY_STAVU[a.status] + '</span></td>' +
+      '<td>' + escapovat(a.responsible_person || '—') + '</td>' +
+      '<td>' + (a.due_date ? formatDatum(a.due_date) : '—') + '</td>' +
+      '<td class="tabulka-akce-bunka"><button class="link-btn" onclick="otevritModalUpravitAkce(\'' + a.id + '\')">Upravit</button><button class="link-btn smazat" onclick="smazatAkci(\'' + a.id + '\')">Smazat</button></td>' +
+    '</tr>';
   }).join('');
 }
 
