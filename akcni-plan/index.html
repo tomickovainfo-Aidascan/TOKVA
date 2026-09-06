@@ -126,7 +126,7 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .field input,.field select,.field textarea{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
 .field textarea{resize:vertical;min-height:52px;}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);background:white;}
-.field+.field{margin-top:12px;}
+.field+.field,.field+.field-row,.field-row+.field,.field-row+.field-row{margin-top:12px;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 @media (max-width:480px){.field-row{grid-template-columns:1fr;}}
 .field-check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dark);}
