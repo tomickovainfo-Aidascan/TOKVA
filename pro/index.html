@@ -56,10 +56,27 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
 .note { margin-top:36px; font-size:13.5px; color:var(--mid); border-left:3px solid var(--gold); padding:14px 18px; background:var(--white); border-radius:0 8px 8px 0; }
 
+.notify-box { margin-top:20px; padding:26px 24px; background:var(--dark); border-radius:12px; }
+.notify-box h3 { font-family:'Poppins',sans-serif; font-weight:800; font-size:16px; color:var(--white); margin-bottom:8px; }
+.notify-box p { font-size:13.5px; color:rgba(255,255,255,.65); margin-bottom:18px; max-width:480px; }
+.notify-form { display:flex; gap:10px; flex-wrap:wrap; }
+.notify-form input[type="email"] { flex:1; min-width:220px; padding:12px 16px; border-radius:8px; border:1.5px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; }
+.notify-form input[type="email"]::placeholder { color:rgba(255,255,255,.4); }
+.notify-form input[type="email"]:focus { outline:none; border-color:var(--gold); }
+.notify-form button { background:var(--gold); color:var(--black); border:none; border-radius:8px; padding:12px 22px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:14px; cursor:pointer; transition:background .15s; white-space:nowrap; }
+.notify-form button:hover { background:var(--gold-dark); color:var(--white); }
+.notify-privacy { font-size:11.5px; color:rgba(255,255,255,.4); margin-top:12px; }
+.notify-privacy a { color:rgba(255,255,255,.55); }
+.notify-msg { display:none; font-size:13.5px; color:var(--gold); margin-top:14px; }
+.notify-honeypot { position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
+.notify-msg.show { display:block; }
+
 @media (max-width:600px) {
   .topbar { padding:12px 16px; }
   .main { padding:32px 16px 80px; }
   .compare { grid-template-columns:1fr; }
+  .notify-form { flex-direction:column; }
+  .notify-form button { width:100%; }
 }
 </style>
 </head>
@@ -102,7 +119,31 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   </div>
 
   <div class="note">Tokva Pro se teprve staví. Zatím žádná cena, žádné přihlašování k placené verzi – appky zdarma fungují naplno i bez toho. Až bude připravená, dozvíte se to tady i na appkách samotných.</div>
+
+  <div class="notify-box">
+    <h3>Chcete vědět, až Tokva Pro spustíme?</h3>
+    <p>Necháte e-mail a napíšeme vám, jakmile bude připravená. Žádný spam, kdykoli se můžete odhlásit.</p>
+    <form id="notify-form" class="notify-form" method="POST" action="https://2f524664.sibforms.com/serve/MUIFAFdlMbVvcxCFI5Sh8HhlV6hr4i4rFi6YJvn-ZUmMuAxoDA3uDyqtXg92YYkAmhensXbCNw0Hn2R_TZwDKdYOkbP3ZZuroJEWn8uTDAnbsJLL2zsj5VX3ekeCFqf7m6u3PIynSybcBFc5PW7qwBbCbFZPIQXYkg35yoxjP4j-qOkQCUpMFL7l8z1YYxffvV0o54IeeZzMJY9QwQ==" onsubmit="return odeslatNotify(event)">
+      <input type="email" name="EMAIL" id="notify-email" placeholder="vas@email.cz" required>
+      <input type="text" name="email_address_check" value="" class="notify-honeypot" tabindex="-1" autocomplete="off">
+      <input type="hidden" name="locale" value="en">
+      <button type="submit">Dát vědět</button>
+    </form>
+    <div class="notify-msg" id="notify-msg">Byli jste přidáni na čekací listinu Tokva Pro.</div>
+    <p class="notify-privacy">Jako marketingovou platformu používám Brevo. Odesláním souhlasíte s předáním e-mailu společnosti Brevo ke zpracování v souladu s <a target="_blank" href="https://www.brevo.com/en/legal/privacypolicy/" rel="nofollow noopener">jejich zásadami ochrany osobních údajů</a>.</p>
+  </div>
 </main>
+
+<script>
+function odeslatNotify(e) {
+  var form = document.getElementById('notify-form');
+  var msg = document.getElementById('notify-msg');
+  fetch(form.action, { method: 'POST', body: new FormData(form), mode: 'no-cors' });
+  form.style.display = 'none';
+  msg.classList.add('show');
+  return false;
+}
+</script>
 
 </body>
 </html>
