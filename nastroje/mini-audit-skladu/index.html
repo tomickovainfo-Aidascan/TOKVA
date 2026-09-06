@@ -860,6 +860,25 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
       </div>
     </div>
 
+    <div class="vysledky-detail" id="akcni-panel" style="display:none;">
+      <div class="vysledky-detail-header">Přidat do akčního plánu</div>
+      <div style="padding:16px 20px;">
+        <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle výsledek, ať víte, proč akce vznikla. Projekt je nepovinný, ale pokud výsledek k nějakému patří, vyberte ho, ať se v akčním plánu neztratí.</p>
+        <input id="akce-nazev" type="text" placeholder="Co se má udělat" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+        <select id="akce-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
+          <option value="">Bez projektu</option>
+          <option value="__novy__">+ Nový projekt…</option>
+        </select>
+        <input id="akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <input id="akce-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+          <input id="akce-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+        </div>
+        <button class="btn-gold" style="width:100%;" onclick="pridatDoAkcnihoPlanu()">+ Přidat do akčního plánu</button>
+        <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+      </div>
+    </div>
+
     <div class="vysledky-detail" id="export-panel" style="display:none;">
       <div class="vysledky-detail-header">Vaše data</div>
       <div style="padding:16px 20px;">
@@ -1272,6 +1291,8 @@ function zobrazVysledky() {
       `;
       top3rows.appendChild(row);
     });
+    const akceNazevPole = document.getElementById('akce-nazev');
+    if (akceNazevPole && !akceNazevPole.value) akceNazevPole.value = 'Zlepšit: ' + OTAZKY[serazene[0][0]-1].toLowerCase();
   } else {
     top3wrap.style.display = 'none';
   }
@@ -1477,8 +1498,7 @@ async function ulozitVysledekDoSupabase(skore, maxS) {
 }
 
 async function nacistProjekty() {
-  const select = document.getElementById('projekt-select');
-  if (!select || !clenstvi) return;
+  if (!clenstvi) return;
   try {
     const { data, error } = await supabaseClient
       .from('projects')
@@ -1486,14 +1506,25 @@ async function nacistProjekty() {
       .eq('organization_id', clenstvi.organization_id)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
-    (data || []).forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.name;
-      opt.setAttribute('data-projekt', '1');
-      select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+    ['projekt-select', 'akce-projekt-select'].forEach(id => {
+      const select = document.getElementById(id);
+      if (!select) return;
+      const puvodniHodnota = select.value;
+      select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
+      (data || []).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        opt.setAttribute('data-projekt', '1');
+        select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+      });
+      if ([...select.options].some(o => o.value === puvodniHodnota)) select.value = puvodniHodnota;
     });
+    const zdrojSelect = document.getElementById('projekt-select');
+    const cilSelect = document.getElementById('akce-projekt-select');
+    if (zdrojSelect && cilSelect && !cilSelect.dataset.dotceno && zdrojSelect.value && zdrojSelect.value !== '__novy__') {
+      cilSelect.value = zdrojSelect.value;
+    }
   } catch (e) {
     console.warn('Projekty se nepodařilo načíst.', e);
   }
@@ -1502,6 +1533,11 @@ async function nacistProjekty() {
 document.addEventListener('change', function (e) {
   if (e.target && e.target.id === 'projekt-select') {
     const novyInput = document.getElementById('projekt-novy-nazev');
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+  if (e.target && e.target.id === 'akce-projekt-select') {
+    e.target.dataset.dotceno = '1';
+    const novyInput = document.getElementById('akce-projekt-novy-nazev');
     if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
   }
 });
@@ -1532,6 +1568,51 @@ async function ulozitZarazeniProjektu() {
     await nacistProjekty();
   } catch (e) {
     console.warn('Zařazení k projektu se nepodařilo uložit.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
+async function pridatDoAkcnihoPlanu() {
+  const stav = document.getElementById('akce-stav');
+  const nazevInput = document.getElementById('akce-nazev');
+  const nazev = (nazevInput.value || '').trim();
+  if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Výsledek se ještě neuložil, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    const selectProjekt = document.getElementById('akce-projekt-select');
+    let projektId = (selectProjekt && selectProjekt.value && selectProjekt.value !== '__novy__') ? selectProjekt.value : null;
+    if (selectProjekt && selectProjekt.value === '__novy__') {
+      const novyNazev = (document.getElementById('akce-projekt-novy-nazev').value || '').trim();
+      if (!novyNazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data: novyProjekt, error: chybaProjekt } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: novyNazev
+      }).select('id').single();
+      if (chybaProjekt) throw chybaProjekt;
+      projektId = novyProjekt.id;
+    }
+    const { error } = await supabaseClient.from('actions').insert({
+      organization_id: clenstvi.organization_id,
+      project_id: projektId,
+      tool_run_id: posledniToolRunId,
+      title: nazev,
+      reason: 'Výsledek Mini auditu skladu ze dne ' + new Date().toLocaleDateString('cs-CZ'),
+      responsible_person: (document.getElementById('akce-osoba').value || '').trim() || null,
+      due_date: document.getElementById('akce-termin').value || null,
+      status: 'novy',
+      created_by: session.user.id
+    });
+    if (error) throw error;
+    stav.innerHTML = 'Přidáno. <a href="https://tokva.cz/akcni-plan/' + (projektId ? ('?projekt=' + projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;">Otevřít akční plán →</a>';
+    nazevInput.value = '';
+    document.getElementById('akce-osoba').value = '';
+    document.getElementById('akce-termin').value = '';
+    document.getElementById('akce-projekt-novy-nazev').value = '';
+    document.getElementById('akce-projekt-novy-nazev').style.display = 'none';
+    await nacistProjekty();
+  } catch (e) {
+    console.warn('Přidání do akčního plánu se nepodařilo.', e);
     stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
   }
 }
@@ -1573,17 +1654,20 @@ async function renderHistorie() {
   const obsah = document.getElementById('historie-obsah');
   const projektPanel = document.getElementById('projekt-panel');
   const exportPanel = document.getElementById('export-panel');
+  const akcniPanel = document.getElementById('akcni-panel');
   if (!jePro || !clenstvi) {
     zamceno.style.display = 'block';
     obsah.style.display = 'none';
     if (projektPanel) projektPanel.style.display = 'none';
     if (exportPanel) exportPanel.style.display = 'none';
+    if (akcniPanel) akcniPanel.style.display = 'none';
     return;
   }
   zamceno.style.display = 'none';
   obsah.style.display = 'block';
   if (projektPanel) { projektPanel.style.display = 'block'; nacistProjekty(); }
   if (exportPanel) exportPanel.style.display = 'block';
+  if (akcniPanel) akcniPanel.style.display = 'block';
   obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--light);">Načítám historii…</div>';
   try {
     const { data, error } = await supabaseClient
