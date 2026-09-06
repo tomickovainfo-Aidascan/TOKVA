@@ -629,6 +629,36 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
       <div id="historie-obsah" style="display:none;"></div>
     </div>
 
+    <div class="vysledky-detail" id="projekt-panel" style="display:none;">
+      <div class="detail-header" style="margin:-20px -22px 14px;padding:16px 20px;border-bottom:1px solid var(--border);">Zařadit k projektu</div>
+      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Nepovinné. Pomůže vám tenhle výsledek pozdějí najít pohromadě s ostatními nástroji.</p>
+      <select id="projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
+        <option value="">Bez projektu</option>
+        <option value="__novy__">+ Nový projekt…</option>
+      </select>
+      <input id="projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <button class="btn-gold" style="width:100%;" onclick="ulozitZarazeniProjektu()">Uložit zařazení</button>
+      <div id="projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+    </div>
+
+    <div class="vysledky-detail" id="akcni-panel" style="display:none;">
+      <div class="detail-header" style="margin:-20px -22px 14px;padding:16px 20px;border-bottom:1px solid var(--border);">Přidat do akčního plánu</div>
+      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle výsledek. Projekt je nepovinný.</p>
+      <p style="font-size:12px;color:var(--light);line-height:1.5;margin-bottom:10px;">Tohle je rychlé založení. Odhadovaný přínos i pozdější ověření výsledku doplníte, když úkol otevřete přímo v Akčním plánu.</p>
+      <input id="akce-nazev" type="text" placeholder="Co se má udělat" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <select id="akce-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
+        <option value="">Bez projektu</option>
+        <option value="__novy__">+ Nový projekt…</option>
+      </select>
+      <input id="akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <input id="akce-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+        <input id="akce-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+      </div>
+      <button class="btn-gold" style="width:100%;" onclick="pridatDoAkcnihoPlanu()">+ Přidat do akčního plánu</button>
+      <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+    </div>
+
     <div class="vysledky-detail">
       <div style="display:flex;gap:12px;flex-wrap:wrap;">
         <button class="btn-zpet" onclick="zacitZnovu()">Vyplnit znovu</button>
@@ -815,6 +845,7 @@ let session = null;
 let clenstvi = null;
 let jePro = false;
 let vysledekUlozen = false;
+let posledniToolRunId = null;
 
 async function nacistPrihlaseniStav() {
   try {
@@ -902,7 +933,7 @@ async function ulozitVysledekDoSupabase(skore, oblasti) {
   if (!jePro || !clenstvi || vysledekUlozen) return;
   try {
     const nejvetsiMezery = oblasti.slice(0, 3).map(o => OTAZKY_NAZVY[o.i - 1]);
-    const { error } = await supabaseClient.from('tool_runs').insert({
+    const { data, error } = await supabaseClient.from('tool_runs').insert({
       organization_id: clenstvi.organization_id,
       nastroj: 'kviz-sklad',
       nazev: 'Jak dobře znáte svůj sklad?',
@@ -911,9 +942,10 @@ async function ulozitVysledekDoSupabase(skore, oblasti) {
       hlavni_hodnota_jednotka: 'z 20 bodů',
       hlavni_hodnota_typ: 'skore',
       data: { odpovedi: Object.assign({}, odpovedi), nejvetsi_mezery: nejvetsiMezery }
-    });
+    }).select().single();
     if (error) throw error;
     vysledekUlozen = true;
+    posledniToolRunId = data ? data.id : null;
   } catch (e) {
     console.warn('Výsledek se nepodařilo uložit do Supabase, zůstává aspoň na téhle stránce.', e);
   }
@@ -922,13 +954,19 @@ async function ulozitVysledekDoSupabase(skore, oblasti) {
 async function renderHistorie() {
   const zamceno = document.getElementById('historie-zamceno');
   const obsah = document.getElementById('historie-obsah');
+  const projektPanel = document.getElementById('projekt-panel');
+  const akcniPanel = document.getElementById('akcni-panel');
   if (!jePro || !clenstvi) {
     zamceno.style.display = 'block';
     obsah.style.display = 'none';
+    if (projektPanel) projektPanel.style.display = 'none';
+    if (akcniPanel) akcniPanel.style.display = 'none';
     return;
   }
   zamceno.style.display = 'none';
   obsah.style.display = 'block';
+  if (projektPanel) { projektPanel.style.display = 'block'; nacistProjekty(); }
+  if (akcniPanel) akcniPanel.style.display = 'block';
   obsah.innerHTML = '<div style="padding:14px 18px;font-size:13px;color:var(--light);">Načítám historii…</div>';
   try {
     const { data, error } = await supabaseClient
@@ -954,6 +992,126 @@ async function renderHistorie() {
   } catch (e) {
     console.warn('Historii se nepodařilo načíst.', e);
     obsah.innerHTML = '<div style="padding:14px 18px;font-size:13px;color:var(--mid);">Historii se teď nepodařilo načíst.</div>';
+  }
+}
+
+async function nacistProjekty() {
+  if (!clenstvi) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('projects')
+      .select('id, name')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    ['projekt-select', 'akce-projekt-select'].forEach(id => {
+      const select = document.getElementById(id);
+      if (!select) return;
+      const puvodniHodnota = select.value;
+      select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
+      (data || []).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        opt.setAttribute('data-projekt', '1');
+        select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+      });
+      if ([...select.options].some(o => o.value === puvodniHodnota)) select.value = puvodniHodnota;
+    });
+    const zdrojSelect = document.getElementById('projekt-select');
+    const cilSelect = document.getElementById('akce-projekt-select');
+    if (zdrojSelect && cilSelect && !cilSelect.dataset.dotceno && zdrojSelect.value && zdrojSelect.value !== '__novy__') {
+      cilSelect.value = zdrojSelect.value;
+    }
+  } catch (e) {
+    console.warn('Projekty se nepodařilo načíst.', e);
+  }
+}
+
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'projekt-select') {
+    const novyInput = document.getElementById('projekt-novy-nazev');
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+  if (e.target && e.target.id === 'akce-projekt-select') {
+    e.target.dataset.dotceno = '1';
+    const novyInput = document.getElementById('akce-projekt-novy-nazev');
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+});
+
+async function ulozitZarazeniProjektu() {
+  const stav = document.getElementById('projekt-stav');
+  const select = document.getElementById('projekt-select');
+  if (!posledniToolRunId || !clenstvi || !select) return;
+  stav.textContent = 'Ukládám…';
+  try {
+    let projektId = select.value || null;
+    if (projektId === '__novy__') {
+      const nazev = (document.getElementById('projekt-novy-nazev').value || '').trim();
+      if (!nazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data, error } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: nazev
+      }).select('id').single();
+      if (error) throw error;
+      projektId = data.id;
+    }
+    const { error: chybaUpdate } = await supabaseClient
+      .from('tool_runs')
+      .update({ project_id: projektId })
+      .eq('id', posledniToolRunId);
+    if (chybaUpdate) throw chybaUpdate;
+    stav.textContent = projektId ? 'Uloženo, výsledek patří k projektu.' : 'Uloženo, bez projektu.';
+    await nacistProjekty();
+  } catch (e) {
+    console.warn('Zařazení k projektu se nepodařilo uložit.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
+async function pridatDoAkcnihoPlanu() {
+  const stav = document.getElementById('akce-stav');
+  const nazevInput = document.getElementById('akce-nazev');
+  const nazev = (nazevInput.value || '').trim();
+  if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Výsledek se ještě neuložil, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    const selectProjekt = document.getElementById('akce-projekt-select');
+    let projektId = (selectProjekt && selectProjekt.value && selectProjekt.value !== '__novy__') ? selectProjekt.value : null;
+    if (selectProjekt && selectProjekt.value === '__novy__') {
+      const novyNazev = (document.getElementById('akce-projekt-novy-nazev').value || '').trim();
+      if (!novyNazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data: novyProjekt, error: chybaProjekt } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: novyNazev
+      }).select('id').single();
+      if (chybaProjekt) throw chybaProjekt;
+      projektId = novyProjekt.id;
+    }
+    const { error } = await supabaseClient.from('actions').insert({
+      organization_id: clenstvi.organization_id,
+      project_id: projektId,
+      tool_run_id: posledniToolRunId,
+      title: nazev,
+      reason: 'Výsledek Kvízu Jak dobře znáte svůj sklad ze dne ' + new Date().toLocaleDateString('cs-CZ'),
+      responsible_person: (document.getElementById('akce-osoba').value || '').trim() || null,
+      due_date: document.getElementById('akce-termin').value || null,
+      status: 'novy',
+      created_by: session.user.id
+    });
+    if (error) throw error;
+    stav.innerHTML = 'Přidáno. <a href="https://tokva.cz/akcni-plan/' + (projektId ? ('?projekt=' + projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;">Otevřít akční plán →</a>';
+    nazevInput.value = '';
+    document.getElementById('akce-osoba').value = '';
+    document.getElementById('akce-termin').value = '';
+    document.getElementById('akce-projekt-novy-nazev').value = '';
+    document.getElementById('akce-projekt-novy-nazev').style.display = 'none';
+    await nacistProjekty();
+  } catch (e) {
+    console.warn('Přidání do akčního plánu se nepodařilo.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
   }
 }
 
@@ -1113,6 +1271,11 @@ function zobrazVysledky() {
   }
   oblasti.sort((a,b) => b.b - a.b);
   const top = oblasti.slice(0, 3);
+
+  if (top.length > 0) {
+    const akceNazevPole = document.getElementById('akce-nazev');
+    if (akceNazevPole && !akceNazevPole.value) akceNazevPole.value = 'Zlepšit: ' + OTAZKY_NAZVY[top[0].i - 1].toLowerCase();
+  }
 
   if (top.length === 0) {
     coDal.innerHTML = '<div style="padding:14px 18px;font-size:14px;color:var(--mid);">Všechny oblasti vypadají dobře. Hledejte rezervy v detailech a v pravidelném přehodnocování postupů.</div>';
