@@ -543,6 +543,57 @@ const TOOLS = [
       }
     } },
 
+  { id:"mini-audit-vyroba", group:"free", name:"Mini audit výroby", krok:1, oblasti:["vyroba"], benefit:"Za 5 minut zjistíte, kde vaše výroba nejvíc ztrácí čas, výkon a kapacitu.",
+    popis:"Za 5 minut víte, kde vaše výroba ztrácí čas, výkon a kapacitu.\n\n10 otázek ze skutečného provozu. Bez teorie, bez přípravy. Jedno jasné doporučení, co řešit jako první - ne šest appek najednou.",
+    proKoho:"Vedoucí výroby nebo mistr, co chce rychlý přehled, kde to vázne.",
+    url:"nastroje/mini-audit-vyroby/", souvisejici:["meric-free","spaghetti-sklad","kviz-sklad","5x-proc","5s-audit"],
+    kdyPouzit:{
+      otazky:[
+        "Máte pocit, že výroba ztrácí čas nebo výkon, ale nevíte přesně kde?",
+        "Lidi řeší věci improvizací, každý trochu jinak, pořád se na něco ptají nebo čekají?",
+        "Chcete přijít za vedením nebo majitelem s konkrétním zjištěním, ne s pocitem?"
+      ],
+      zaver:[
+        "Otázky v auditu vycházejí ze stejných kontrolních bodů, které v KAIZEN praxi řeším nejčastěji ve výrobních provozech. Nic vymyšleného, jen to, co ve výrobě skutečně bolí.",
+        "Nepotřebujete konzultanta, přípravu, podklady ani přesná data ze systému. Stačí znát svůj provoz a 5 minut klidu."
+      ]
+    },
+    ucelMetoda:"Mini audit výroby je krátký checklist, 10 otázek o vaší výrobě. Odpovíte podle toho, jak to u vás skutečně funguje, a appka hned ukáže skóre a jedno konkrétní doporučení, co řešit jako první.\n\nNení to náhrada za procesní audit na místě, je to první rychlá orientace, kde má smysl se podívat pořádněji.",
+    princip:"Audit spustíte rovnou, e-mail je nepovinný. Odpovíte na 10 otázek, většinou jedním kliknutím. Appka z odpovědí spočítá skóre a rozpočítá výsledek do 5 oblastí výroby, u nejslabší rovnou dostanete konkrétní doporučení, kterou appku spustit dál. E-mail necháte, jen pokud chcete výsledek poslat i na později.",
+    postup:[
+      "Spusťte audit, žádná příprava ani podklady nejsou potřeba, e-mail nepotřebujete.",
+      "Odpovězte na 10 otázek o své výrobě, podle skutečného stavu, ne podle toho, jak by to mělo být.",
+      "Dostanete skóre v procentech, rozpad podle 5 oblastí a jedno konkrétní doporučení, co řešit jako první."
+    ],
+    vstupy:"Odpovědi na 10 otázek o vaší výrobě, e-mail jen nepovinně, pokud chcete výsledek i poslat.",
+    vystupy:"Skóre v procentech se slovním hodnocením (třeba \"výroba ztrácí významnou kapacitu\"), rozpad výsledku do 5 oblastí (tok výroby, čekání a prostoje, pohyb a pracoviště, standard a kvalita, řízení problémů) a jedno konkrétní doporučení, co řešit jako první, hned na stránce.",
+    priklad:"Montážní linka, 8 lidí, sériová výroba. Vedoucí chtěl žádat o posilu, lidi nestíhali. Materiál pro jednu operaci ležel na paletě u vstupu haly, ne u pracoviště - operátorky si pro něj chodily samy, několikrát za směnu, a každá jinou trasou.\n\nPřesun palety blíž k pracovišti a jedno jasné pravidlo, kdo doplňuje, zkrátily čas jedné operace o čtvrtinu. Beze změny počtu lidí.\n\nPosila nakonec nebyla potřeba. Čas se našel jinde.",
+    chyby:[
+      "Přeskočit otázku, na kterou přesně neznáte odpověď. Nevím je taky odpověď, a často důležitá, ukazuje, kde se ve výrobě vůbec nesleduje, co se děje.",
+      "Snažit se audit rozdělit na víckrát. Nedá se uložit a vrátit se k němu později, lepší je najít 5 minut vcelku."
+    ],
+    faq:[
+      { q:"Musím zadat e-mail?", a:"Ne. Audit spustíte rovnou bez e-mailu a výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit." },
+      { q:"Co když nevím odpověď na některou otázku?", a:"Zvolte \"Nevím / nemáme data\". Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku - protože nevědět je samo o sobě důležité zjištění, ne totéž co \"máme to pod kontrolou\"." },
+      { q:"Musím projít celý audit najednou?", a:"Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte, 5 minut najdete vždy." }
+    ],
+    design2a:{
+      heroLines:["Za 5 minut víte,","kde výroba ztrácí čas."],
+      heroNote:"10 otázek · bez přípravy<br>doporučení hned na stránce",
+      ctaLabel:"Chci si audit udělat",
+      stats:[
+        {num:"10", lbl:"otázek ze skutečného provozu"},
+        {num:"5", lbl:"minut na celý audit"},
+        {num:"5", lbl:"oblastí výroby v rozpisu"},
+        {num:"0", lbl:"teorie a příprava"}
+      ],
+      recognizeClose:"Stačí znát svůj provoz a 5 minut klidu.",
+      example:{
+        headline:"Kolik stačí na to, aby posila nebyla potřeba?",
+        stat:{ num:"1 pravidlo", note:"kdo doplňuje materiál u jedné operace, zkrátilo čas o čtvrtinu. Posila nepřišla, čas se našel jinde." }
+      }
+    } },
+
   { id:"kviz-sklad", group:"free", name:"Kvíz: Jak dobře znáte svůj sklad", krok:1, oblasti:["sklad","vyroba"], benefit:"Zjistíte, co o svém skladu vlastně nevíte, ale měli byste.",
     popis:"10 otázek, které odhalí slepá místa ve vašem provozu.\n\nNejde o znalosti, jde o to, jestli máte čísla a přehled, který potřebujete k rozhodování.",
     proKoho:"Vedoucí skladu nebo výroby s týmem 3 až 50 lidí.",
