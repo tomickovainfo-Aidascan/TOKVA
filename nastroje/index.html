@@ -69,11 +69,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 .intro-proof { font-size:13.5px; font-weight:700; color:var(--gold-dark); letter-spacing:.2px; margin-bottom:30px; }
 
 /* oblast filtr */
-.oblast-label { font-family:'Poppins',sans-serif; font-size:12px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold-dark); margin-bottom:12px; }
-.oblast-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px; }
-.chip { background:var(--white); border:1.5px solid var(--border-strong); border-radius:100px; padding:9px 16px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; color:var(--dark); cursor:pointer; transition:all .15s; text-decoration:none; display:inline-block; }
-.chip:hover { border-color:var(--gold); }
-.chip.active { background:var(--dark); border-color:var(--dark); color:var(--gold); }
 
 /* cesta - kroky */
 .krok-block { margin-bottom:36px; }
@@ -329,9 +324,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
       <h1>Všechny nástroje Tokvy na jednom místě.</h1>
       <p class="intro-sub">Diagnostika, měření, kalkulačky, analýza příčin i nástroje pro zavedení změny. Když víte, co hledáte, nebo si chcete appky jen prohlédnout podle oblasti.</p>
       <p class="intro-proof">První výsledek za pár minut · část nástrojů zdarma · bez znalosti Kaizenu</p>
-
-      <div class="oblast-label">Kde vás to nejvíc pálí?</div>
-      <div class="oblast-chips" id="oblast-chips"></div>
 
       <div id="cesta"></div>
     </section>
@@ -1049,18 +1041,7 @@ const OBLASTI = [
   { key:"lide", label:"Lidé a komunikace" }
 ];
 
-const KROKY = [
-  { n:1, title:"Ukažte mi, kde to bolí", desc:"Rychlá diagnostika zdarma. Pár otázek, žádná příprava, výsledek hned na stránce." },
-  { n:2, title:"Změřte to v korunách", desc:"Z tušení uděláte číslo. Čas, vzdálenost i koruny za rok, bez registrace." },
-  { n:3, title:"Napravte to a udržte", desc:"Nástroje na nápravu a udržení pořádku. Pár z nich je zdarma rovnou, ty hlubší postupně přejdou pod jeden měsíční přístup ke všem nástrojům Tokvy." }
-];
-
 let activeArea = "";
-
-function chipsHtml() {
-  const all = `<button class="chip${!activeArea ? " active" : ""}" data-area="">Nevím, čím začít</button>`;
-  return all + OBLASTI.map(o => `<button class="chip${activeArea === o.key ? " active" : ""}" data-area="${o.key}">${o.label}</button>`).join("");
-}
 
 function krokRowHtml(t) {
   const isPaid = t.group === "paid-solo";
@@ -1072,16 +1053,17 @@ function krokRowHtml(t) {
 }
 
 function renderCesta() {
-  document.getElementById("oblast-chips").innerHTML = chipsHtml();
   const cesta = document.getElementById("cesta");
-  cesta.innerHTML = KROKY.map(k => {
-    const tools = TOOLS.filter(t => t.krok === k.n && (!activeArea || (t.oblasti || []).includes(activeArea)));
+  const filtered = TOOLS.filter(t => !activeArea || (t.oblasti || []).includes(activeArea));
+  const skupina = (title, tools) => {
     if (!tools.length) return "";
     return `<div class="krok-block">
-      <div class="krok-head"><span class="krok-num">0${k.n}</span><div><h3>${k.title}</h3><p>${k.desc}</p></div></div>
+      <div class="krok-head"><h3>${title}</h3></div>
       <div class="krok-list">${tools.map(krokRowHtml).join("")}</div>
     </div>`;
-  }).join("");
+  };
+  cesta.innerHTML = skupina("Zdarma", filtered.filter(t => t.group === "free"))
+    + skupina("Placené", filtered.filter(t => t.group === "paid-solo"));
 }
 
 function sbAreasHtml() {
