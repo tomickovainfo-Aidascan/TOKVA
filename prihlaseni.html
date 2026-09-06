@@ -70,15 +70,17 @@ input:focus { border-color:var(--gold); }
       <button class="tab-btn" id="tab-registrovat" onclick="prepnoutTab('registrovat')">Založit účet</button>
     </div>
 
-    <label for="email">E-mail</label>
-    <input id="email" type="email" placeholder="vas@email.cz" autocomplete="email">
+    <form id="form-ucet" onsubmit="odeslatFormularUctu(event); return false;">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" placeholder="vas@email.cz" autocomplete="email">
 
-    <label for="heslo">Heslo</label>
-    <input id="heslo" type="password" placeholder="min. 6 znaků" autocomplete="current-password">
+      <label for="heslo">Heslo</label>
+      <input id="heslo" type="password" placeholder="min. 6 znaků" autocomplete="current-password">
 
-    <button class="btn-gold" id="btn-ucet" onclick="odeslatFormularUctu()">Chci se přihlásit</button>
+      <button type="submit" class="btn-gold" id="btn-ucet">Chci se přihlásit</button>
 
-    <div class="zprava" id="zprava-ucet"></div>
+      <div class="zprava" id="zprava-ucet"></div>
+    </form>
   </div>
 
   <!-- KROK 2: založení firmy (jen při prvním přihlášení) -->
@@ -87,12 +89,14 @@ input:focus { border-color:var(--gold); }
     <p class="podnadpis">Ještě potřebujeme založit vaši firmu nebo provoz – pod ní se budou ukládat všechny vaše výsledky a projekty.</p>
     <p class="podnadpis" id="prihlaseny-jako" style="margin-top:-14px;"></p>
 
-    <label for="nazev-firmy">Název firmy nebo provozu</label>
-    <input id="nazev-firmy" type="text" placeholder="např. Novák s.r.o. – sklad Vrchlabí">
+    <form id="form-firma" onsubmit="odeslatZalozeniFirmy(event); return false;">
+      <label for="nazev-firmy">Název firmy nebo provozu</label>
+      <input id="nazev-firmy" type="text" placeholder="např. Novák s.r.o. – sklad Vrchlabí">
 
-    <button class="btn-gold" id="btn-firma" onclick="odeslatZalozeniFirmy()">Chci pokračovat</button>
+      <button type="submit" class="btn-gold" id="btn-firma">Chci pokračovat</button>
 
-    <div class="zprava" id="zprava-firma"></div>
+      <div class="zprava" id="zprava-firma"></div>
+    </form>
 
     <a class="zpatky-link" href="#" onclick="odhlasitAZkusitJinak(event)">Nejste to vy? Odhlásit se a zkusit jiný účet</a>
   </div>
@@ -124,7 +128,8 @@ function ukazatZpravuUcet(text, jeChyba) {
   el.className = 'zprava' + (text ? (jeChyba ? ' chyba' : ' ok') : '');
 }
 
-async function odeslatFormularUctu() {
+async function odeslatFormularUctu(e) {
+  if (e) e.preventDefault();
   const email = document.getElementById('email').value.trim();
   const heslo = document.getElementById('heslo').value;
   const btn = document.getElementById('btn-ucet');
@@ -181,7 +186,8 @@ async function odhlasitAZkusitJinak(e) {
   prepnoutTab('prihlasit');
 }
 
-async function odeslatZalozeniFirmy() {
+async function odeslatZalozeniFirmy(e) {
+  if (e) e.preventDefault();
   const nazev = document.getElementById('nazev-firmy').value.trim();
   const btn = document.getElementById('btn-firma');
   const zprava = document.getElementById('zprava-firma');
