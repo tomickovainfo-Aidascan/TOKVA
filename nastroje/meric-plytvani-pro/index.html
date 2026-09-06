@@ -590,6 +590,28 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-akcni-plan">
+  <div class="modal">
+    <h3>Přidat do akčního plánu</h3>
+    <p style="margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tohle měření. Projekt je nepovinný.</p>
+    <input id="ap-nazev" type="text" placeholder="Co se má udělat" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <select id="ap-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:8px;font-family:'DM Sans',sans-serif;">
+      <option value="">Bez projektu</option>
+      <option value="__novy__">+ Nový projekt…</option>
+    </select>
+    <input id="ap-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:8px;box-sizing:border-box;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+      <input id="ap-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+      <input id="ap-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+    </div>
+    <div id="ap-stav" style="font-size:12px;color:var(--mid);margin-bottom:10px;"></div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="zavritModalAkcniPlan()">Zrušit</button>
+      <button class="btn-modal-ok" onclick="pridatDoAkcnihoPlanu()">+ Přidat</button>
+    </div>
+  </div>
+</div>
+
 <div class="back-to-card">
   <a href="https://tokva.cz/nastroje/?nastroj=meric-pro" class="back-to-card-link">← Zpět na kartu appky</a>
 </div>
@@ -1069,6 +1091,7 @@ function ukoncit() {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+
 // =============================================
 // HISTORIE
 // =============================================
@@ -1094,15 +1117,24 @@ function ulozitDoHistorie() {
   if (hist.length > 20) hist = hist.slice(0, 20);
   localStorage.setItem('meric_pro_hist', JSON.stringify(hist));
 
-  ulozitDoSupabase(zaznam, plyKcRok);
+  ulozitDoSupabase(zaznam, plyKcRok).then(runId => {
+    if (!runId) return;
+    let hist2 = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+    const polozka = hist2.find(z => z.id === zaznam.id);
+    if (polozka) {
+      polozka.toolRunId = runId;
+      localStorage.setItem('meric_pro_hist', JSON.stringify(hist2));
+      nacistHistorii();
+    }
+  });
 }
 
 // Best-effort zápis do účtu, aby historie šla vidět i z jiného zařízení.
 // Místní historie (výš) je pořád ta, na které appka jede — tohle je jen doplněk.
 async function ulozitDoSupabase(zaznam, plyKcRok) {
-  if (!jePro || !clenstvi) return;
+  if (!jePro || !clenstvi) return null;
   try {
-    await supabaseClient.from('tool_runs').insert({
+    const { data, error } = await supabaseClient.from('tool_runs').insert({
       organization_id: clenstvi.organization_id,
       nastroj: 'meric-plytvani-pro',
       nazev: 'Měřič plýtvání Pro — ' + zaznam.nazev,
@@ -1111,9 +1143,12 @@ async function ulozitDoSupabase(zaznam, plyKcRok) {
       hlavni_hodnota_jednotka: 'Kč/rok',
       hlavni_hodnota_typ: 'potencial_kc',
       data: zaznam
-    });
+    }).select().single();
+    if (error) throw error;
+    return data ? data.id : null;
   } catch (e) {
     console.warn('Uložení do účtu se nepodařilo, měření zůstává uložené v appce.', e);
+    return null;
   }
 }
 
@@ -1152,6 +1187,100 @@ async function synchronizovatHistoriiSeSupabase() {
   }
 }
 
+let akcniPlanAktivniIdx = null;
+
+function otevritModalAkcniPlan(i, e) {
+  if (e) e.stopPropagation();
+  const hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+  const z = hist[i];
+  if (!z || !z.toolRunId) return;
+  akcniPlanAktivniIdx = i;
+  document.getElementById('ap-nazev').value = 'Snížit plýtvání: ' + z.nazev;
+  document.getElementById('ap-osoba').value = '';
+  document.getElementById('ap-termin').value = '';
+  document.getElementById('ap-stav').textContent = '';
+  document.getElementById('ap-projekt-novy-nazev').value = '';
+  document.getElementById('ap-projekt-novy-nazev').style.display = 'none';
+  document.getElementById('modal-akcni-plan').classList.add('visible');
+  nacistProjektyMeric();
+}
+function zavritModalAkcniPlan() {
+  document.getElementById('modal-akcni-plan').classList.remove('visible');
+  akcniPlanAktivniIdx = null;
+}
+
+async function nacistProjektyMeric() {
+  if (!clenstvi) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('projects')
+      .select('id, name')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    const select = document.getElementById('ap-projekt-select');
+    if (!select) return;
+    select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
+    (data || []).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name;
+      opt.setAttribute('data-projekt', '1');
+      select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+    });
+  } catch (e) {
+    console.warn('Projekty se nepodařilo načíst.', e);
+  }
+}
+
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'ap-projekt-select') {
+    const novyInput = document.getElementById('ap-projekt-novy-nazev');
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+});
+
+async function pridatDoAkcnihoPlanu() {
+  const stav = document.getElementById('ap-stav');
+  const nazevInput = document.getElementById('ap-nazev');
+  const nazev = (nazevInput.value || '').trim();
+  const hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+  const z = hist[akcniPlanAktivniIdx];
+  if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
+  if (!z || !z.toolRunId || !clenstvi) { stav.textContent = 'Měření se ještě neuložilo do účtu, zkuste to prosím znovu.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    const selectProjekt = document.getElementById('ap-projekt-select');
+    let projektId = (selectProjekt && selectProjekt.value && selectProjekt.value !== '__novy__') ? selectProjekt.value : null;
+    if (selectProjekt && selectProjekt.value === '__novy__') {
+      const novyNazev = (document.getElementById('ap-projekt-novy-nazev').value || '').trim();
+      if (!novyNazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data: novyProjekt, error: chybaProjekt } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: novyNazev
+      }).select('id').single();
+      if (chybaProjekt) throw chybaProjekt;
+      projektId = novyProjekt.id;
+    }
+    const { error } = await supabaseClient.from('actions').insert({
+      organization_id: clenstvi.organization_id,
+      project_id: projektId,
+      tool_run_id: z.toolRunId,
+      title: nazev,
+      reason: 'Výsledek Měřiče plýtvání Pro ze dne ' + z.datum,
+      responsible_person: (document.getElementById('ap-osoba').value || '').trim() || null,
+      due_date: document.getElementById('ap-termin').value || null,
+      status: 'novy',
+      created_by: session.user.id
+    });
+    if (error) throw error;
+    stav.innerHTML = 'Přidáno. <a href="https://tokva.cz/akcni-plan/' + (projektId ? ('?projekt=' + projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;">Otevřít akční plán →</a>';
+  } catch (e) {
+    console.warn('Přidání do akčního plánu se nepodařilo.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
 function smazatHistorii(index, e) {
   e.stopPropagation();
   let hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
@@ -1187,6 +1316,7 @@ function nacistHistorii() {
         <div class="hist-nazev">${z.nazev}</div>
         <div class="hist-meta">${z.datum} · ${z.cyklu} cyklů</div>
         <div class="hist-ply" style="color:${z.plyPct>40?'#c0392b':z.plyPct>20?'#d97706':'#2a7a4f'}">${z.plyPct}%</div>
+        ${z.toolRunId ? `<div class="hist-del" onclick="otevritModalAkcniPlan(${i}, event)" title="Přidat do akčního plánu" style="color:var(--gold-dark);">+</div>` : ''}
         <div class="hist-del" onclick="smazatHistorii(${i}, event)" title="Smazat">×</div>
       </div>`).join('')}
     </div>
