@@ -49,6 +49,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .nav-tool { font-size:12px; color:var(--light); font-weight:500; margin-left:10px; padding-left:10px; border-left:1px solid var(--border); }
 @media (max-width:600px) { .nav-tool { display:none; } }
 .nav-right{display:flex;align-items:center;gap:12px;}
+.nav-badge{font-size:10px;font-weight:700;color:var(--gold-dark);background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);padding:3px 8px;border-radius:3px;}
 .nav-btn{background:transparent;border:1px solid var(--border);color:var(--mid);font-size:12px;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;white-space:nowrap;}
 .nav-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
 
@@ -325,6 +326,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 <nav>
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/nastroje/?nastroj=spaghetti-vyroba" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Spaghetti diagram Pro</span></div>
   <div class="nav-right">
+    <span class="nav-badge">Pro verze</span>
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
