@@ -948,8 +948,15 @@ nav {
   transition: all .2s;
 }
 .pro-final-cta:hover { background: var(--gold-dark); }
-.historie-day-row { padding:9px 0; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; }
+.historie-day-row { padding:9px 0; border-top:1px solid var(--border); display:flex; align-items:center; gap:10px; cursor:pointer; }
 .historie-day-row:first-child { border-top:none; padding-top:0; }
+.historie-day-row:hover { background:var(--paper,#faf9f6); }
+.historie-porovnat-bar { padding-top:12px; margin-top:6px; border-top:1px solid var(--border); }
+.kat-porovnani-row { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid #f5f5f5; font-size:12.5px; }
+.kat-porovnani-row:last-child { border-bottom:none; }
+.kat-porovnani-label { flex:1; color:var(--dark); }
+.kat-porovnani-val { font-family:'DM Mono',monospace; min-width:110px; text-align:right; color:var(--mid); }
+.kriticke-obdobi-box { background:var(--paper,#faf9f6); border-radius:10px; padding:12px 14px; font-size:12.5px; line-height:1.6; }
 .historie-day-date { font-size:12px; color:var(--mid); min-width:80px; flex-shrink:0; }
 .historie-day-bar-bg { flex:1; height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
 .historie-day-bar-fill { height:100%; border-radius:3px; background:var(--green); }
@@ -1475,6 +1482,9 @@ nav {
     <div class="historie-card-title">Historie dní</div>
     <div class="historie-card-sub" id="historie-sub"></div>
     <div id="historie-body"><div class="historie-empty">Zjišťuji stav přihlášení...</div></div>
+    <div id="historie-porovnat-bar" class="historie-porovnat-bar" style="display:none;">
+      <button class="export-btn" style="width:100%;" id="btn-porovnat-vybrane" onclick="otevritModalPorovnani()" disabled>Porovnat vybrané (0/2)</button>
+    </div>
   </div>
 
   <div class="historie-card" id="projekt-panel" style="display:none;">
@@ -2356,14 +2366,205 @@ function novyDen() {
 
 // Sekce Historie dní - u nepřihlášeného/bez Pro ukáže zamčenou nabídku, u Pro
 // stáhne posledních 30 uložených dní ze Supabase a ukáže je jako trend.
+let posledniHistorie = [];
+let vybraneKPorovnani = [];
+
+// Appka umí otevřít rovnou konkrétní uložený den podle ?vysledek=<id> v adrese
+// (odkaz "Otevřít celý výsledek" z Akčního plánu) - zavolá se po načtení historie.
+let vysledekZAdresyOtevren = false;
+async function otevritVysledekZAdresy() {
+  if (vysledekZAdresyOtevren) return;
+  const id = new URLSearchParams(window.location.search).get('vysledek');
+  if (!id) return;
+  vysledekZAdresyOtevren = true;
+  const idx = posledniHistorie.findIndex(r => r.id === id);
+  if (idx > -1) { otevritModalDetailVysledku(idx); return; }
+  try {
+    const { data, error } = await supabaseClient.from('tool_runs').select('id, created_at, hlavni_hodnota_cislo, data').eq('id', id).eq('nastroj', 'casova-studie').maybeSingle();
+    if (error || !data) return;
+    posledniHistorie.push(data);
+    otevritModalDetailVysledku(posledniHistorie.length - 1);
+  } catch (e) {
+    console.warn('Nepodařilo se najít konkrétní výsledek podle adresy.', e);
+  }
+}
+
+// Rozdělí záznamy dne na hodinové bloky podle reálného času (ne od začátku
+// dne, ale podle skutečné hodiny na hodinkách) a najde blok s nejnižším
+// podílem produktivní práce - appka ho ukazuje jako "nejkritičtější období
+// dne". Bloky kratší než 15 minut celkem appka do hledání nepočítá, ať
+// krátký okrajový úsek nezkreslí výsledek.
+function najitKritickeObdobi(zaznamy) {
+  if (!zaznamy || zaznamy.length < 2) return null;
+  const bloky = {}; // hodina -> { total, kat: {id: ms} }
+  for (let i = 0; i < zaznamy.length - 1; i++) {
+    const z = zaznamy[i];
+    const next = zaznamy[i + 1];
+    const dur = next.timestamp - z.timestamp;
+    if (dur <= 0) continue;
+    const hodina = new Date(z.timestamp).getHours();
+    const kid = z.kat || rozpoznatKat(z.text);
+    if (!bloky[hodina]) bloky[hodina] = { total: 0, kat: {} };
+    bloky[hodina].total += dur;
+    bloky[hodina].kat[kid] = (bloky[hodina].kat[kid] || 0) + dur;
+  }
+  let nejhorsi = null;
+  Object.keys(bloky).forEach(h => {
+    const blok = bloky[h];
+    if (blok.total < 15 * 60000) return; // moc krátký úsek na to dělat závěry
+    const produktivniMs = blok.kat['produktivni'] || 0;
+    const produktivniPct = Math.round(produktivniMs / blok.total * 100);
+    if (nejhorsi === null || produktivniPct < nejhorsi.produktivniPct) {
+      const dominantniId = Object.keys(blok.kat).sort((a, b) => blok.kat[b] - blok.kat[a])[0];
+      nejhorsi = {
+        hodina: Number(h),
+        produktivniPct,
+        total: blok.total,
+        dominantniId,
+        dominantniPct: Math.round((blok.kat[dominantniId] || 0) / blok.total * 100)
+      };
+    }
+  });
+  return nejhorsi;
+}
+
+function katLabel(id) {
+  const k = KATEGORIE.find(k => k.id === id);
+  return k ? k.label : id;
+}
+
+function formatKritickeObdobi(k) {
+  if (!k) return '<div style="font-size:12.5px;color:var(--light);">Den je moc krátký na to najít kritické období.</div>';
+  const hod = String(k.hodina).padStart(2, '0');
+  const hodDo = String((k.hodina + 1) % 24).padStart(2, '0');
+  return '<div class="kriticke-obdobi-box">' +
+    '<strong>' + hod + ':00–' + hodDo + ':00</strong> · produktivní práce ' + k.produktivniPct + ' %<br>' +
+    'Nejvíc času (' + k.dominantniPct + ' %) padlo na: ' + katLabel(k.dominantniId) +
+    '</div>';
+}
+
+function otevritModalDetailVysledku(i) {
+  const r = posledniHistorie[i];
+  if (!r) return;
+  const d = r.data || {};
+  const katCas = d.kat_cas || {};
+  const total = d.total_ms || Object.values(katCas).reduce((a, b) => a + b, 0);
+  const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
+  document.getElementById('detail-vysledku-datum').textContent = datum + ' · ' + Math.round(r.hlavni_hodnota_cislo || 0) + ' % produktivní práce';
+  const radky = KATEGORIE
+    .filter(k => katCas[k.id] > 0)
+    .sort((a, b) => (katCas[b.id] || 0) - (katCas[a.id] || 0))
+    .map(k => {
+      const ms = katCas[k.id] || 0;
+      const pct = total > 0 ? Math.round(ms / total * 100) : 0;
+      return '<div class="kat-porovnani-row"><div class="kat-porovnani-label">' + k.label + '</div><div class="kat-porovnani-val">' + formatDuration(ms) + ' · ' + pct + ' %</div></div>';
+    }).join('');
+  document.getElementById('detail-vysledku-kategorie').innerHTML = radky || '<div style="font-size:12.5px;color:var(--light);">Žádný záznam.</div>';
+  document.getElementById('detail-vysledku-kriticke').innerHTML = formatKritickeObdobi(najitKritickeObdobi(d.zaznamy));
+  document.getElementById('modal-detail-vysledku').style.display = 'flex';
+}
+
+function zavritModalDetailVysledku() {
+  document.getElementById('modal-detail-vysledku').style.display = 'none';
+}
+
+// Zaškrtnutí řádku historie pro porovnání - nejvýš dva najednou. Když je
+// zaškrtnutých už dvakrát a přijde třetí, ten nejstarší zaškrtnutý se
+// automaticky odškrtne, ať appka ví přesně, které dva se mají porovnat.
+function zaskrtnoutKPorovnani(i, zaskrtnuto) {
+  vybraneKPorovnani = vybraneKPorovnani.filter(x => x !== i);
+  if (zaskrtnuto) {
+    vybraneKPorovnani.push(i);
+    if (vybraneKPorovnani.length > 2) vybraneKPorovnani.shift();
+  }
+  renderHistorie();
+}
+
+function aktualizovatPorovnatBar() {
+  const bar = document.getElementById('historie-porovnat-bar');
+  const btn = document.getElementById('btn-porovnat-vybrane');
+  if (!bar || !btn) return;
+  bar.style.display = posledniHistorie.length >= 2 ? 'block' : 'none';
+  const n = vybraneKPorovnani.length;
+  btn.disabled = n !== 2;
+  btn.textContent = 'Porovnat vybrané (' + n + '/2)';
+}
+
+function otevritModalPorovnani() {
+  if (vybraneKPorovnani.length !== 2) return;
+  const zaznamyDnu = vybraneKPorovnani.map(i => posledniHistorie[i]).filter(Boolean);
+  if (zaznamyDnu.length !== 2) return;
+  // starší vlevo, novější vpravo, bez ohledu na pořadí zaškrtnutí
+  zaznamyDnu.sort((x, y) => new Date(x.created_at) - new Date(y.created_at));
+  const [a, b] = zaznamyDnu;
+  const datumA = new Date(a.created_at).toLocaleDateString('cs-CZ');
+  const datumB = new Date(b.created_at).toLocaleDateString('cs-CZ');
+  const pctA = Math.round(a.hlavni_hodnota_cislo || 0);
+  const pctB = Math.round(b.hlavni_hodnota_cislo || 0);
+  const katA = (a.data || {}).kat_cas || {};
+  const katB = (b.data || {}).kat_cas || {};
+  const totalA = (a.data || {}).total_ms || Object.values(katA).reduce((x, y) => x + y, 0);
+  const totalB = (b.data || {}).total_ms || Object.values(katB).reduce((x, y) => x + y, 0);
+
+  const vsechnyId = KATEGORIE.filter(k => (katA[k.id] || 0) > 0 || (katB[k.id] || 0) > 0);
+  const katRadky = vsechnyId.map(k => {
+    const msA = katA[k.id] || 0;
+    const msB = katB[k.id] || 0;
+    const pctKA = totalA > 0 ? Math.round(msA / totalA * 100) : 0;
+    const pctKB = totalB > 0 ? Math.round(msB / totalB * 100) : 0;
+    const diff = pctKB - pctKA;
+    let barva = 'var(--mid)';
+    if (k.id === 'produktivni') { barva = diff > 0 ? '#2a7a4f' : diff < 0 ? '#b91c1c' : 'var(--mid)'; }
+    else if (k.id === 'haseni') { barva = diff < 0 ? '#2a7a4f' : diff > 0 ? '#b91c1c' : 'var(--mid)'; }
+    const znam = diff > 0 ? '+' : '';
+    return '<div class="kat-porovnani-row"><div class="kat-porovnani-label">' + k.label + '</div>' +
+      '<div class="kat-porovnani-val">' + pctKA + ' % → ' + pctKB + ' % <span style="color:' + barva + ';font-weight:700;">(' + znam + diff + ' b.)</span></div></div>';
+  }).join('');
+
+  const kritickaA = najitKritickeObdobi((a.data || {}).zaznamy);
+  const kritickaB = najitKritickeObdobi((b.data || {}).zaznamy);
+
+  let shrnutiText;
+  const deltaProd = pctB - pctA;
+  if (deltaProd > 0) {
+    shrnutiText = 'Produktivní práce vzrostla z ' + pctA + ' % na ' + pctB + ' % - zlepšujete se!';
+  } else if (deltaProd < 0) {
+    shrnutiText = 'Produktivní práce klesla z ' + pctA + ' % na ' + pctB + ' %. Nic se neděje, teď aspoň víte, kam se podívat.';
+  } else {
+    shrnutiText = 'Podíl produktivní práce zůstal stejný (' + pctB + ' %).';
+  }
+
+  document.getElementById('porovnani-obsah').innerHTML =
+    '<div style="display:flex;justify-content:space-between;gap:16px;margin-bottom:14px;">' +
+      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">' + datumA + '</div><div style="font-size:22px;font-weight:800;">' + pctA + '<span style="font-size:13px;color:var(--light);"> %</span></div></div>' +
+      '<div style="align-self:center;font-size:20px;color:var(--light);">→</div>' +
+      '<div style="text-align:right;"><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">' + datumB + '</div><div style="font-size:22px;font-weight:800;">' + pctB + '<span style="font-size:13px;color:var(--light);"> %</span></div></div>' +
+    '</div>' +
+    '<div class="kriticke-obdobi-box" style="margin-bottom:16px;">' + shrnutiText + '</div>' +
+    '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light);margin-bottom:6px;">Podíl kategorií na dni</div>' +
+    katRadky +
+    '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light);margin:16px 0 6px;">Nejkritičtější období dne</div>' +
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+      '<div style="flex:1;min-width:200px;"><div style="font-size:11px;color:var(--light);margin-bottom:4px;">' + datumA + '</div>' + formatKritickeObdobi(kritickaA) + '</div>' +
+      '<div style="flex:1;min-width:200px;"><div style="font-size:11px;color:var(--light);margin-bottom:4px;">' + datumB + '</div>' + formatKritickeObdobi(kritickaB) + '</div>' +
+    '</div>';
+  document.getElementById('modal-porovnani').style.display = 'flex';
+}
+
+function zavritModalPorovnani() {
+  document.getElementById('modal-porovnani').style.display = 'none';
+}
+
 async function renderHistorie() {
   const sub = document.getElementById('historie-sub');
   const body = document.getElementById('historie-body');
   const projektPanel = document.getElementById('projekt-panel');
   const akcniPanel = document.getElementById('akcni-panel');
+  const porovnatBar = document.getElementById('historie-porovnat-bar');
   if (!jePro || !clenstvi) {
     if (projektPanel) projektPanel.style.display = 'none';
     if (akcniPanel) akcniPanel.style.display = 'none';
+    if (porovnatBar) porovnatBar.style.display = 'none';
     sub.textContent = 'Uložit uzavřený den do účtu a vidět trend napříč dny je součástí Pro.';
     body.innerHTML = `<div class="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Připravujeme</span>
@@ -2409,7 +2610,7 @@ async function renderHistorie() {
   try {
     const { data: dny, error } = await supabaseClient
       .from('tool_runs')
-      .select('id, created_at, hlavni_hodnota_cislo')
+      .select('id, created_at, hlavni_hodnota_cislo, data')
       .eq('organization_id', clenstvi.organization_id)
       .eq('nastroj', 'casova-studie')
       .order('created_at', { ascending: false })
@@ -2419,15 +2620,20 @@ async function renderHistorie() {
       body.innerHTML = `<div class="historie-empty">Zatím žádný uložený den. Klepněte na Konec a den se po dokončení uloží automaticky.</div>`;
       return;
     }
-    body.innerHTML = dny.map(d => {
+    posledniHistorie = dny;
+    body.innerHTML = dny.map((d, i) => {
       const datum = new Date(d.created_at).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' });
       const pct = Math.round(d.hlavni_hodnota_cislo || 0);
-      return `<div class="historie-day-row">
+      const zaskrtnuto = vybraneKPorovnani.includes(i);
+      return `<div class="historie-day-row" onclick="otevritModalDetailVysledku(${i})">
+        <input type="checkbox" class="vysledek-checkbox" onclick="event.stopPropagation()" onchange="zaskrtnoutKPorovnani(${i}, this.checked)"${zaskrtnuto ? ' checked' : ''} style="flex-shrink:0;width:16px;height:16px;">
         <div class="historie-day-date">${datum}</div>
         <div class="historie-day-bar-bg"><div class="historie-day-bar-fill" style="width:${pct}%;"></div></div>
         <div class="historie-day-val">${pct} %</div>
       </div>`;
     }).join('');
+    aktualizovatPorovnatBar();
+    otevritVysledekZAdresy();
   } catch (e) {
     console.warn('Historii dní se nepodařilo načíst.', e);
     body.innerHTML = `<div class="historie-err">Historii se teď nepodařilo načíst. Zkuste to prosím později.</div>`;
@@ -2791,6 +2997,28 @@ nacistPrihlaseniStav();
     <p class="login-err" id="pro-err" style="color:var(--mid);"></p>
     <button class="modal-save" id="pro-btn" onclick="klikVModaluPro()">Přihlásit se</button>
     <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Tokva Pro? <a href="https://tokva.cz">Zjistit víc o Tokva Pro</a></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-detail-vysledku" style="display:none;" onclick="if(event.target===this) zavritModalDetailVysledku()">
+  <div class="modal" style="max-height:82vh;overflow-y:auto;">
+    <div class="modal-title">
+      <span>Detail dne</span>
+      <button class="modal-close" onclick="zavritModalDetailVysledku()">×</button>
+    </div>
+    <div id="detail-vysledku-datum" style="font-size:12px;color:var(--light);margin-bottom:14px;"></div>
+    <div id="detail-vysledku-kategorie" style="margin-bottom:16px;"></div>
+    <div id="detail-vysledku-kriticke"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-porovnani" style="display:none;" onclick="if(event.target===this) zavritModalPorovnani()">
+  <div class="modal" style="max-width:640px;max-height:86vh;overflow-y:auto;">
+    <div class="modal-title">
+      <span>Porovnání dvou dnů</span>
+      <button class="modal-close" onclick="zavritModalPorovnani()">×</button>
+    </div>
+    <div id="porovnani-obsah"></div>
   </div>
 </div>
 
