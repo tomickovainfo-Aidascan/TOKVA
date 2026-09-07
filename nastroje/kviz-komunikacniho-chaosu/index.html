@@ -1576,12 +1576,28 @@ function vybrat(qid, typ, oi, el){
 }
 
 function vybratJine(qid, el){
-  document.querySelectorAll(`.q-opt[data-q="${qid}"]`).forEach(o=>o.classList.remove('on'));
-  el.classList.add('on');
-  vybranaIndexy[qid] = 'other';
-  const inp = document.getElementById(`other-${qid}`);
-  if(inp) inp.classList.add('show');
-  odpovedi[qid] = odpovedi[qid] || 2;
+  const q = OTAZKY.find(o=>o.id===qid);
+  if(q && q.typ === 'checkbox'){
+    // U vícevýběrové otázky je "Jinak" jen další zaškrtávací možnost, ne
+    // vylučující volba - jde kombinovat s ostatními a jde i zase vypnout.
+    // Dřív se chovala jako přepínač jen "zapnout", nikdy "vypnout" a k tomu
+    // smazala vizuálně ostatní zaškrtnuté možnosti bez smazání jejich dat -
+    // tlačítko Další pak umělo zůstat zakázané, i když bylo pole vyplněné.
+    el.classList.toggle('on');
+    if(!(odpovedi[qid] instanceof Set)) odpovedi[qid] = new Set();
+    if(!(vybranaIndexy[qid] instanceof Set)) vybranaIndexy[qid] = new Set();
+    if(el.classList.contains('on')){ odpovedi[qid].add('other'); vybranaIndexy[qid].add('other'); }
+    else { odpovedi[qid].delete('other'); vybranaIndexy[qid].delete('other'); }
+    const inp = document.getElementById(`other-${qid}`);
+    if(inp) inp.classList.toggle('show', el.classList.contains('on'));
+  } else {
+    document.querySelectorAll(`.q-opt[data-q="${qid}"]`).forEach(o=>o.classList.remove('on'));
+    el.classList.add('on');
+    vybranaIndexy[qid] = 'other';
+    const inp = document.getElementById(`other-${qid}`);
+    if(inp) inp.classList.add('show');
+    odpovedi[qid] = odpovedi[qid] || 2;
+  }
   aktualizovatDalTlacitko();
 }
 
