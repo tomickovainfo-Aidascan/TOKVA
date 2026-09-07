@@ -942,7 +942,7 @@ nav {
 .ukol-del { background: transparent; border: none; color: var(--light); font-size: 16px; cursor: pointer; flex-shrink: 0; }
 .ukol-del:hover { color: var(--red); }
 .ukol-form { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
-.ukol-form input[type=text], .ukol-form input[type=date] {
+.ukol-form input[type=text], .ukol-form input[type=date], .ukol-form input[type=number] {
   background: var(--white); border: 1px solid var(--border); border-radius: 8px;
   padding: 9px 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--dark); outline: none;
 }
@@ -1787,15 +1787,23 @@ function renderUkolySekce(misto) {
       </div>`).join('')
     : '<p style="font-size:13px;color:var(--light);padding:8px 0;">Zatím žádné úkoly.</p>';
 
-  div.innerHTML = `
-    <div class="kontroly-title">Úkoly a rozpracované problémy <span class="pro-lock-badge">Pro</span></div>
-    ${seznamHtml}
-    <div class="ukol-form">
+  const posledniKontrola = (misto.kontroly || []).length ? misto.kontroly[misto.kontroly.length - 1] : null;
+  const maZdroj = posledniKontrola && posledniKontrola.toolRunId;
+  const formHtml = maZdroj
+    ? `<div class="ukol-form">
       <input type="text" id="ukol-text" placeholder="Co je potřeba udělat...">
       <input type="text" id="ukol-kdo" placeholder="Kdo">
       <input type="date" id="ukol-termin">
+      <input type="number" id="ukol-investice" placeholder="Investice (Kč)">
+      <input type="number" id="ukol-prinos" placeholder="Očekávaný přínos (Kč/rok)">
       <button class="plan-btn" style="border-color:rgba(42,122,79,.4);color:var(--green);" onclick="pridatUkol()">+ Přidat úkol</button>
-    </div>`;
+    </div>`
+    : `<p style="font-size:13px;color:var(--light);padding:10px 0;">Nejdřív uložte kontrolu tohohle místa (tlačítko „Přidat kontrolu" výš), pak půjde přidat úkol se zdrojem výsledku.</p>`;
+
+  div.innerHTML = `
+    <div class="kontroly-title">Úkoly a rozpracované problémy <span class="pro-lock-badge">Pro</span></div>
+    ${seznamHtml}
+    ${formHtml}`;
 
   return div;
 }
@@ -1803,11 +1811,18 @@ function renderUkolySekce(misto) {
 async function pridatUkol() {
   const misto = aktivniMistoData();
   if (!misto) return;
+  const posledniKontrola = (misto.kontroly || []).length ? misto.kontroly[misto.kontroly.length - 1] : null;
+  if (!posledniKontrola || !posledniKontrola.toolRunId) {
+    upozornit('Nejdřív uložte kontrolu tohohle místa, pak půjde přidat úkol se zdrojem výsledku.');
+    return;
+  }
   const textEl = document.getElementById('ukol-text');
   const text = textEl.value.trim();
   if (!text) return;
   const kdo = document.getElementById('ukol-kdo').value.trim();
   const termin = document.getElementById('ukol-termin').value;
+  const investiceStr = (document.getElementById('ukol-investice').value || '').trim();
+  const prinosStr = (document.getElementById('ukol-prinos').value || '').trim();
   if (!misto.ukoly) misto.ukoly = [];
   const ukol = { id: 'u_' + Date.now(), actionId: null, text, kdo, termin, hotovo: false };
   misto.ukoly.push(ukol);
@@ -1819,9 +1834,13 @@ async function pridatUkol() {
         .from('actions')
         .insert({
           organization_id: clenstvi.organization_id,
+          tool_run_id: posledniKontrola.toolRunId,
+          reason: 'Výsledek 5S kontroly — ' + misto.nazev + ' ze dne ' + posledniKontrola.datum,
           title: text,
           responsible_person: kdo || null,
           due_date: termin || null,
+          estimated_investment: investiceStr ? Number(investiceStr) : null,
+          expected_benefit: prinosStr ? Number(prinosStr) : null,
           status: 'novy'
         })
         .select()
@@ -2094,12 +2113,14 @@ async function ulozitKontrolu() {
   const score = Math.round(pocet / checks.length * 100);
   const text = document.getElementById('input-kontrola').value.trim();
 
-  misto.kontroly.push({
+  const novaKontrola = {
     datum: new Date().toLocaleDateString('cs-CZ'),
     checklist,
     score,
-    poznamka: text
-  });
+    poznamka: text,
+    toolRunId: null
+  };
+  misto.kontroly.push(novaKontrola);
   ulozit();
   zavritModal('modal-kontrola');
   document.getElementById('input-kontrola').value = '';
@@ -2121,6 +2142,7 @@ async function ulozitKontrolu() {
         data: { checklist, poznamka: text }
       }).select().single();
       if (errRun) throw errRun;
+      if (run) { novaKontrola.toolRunId = run.id; ulozit(); }
       await supabaseClient.from('measurements').insert({
         organization_id: clenstvi.organization_id,
         location_id: misto.location_id || null,
