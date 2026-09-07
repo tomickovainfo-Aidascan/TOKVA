@@ -1415,6 +1415,11 @@ async function nacistPrihlaseniStav() {
     session = null; clenstvi = null; jePro = false;
   }
   renderUcetNav();
+  // Přišel odkaz na konkrétní uložený výsledek (třeba z Akčního plánu) - není potřeba
+  // čekat, až uživatel dokončí kvíz, historie (a detail) se natáhne rovnou.
+  if (jePro && new URLSearchParams(window.location.search).get('vysledek')) {
+    renderHistorie();
+  }
 }
 
 function aktualizovatProBtn() {
