@@ -87,8 +87,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 10px rgba(0,0,0,.05);
-}
+  box-shadow: 0 2px 10px rgba(0,0,0,.05); flex-wrap:wrap; row-gap:8px;}
 
 .nav-brand {
   font-family: 'Poppins', sans-serif;
@@ -101,7 +100,7 @@ nav {
 .nav-tool { font-size:12px; color:var(--light); font-weight:500; margin-left:10px; padding-left:10px; border-left:1px solid var(--border); }
 @media (max-width:600px) { .nav-tool { display:none; } }
 
-.nav-right { display: flex; gap: 8px; align-items: center; }
+.nav-right { display: flex; gap: 8px; align-items: center; flex-wrap:wrap; row-gap:8px;}
 .nav-btn {
   background: transparent;
   border: 1px solid var(--border);
