@@ -104,6 +104,14 @@ function zobrazitOdkazAkcniPlan(jePro) {
   el.style.display = jePro ? '' : 'none';
 }
 
+// Ukáže/schová trvalý odkaz na Projekty v horní liště appky - stejný vzorec jako
+// zobrazitOdkazAkcniPlan výš, jen pro appku Projekty (souhrn projektu + prezentační mód).
+function zobrazitOdkazProjekty(jePro) {
+  const el = document.getElementById('nav-projekty');
+  if (!el) return;
+  el.style.display = jePro ? '' : 'none';
+}
+
 // Odhlášení, s přesměrováním zpátky na přihlašovací stránku.
 async function odhlasit() {
   await supabaseClient.auth.signOut();

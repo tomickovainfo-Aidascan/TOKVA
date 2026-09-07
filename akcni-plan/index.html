@@ -178,6 +178,7 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/" class="nav-brand">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Akční plán</span></div>
   <div class="nav-right">
     <span class="nav-badge">Pro verze</span>
+    <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
@@ -207,7 +208,10 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 
   <div class="projekt-banner" id="projekt-banner" style="display:none;">
     <span id="projekt-banner-text"></span>
-    <a href="https://tokva.cz/akcni-plan/" id="projekt-banner-zrusit">Zobrazit všechny úkoly ×</a>
+    <span style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+      <a href="https://tokva.cz/projekty/" id="projekt-banner-stranka">Stránka projektu →</a>
+      <a href="https://tokva.cz/akcni-plan/" id="projekt-banner-zrusit">Zobrazit všechny úkoly ×</a>
+    </span>
   </div>
 
   <div class="souhrn" id="souhrn"></div>
@@ -384,6 +388,7 @@ async function nacistPrihlaseniStav() {
     session = null; clenstvi = null; jePro = false;
   }
   renderUcetNav();
+  zobrazitOdkazProjekty(jePro);
   renderPrihlaseniStav();
 }
 
@@ -492,10 +497,12 @@ function renderFiltrProjekt() {
 
   const banner = document.getElementById('projekt-banner');
   const bannerText = document.getElementById('projekt-banner-text');
+  const bannerStranka = document.getElementById('projekt-banner-stranka');
   const projekt = projekty.find(p => p.id === filtrProjektId);
   if (projekt) {
     banner.style.display = 'flex';
     bannerText.textContent = 'Zobrazeny úkoly projektu: ' + projekt.name;
+    bannerStranka.href = 'https://tokva.cz/projekty/?id=' + projekt.id;
   } else {
     banner.style.display = 'none';
   }
@@ -505,10 +512,12 @@ function zmenitFiltrProjekt() {
   filtrProjektId = document.getElementById('filtr-projekt').value;
   const banner = document.getElementById('projekt-banner');
   const bannerText = document.getElementById('projekt-banner-text');
+  const bannerStranka = document.getElementById('projekt-banner-stranka');
   const projekt = projekty.find(p => p.id === filtrProjektId);
   if (projekt) {
     banner.style.display = 'flex';
     bannerText.textContent = 'Zobrazeny úkoly projektu: ' + projekt.name;
+    bannerStranka.href = 'https://tokva.cz/projekty/?id=' + projekt.id;
   } else {
     banner.style.display = 'none';
   }

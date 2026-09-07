@@ -322,6 +322,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
+    <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
     <button class="nav-btn" id="nav-historie-btn" onclick="otevritHistorii()" style="display:none;">Historie</button>
     <button class="nav-btn" id="nav-tym-btn" onclick="otevritTym()" style="display:none;">Tým</button>
@@ -895,6 +896,7 @@ async function nacistPrihlaseniStav() {
   }
   renderUcetNav();
   zobrazitOdkazAkcniPlan(maAktivniPro(clenstvi));
+  zobrazitOdkazProjekty(maAktivniPro(clenstvi));
   if (jePro && clenstvi) otevritVysledekZAdresy();
 }
 

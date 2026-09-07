@@ -368,6 +368,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
+    <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
 </nav>
@@ -893,6 +894,7 @@ async function nacistPrihlaseniStav() {
     jePro = maAktivniPro(clenstvi);
     prepnoutOdkazyNaPro(jePro);
     zobrazitOdkazAkcniPlan(jePro);
+    zobrazitOdkazProjekty(jePro);
   } catch (e) {
     console.warn('Přihlašovací vrstva se nepodařila načíst, appka jede jako nepřihlášená.', e);
     session = null; clenstvi = null; jePro = false;
@@ -1505,6 +1507,7 @@ function zobrazVysledky() {
   renderHistorie();
   prepnoutOdkazyNaPro(jePro);
   zobrazitOdkazAkcniPlan(jePro);
+  zobrazitOdkazProjekty(jePro);
 }
 
 function zacitZnovu() {
