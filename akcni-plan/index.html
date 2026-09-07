@@ -603,7 +603,13 @@ const TABULKA_SLOUPCE = [
   { klic: 'projekt', nazev: 'Projekt' },
   { klic: 'status', nazev: 'Stav' },
   { klic: 'responsible_person', nazev: 'Odpovědná osoba' },
-  { klic: 'due_date', nazev: 'Termín' }
+  { klic: 'due_date', nazev: 'Termín' },
+  { klic: 'estimated_investment', nazev: 'Investice' },
+  { klic: 'expected_benefit', nazev: 'Očekávaný přínos' },
+  { klic: 'actual_state', nazev: 'Skutečný stav' },
+  { klic: 'actual_benefit', nazev: 'Skutečný přínos' },
+  { klic: 'verification_date', nazev: 'Datum ověření' },
+  { klic: 'verification_confirmed', nazev: 'Potvrzeno' }
 ];
 
 function renderTabulka(seznam) {
@@ -628,6 +634,7 @@ function renderTabulka(seznam) {
       '<th><select onchange="zmenitTabFiltr(\'stav\', this.value)">' + stavOptions + '</select></th>' +
       '<th><input type="text" placeholder="Hledat…" value="' + escapovat(tabFiltr.osoba) + '" oninput="zmenitTabFiltr(\'osoba\', this.value)"></th>' +
       '<th><input type="text" placeholder="Hledat…" value="' + escapovat(tabFiltr.termin) + '" oninput="zmenitTabFiltr(\'termin\', this.value)"></th>' +
+      '<th></th><th></th><th></th><th></th><th></th><th></th>' +
       '<th></th>' +
     '</tr>';
 
@@ -674,6 +681,12 @@ function aktualizovatTabulkuRadky() {
       } else if (tabRazeniSloupec === 'status') {
         vx = NAZVY_STAVU[x.status] || '';
         vy = NAZVY_STAVU[y.status] || '';
+      } else if (tabRazeniSloupec === 'estimated_investment' || tabRazeniSloupec === 'expected_benefit' || tabRazeniSloupec === 'actual_benefit') {
+        vx = x[tabRazeniSloupec] ?? -Infinity;
+        vy = y[tabRazeniSloupec] ?? -Infinity;
+      } else if (tabRazeniSloupec === 'verification_confirmed') {
+        vx = x.verification_confirmed ? 1 : 0;
+        vy = y.verification_confirmed ? 1 : 0;
       } else {
         vx = x[tabRazeniSloupec] || '';
         vy = y[tabRazeniSloupec] || '';
@@ -685,7 +698,7 @@ function aktualizovatTabulkuRadky() {
   }
 
   if (f.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--mid);padding:24px;">Nic nevyhovuje filtru.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--mid);padding:24px;">Nic nevyhovuje filtru.</td></tr>';
     return;
   }
 
@@ -697,6 +710,12 @@ function aktualizovatTabulkuRadky() {
       '<td><span class="akce-status status-' + a.status + '">' + NAZVY_STAVU[a.status] + '</span></td>' +
       '<td>' + escapovat(a.responsible_person || '—') + '</td>' +
       '<td>' + (a.due_date ? formatDatum(a.due_date) : '—') + '</td>' +
+      '<td>' + (a.estimated_investment != null ? formatKc(a.estimated_investment) : '—') + '</td>' +
+      '<td>' + (a.expected_benefit != null ? formatKc(a.expected_benefit) + '/rok' : '—') + '</td>' +
+      '<td>' + escapovat(a.actual_state || '—') + '</td>' +
+      '<td>' + (a.actual_benefit != null ? formatKc(a.actual_benefit) + '/rok' : '—') + '</td>' +
+      '<td>' + (a.verification_date ? formatDatum(a.verification_date) : '—') + '</td>' +
+      '<td>' + (a.verification_confirmed ? '✓' : '—') + '</td>' +
       '<td class="tabulka-akce-bunka"><button class="link-btn" onclick="otevritModalUpravitAkce(\'' + a.id + '\')">Upravit</button><button class="link-btn smazat" onclick="smazatAkci(\'' + a.id + '\')">Smazat</button></td>' +
     '</tr>';
   }).join('');
