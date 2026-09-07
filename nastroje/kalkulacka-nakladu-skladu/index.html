@@ -1150,6 +1150,10 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
     </select>
     <input id="ap-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;margin-bottom:8px;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+      <input id="ap-investice" type="number" placeholder="Investice (Kč)" style="margin-bottom:0;">
+      <input id="ap-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" style="margin-bottom:0;">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
       <input id="ap-osoba" type="text" placeholder="Odpovědná osoba" style="margin-bottom:0;">
       <input id="ap-termin" type="date" style="margin-bottom:0;">
     </div>
@@ -1634,6 +1638,8 @@ function otevritModalAkcniPlan(id) {
   akcniPlanAktivniId = id;
   document.getElementById('ap-nazev').value = 'Snížit náklady na m²: ' + u.nazev;
   document.getElementById('ap-osoba').value = '';
+  document.getElementById('ap-investice').value = '';
+  document.getElementById('ap-prinos').value = '';
   document.getElementById('ap-termin').value = '';
   document.getElementById('ap-stav').textContent = '';
   document.getElementById('ap-projekt-novy-nazev').value = '';
@@ -1705,6 +1711,8 @@ async function pridatDoAkcnihoPlanu() {
       title: nazev,
       reason: 'Výsledek Kalkulačky nákladů skladu ze dne ' + u.datum,
       responsible_person: (document.getElementById('ap-osoba').value || '').trim() || null,
+      estimated_investment: (document.getElementById('ap-investice').value || '').trim() ? Number(document.getElementById('ap-investice').value) : null,
+      expected_benefit: (document.getElementById('ap-prinos').value || '').trim() ? Number(document.getElementById('ap-prinos').value) : null,
       due_date: document.getElementById('ap-termin').value || null,
       status: 'novy',
       created_by: session.user.id

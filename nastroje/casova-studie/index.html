@@ -1500,6 +1500,10 @@ nav {
     </select>
     <input id="akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <input id="akce-investice" type="number" placeholder="Investice (Kč)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+      <input id="akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
       <input id="akce-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
       <input id="akce-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
     </div>
@@ -2532,6 +2536,8 @@ async function pridatDoAkcnihoPlanu() {
       title: nazev,
       reason: 'Výsledek Časové studie ze dne ' + new Date().toLocaleDateString('cs-CZ'),
       responsible_person: (document.getElementById('akce-osoba').value || '').trim() || null,
+      estimated_investment: (document.getElementById('akce-investice').value || '').trim() ? Number(document.getElementById('akce-investice').value) : null,
+      expected_benefit: (document.getElementById('akce-prinos').value || '').trim() ? Number(document.getElementById('akce-prinos').value) : null,
       due_date: document.getElementById('akce-termin').value || null,
       status: 'novy',
       created_by: session.user.id
@@ -2540,6 +2546,8 @@ async function pridatDoAkcnihoPlanu() {
     stav.innerHTML = 'Přidáno. <a href="https://tokva.cz/akcni-plan/' + (projektId ? ('?projekt=' + projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;">Otevřít akční plán →</a>';
     nazevInput.value = '';
     document.getElementById('akce-osoba').value = '';
+    document.getElementById('akce-investice').value = '';
+    document.getElementById('akce-prinos').value = '';
     document.getElementById('akce-termin').value = '';
     document.getElementById('akce-projekt-novy-nazev').value = '';
     document.getElementById('akce-projekt-novy-nazev').style.display = 'none';
