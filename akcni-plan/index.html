@@ -71,7 +71,8 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .prih-btn{width:100%;background:var(--gold);color:var(--black);border:none;border-radius:8px;padding:13px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-top:12px;transition:all .2s;}
 .prih-btn:hover{background:var(--gold-dark);color:white;}
 
-.main{max-width:1040px;margin:0 auto;padding:24px 16px 80px;}
+.main{max-width:1040px;margin:0 auto;padding:24px 16px 80px;transition:max-width .15s ease;}
+.main.sirsi-tabulka{max-width:1720px;}
 
 /* TOOLBAR */
 .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:18px;}
@@ -544,6 +545,7 @@ function renderSeznam() {
 
 function prepnoutZobrazeni(rezim) {
   zobrazeniAP = rezim;
+  document.getElementById('app').classList.toggle('sirsi-tabulka', rezim === 'tabulka');
   document.getElementById('btn-zobr-karty').classList.toggle('active', rezim === 'karty');
   document.getElementById('btn-zobr-tabulka').classList.toggle('active', rezim === 'tabulka');
   document.getElementById('seznam-akci').style.display = rezim === 'karty' ? 'block' : 'none';
