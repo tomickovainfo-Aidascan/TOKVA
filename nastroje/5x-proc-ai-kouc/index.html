@@ -1178,9 +1178,24 @@ async function vytvoritUkolyZAnalyzy(raw, btn) {
   if (!jePro || !clenstvi) return;
   const opatreni = extrahovatSekci(raw, '7. DOPORUČENÉ OPATŘENÍ');
   const prvniKrok = extrahovatSekci(raw, '8. PRVNÍ KROK DO 24 HODIN');
+  const pricina = extrahovatSekci(raw, '4. KOŘENOVÁ PŘÍČINA');
+  if (!aktivniRunId) await ulozitStavAnalyzy(true, raw);
+  if (!aktivniRunId) {
+    btn.textContent = 'Analýza se ještě neuložila, zkuste to za chvíli znovu';
+    return;
+  }
+  const investiceStr = (document.getElementById('ukoly-investice') || {}).value || '';
+  const prinosStr = (document.getElementById('ukoly-prinos') || {}).value || '';
+  const investice = investiceStr.trim() ? Number(investiceStr) : null;
+  const prinos = prinosStr.trim() ? Number(prinosStr) : null;
+  const reason = 'Výsledek 5x Proč analýzy' + (pricina ? (' — kořenová příčina: ' + pricina.slice(0, 300)) : '');
   const ukoly = [opatreni, prvniKrok].filter(t => t).map(t => ({
     organization_id: clenstvi.organization_id,
+    tool_run_id: aktivniRunId,
+    reason,
     title: t.slice(0, 300),
+    estimated_investment: investice,
+    expected_benefit: prinos,
     status: 'novy'
   }));
   if (ukoly.length === 0) return;
@@ -1281,9 +1296,25 @@ function renderOutput(raw, ulozit = true) {
   btnRow.appendChild(novaBtn);
 
   if (jePro) {
+    const ukolyPole = document.createElement('div');
+    ukolyPole.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;width:100%;';
+    const investiceInput = document.createElement('input');
+    investiceInput.type = 'number';
+    investiceInput.id = 'ukoly-investice';
+    investiceInput.placeholder = 'Investice (Kč)';
+    investiceInput.style.cssText = 'flex:1;min-width:140px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;';
+    const prinosInput = document.createElement('input');
+    prinosInput.type = 'number';
+    prinosInput.id = 'ukoly-prinos';
+    prinosInput.placeholder = 'Očekávaný přínos (Kč/rok)';
+    prinosInput.style.cssText = 'flex:1;min-width:140px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;';
+    ukolyPole.appendChild(investiceInput);
+    ukolyPole.appendChild(prinosInput);
+    card.appendChild(ukolyPole);
+
     const ukolyBtn = document.createElement('button');
     ukolyBtn.className = 'export-output';
-    ukolyBtn.style.marginTop = '0';
+    ukolyBtn.style.marginTop = '10px';
     ukolyBtn.style.borderColor = 'rgba(233,169,27,.4)';
     ukolyBtn.style.color = 'var(--gold)';
     ukolyBtn.textContent = 'Vytvořit 2 navazující úkoly';
