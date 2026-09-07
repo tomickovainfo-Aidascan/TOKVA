@@ -224,6 +224,9 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .pracovnik-freq.set { color:var(--gold); }
 .pracovnik-dup { color:var(--light); font-size:13px; padding:2px 6px; border-radius:4px; cursor:pointer; transition:all 0.15s; flex-shrink:0; }
 .pracovnik-dup:hover { color:var(--gold); background:var(--gold-light); }
+.projekty-porovnat-bar { padding:10px 0 0; border-top:1px solid var(--border); margin-top:4px; }
+.projekt-checkbox { flex-shrink:0; width:16px; height:16px; }
+
 .pracovnik-viz { color:var(--light); font-size:13px; padding:2px 6px; border-radius:4px; cursor:pointer; transition:all 0.15s; flex-shrink:0; }
 .pracovnik-viz:hover { color:var(--gold); background:var(--gold-light); }
 .pracovnik-viz.off { opacity:0.35; }
@@ -699,9 +702,22 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   <div class="modal" style="max-width:520px;">
     <h3>Uložené projekty</h3>
     <p id="projekty-prazdno" style="display:none;">Zatím nemáte žádný uložený projekt. Rozkreslete plánek a klikněte na "Uložit projekt".</p>
-    <div class="zakazky-list" id="projekty-list" style="max-height:340px;margin-bottom:16px;"></div>
+    <div class="zakazky-list" id="projekty-list" style="max-height:340px;margin-bottom:8px;"></div>
+    <div class="projekty-porovnat-bar" id="projekty-porovnat-bar" style="display:none;margin-bottom:12px;">
+      <button class="btn-modal-ok" style="width:100%;" id="btn-porovnat-projekty" onclick="otevritModalPorovnaniProjektu()" disabled>Porovnat vybrané (0/2)</button>
+    </div>
     <div class="modal-btns">
       <button class="btn-modal-cancel" onclick="zavritModalProjekty()">Zavřít</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-porovnani-projekty">
+  <div class="modal" style="max-width:600px;max-height:86vh;overflow-y:auto;">
+    <h3>Porovnání dvou projektů</h3>
+    <div id="porovnani-projekty-obsah"></div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="zavritModalPorovnaniProjektu()">Zavřít</button>
     </div>
   </div>
 </div>
@@ -1276,6 +1292,130 @@ function potvrditUlozeniProjektu() {
   ulozitProjektDoSupabase(zaznam);
 }
 
+// Porovnání dvou uložených projektů (ne dvou tras v jednom otevřeném plánku -
+// to už appka umí přes role S/N, viz zjistiSrovnani). Tohle je pro srovnání
+// dvou samostatně uložených projektů vedle sebe - jiný den, jiný půdorys,
+// nebo obojí. Vybírá se podle id projektu, ne podle pozice v seznamu, protože
+// seznam je vždycky seřazený od nejnovějšího a pozice by se mohla splést.
+let vybraneProjektyKPorovnani = [];
+
+function zaskrtnoutProjektKPorovnani(id, zaskrtnuto) {
+  vybraneProjektyKPorovnani = vybraneProjektyKPorovnani.filter(x => x !== id);
+  if (zaskrtnuto) {
+    vybraneProjektyKPorovnani.push(id);
+    if (vybraneProjektyKPorovnani.length > 2) vybraneProjektyKPorovnani.shift();
+  }
+  otevritSeznamProjektu();
+}
+
+function aktualizovatPorovnatProjektyBar() {
+  const bar = document.getElementById('projekty-porovnat-bar');
+  const btn = document.getElementById('btn-porovnat-projekty');
+  if (!bar || !btn) return;
+  const seznam = nacistSeznamProjektu();
+  bar.style.display = seznam.length >= 2 ? 'block' : 'none';
+  const n = vybraneProjektyKPorovnani.length;
+  btn.disabled = n !== 2;
+  btn.textContent = 'Porovnat vybrané (' + n + '/2)';
+}
+
+// Čistá verze zjistiSrovnani/spocitejDelku/spocitejRocniDopad, která nesahá na
+// globální proměnné aktuálně otevřeného plánku (meritko, rychlostChuze,
+// nakladyHod, zakazky), ale počítá z libovolného uloženého záznamu projektu -
+// aby šlo porovnat dva projekty, aniž by appka musela jeden z nich otevřít.
+function spocitejProjektSrovnani(p) {
+  const zk = p.zakazky || [];
+  const meritkoP = p.meritko || 1;
+  function delka(body) {
+    if (!body || body.length < 2) return 0;
+    let d = 0;
+    for (let i = 1; i < body.length; i++) d += Math.hypot(body[i].x - body[i-1].x, body[i].y - body[i-1].y);
+    return d * meritkoP;
+  }
+  function dopad(z) {
+    if (!z || !z.frek || !z.frek.opakovani || !z.frek.smeny || !z.frek.dny) return null;
+    const delkaCyklu = delka(z.body);
+    if (delkaCyklu <= 0) return null;
+    const kmRok = (delkaCyklu * z.frek.opakovani / 1000) * z.frek.smeny * z.frek.dny;
+    const hRok = (p.rychlostChuze || 0) > 0 ? kmRok / p.rychlostChuze : 0;
+    const kcRok = hRok * (p.nakladyHod || 0);
+    return { kmRok, hRok, kcRok };
+  }
+  const soucasny = zk.find(z => z.role === 'soucasny');
+  const navrh = zk.find(z => z.role === 'navrh');
+  let potencialKc = null, potencialH = null, dSoucasny = null, dNavrh = null;
+  if (soucasny && navrh) {
+    dSoucasny = delka(soucasny.body);
+    dNavrh = delka(navrh.body);
+    const dopS = dopad(soucasny), dopN = dopad(navrh);
+    if (dopS && dopN) { potencialKc = dopS.kcRok - dopN.kcRok; potencialH = dopS.hRok - dopN.hRok; }
+  }
+  const celkovaDelka = zk.reduce((sum, z) => sum + delka(z.body), 0);
+  return { pocetTras: zk.length, celkovaDelka, dSoucasny, dNavrh, potencialKc, potencialH };
+}
+
+function otevritModalPorovnaniProjektu() {
+  if (vybraneProjektyKPorovnani.length !== 2) return;
+  const seznam = nacistSeznamProjektu();
+  const zaznamy = vybraneProjektyKPorovnani.map(id => seznam.find(p => p.id === id)).filter(Boolean);
+  if (zaznamy.length !== 2) return;
+  zaznamy.sort((a, b) => (a.ulozenoAt || '').localeCompare(b.ulozenoAt || ''));
+  const [a, b] = zaznamy;
+  const sa = spocitejProjektSrovnani(a);
+  const sb = spocitejProjektSrovnani(b);
+  const datumA = a.ulozenoAt ? new Date(a.ulozenoAt).toLocaleDateString('cs-CZ') : '';
+  const datumB = b.ulozenoAt ? new Date(b.ulozenoAt).toLocaleDateString('cs-CZ') : '';
+
+  function radek(label, va, vb, jednotka, formatFn) {
+    if (va == null && vb == null) return '';
+    const f = formatFn || (x => x == null ? '—' : Math.round(x).toLocaleString('cs-CZ') + ' ' + jednotka);
+    let barva = 'var(--mid)', text = '';
+    if (va != null && vb != null) {
+      const rozdil = vb - va;
+      if (rozdil !== 0) {
+        barva = rozdil < 0 ? '#2a7a4f' : '#b91c1c';
+        text = (rozdil > 0 ? '+' : '') + Math.round(rozdil).toLocaleString('cs-CZ') + ' ' + jednotka;
+      }
+    }
+    return '<tr>' +
+      '<td style="padding:8px 6px;border-bottom:1px solid #f0f0f0;">' + label + '</td>' +
+      '<td style="padding:8px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + f(va) + '</td>' +
+      '<td style="padding:8px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + f(vb) + '</td>' +
+      '<td style="padding:8px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-weight:700;color:' + barva + ';">' + text + '</td>' +
+      '</tr>';
+  }
+
+  let radky = radek('Počet tras', sa.pocetTras, sb.pocetTras, '');
+  radky += radek('Celková délka tras', sa.celkovaDelka, sb.celkovaDelka, 'm');
+  radky += radek('Cesta - současný stav', sa.dSoucasny, sb.dSoucasny, 'm');
+  radky += radek('Cesta - návrh', sa.dNavrh, sb.dNavrh, 'm');
+  radky += radek('Potenciál úspory', sa.potencialKc, sb.potencialKc, 'Kč/rok');
+  radky += radek('Potenciál úspory času', sa.potencialH, sb.potencialH, 'h/rok');
+
+  const tabulka = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+    '<thead><tr>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);"></th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">' + escapeHtml(a.nazev) + '</th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">' + escapeHtml(b.nazev) + '</th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Rozdíl</th>' +
+    '</tr></thead><tbody>' + radky + '</tbody></table></div>';
+
+  let shrnuti = '';
+  if (sa.potencialKc != null && sb.potencialKc != null) {
+    shrnuti = '<div style="background:var(--gold-light);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:16px;">Potenciál úspory: ' +
+      Math.round(sa.potencialKc).toLocaleString('cs-CZ') + ' → ' + Math.round(sb.potencialKc).toLocaleString('cs-CZ') + ' Kč/rok.</div>';
+  }
+
+  document.getElementById('porovnani-projekty-obsah').innerHTML =
+    '<div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;font-size:11px;color:var(--light);">' +
+      '<span>' + escapeHtml(a.nazev) + ' · ' + datumA + '</span><span>' + escapeHtml(b.nazev) + ' · ' + datumB + '</span>' +
+    '</div>' + shrnuti + tabulka;
+  document.getElementById('modal-porovnani-projekty').classList.add('visible');
+}
+function zavritModalPorovnaniProjektu() {
+  document.getElementById('modal-porovnani-projekty').classList.remove('visible');
+}
+
 function otevritSeznamProjektu() {
   const seznam = nacistSeznamProjektu();
   const prazdno = document.getElementById('projekty-prazdno');
@@ -1292,6 +1432,7 @@ function otevritSeznamProjektu() {
       const pocetTras = (p.zakazky || []).length;
       return `
       <div class="pracovnik-item" onclick="nacistProjekt('${p.id}')">
+        <input type="checkbox" class="projekt-checkbox" onclick="event.stopPropagation()" onchange="zaskrtnoutProjektKPorovnani('${p.id}', this.checked)"${vybraneProjektyKPorovnani.includes(p.id) ? ' checked' : ''}>
         <div class="pracovnik-dot" style="background:${(p.zakazky && p.zakazky[0]) ? p.zakazky[0].barva : '#e9a91b'}"></div>
         <span class="pracovnik-nazev">${escapeHtml(p.nazev)}</span>
         <span class="pracovnik-metro">${pocetTras} ${pocetTras === 1 ? 'trasa' : (pocetTras >= 2 && pocetTras <= 4 ? 'trasy' : 'tras')} · ${datum}</span>
@@ -1302,6 +1443,7 @@ function otevritSeznamProjektu() {
     `;
     }).join('');
   }
+  aktualizovatPorovnatProjektyBar();
   document.getElementById('modal-projekty').classList.add('visible');
 }
 
