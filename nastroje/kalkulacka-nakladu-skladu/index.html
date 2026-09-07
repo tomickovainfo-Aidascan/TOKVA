@@ -190,6 +190,13 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .empty-note { font-size:12px; color:var(--light); padding:4px 0 8px; }
 .ulozene-export { padding:4px 20px 16px; }
 .trend-insight { background:var(--gold-light); border:1px solid rgba(233,169,27,.3); border-radius:8px; padding:10px 14px; font-size:12.5px; color:var(--mid); margin-top:10px; }
+.modal { background:var(--white); border-radius:14px; padding:24px; max-width:640px; width:100%; max-height:86vh; overflow-y:auto; }
+.modal-title { font-family:"Poppins",sans-serif; font-size:16px; font-weight:800; color:var(--dark); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; }
+.modal-close { background:none; border:none; font-size:20px; color:var(--light); cursor:pointer; line-height:1; }
+.historie-porovnat-bar { padding:12px 0 0; border-top:1px solid var(--border); margin-top:8px; }
+.vysledek-row-kalk { cursor:pointer; }
+.vysledek-row-kalk:hover .ulozeny-name { color:var(--gold-dark); }
+.porovnani-badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:700; }
 
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
 .modal-box { background:var(--white); border-radius:14px; padding:28px; max-width:420px; width:100%; }
@@ -1009,6 +1016,9 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           Uložené výpočty <span class="pro-lock-badge">Pro</span>
         </div>
         <div id="ulozene-seznam" style="padding:8px 20px 4px;"></div>
+        <div class="historie-porovnat-bar" id="historie-porovnat-bar" style="display:none;padding:12px 20px 0;">
+          <button class="btn-gold" style="width:100%;" id="btn-porovnat-vybrane" onclick="otevritModalPorovnani()" disabled>Porovnat vybrané (0/2)</button>
+        </div>
         <div class="ulozene-export">
           <button class="btn-outline" style="width:100%;" onclick="exportCSV()">⬇ Export CSV (porovnání)</button>
         </div>
@@ -1162,6 +1172,26 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   </div>
 </div>
 
+
+<div class="modal-overlay" id="modal-detail-vysledku" style="display:none;" onclick="if(event.target===this) zavritModalDetailVysledku()">
+  <div class="modal">
+    <div class="modal-title">
+      <span>Detail výpočtu</span>
+      <button class="modal-close" onclick="zavritModalDetailVysledku()">×</button>
+    </div>
+    <div id="detail-vysledku-obsah"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-porovnani" style="display:none;" onclick="if(event.target===this) zavritModalPorovnani()">
+  <div class="modal">
+    <div class="modal-title">
+      <span>Porovnání dvou výpočtů</span>
+      <button class="modal-close" onclick="zavritModalPorovnani()">×</button>
+    </div>
+    <div id="porovnani-obsah"></div>
+  </div>
+</div>
 <!-- ── SCRIPTS ── -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
@@ -1438,6 +1468,37 @@ let session = null;
 let clenstvi = null;
 let jePro = false;
 let ulozene = JSON.parse(localStorage.getItem('kalk_ulozene') || '[]');
+// Sjednocený seznam, ze kterého appka aktuálně vykresluje (buď ze Supabase pro Pro
+// uživatele "napříč zařízeními" jako u ostatních appek, nebo lokální kopie jako
+// záloha při výpadku/offline) - vždy od nejnovějšího. Porovnání i detail pracují
+// jen s tímhle polem, ne přímo s `ulozene`, aby fungovaly stejně nezávisle na zdroji.
+let posledniHistorie = [];
+let vybraneKPorovnani = [];
+let vysledekZAdresyOtevren = false;
+
+const NAZVY_KAT = { zakladni: 'základní náklad', energie: 'energie', pojisteni: 'daně a pojištění', revize: 'údržba a revize', provoz: 'provozní služby', odpisy: 'odpisy vybavení', ostatni: 'ostatní a rezerva' };
+
+// Převod řádku ze Supabase (tool_runs) do stejného tvaru, jaký mají položky
+// v lokálním poli `ulozene` - zbytek appky (akční plán, export, porovnání,
+// detail) pak vůbec neřeší, odkud záznam pochází.
+function radekZToolRun(r) {
+  const d = r.data || {};
+  return {
+    id: r.id,
+    toolRunId: r.id,
+    ts: new Date(r.created_at).getTime(),
+    nazev: r.nazev,
+    datum: new Date(r.created_at).toLocaleDateString('cs-CZ'),
+    plocha: d.plocha,
+    mode: d.mode,
+    m2mesic: r.hlavni_hodnota_cislo,
+    mesic: d.mesic,
+    rok: d.rok,
+    m2rok: d.m2rok,
+    kategorie: d.kategorie || {}
+  };
+}
+
 
 async function nacistPrihlaseniStav() {
   // Zabaleno v try/catch schválně: appka je pořád zdarma použitelná i offline,
@@ -1573,6 +1634,7 @@ function ulozitVypocet() {
   nazev = nazev.trim() || navrh;
   var polozka = {
     id: 'v_' + Date.now(),
+    ts: Date.now(),
     nazev: nazev,
     datum: new Date().toLocaleDateString('cs-CZ'),
     plocha: posledniVysledek.plocha,
@@ -1624,6 +1686,7 @@ async function odeslatVypocetDoSupabase(polozka) {
     if (run) {
       polozka.toolRunId = run.id;
       localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
+      renderUlozene();
     }
   } catch (e) {
     console.warn('Výpočet se nepodařilo uložit do Supabase, zůstává aspoň lokálně.', e);
@@ -1633,7 +1696,7 @@ async function odeslatVypocetDoSupabase(polozka) {
 let akcniPlanAktivniId = null;
 
 function otevritModalAkcniPlan(id) {
-  const u = ulozene.find(function (x) { return x.id === id; });
+  const u = posledniHistorie.find(function (x) { return x.id === id; }) || ulozene.find(function (x) { return x.id === id; });
   if (!u || !u.toolRunId) return;
   akcniPlanAktivniId = id;
   document.getElementById('ap-nazev').value = 'Snížit náklady na m²: ' + u.nazev;
@@ -1687,7 +1750,7 @@ async function pridatDoAkcnihoPlanu() {
   const stav = document.getElementById('ap-stav');
   const nazevInput = document.getElementById('ap-nazev');
   const nazev = (nazevInput.value || '').trim();
-  const u = ulozene.find(function (x) { return x.id === akcniPlanAktivniId; });
+  const u = posledniHistorie.find(function (x) { return x.id === akcniPlanAktivniId; }) || ulozene.find(function (x) { return x.id === akcniPlanAktivniId; });
   if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
   if (!u || !u.toolRunId || !clenstvi) { stav.textContent = 'Výpočet se ještě neuložil do účtu, zkuste to prosím znovu.'; return; }
   stav.textContent = 'Ukládám…';
@@ -1726,67 +1789,242 @@ async function pridatDoAkcnihoPlanu() {
 }
 
 function smazatUlozeny(id) {
-  potvrdit('Smazat tento uložený výpočet?', 'Smazat', function() {
-    ulozene = ulozene.filter(function (u) { return u.id !== id; });
+  potvrdit('Smazat tento uložený výpočet?', 'Smazat', async function() {
+    const u = posledniHistorie.find(function (x) { return x.id === id; }) || ulozene.find(function (x) { return x.id === id; });
+    ulozene = ulozene.filter(function (x) { return x.id !== id; });
     localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
+    if (u && u.toolRunId && clenstvi) {
+      try { await supabaseClient.from('tool_runs').delete().eq('id', u.toolRunId); }
+      catch (e) { console.warn('Smazání ze Supabase se nepodařilo, mizí aspoň lokálně.', e); }
+    }
     renderUlozene();
   });
 }
 
-function renderUlozene() {
+// Appka ukazuje uložené výpočty ze Supabase (napříč zařízeními, stejně jako
+// historie u ostatních appek), lokální pole `ulozene` zůstává jen jako záložní
+// zdroj pro nepřihlášené/offline stav a jako okamžitá kopie hned po uložení,
+// než se stihne dotáhnout Supabase (viz ulozitVypocet/odeslatVypocetDoSupabase).
+async function renderUlozene() {
   var box = document.getElementById('ulozene-box');
   if (!jePro) { box.style.display = 'none'; return; }
   box.style.display = 'block';
   var wrap = document.getElementById('ulozene-seznam');
-  if (ulozene.length === 0) {
-    wrap.innerHTML = '<p class="empty-note">Zatím nemáte žádný uložený výpočet. Nahoře klikněte na „Uložit tento výpočet".</p>';
+  if (!clenstvi) {
+    vykreslitUlozeneSeznam(ulozene.slice().reverse());
     return;
   }
-  wrap.innerHTML = ulozene.map(function (u) {
-    return '<div class="ulozeny-item">' +
+  wrap.innerHTML = '<p class="empty-note">Načítám uložené výpočty…</p>';
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('*')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'kalkulacka-m2')
+      .order('created_at', { ascending: false })
+      .limit(30);
+    if (error) throw error;
+    vykreslitUlozeneSeznam((data || []).map(radekZToolRun));
+    otevritVysledekZAdresy();
+  } catch (e) {
+    console.warn('Uložené výpočty se nepodařilo načíst ze Supabase, ukazuju aspoň lokální kopii.', e);
+    vykreslitUlozeneSeznam(ulozene.slice().reverse());
+  }
+}
+
+// seznam = pole od nejnovějšího, sjednocený tvar (viz radekZToolRun) - stejný,
+// ať přišel ze Supabase nebo z lokální zálohy.
+function vykreslitUlozeneSeznam(seznam) {
+  posledniHistorie = seznam;
+  var wrap = document.getElementById('ulozene-seznam');
+  if (seznam.length === 0) {
+    wrap.innerHTML = '<p class="empty-note">Zatím nemáte žádný uložený výpočet. Nahoře klikněte na „Uložit tento výpočet".</p>';
+    aktualizovatPorovnatBar();
+    return;
+  }
+  wrap.innerHTML = seznam.map(function (u, i) {
+    var zaskrtnuto = vybraneKPorovnani.includes(i);
+    return '<div class="ulozeny-item vysledek-row-kalk" onclick="otevritModalDetailVysledku(' + i + ')">' +
+      '<input type="checkbox" class="ulozeny-checkbox" onclick="event.stopPropagation()" onchange="zaskrtnoutKPorovnani(' + i + ', this.checked)"' + (zaskrtnuto ? ' checked' : '') + ' style="flex-shrink:0;width:16px;height:16px;">' +
       '<div style="flex:1;min-width:0;">' +
       '<div class="ulozeny-name">' + u.nazev + '</div>' +
       '<div class="ulozeny-meta">' + u.datum + ' · ' + fmt(u.plocha) + ' m² · ' + (u.mode === 'najem' ? 'pronájem' : 'vlastní budova') + '</div>' +
       '</div>' +
       '<div class="ulozeny-num">' + fmt(u.m2mesic) + ' Kč/m²</div>' +
-      (u.toolRunId ? '<button class="ulozeny-del" onclick="otevritModalAkcniPlan(\'' + u.id + '\')" title="Přidat do akčního plánu" style="color:var(--gold-dark);font-size:18px;">+</button>' : '') +
-      '<button class="ulozeny-del" onclick="smazatUlozeny(\'' + u.id + '\')" title="Smazat">×</button>' +
+      (u.toolRunId ? '<button class="ulozeny-del" onclick="event.stopPropagation();otevritModalAkcniPlan(\'' + u.id + '\')" title="Přidat do akčního plánu" style="color:var(--gold-dark);font-size:18px;">+</button>' : '') +
+      '<button class="ulozeny-del" onclick="event.stopPropagation();smazatUlozeny(\'' + u.id + '\')" title="Smazat">×</button>' +
       '</div>';
-  }).join('') + trendInsightHtml();
+  }).join('') + trendInsightHtml(seznam);
+  aktualizovatPorovnatBar();
 }
 
-// Jednoduché porovnání posledních dvou uložených výpočtů (v pořadí, jak byly uloženy –
-// appka nepozná, jestli jde o stejný sklad, jen ukáže, co se změnilo od minule).
-function trendInsightHtml() {
-  if (ulozene.length < 2) return '';
-  const posl = ulozene[ulozene.length - 1];
-  const pred = ulozene[ulozene.length - 2];
+// Jednoduché porovnání posledních dvou uložených výpočtů (seznam je od nejnovějšího,
+// takže seznam[0] je poslední uložený a seznam[1] předchozí) – appka nepozná, jestli
+// jde o stejný sklad nebo jiný scénář, jen ukáže, co se změnilo oproti předchozímu.
+function trendInsightHtml(seznam) {
+  if (!seznam || seznam.length < 2) return '';
+  const posl = seznam[0];
+  const pred = seznam[1];
   if (!posl.kategorie || !pred.kategorie || !pred.m2mesic) return '';
 
   const zmenaPct = Math.round((posl.m2mesic - pred.m2mesic) / pred.m2mesic * 1000) / 10;
   if (zmenaPct === 0) return '';
   const smer = zmenaPct > 0 ? 'vzrostly' : 'klesly';
 
-  const nazvyKat = { zakladni: 'základní náklad', energie: 'energie', pojisteni: 'daně a pojištění', revize: 'údržba a revize', provoz: 'provozní služby', odpisy: 'odpisy vybavení', ostatni: 'ostatní a rezerva' };
   let maxKlic = null, maxRozdil = 0;
-  Object.keys(nazvyKat).forEach(function (k) {
+  Object.keys(NAZVY_KAT).forEach(function (k) {
     const rozdil = (posl.kategorie[k] || 0) - (pred.kategorie[k] || 0);
     if (Math.abs(rozdil) > Math.abs(maxRozdil)) { maxRozdil = rozdil; maxKlic = k; }
   });
 
   const zmenaPctText = Math.abs(zmenaPct).toString().replace('.', ',');
   return '<div class="trend-insight">📈 Náklady na m² ' + smer + ' o ' + zmenaPctText + ' % oproti výpočtu „' + pred.nazev + '"' +
-    (maxKlic ? '. Největší ' + (maxRozdil > 0 ? 'nárůst' : 'pokles') + ': ' + nazvyKat[maxKlic] + '.' : '.') + '</div>';
+    (maxKlic ? '. Největší ' + (maxRozdil > 0 ? 'nárůst' : 'pokles') + ': ' + NAZVY_KAT[maxKlic] + '.' : '.') + '</div>';
+}
+
+// Appka umí otevřít rovnou konkrétní uložený výpočet podle ?vysledek=<id> v adrese
+// (odkaz "Otevřít celý výsledek" ze Zdroje úkolu v Akčním plánu).
+async function otevritVysledekZAdresy() {
+  if (vysledekZAdresyOtevren) return;
+  const id = new URLSearchParams(window.location.search).get('vysledek');
+  if (!id) return;
+  vysledekZAdresyOtevren = true;
+  const idx = posledniHistorie.findIndex(r => r.id === id);
+  if (idx > -1) { otevritModalDetailVysledku(idx); return; }
+  try {
+    const { data, error } = await supabaseClient.from('tool_runs').select('*').eq('id', id).eq('nastroj', 'kalkulacka-m2').maybeSingle();
+    if (error || !data) return;
+    posledniHistorie.push(radekZToolRun(data));
+    otevritModalDetailVysledku(posledniHistorie.length - 1);
+  } catch (e) {
+    console.warn('Nepodařilo se najít konkrétní výpočet podle adresy.', e);
+  }
+}
+
+// Zaškrtnutí řádku pro porovnání - nejvýš dva najednou, třetí zaškrtnutí
+// automaticky odškrtne to nejstarší zaškrtnuté (stejný vzorec jako u historie
+// v ostatních appkách).
+function zaskrtnoutKPorovnani(i, zaskrtnuto) {
+  vybraneKPorovnani = vybraneKPorovnani.filter(x => x !== i);
+  if (zaskrtnuto) {
+    vybraneKPorovnani.push(i);
+    if (vybraneKPorovnani.length > 2) vybraneKPorovnani.shift();
+  }
+  vykreslitUlozeneSeznam(posledniHistorie);
+}
+
+function aktualizovatPorovnatBar() {
+  const bar = document.getElementById('historie-porovnat-bar');
+  const btn = document.getElementById('btn-porovnat-vybrane');
+  if (!bar || !btn) return;
+  bar.style.display = posledniHistorie.length >= 2 ? 'block' : 'none';
+  const n = vybraneKPorovnani.length;
+  btn.disabled = n !== 2;
+  btn.textContent = 'Porovnat vybrané (' + n + '/2)';
+}
+
+// Detail jednoho uloženého výpočtu - rozpad nákladů po kategoriích.
+function otevritModalDetailVysledku(i) {
+  const u = posledniHistorie[i];
+  if (!u) return;
+  const radkyKat = Object.keys(NAZVY_KAT).map(function (k) {
+    const hod = (u.kategorie || {})[k];
+    if (hod == null) return '';
+    return '<tr><td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;">' + NAZVY_KAT[k] + '</td>' +
+      '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + fmt(hod) + ' Kč</td></tr>';
+  }).join('');
+  document.getElementById('detail-vysledku-obsah').innerHTML =
+    '<div style="font-size:12px;color:var(--light);margin-bottom:4px;">' + u.datum + ' · ' + (u.mode === 'najem' ? 'pronájem' : 'vlastní budova') + '</div>' +
+    '<div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:14px;">' + u.nazev + '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">' +
+      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">Kč/m²/měsíc</div><div style="font-size:19px;font-weight:800;">' + fmt(u.m2mesic) + '</div></div>' +
+      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">Plocha</div><div style="font-size:19px;font-weight:800;">' + fmt(u.plocha) + ' m²</div></div>' +
+      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">Kč/měsíc celkem</div><div style="font-size:15px;font-weight:700;">' + fmt(u.mesic) + '</div></div>' +
+      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">Kč/rok celkem</div><div style="font-size:15px;font-weight:700;">' + fmt(u.rok) + '</div></div>' +
+    '</div>' +
+    (radkyKat ? '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Kategorie</th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Kč/měsíc</th>' +
+      '</tr></thead><tbody>' + radkyKat + '</tbody></table></div>' : '') +
+    (u.toolRunId ? '<button class="btn-gold" style="width:100%;margin-top:16px;" onclick="zavritModalDetailVysledku();otevritModalAkcniPlan(\'' + u.id + '\')">+ Přidat do akčního plánu</button>' : '');
+  document.getElementById('modal-detail-vysledku').style.display = 'flex';
+}
+function zavritModalDetailVysledku() {
+  document.getElementById('modal-detail-vysledku').style.display = 'none';
+}
+
+// Porovnání dvou vybraných výpočtů - funguje stejně, ať jde o stejný sklad v jiný
+// čas, nebo o dva různé scénáře ze stejného dne (appka mezi tím nerozlišuje,
+// jen ukáže rozdíl - jestli je to "dřív/teď" nebo "varianta A/B" pozná Gábina
+// sama podle názvů výpočtů). Řadí se podle času uložení, starší vlevo.
+function otevritModalPorovnani() {
+  if (vybraneKPorovnani.length !== 2) return;
+  const zaznamy = vybraneKPorovnani.map(i => posledniHistorie[i]).filter(Boolean);
+  if (zaznamy.length !== 2) return;
+  zaznamy.sort((x, y) => (x.ts || 0) - (y.ts || 0));
+  const [a, b] = zaznamy;
+
+  function radek(label, va, vb, jednotka, nizsiJeLip) {
+    if (va == null || vb == null) return '';
+    const rozdil = vb - va;
+    let barva = 'var(--mid)', text = '';
+    if (rozdil !== 0) {
+      const jeLepsi = nizsiJeLip ? rozdil < 0 : rozdil > 0;
+      barva = jeLepsi ? '#2a7a4f' : '#b91c1c';
+      text = (rozdil > 0 ? '+' : '') + fmt(Math.round(rozdil)) + ' ' + jednotka;
+    }
+    return '<tr>' +
+      '<td style="padding:8px 6px;border-bottom:1px solid #f0f0f0;">' + label + '</td>' +
+      '<td style="padding:8px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + fmt(va) + '</td>' +
+      '<td style="padding:8px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + fmt(vb) + '</td>' +
+      '<td style="padding:8px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-weight:700;color:' + barva + ';">' + text + '</td>' +
+      '</tr>';
+  }
+
+  let radky = radek('Plocha (m²)', a.plocha, b.plocha, 'm²', false);
+  radky += radek('Kč/m²/měsíc', a.m2mesic, b.m2mesic, 'Kč', true);
+  radky += radek('Kč/měsíc celkem', a.mesic, b.mesic, 'Kč', true);
+  radky += radek('Kč/rok celkem', a.rok, b.rok, 'Kč', true);
+  radky += radek('Kč/m²/rok', a.m2rok, b.m2rok, 'Kč', true);
+  Object.keys(NAZVY_KAT).forEach(function (k) {
+    const va = (a.kategorie || {})[k], vb = (b.kategorie || {})[k];
+    if (va != null || vb != null) radky += radek(NAZVY_KAT[k], va, vb, 'Kč', true);
+  });
+
+  const tabulka = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+    '<thead><tr>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);"></th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">' + a.nazev + '</th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">' + b.nazev + '</th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Rozdíl</th>' +
+    '</tr></thead><tbody>' + radky + '</tbody></table></div>';
+
+  const deltaMesic = b.m2mesic - a.m2mesic;
+  let shrnuti;
+  if (deltaMesic > 0) shrnuti = 'Náklady na m² vzrostly z ' + fmt(a.m2mesic) + ' na ' + fmt(b.m2mesic) + ' Kč/měsíc.';
+  else if (deltaMesic < 0) shrnuti = 'Náklady na m² klesly z ' + fmt(a.m2mesic) + ' na ' + fmt(b.m2mesic) + ' Kč/měsíc.';
+  else shrnuti = 'Náklady na m² zůstaly stejné (' + fmt(b.m2mesic) + ' Kč/měsíc).';
+
+  document.getElementById('porovnani-obsah').innerHTML =
+    '<div style="display:flex;justify-content:space-between;gap:12px;margin-bottom:6px;font-size:11px;color:var(--light);">' +
+      '<span>' + a.datum + '</span><span>' + b.datum + '</span>' +
+    '</div>' +
+    '<div style="background:var(--paper,#faf9f6);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:16px;">' + shrnuti + '</div>' +
+    tabulka;
+  document.getElementById('modal-porovnani').style.display = 'flex';
+}
+function zavritModalPorovnani() {
+  document.getElementById('modal-porovnani').style.display = 'none';
 }
 
 function exportCSV() {
   if (!jePro) { otevritModalPro(); return; }
-  if (ulozene.length === 0) {
+  if (posledniHistorie.length === 0) {
     upozornit('Zatím nemáte žádný uložený výpočet k exportu. Nejdřív nějaký uložte tlačítkem „Uložit tento výpočet".');
     return;
   }
   var radky = [['Název', 'Datum', 'Plocha (m²)', 'Typ', 'Kč/m²/měsíc', 'Kč/měsíc celkem', 'Kč/rok celkem', 'Kč/m²/rok']];
-  ulozene.forEach(function (u) {
+  posledniHistorie.forEach(function (u) {
     radky.push([u.nazev, u.datum, u.plocha, u.mode === 'najem' ? 'Pronájem' : 'Vlastní budova', u.m2mesic, u.mesic, u.rok, u.m2rok]);
   });
   var csv = radky.map(function (r) {
