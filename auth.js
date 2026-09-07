@@ -93,6 +93,17 @@ function prepnoutOdkazyNaPro(jePro) {
   });
 }
 
+// Ukáže/schová trvalý odkaz na Akční plán v horní liště appky - jen appky,
+// co mají v HTML prvek #nav-akcni-plan (skrytý defaultně přes style="display:none"),
+// ho zobrazí. Bez tohohle šlo do Akčního plánu jen přes odkaz "Otevřít akční
+// plán", který appka nabídne až po přidání konkrétního úkolu - jinak se tam
+// přihlášený Pro uživatel nedostal vůbec.
+function zobrazitOdkazAkcniPlan(jePro) {
+  const el = document.getElementById('nav-akcni-plan');
+  if (!el) return;
+  el.style.display = jePro ? '' : 'none';
+}
+
 // Odhlášení, s přesměrováním zpátky na přihlašovací stránku.
 async function odhlasit() {
   await supabaseClient.auth.signOut();

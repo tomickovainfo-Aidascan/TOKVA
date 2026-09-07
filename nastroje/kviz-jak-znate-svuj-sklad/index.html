@@ -357,6 +357,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/nastroje/?nastroj=kviz-sklad" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Jak dobře znáte svůj sklad</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
 </nav>
@@ -853,6 +854,7 @@ async function nacistPrihlaseniStav() {
     clenstvi = session ? await ziskatMojiOrganizaci() : null;
     jePro = maAktivniPro(clenstvi);
     prepnoutOdkazyNaPro(jePro);
+    zobrazitOdkazAkcniPlan(jePro);
   } catch (e) {
     console.warn('Přihlašovací vrstva se nepodařila načíst, appka jede jako nepřihlášená.', e);
     session = null; clenstvi = null; jePro = false;
@@ -1306,6 +1308,7 @@ function zobrazVysledky() {
   ulozitVysledekDoSupabase(skore, oblasti).then(renderHistorie);
   renderHistorie();
   prepnoutOdkazyNaPro(jePro);
+  zobrazitOdkazAkcniPlan(jePro);
 }
 
 function zacitZnovu() {

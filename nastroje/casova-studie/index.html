@@ -1204,6 +1204,7 @@ nav {
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/nastroje/?nastroj=casova-studie" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Časová studie mého dne</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
 </nav>
@@ -1551,6 +1552,7 @@ async function nacistPrihlaseniStav() {
     clenstvi = session ? await ziskatMojiOrganizaci() : null;
     jePro = maAktivniPro(clenstvi);
     prepnoutOdkazyNaPro(jePro);
+    zobrazitOdkazAkcniPlan(jePro);
   } catch (e) {
     console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál jako nepřihlášená (zdarma).', e);
     session = null;
@@ -2058,6 +2060,7 @@ function renderZaznamy() {
       ${klasCardHtml}
     `;
     prepnoutOdkazyNaPro(jePro);
+    zobrazitOdkazAkcniPlan(jePro);
   }
 }
 

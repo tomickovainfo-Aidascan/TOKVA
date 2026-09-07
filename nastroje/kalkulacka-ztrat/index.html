@@ -268,6 +268,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/nastroje/?nastroj=kalkulacka" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Kalkulačka ztrát</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
 </nav>
@@ -672,6 +673,7 @@ function aktualizovatNejvetsiZtratu(hodnoty, celkem) {
     ctaEl.style.display = "none";
   }
   if (typeof prepnoutOdkazyNaPro === 'function') prepnoutOdkazyNaPro(typeof maAktivniPro === 'function' ? maAktivniPro(clenstvi) : false);
+  if (typeof zobrazitOdkazAkcniPlan === 'function') zobrazitOdkazAkcniPlan(typeof maAktivniPro === 'function' ? maAktivniPro(clenstvi) : false);
 }
 
 let session = null;
@@ -695,6 +697,7 @@ async function nacistPrihlaseniStav() {
   }
   renderUcetNav();
   prepnoutOdkazyNaPro(maAktivniPro(clenstvi));
+  zobrazitOdkazAkcniPlan(maAktivniPro(clenstvi));
 }
 
 function renderUcetNav() {
