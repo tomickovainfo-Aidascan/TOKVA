@@ -1803,9 +1803,30 @@ async function renderHistorie() {
         '<div class="vysledek-text"><strong>' + datum + '</strong><span>' + proc + ' %</span></div>' +
         '</div>';
     }).join('');
+    otevritVysledekZAdresy();
   } catch (e) {
     console.warn('Historii se nepodařilo načíst.', e);
     obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--mid);">Historii se teď nepodařilo načíst.</div>';
+  }
+}
+
+// Appka umí otevřít rovnou konkrétní uložený výsledek podle ?vysledek=<id> v adrese
+// (odkaz "Otevřít celý výsledek" z Akčního plánu) - zavolá se po načtení historie.
+let vysledekZAdresyOtevren = false;
+async function otevritVysledekZAdresy() {
+  if (vysledekZAdresyOtevren) return;
+  const id = new URLSearchParams(window.location.search).get('vysledek');
+  if (!id) return;
+  vysledekZAdresyOtevren = true;
+  const idx = posledniHistorie.findIndex(r => r.id === id);
+  if (idx > -1) { otevritModalDetailVysledku(idx); return; }
+  try {
+    const { data, error } = await supabaseClient.from('tool_runs').select('*').eq('id', id).eq('nastroj', 'mini-audit-vyroby').maybeSingle();
+    if (error || !data) return;
+    posledniHistorie.push(data);
+    otevritModalDetailVysledku(posledniHistorie.length - 1);
+  } catch (e) {
+    console.warn('Nepodařilo se najít konkrétní výsledek podle adresy.', e);
   }
 }
 

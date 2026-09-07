@@ -345,7 +345,9 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
   <div class="modal" style="max-width:420px;">
     <h3>Proč tahle akce vznikla</h3>
     <p class="modal-sub" id="duvod-text"></p>
+    <p class="modal-sub" id="duvod-odkaz-pozn" style="display:none;font-size:12.5px;"></p>
     <div class="modal-btns">
+      <a href="#" id="duvod-odkaz" target="_blank" rel="noopener" class="btn-modal-cancel" style="display:none;text-decoration:none;text-align:center;">Otevřít celý výsledek →</a>
       <button type="button" class="btn-modal-ok" onclick="zavritModalDuvod()">Zavřít</button>
     </div>
   </div>
@@ -452,7 +454,7 @@ async function nacistData() {
 
   const [projektyRes, akceRes] = await Promise.all([
     supabaseClient.from('projects').select('id,name,status').eq('organization_id', orgId).order('created_at', { ascending: true }),
-    supabaseClient.from('actions').select('*, projects(name), tool_runs(nazev, shrnuti)').eq('organization_id', orgId).order('created_at', { ascending: false })
+    supabaseClient.from('actions').select('*, projects(name), tool_runs(id, nastroj, nazev, shrnuti)').eq('organization_id', orgId).order('created_at', { ascending: false })
   ]);
 
   if (projektyRes.error) { console.warn('Načtení projektů selhalo.', projektyRes.error); projekty = []; }
@@ -579,7 +581,7 @@ function renderKarty(seznam) {
 
     let duvodHtml = '';
     if (a.tool_runs) {
-      duvodHtml = '<div class="akce-duvod" onclick=\'otevritModalDuvod(' + JSON.stringify(a.tool_runs.nazev || 'Výsledek nástroje').replace(/'/g,"&#39;") + ', ' + JSON.stringify(a.tool_runs.shrnuti || '').replace(/'/g,"&#39;") + ')\'>Proč tahle akce vznikla →</div>';
+      duvodHtml = '<div class="akce-duvod" onclick="otevritModalDuvod(\'' + a.id + '\')">Proč tahle akce vznikla →</div>';
     }
 
     return '<div class="akce-karta">' +
@@ -607,6 +609,21 @@ function renderKarty(seznam) {
 // =============================================
 // TABULKA (zobrazení jako v Excelu, s filtry a řazením)
 // =============================================
+const NASTROJ_URL = {
+  '5s': 'https://tokva.cz/nastroje/5S_audit/',
+  '5x-proc': 'https://tokva.cz/nastroje/5x-proc-ai-kouc/',
+  'casova-studie': 'https://tokva.cz/nastroje/casova-studie/',
+  'kalkulacka-m2': 'https://tokva.cz/nastroje/kalkulacka-nakladu-skladu/',
+  'kviz-sklad': 'https://tokva.cz/nastroje/kviz-jak-znate-svuj-sklad/',
+  'kviz-komunikacniho-chaosu': 'https://tokva.cz/nastroje/kviz-komunikacniho-chaosu/',
+  'meric-plytvani-pro': 'https://tokva.cz/nastroje/meric-plytvani-pro/',
+  'mini-audit-skladu': 'https://tokva.cz/nastroje/mini-audit-skladu/',
+  'mini-audit-vyroby': 'https://tokva.cz/nastroje/mini-audit-vyroby/',
+  'spaghetti-pro': 'https://tokva.cz/nastroje/spaghetti-pro/'
+};
+// appky, co uz umi otevrit primo konkretni ulozeny vysledek podle ?vysledek=<id> v adrese
+const NASTROJ_PODPORUJE_ODKAZ = ['mini-audit-skladu', 'mini-audit-vyroby'];
+
 const IKONA_UPRAVIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"/></svg>';
 const IKONA_SMAZAT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
 
@@ -621,7 +638,8 @@ const TABULKA_SLOUPCE = [
   { klic: 'actual_state', nazev: 'Skutečný stav' },
   { klic: 'actual_benefit', nazev: 'Skutečný přínos' },
   { klic: 'verification_date', nazev: 'Datum ověření' },
-  { klic: 'verification_confirmed', nazev: 'Potvrzeno' }
+  { klic: 'verification_confirmed', nazev: 'Potvrzeno' },
+  { klic: 'zdroj', nazev: 'Zdroj úkolu' }
 ];
 
 function renderTabulka(seznam) {
@@ -646,7 +664,7 @@ function renderTabulka(seznam) {
       '<th><select onchange="zmenitTabFiltr(\'stav\', this.value)">' + stavOptions + '</select></th>' +
       '<th><input type="text" placeholder="Hledat…" value="' + escapovat(tabFiltr.osoba) + '" oninput="zmenitTabFiltr(\'osoba\', this.value)"></th>' +
       '<th><input type="text" placeholder="Hledat…" value="' + escapovat(tabFiltr.termin) + '" oninput="zmenitTabFiltr(\'termin\', this.value)"></th>' +
-      '<th></th><th></th><th></th><th></th><th></th><th></th>' +
+      '<th></th><th></th><th></th><th></th><th></th><th></th><th></th>' +
       '<th></th>' +
     '</tr>';
 
@@ -699,6 +717,9 @@ function aktualizovatTabulkuRadky() {
       } else if (tabRazeniSloupec === 'verification_confirmed') {
         vx = x.verification_confirmed ? 1 : 0;
         vy = y.verification_confirmed ? 1 : 0;
+      } else if (tabRazeniSloupec === 'zdroj') {
+        vx = x.tool_runs ? x.tool_runs.nazev || '' : '';
+        vy = y.tool_runs ? y.tool_runs.nazev || '' : '';
       } else {
         vx = x[tabRazeniSloupec] || '';
         vy = y[tabRazeniSloupec] || '';
@@ -710,7 +731,7 @@ function aktualizovatTabulkuRadky() {
   }
 
   if (f.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--mid);padding:24px;">Nic nevyhovuje filtru.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;color:var(--mid);padding:24px;">Nic nevyhovuje filtru.</td></tr>';
     return;
   }
 
@@ -728,6 +749,7 @@ function aktualizovatTabulkuRadky() {
       '<td>' + (a.actual_benefit != null ? formatKc(a.actual_benefit) + '/rok' : '—') + '</td>' +
       '<td>' + (a.verification_date ? formatDatum(a.verification_date) : '—') + '</td>' +
       '<td>' + (a.verification_confirmed ? '✓' : '—') + '</td>' +
+      '<td>' + (a.tool_runs ? '<span class="akce-duvod" onclick="otevritModalDuvod(\'' + a.id + '\')">' + escapovat(a.tool_runs.nazev || 'Výsledek nástroje') + '</span>' : '—') + '</td>' +
       '<td class="tabulka-akce-bunka"><button class="ikona-btn" title="Upravit" aria-label="Upravit" onclick="otevritModalUpravitAkce(\'' + a.id + '\')">' + IKONA_UPRAVIT + '</button><button class="ikona-btn smazat" title="Smazat" aria-label="Smazat" onclick="smazatAkci(\'' + a.id + '\')">' + IKONA_SMAZAT + '</button></td>' +
     '</tr>';
   }).join('');
@@ -749,8 +771,29 @@ async function smazatAkci(id) {
   renderSeznam();
 }
 
-function otevritModalDuvod(nazev, shrnuti) {
+function otevritModalDuvod(akceId) {
+  const a = akce.find(x => x.id === akceId);
+  const tr = a && a.tool_runs;
+  const nazev = (tr && tr.nazev) || 'Výsledek nástroje';
+  const shrnuti = tr && tr.shrnuti;
   document.getElementById('duvod-text').textContent = 'Vznikla z výsledku „' + nazev + '"' + (shrnuti ? ': ' + shrnuti : '.');
+
+  const odkaz = document.getElementById('duvod-odkaz');
+  const pozn = document.getElementById('duvod-odkaz-pozn');
+  if (tr && tr.nastroj && tr.id && NASTROJ_URL[tr.nastroj]) {
+    odkaz.href = NASTROJ_URL[tr.nastroj] + '?vysledek=' + tr.id;
+    odkaz.style.display = 'block';
+    if (NASTROJ_PODPORUJE_ODKAZ.includes(tr.nastroj)) {
+      pozn.style.display = 'none';
+    } else {
+      pozn.textContent = 'Appka zatím neumí otevřít rovnou tenhle konkrétní výsledek – otevře se appka, konkrétní záznam si najdete v historii sami.';
+      pozn.style.display = 'block';
+    }
+  } else {
+    odkaz.style.display = 'none';
+    pozn.style.display = 'none';
+  }
+
   document.getElementById('modal-duvod-overlay').classList.add('visible');
 }
 function zavritModalDuvod() {
