@@ -541,6 +541,16 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-porovnani">
+  <div class="modal-box" style="max-width:620px;max-height:86vh;overflow-y:auto;">
+    <div class="modal-box-head">
+      <h3>Porovnání dvou auditů</h3>
+      <button class="modal-box-close" onclick="zavritModalPorovnani()">×</button>
+    </div>
+    <div id="porovnani-obsah"></div>
+  </div>
+</div>
+
 <div class="hero">
   <div class="hero-inner">
     <div class="tool-badge">Vedoucí výroby, co chce rychlý přehled kde to vázne</div>
@@ -857,6 +867,9 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
         <button class="btn-gold" style="width:100%;" onclick="otevritModalPro()">Odemknout Pro</button>
       </div>
       <div id="historie-obsah" style="display:none;"></div>
+      <div id="historie-porovnat-bar" style="display:none;padding:12px 20px;border-top:1px solid var(--border);">
+        <button class="btn-gold" style="width:100%;" id="btn-porovnat-vybrane" onclick="otevritModalPorovnani()" disabled>Porovnat vybrané (0/2)</button>
+      </div>
     </div>
 
     <div class="vysledky-detail" id="projekt-panel" style="display:none;">
@@ -1811,11 +1824,14 @@ async function renderHistorie() {
       const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
       const proc = r.hlavni_hodnota_cislo;
       const barva = proc >= 80 ? '#2a7a4f' : proc >= 55 ? '#d97706' : proc >= 30 ? '#b45309' : '#b91c1c';
+      const zaskrtnuto = vybraneKPorovnani.includes(i);
       return '<div class="vysledek-row" onclick="otevritModalDetailVysledku(' + i + ')">' +
+        '<input type="checkbox" class="vysledek-checkbox" onclick="event.stopPropagation()" onchange="zaskrtnoutKPorovnani(' + i + ', this.checked)"' + (zaskrtnuto ? ' checked' : '') + ' style="flex-shrink:0;width:16px;height:16px;">' +
         '<div class="vysledek-arrow" style="background:' + barva + '"></div>' +
         '<div class="vysledek-text"><strong>' + datum + '</strong><span>' + proc + ' %</span></div>' +
         '</div>';
     }).join('');
+    aktualizovatPorovnatBar();
     otevritVysledekZAdresy();
   } catch (e) {
     console.warn('Historii se nepodařilo načíst.', e);
@@ -1844,6 +1860,131 @@ async function otevritVysledekZAdresy() {
 }
 
 let posledniHistorie = [];
+let vybraneKPorovnani = [];
+
+// Zaškrtnutí řádku historie pro porovnání - nejvýš dva najednou. Když je
+// zaškrtnutých už dvakrát a přijde třetí, ten nejstarší zaškrtnutý se
+// automaticky odškrtne, ať appka ví přesně, které dva se mají porovnat.
+function zaskrtnoutKPorovnani(i, zaskrtnuto) {
+  vybraneKPorovnani = vybraneKPorovnani.filter(x => x !== i);
+  if (zaskrtnuto) {
+    vybraneKPorovnani.push(i);
+    if (vybraneKPorovnani.length > 2) vybraneKPorovnani.shift();
+  }
+  renderHistorie();
+}
+
+function aktualizovatPorovnatBar() {
+  const bar = document.getElementById('historie-porovnat-bar');
+  const btn = document.getElementById('btn-porovnat-vybrane');
+  if (!bar || !btn) return;
+  bar.style.display = posledniHistorie.length >= 2 ? 'block' : 'none';
+  const n = vybraneKPorovnani.length;
+  btn.disabled = n !== 2;
+  btn.textContent = 'Porovnat vybrané (' + n + '/2)';
+}
+
+// Krátký, konkrétní popis odpovědi pro porovnání - stejná škála jako v detailu
+// jednoho auditu (2 = nejlíp, 0 = nejhůř), "nevím" se řeší zvlášť.
+function popisOdpovediPorovnani(hodnota, jeNevim) {
+  if (jeNevim) return 'Nevím';
+  return LABELY[hodnota] != null ? LABELY[hodnota] : '—';
+}
+
+function otevritModalPorovnani() {
+  if (vybraneKPorovnani.length !== 2) return;
+  const zaznamy = vybraneKPorovnani.map(i => posledniHistorie[i]).filter(Boolean);
+  if (zaznamy.length !== 2) return;
+  // starší vlevo, novější vpravo, bez ohledu na pořadí zaškrtnutí
+  zaznamy.sort((x, y) => new Date(x.created_at) - new Date(y.created_at));
+  const [a, b] = zaznamy;
+  const datumA = new Date(a.created_at).toLocaleDateString('cs-CZ');
+  const datumB = new Date(b.created_at).toLocaleDateString('cs-CZ');
+  // Procenta appka ukládá už jako podíl z vlastního maxima (které se mění
+  // podle počtu otázek "nevím"), takže jdou porovnat přímo, i když se počet
+  // "nevím" mezi audity liší - na rozdíl od holých bodů.
+  const procA = a.hlavni_hodnota_cislo;
+  const procB = b.hlavni_hodnota_cislo;
+  const deltaPct = procB - procA;
+
+  const odpA = (a.data || {}).odpovedi || {};
+  const odpB = (b.data || {}).odpovedi || {};
+  const nevimA = ((a.data || {}).nevim || []).map(String);
+  const nevimB = ((b.data || {}).nevim || []).map(String);
+
+  let zlepseno = 0, zhorseno = 0, stejne = 0;
+  let nejlepsiZlepseni = null; // { text, diff }
+
+  function tridaProHodnotu(h) { return h === 2 ? 'dobre' : h === 1 ? 'stredni' : 'spatne'; }
+  function badge(popis, trida) {
+    return '<span class="detail-otazka-odp ' + trida + '" style="display:inline-block;">' + popis + '</span>';
+  }
+
+  const radkyPole = OTAZKY.map((text, idx) => {
+    const q = String(idx + 1);
+    const aJeNevim = nevimA.includes(q);
+    const bJeNevim = nevimB.includes(q);
+
+    const drivPopis = aJeNevim ? 'Nevím' : popisOdpovediPorovnani(odpA[q]) + ' (' + odpA[q] + ' b.)';
+    const drivTrida = aJeNevim ? 'nevim' : tridaProHodnotu(odpA[q]);
+
+    let tedPopis, tedTrida, zmenaText = '', zmenaBarva = 'var(--mid)';
+    if (aJeNevim && bJeNevim) {
+      tedPopis = 'Nevím'; tedTrida = 'nevim'; zmenaText = 'Pořád nevíte';
+    } else if (aJeNevim && !bJeNevim) {
+      tedPopis = popisOdpovediPorovnani(odpB[q]) + ' (' + odpB[q] + ' b.)'; tedTrida = tridaProHodnotu(odpB[q]);
+      zmenaText = 'Nově zjištěno';
+    } else if (!aJeNevim && bJeNevim) {
+      tedPopis = 'Nevím'; tedTrida = 'nevim';
+      zmenaText = 'Dřív víc jasno, teď nevíte';
+    } else {
+      // Tady vyšší číslo = lepší stav (2=Ano, 0=Ne), na rozdíl od Mini auditu
+      // skladu, kde vyšší číslo = horší stav - proto kladný rozdíl = zlepšení.
+      const diff = (odpB[q] || 0) - (odpA[q] || 0);
+      tedPopis = popisOdpovediPorovnani(odpB[q]) + ' (' + odpB[q] + ' b.)'; tedTrida = tridaProHodnotu(odpB[q]);
+      if (diff > 0) { zlepseno++; zmenaText = '↑ zlepšení'; zmenaBarva = '#2a7a4f'; if (nejlepsiZlepseni === null || diff > nejlepsiZlepseni.diff) nejlepsiZlepseni = { text, diff }; }
+      else if (diff < 0) { zhorseno++; zmenaText = '↓ zhoršení'; zmenaBarva = '#b91c1c'; }
+      else { stejne++; zmenaText = 'beze změny'; }
+    }
+
+    return '<tr>' +
+      '<td style="padding:10px 6px;border-bottom:1px solid #f0f0f0;vertical-align:top;">' + text + '</td>' +
+      '<td style="padding:10px 6px;border-bottom:1px solid #f0f0f0;vertical-align:top;white-space:nowrap;">' + badge(drivPopis, drivTrida) + '</td>' +
+      '<td style="padding:10px 6px;border-bottom:1px solid #f0f0f0;vertical-align:top;white-space:nowrap;">' + badge(tedPopis, tedTrida) + '<div style="font-size:11px;font-weight:700;color:' + zmenaBarva + ';margin-top:3px;">' + zmenaText + '</div></td>' +
+      '</tr>';
+  }).join('');
+
+  const radky = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+    '<thead><tr>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Otázka</th>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Dřív</th>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Teď</th>' +
+    '</tr></thead><tbody>' + radkyPole + '</tbody></table></div>';
+
+  let shrnutiText;
+  if (deltaPct > 0) {
+    shrnutiText = 'Skóre vzrostlo z ' + procA + ' % na ' + procB + ' % - zlepšujete se! ' + zlepseno + ' ' + (zlepseno === 1 ? 'oblast se zlepšila' : 'oblastí se zlepšilo') + (zhorseno ? ', ' + zhorseno + ' se zhoršilo' : '') + '.';
+    if (nejlepsiZlepseni) shrnutiText += ' Nejvíc znát to je u: „' + nejlepsiZlepseni.text + '".';
+  } else if (deltaPct < 0) {
+    shrnutiText = 'Skóre kleslo z ' + procA + ' % na ' + procB + ' % - ' + zhorseno + ' ' + (zhorseno === 1 ? 'oblast se zhoršila' : 'oblastí se zhoršilo') + (zlepseno ? ', ' + zlepseno + ' se naopak zlepšilo' : '') + '. Nic se neděje, teď aspoň víte, kam se podívat nejdřív.';
+  } else {
+    shrnutiText = 'Celkové skóre zůstalo stejné (' + procB + ' %)' + (zlepseno || zhorseno ? ', i když se v jednotlivých oblastech něco přesunulo - ' + zlepseno + ' zlepšení, ' + zhorseno + ' zhoršení.' : '.');
+  }
+
+  document.getElementById('porovnani-obsah').innerHTML =
+    '<div style="display:flex;justify-content:space-between;gap:16px;margin-bottom:14px;">' +
+      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">' + datumA + '</div><div style="font-size:22px;font-weight:800;">' + procA + '<span style="font-size:13px;color:var(--light);"> %</span></div></div>' +
+      '<div style="align-self:center;font-size:20px;color:var(--light);">→</div>' +
+      '<div style="text-align:right;"><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">' + datumB + '</div><div style="font-size:22px;font-weight:800;">' + procB + '<span style="font-size:13px;color:var(--light);"> %</span></div></div>' +
+    '</div>' +
+    '<div style="background:var(--paper,#faf9f6);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:16px;">' + shrnutiText + '</div>' +
+    radky;
+  document.getElementById('modal-porovnani').style.display = 'flex';
+}
+
+function zavritModalPorovnani() {
+  document.getElementById('modal-porovnani').style.display = 'none';
+}
 
 function otevritModalDetailVysledku(i) {
   const r = posledniHistorie[i];
