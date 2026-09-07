@@ -1230,6 +1230,17 @@ nav {
   </div>
 </div>
 
+<!-- Modal detail kontroly -->
+<div class="modal-overlay" id="modal-detail-kontroly" style="display:none;">
+  <div class="modal">
+    <div class="modal-title">
+      <span>Detail kontroly</span>
+      <button class="modal-close" onclick="zavritModal('modal-detail-kontroly')">×</button>
+    </div>
+    <div id="detail-kontroly-obsah"></div>
+  </div>
+</div>
+
 <div class="notice-overlay" id="notice-overlay" style="display:none;" onclick="if(event.target===this) zavritUpozorneni()">
   <div class="notice-box">
     <div class="notice-icon" id="notice-icon">!</div>
@@ -1406,6 +1417,75 @@ async function init() {
     renderMain();
     zkontrolovatNotifikace();
   }
+  otevritVysledekZAdresy();
+}
+
+const CHECKLIST_LABELY = {
+  c1: 'Nepotřebné věci se nehromadí',
+  c2: 'Věci jsou na svém místě',
+  c3: 'Pracoviště je čisté',
+  c4: 'Označení je stále srozumitelné',
+  c5: 'Standard se dodržuje'
+};
+
+// Detail jedné kontroly z místa uloženého lokálně - přepne appku na dané
+// místo, ať je vidět v kontextu (fotky, standard, další kontroly).
+function otevritModalDetailKontroly(mistoId, idx) {
+  const misto = data.mista.find(m => m.id === mistoId);
+  const k = misto && misto.kontroly[idx];
+  if (!k) return;
+  vykreslitDetailKontroly({ datum: k.datum, score: k.score, checklist: k.checklist, poznamka: k.poznamka, mistoNazev: misto.nazev });
+}
+
+// Appka umí otevřít rovnou konkrétní kontrolu podle ?vysledek=<id> v adrese
+// (odkaz "Otevřít celý výsledek" ze Zdroje úkolu v Akčním plánu). Nejdřív
+// hledá lokálně (podle toolRunId u kontroly), a když ji nenajde (jiné
+// zařízení), stáhne záznam přímo ze Supabase a ukáže ho samostatně, i bez
+// místa uloženého v tomhle prohlížeči.
+let vysledekZAdresyOtevren = false;
+async function otevritVysledekZAdresy() {
+  if (vysledekZAdresyOtevren) return;
+  const id = new URLSearchParams(window.location.search).get('vysledek');
+  if (!id) return;
+  vysledekZAdresyOtevren = true;
+  for (const misto of data.mista) {
+    const idx = (misto.kontroly || []).findIndex(k => k.toolRunId === id);
+    if (idx > -1) {
+      prepnoutMisto(misto.id);
+      otevritModalDetailKontroly(misto.id, idx);
+      return;
+    }
+  }
+  try {
+    const { data: radek, error } = await supabaseClient.from('tool_runs').select('created_at, nazev, hlavni_hodnota_cislo, data').eq('id', id).eq('nastroj', '5s').maybeSingle();
+    if (error || !radek) return;
+    vykreslitDetailKontroly({
+      datum: new Date(radek.created_at).toLocaleDateString('cs-CZ'),
+      score: radek.hlavni_hodnota_cislo,
+      checklist: (radek.data || {}).checklist || {},
+      poznamka: (radek.data || {}).poznamka || '',
+      mistoNazev: (radek.nazev || '').replace(/^5S — /, '')
+    });
+  } catch (e) {
+    console.warn('Nepodařilo se najít konkrétní kontrolu podle adresy.', e);
+  }
+}
+
+function vykreslitDetailKontroly(k) {
+  const maSkore = typeof k.score === 'number';
+  const scoreBarva = s => s >= 80 ? 'green' : (s >= 50 ? 'yellow' : 'red');
+  const radky = Object.keys(CHECKLIST_LABELY).map(function (kc) {
+    const splneno = !!(k.checklist && k.checklist[kc]);
+    return '<div class="kontrola-check-item" style="cursor:default;">' +
+      '<span style="color:' + (splneno ? 'var(--green)' : 'var(--light)') + ';font-size:16px;">' + (splneno ? '✓' : '×') + '</span>' +
+      '<span>' + CHECKLIST_LABELY[kc] + '</span></div>';
+  }).join('');
+  document.getElementById('detail-kontroly-obsah').innerHTML =
+    '<div style="font-size:12px;color:var(--light);margin-bottom:4px;">' + (k.mistoNazev || '') + ' · ' + (k.datum || '') + '</div>' +
+    (maSkore ? '<div class="kontrola-score ' + scoreBarva(k.score) + '" style="display:inline-block;margin-bottom:14px;">' + k.score + ' %</div>' : '') +
+    '<div class="kontrola-checklist">' + radky + '</div>' +
+    (k.poznamka ? '<p style="font-size:13px;color:var(--mid);margin-top:14px;line-height:1.6;"><strong>Poznámka:</strong> ' + k.poznamka + '</p>' : '');
+  otevritModal('modal-detail-kontroly');
 }
 
 // MÍSTA
@@ -1721,7 +1801,8 @@ function renderKontrolySekce(misto) {
   const historieHtml = misto.kontroly.length > 0
     ? misto.kontroly.slice(-8).reverse().map(k => {
         const maSkore = typeof k.score === 'number';
-        return `<div class="kontrola-row">
+        const skutecnyIdx = misto.kontroly.indexOf(k);
+        return `<div class="kontrola-row" style="cursor:pointer;" onclick="otevritModalDetailKontroly('${misto.id}', ${skutecnyIdx})">
           <span class="kontrola-datum">${k.datum}</span>
           <span class="kontrola-text">${k.poznamka || (maSkore ? '' : 'Kontrola provedena')}</span>
           ${maSkore ? `<span class="kontrola-score ${scoreBarva(k.score)}">${k.score} %</span>` : `<span class="kontrola-ok">✓</span>`}
@@ -2262,7 +2343,7 @@ function zavritModal(id) {
 
 // Klik mimo modal
 document.addEventListener('click', e => {
-  ['modal-misto', 'modal-kontrola', 'modal-pro'].forEach(id => {
+  ['modal-misto', 'modal-kontrola', 'modal-pro', 'modal-detail-kontroly'].forEach(id => {
     const el = document.getElementById(id);
     if (el && e.target === el) zavritModal(id);
   });

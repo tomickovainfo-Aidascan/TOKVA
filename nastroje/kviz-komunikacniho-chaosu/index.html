@@ -355,6 +355,13 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-detail-vysledku" style="display:none;">
+  <div class="modal">
+    <div class="modal-title"><span>Detail výsledku</span><button class="modal-close" onclick="document.getElementById('modal-detail-vysledku').style.display='none';">×</button></div>
+    <div id="detail-vysledku-obsah"></div>
+  </div>
+</div>
+
 <!-- Modal upozorneni/potvrzeni (obecny) -->
 <div class="modal-overlay" id="modal-notice" style="display:none;">
   <div class="modal">
@@ -888,6 +895,7 @@ async function nacistPrihlaseniStav() {
   }
   renderUcetNav();
   zobrazitOdkazAkcniPlan(maAktivniPro(ucetClenstvi));
+  if (jePro && clenstvi) otevritVysledekZAdresy();
 }
 
 function renderUcetNav() {
@@ -1138,6 +1146,56 @@ async function pridatDoAkcnihoPlanu() {
 }
 
 // HISTORIE (jen Pro) - seznam uložených výsledků + porovnání posledních dvou.
+let posledniHistorieChaos = [];
+
+function otevritModalDetailVysledkuChaos(i) {
+  const r = posledniHistorieChaos[i];
+  if (!r) return;
+  vykreslitDetailVysledkuChaos({ datum: new Date(r.created_at).toLocaleDateString('cs-CZ'), data: r.data || {} });
+}
+
+function vykreslitDetailVysledkuChaos(zaznam) {
+  const d = zaznam.data || {};
+  const ov = d.oblastiVysledky || {};
+  const poradi = ['chaos-zmen','zavislost','cekani','uloziste','kanalovy-chaos','prepisovani'];
+  const radky = poradi.filter(k => OBLASTI[k] && ov[k]).map(k => {
+    const oblast = OBLASTI[k];
+    const v = ov[k];
+    if (v.pct === null) {
+      return '<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.85);"><span>' + oblast.nazev + '</span><span style="color:rgba(255,255,255,.4);">nezjištěno</span></div></div>';
+    }
+    const barva = v.pct >= 67 ? '#b91c1c' : v.pct >= 34 ? '#d97706' : '#2a7a4f';
+    return '<div style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.85);margin-bottom:4px;"><span>' + oblast.nazev + '</span><span style="color:' + barva + ';font-weight:700;">' + v.pct + ' %</span></div>' +
+      '<div style="height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;"><div style="height:100%;width:' + v.pct + '%;background:' + barva + ';"></div></div>' +
+      '</div>';
+  }).join('');
+  document.getElementById('detail-vysledku-obsah').innerHTML =
+    '<div class="historie-datum" style="margin-bottom:10px;">' + zaznam.datum + '</div>' +
+    '<div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:16px;">' + d.skore + ' / ' + d.maxSkore + ' <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.4);">(vyšší = víc chaosu)</span></div>' +
+    radky;
+  document.getElementById('modal-detail-vysledku').style.display = 'flex';
+}
+
+// Appka umí otevřít rovnou konkrétní uložený výsledek podle ?vysledek=<id> v
+// adrese (odkaz "Otevřít celý výsledek" ze Zdroje úkolu v Akčním plánu).
+let vysledekZAdresyOtevren = false;
+async function otevritVysledekZAdresy() {
+  if (vysledekZAdresyOtevren) return;
+  const id = new URLSearchParams(window.location.search).get('vysledek');
+  if (!id) return;
+  vysledekZAdresyOtevren = true;
+  const idx = posledniHistorieChaos.findIndex(r => r.id === id);
+  if (idx > -1) { otevritModalDetailVysledkuChaos(idx); return; }
+  try {
+    const { data, error } = await supabaseClient.from('tool_runs').select('created_at, data').eq('id', id).eq('nastroj', 'kviz-komunikacniho-chaosu').maybeSingle();
+    if (error || !data) return;
+    vykreslitDetailVysledkuChaos({ datum: new Date(data.created_at).toLocaleDateString('cs-CZ'), data: data.data || {} });
+  } catch (e) {
+    console.warn('Nepodařilo se najít konkrétní výsledek podle adresy.', e);
+  }
+}
+
 async function otevritHistorii() {
   if (!jePro || !clenstvi) return;
   document.getElementById('modal-historie').style.display = 'flex';
@@ -1157,9 +1215,12 @@ async function otevritHistorii() {
       return;
     }
     obsah.innerHTML = '';
+    posledniHistorieChaos = radky;
     radky.forEach((r, i) => {
       const item = document.createElement('div');
       item.className = 'historie-item';
+      item.style.cursor = 'pointer';
+      item.onclick = () => otevritModalDetailVysledkuChaos(i);
       const datum = document.createElement('div');
       datum.className = 'historie-datum';
       datum.textContent = new Date(r.created_at).toLocaleString('cs-CZ');

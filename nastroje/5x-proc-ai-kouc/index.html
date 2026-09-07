@@ -1012,6 +1012,26 @@ async function nacistPrihlaseniStav() {
     jePro = false;
   }
   renderUcetNav();
+  if (jePro && clenstvi) otevritVysledekZAdresy();
+}
+
+// Appka umí otevřít rovnou konkrétní uloženou analýzu podle ?vysledek=<id> v adrese
+// (odkaz "Otevřít celý výsledek" ze Zdroje úkolu v Akčním plánu).
+let vysledekZAdresyOtevren = false;
+async function otevritVysledekZAdresy() {
+  if (vysledekZAdresyOtevren) return;
+  const id = new URLSearchParams(window.location.search).get('vysledek');
+  if (!id) return;
+  vysledekZAdresyOtevren = true;
+  try {
+    const { data, error } = await supabaseClient.from('tool_runs').select('id, created_at, nazev, shrnuti, data').eq('id', id).eq('nastroj', '5x-proc').maybeSingle();
+    if (error || !data) return;
+    const rozpracovana = !!(data.data && data.data.hotovo === false);
+    if (rozpracovana) pokracovatVAnalyze(data);
+    else zobrazitZHistorie(data.data && data.data.raw);
+  } catch (e) {
+    console.warn('Nepodařilo se najít konkrétní analýzu podle adresy.', e);
+  }
 }
 
 function renderUcetNav() {

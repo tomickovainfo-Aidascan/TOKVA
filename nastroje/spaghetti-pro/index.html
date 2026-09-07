@@ -1457,7 +1457,13 @@ function nacistProjekt(id) {
   const p = seznam.find(z => z.id === id);
   if (!p) return;
   zavritModalProjekty();
+  nacistProjektZeZaznamu(p);
+}
 
+// Vytažené z nacistProjekt(id) - appka takhle umí nahrát projekt i ze záznamu,
+// který ještě není v místním seznamu (jiné zařízení, otevřeno přes odkaz
+// ?vysledek= z Akčního plánu), ne jen podle id z lokálního uložiště.
+function nacistProjektZeZaznamu(p) {
   aktualniProjektId = p.id;
   nazevProjektu = p.nazev;
   zakazky = JSON.parse(JSON.stringify(p.zakazky || []));
@@ -2886,6 +2892,33 @@ function vstoupitDoAplikace() {
   document.getElementById('main-app').style.display = 'block';
   aktualizovatMojeProjektyBar();
   synchronizovatProjektySeSupabase();
+  otevritVysledekZAdresy();
+}
+
+// Appka umí otevřít rovnou konkrétní uložený projekt podle ?vysledek=<id> v
+// adrese (odkaz "Otevřít celý výsledek" ze Zdroje úkolu v Akčním plánu - tam
+// je <id> id řádku v tool_runs, ne id projektu v místním uložišti). Když
+// projekt ještě není v místním seznamu (jiné zařízení), appka ho tam rovnou
+// přidá, aby šel příště otevřít i běžně přes "Otevřít projekt".
+let vysledekZAdresyOtevren = false;
+async function otevritVysledekZAdresy() {
+  if (vysledekZAdresyOtevren) return;
+  const id = new URLSearchParams(window.location.search).get('vysledek');
+  if (!id) return;
+  vysledekZAdresyOtevren = true;
+  try {
+    const { data, error } = await supabaseClient.from('tool_runs').select('data').eq('id', id).eq('nastroj', 'spaghetti-pro').maybeSingle();
+    if (error || !data || !data.data) return;
+    const zaznam = data.data;
+    let seznam = nacistSeznamProjektu();
+    if (!seznam.some(p => p.id === zaznam.id) && seznam.length < MAX_PROJEKTU) {
+      seznam.push(zaznam);
+      ulozitSeznamProjektu(seznam);
+    }
+    nacistProjektZeZaznamu(zaznam);
+  } catch (e) {
+    console.warn('Nepodařilo se najít konkrétní projekt podle adresy.', e);
+  }
 }
 
 nacistPrihlaseniStav();

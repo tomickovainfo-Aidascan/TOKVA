@@ -591,6 +591,16 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-detail-vysledku">
+  <div class="modal" style="max-width:520px;max-height:86vh;overflow-y:auto;">
+    <h3>Detail měření</h3>
+    <div id="detail-vysledku-obsah"></div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="zavritModalDetailVysledku()">Zavřít</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-akcni-plan">
   <div class="modal">
     <h3>Přidat do akčního plánu</h3>
@@ -710,6 +720,70 @@ function vstoupitDoAplikace() {
   document.getElementById('setup').style.display = 'block';
   nacistHistorii();
   synchronizovatHistoriiSeSupabase();
+  otevritVysledekZAdresy();
+}
+
+// Appka umí otevřít rovnou konkrétní měření podle ?vysledek=<id> v adrese
+// (odkaz "Otevřít celý výsledek" ze Zdroje úkolu v Akčním plánu). Nejdřív
+// zkusí najít měření v místní historii (podle toolRunId), a když ho tam
+// nenajde (jiné zařízení, ještě se nesynchronizovalo), stáhne ho přímo
+// ze Supabase - záznam v data je stejného tvaru jako v místní historii.
+let vysledekZAdresyOtevren = false;
+async function otevritVysledekZAdresy() {
+  if (vysledekZAdresyOtevren) return;
+  const id = new URLSearchParams(window.location.search).get('vysledek');
+  if (!id) return;
+  vysledekZAdresyOtevren = true;
+  const hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+  const lokalni = hist.find(z => z.toolRunId === id);
+  if (lokalni) { otevritModalDetailVysledkuZeZaznamu(lokalni); return; }
+  try {
+    const { data, error } = await supabaseClient.from('tool_runs').select('data').eq('id', id).eq('nastroj', 'meric-plytvani-pro').maybeSingle();
+    if (error || !data || !data.data) return;
+    otevritModalDetailVysledkuZeZaznamu(data.data);
+  } catch (e) {
+    console.warn('Nepodařilo se najít konkrétní měření podle adresy.', e);
+  }
+}
+
+// Detail jednoho měření - rozpad podle kategorie a shrnutí plýtvání.
+function otevritModalDetailVysledku(i) {
+  const hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+  const z = hist[i];
+  if (!z) return;
+  otevritModalDetailVysledkuZeZaznamu(z);
+}
+function otevritModalDetailVysledkuZeZaznamu(z) {
+  const avg = z.kategorie_avg || {};
+  const radky = Object.keys(avg).map(function (k) {
+    const nazevKat = STD_NAZVY[k] || k;
+    const sec = avg[k];
+    return '<tr><td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;">' + nazevKat + '</td>' +
+      '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + sec.toFixed(1) + ' s</td></tr>';
+  }).join('');
+  document.getElementById('detail-vysledku-obsah').innerHTML =
+    '<div style="font-size:12px;color:var(--light);margin-bottom:4px;">' + (z.datum || '') + ' · ' + (z.cyklu || 0) + ' cyklů</div>' +
+    '<div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:14px;">' + z.nazev + '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">' +
+      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">Mimo přímou práci</div><div style="font-size:19px;font-weight:800;">' + z.plyPct + ' %</div></div>' +
+      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">Potenciál</div><div style="font-size:19px;font-weight:800;">' + Math.round(z.plyKcRok || 0).toLocaleString('cs-CZ') + ' Kč/rok</div></div>' +
+    '</div>' +
+    (radky ? '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Kategorie (průměr na cyklus)</th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Čas</th>' +
+      '</tr></thead><tbody>' + radky + '</tbody></table></div>' : '') +
+    (z.toolRunId ? '<button class="btn-modal-ok" style="width:100%;margin-top:16px;" onclick="zavritModalDetailVysledku();otevritModalAkcniPlanZId(\'' + z.toolRunId + '\')">+ Přidat do akčního plánu</button>' : '');
+  document.getElementById('modal-detail-vysledku').classList.add('visible');
+}
+function zavritModalDetailVysledku() {
+  document.getElementById('modal-detail-vysledku').classList.remove('visible');
+}
+// Detail může zobrazovat i záznam stažený přímo ze Supabase (jiné zařízení),
+// který nemusí mít index v místní historii - najde se přes toolRunId, ne přes i.
+function otevritModalAkcniPlanZId(toolRunId) {
+  const hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+  const idx = hist.findIndex(function (z) { return z.toolRunId === toolRunId; });
+  if (idx > -1) otevritModalAkcniPlan(idx, null);
 }
 
 // =============================================
@@ -1326,8 +1400,8 @@ function nacistHistorii() {
     <p style="font-size:12px;color:var(--light);line-height:1.6;margin-bottom:10px;">Historie ukládá pouze základní přehled. Kompletní výsledky si po každém měření uložte do PC nebo stáhněte do CSV. Zaškrtněte dvě měření stejného procesu a porovnejte je jako PŘED × PO.</p>
     <div id="pred-po-vysledek"></div>
     <div class="hist-list">${hist.slice(0,8).map((z, i) => `
-      <div class="hist-row">
-        <input type="checkbox" class="hist-check" id="hist-check-${i}" onchange="prepnoutVyber(${i})">
+      <div class="hist-row" onclick="otevritModalDetailVysledku(${i})">
+        <input type="checkbox" class="hist-check" id="hist-check-${i}" onclick="event.stopPropagation()" onchange="prepnoutVyber(${i})">
         <div class="hist-nazev">${z.nazev}</div>
         <div class="hist-meta">${z.datum} · ${z.cyklu} cyklů</div>
         <div class="hist-ply" style="color:${z.plyPct>40?'#c0392b':z.plyPct>20?'#d97706':'#2a7a4f'}">${z.plyPct}%</div>
