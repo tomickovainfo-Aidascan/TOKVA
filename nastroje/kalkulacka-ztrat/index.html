@@ -671,15 +671,18 @@ function aktualizovatNejvetsiZtratu(hodnoty, celkem) {
   } else {
     ctaEl.style.display = "none";
   }
+  if (typeof prepnoutOdkazyNaPro === 'function') prepnoutOdkazyNaPro(typeof maAktivniPro === 'function' ? maAktivniPro(clenstvi) : false);
 }
+
+let session = null;
+let clenstvi = null;
 
 update();
 
 // Sdílený účet Tokva Pro (Supabase, viz auth.js/supabase-client.js) - appka
 // sama žádný Pro obsah neodemyká, jen ukazuje přihlašovací stav konzistentně
-// se zbytkem appek.
-let session = null;
-let clenstvi = null;
+// se zbytkem appek a přepíná odkazy na Spaghetti diagram / Měřič plýtvání
+// na jejich Pro variantu, když je návštěvník přihlášený jako Pro.
 
 async function nacistPrihlaseniStav() {
   try {
@@ -691,6 +694,7 @@ async function nacistPrihlaseniStav() {
     clenstvi = null;
   }
   renderUcetNav();
+  prepnoutOdkazyNaPro(maAktivniPro(clenstvi));
 }
 
 function renderUcetNav() {
