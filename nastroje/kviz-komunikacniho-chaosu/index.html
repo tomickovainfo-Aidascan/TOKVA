@@ -967,6 +967,19 @@ async function ulozitVysledek() {
   btn.textContent = 'Ukládám...';
   const { skore, maxSkore, nejslabsiKey, oblastiVysledky } = posledniVysledek;
   const nazevNejslabsi = nejslabsiKey ? OBLASTI[nejslabsiKey].nazev : 'nezjištěno';
+  // Uložit i syrové odpovědi po otázkách (ne jen souhrn) - aby appka časem
+  // uměla ukázat detail konkrétního výsledku, ne jen skóre. Set (u
+  // víc-výběrových otázek) se musí převést na pole, jinak by se JSON.stringify
+  // uložil jako prázdný objekt.
+  const odpovediNaUlozeni = {};
+  Object.keys(odpovedi).forEach(k => {
+    odpovediNaUlozeni[k] = odpovedi[k] instanceof Set ? Array.from(odpovedi[k]) : odpovedi[k];
+  });
+  const jineTextyNaUlozeni = {};
+  OTAZKY.forEach(o => {
+    const inp = document.getElementById('other-' + o.id);
+    if (inp && inp.value && inp.value.trim()) jineTextyNaUlozeni[o.id] = inp.value.trim();
+  });
   try {
     const { data, error } = await supabaseClient.from('tool_runs').insert({
       organization_id: clenstvi.organization_id,
@@ -976,7 +989,7 @@ async function ulozitVysledek() {
       hlavni_hodnota_cislo: skore,
       hlavni_hodnota_jednotka: 'z ' + maxSkore + ' bodů',
       hlavni_hodnota_typ: 'skore',
-      data: { skore, maxSkore, nejslabsiKey, oblastiVysledky }
+      data: { skore, maxSkore, nejslabsiKey, oblastiVysledky, odpovedi: odpovediNaUlozeni, jine_texty: jineTextyNaUlozeni }
     }).select().single();
     if (error) throw error;
     posledniToolRunId = data ? data.id : null;

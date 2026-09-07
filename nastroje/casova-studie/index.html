@@ -2252,7 +2252,11 @@ function sestavitPayloadDne(s) {
       kat_cas: s.katCas,
       hodnota_hodiny: s.hodnotaHodiny,
       klas_soucty: s.klasSoucty,
-      aktivit_count: s.aktivitCount
+      aktivit_count: s.aktivitCount,
+      // Cely seznam zaznamu dne (cas, text, kategorie) - dřív se ukládal
+      // jen souhrn po kategoriích, appka tak neuměla ukázat detail dne,
+      // jen agregovaná čísla.
+      zaznamy: zaznamy
     }
   };
 }

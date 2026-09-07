@@ -1111,7 +1111,12 @@ function ulozitDoHistorie() {
     nazev, datum: new Date().toLocaleDateString('cs-CZ'),
     cyklu: n, avgC, plyPct,
     smena: delkaSmeny,
-    plyKcRok
+    plyKcRok,
+    // Rozpad podle kategorie a jednotlivé naměřené cykly - dřív se ukládalo
+    // jen souhrnné číslo (avgC/plyPct), appka tak neuměla ukázat, z čeho se
+    // to skládá, jen výsledné procento.
+    kategorie_avg: avg,
+    cykly: cykly
   };
 
   let hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
