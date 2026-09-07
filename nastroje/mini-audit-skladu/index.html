@@ -552,6 +552,16 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-porovnani">
+  <div class="modal-box" style="max-width:620px;max-height:86vh;overflow-y:auto;">
+    <div class="modal-box-head">
+      <h3>Porovnání dvou auditů</h3>
+      <button class="modal-box-close" onclick="zavritModalPorovnani()">×</button>
+    </div>
+    <div id="porovnani-obsah"></div>
+  </div>
+</div>
+
 <div class="hero">
   <div class="hero-inner">
     <div class="tool-badge">Vedoucí skladu, co chce rychlý přehled kde to vázne</div>
@@ -865,6 +875,9 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
         <button class="btn-gold" style="width:100%;" onclick="otevritModalPro()">Odemknout Pro</button>
       </div>
       <div id="historie-obsah" style="display:none;"></div>
+      <div id="historie-porovnat-bar" style="display:none;padding:12px 20px;border-top:1px solid var(--border);">
+        <button class="btn-gold" style="width:100%;" id="btn-porovnat-vybrane" onclick="otevritModalPorovnani()" disabled>Porovnat vybrané (0/2)</button>
+      </div>
     </div>
 
     <div class="vysledky-detail" id="projekt-panel" style="display:none;">
@@ -1713,11 +1726,14 @@ async function renderHistorie() {
       const max = parseInt((jednotka.match(/\d+/) || [30])[0], 10);
       const pomer = max > 0 ? s / max : 0;
       const barva = pomer <= 7/30 ? '#2a7a4f' : pomer <= 15/30 ? '#d97706' : pomer <= 23/30 ? '#b45309' : '#b91c1c';
+      const zaskrtnuto = vybraneKPorovnani.includes(i);
       return '<div class="vysledek-row" onclick="otevritModalDetailVysledku(' + i + ')">' +
+        '<input type="checkbox" class="vysledek-checkbox" onclick="event.stopPropagation()" onchange="zaskrtnoutKPorovnani(' + i + ', this.checked)"' + (zaskrtnuto ? ' checked' : '') + ' style="flex-shrink:0;width:16px;height:16px;">' +
         '<div class="vysledek-arrow" style="background:' + barva + '"></div>' +
         '<div class="vysledek-text"><strong>' + datum + '</strong><span>' + s + ' ' + jednotka + '</span></div>' +
         '</div>';
     }).join('');
+    aktualizovatPorovnatBar();
   } catch (e) {
     console.warn('Historii se nepodařilo načíst.', e);
     obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--mid);">Historii se teď nepodařilo načíst.</div>';
@@ -1725,6 +1741,105 @@ async function renderHistorie() {
 }
 
 let posledniHistorie = [];
+let vybraneKPorovnani = [];
+
+// Zaškrtnutí řádku historie pro porovnání - nejvýš dva najednou. Když je
+// zaškrtnutých už dvakrát a přijde třetí, ten nejstarší zaškrtnutý se
+// automaticky odškrtne, ať appka ví přesně, které dva se mají porovnat.
+function zaskrtnoutKPorovnani(i, zaskrtnuto) {
+  vybraneKPorovnani = vybraneKPorovnani.filter(x => x !== i);
+  if (zaskrtnuto) {
+    vybraneKPorovnani.push(i);
+    if (vybraneKPorovnani.length > 2) vybraneKPorovnani.shift();
+  }
+  renderHistorie();
+}
+
+function aktualizovatPorovnatBar() {
+  const bar = document.getElementById('historie-porovnat-bar');
+  const btn = document.getElementById('btn-porovnat-vybrane');
+  if (!bar || !btn) return;
+  bar.style.display = posledniHistorie.length >= 2 ? 'block' : 'none';
+  const n = vybraneKPorovnani.length;
+  btn.disabled = n !== 2;
+  btn.textContent = 'Porovnat vybrané (' + n + '/2)';
+}
+
+// Krátký, konkrétní popis odpovědi pro porovnání - stejná škála jako v detailu
+// jednoho auditu (0 = nejlíp, 3 = nejhůř), "nevím" se řeší zvlášť.
+function popisOdpovediPorovnani(hodnota, jeNevim) {
+  if (jeNevim) return 'Nevím';
+  return MOZNOSTI[hodnota] != null ? MOZNOSTI[hodnota] : '—';
+}
+
+function otevritModalPorovnani() {
+  if (vybraneKPorovnani.length !== 2) return;
+  const zaznamy = vybraneKPorovnani.map(i => posledniHistorie[i]).filter(Boolean);
+  if (zaznamy.length !== 2) return;
+  // starší vlevo, novější vpravo, bez ohledu na pořadí zaškrtnutí
+  zaznamy.sort((x, y) => new Date(x.created_at) - new Date(y.created_at));
+  const [a, b] = zaznamy;
+  const datumA = new Date(a.created_at).toLocaleDateString('cs-CZ');
+  const datumB = new Date(b.created_at).toLocaleDateString('cs-CZ');
+  const skoreA = a.hlavni_hodnota_cislo;
+  const skoreB = b.hlavni_hodnota_cislo;
+  const delta = skoreB - skoreA;
+
+  const odpA = (a.data || {}).odpovedi || {};
+  const odpB = (b.data || {}).odpovedi || {};
+  const nevimA = ((a.data || {}).nevim || []).map(String);
+  const nevimB = ((b.data || {}).nevim || []).map(String);
+
+  let zlepseno = 0, zhorseno = 0, stejne = 0;
+  let nejlepsiZlepseni = null; // { text, diff }
+
+  const radky = OTAZKY.map((text, idx) => {
+    const q = String(idx + 1);
+    const aJeNevim = nevimA.includes(q);
+    const bJeNevim = nevimB.includes(q);
+    let znacka, trida, diffText = '';
+    if (aJeNevim && bJeNevim) {
+      znacka = 'Pořád nevíte'; trida = 'nevim';
+    } else if (aJeNevim && !bJeNevim) {
+      znacka = 'Nově zjištěno: ' + popisOdpovediPorovnani(odpB[q]); trida = odpB[q] === 0 ? 'dobre' : odpB[q] === 1 ? 'stredni' : 'spatne';
+    } else if (!aJeNevim && bJeNevim) {
+      znacka = 'Teď nevíte'; trida = 'nevim';
+    } else {
+      const diff = (odpB[q] || 0) - (odpA[q] || 0);
+      znacka = popisOdpovediPorovnani(odpB[q]);
+      trida = odpB[q] === 0 ? 'dobre' : odpB[q] === 1 ? 'stredni' : 'spatne';
+      if (diff < 0) { zlepseno++; diffText = ' ↓ zlepšení'; if (nejlepsiZlepseni === null || diff < nejlepsiZlepseni.diff) nejlepsiZlepseni = { text, diff }; }
+      else if (diff > 0) { zhorseno++; diffText = ' ↑ zhoršení'; }
+      else { stejne++; }
+    }
+    return '<div class="detail-otazka"><div class="detail-otazka-text">' + text + '</div>' +
+      '<div class="detail-otazka-odp ' + trida + '">' + znacka + diffText + '</div></div>';
+  }).join('');
+
+  let shrnutiText;
+  if (delta < 0) {
+    shrnutiText = 'Skóre kleslo z ' + skoreA + ' na ' + skoreB + ' bodů - zlepšujete se! ' + zlepseno + ' ' + (zlepseno === 1 ? 'oblast se zlepšila' : 'oblastí se zlepšilo') + (zhorseno ? ', ' + zhorseno + ' se zhoršilo' : '') + '.';
+    if (nejlepsiZlepseni) shrnutiText += ' Nejvíc znát to je u: „' + nejlepsiZlepseni.text + '".';
+  } else if (delta > 0) {
+    shrnutiText = 'Skóre stouplo z ' + skoreA + ' na ' + skoreB + ' bodů - ' + zhorseno + ' ' + (zhorseno === 1 ? 'oblast se zhoršila' : 'oblastí se zhoršilo') + (zlepseno ? ', ' + zlepseno + ' se naopak zlepšilo' : '') + '. Nic se neděje, teď aspoň víte, kam se podívat nejdřív.';
+  } else {
+    shrnutiText = 'Celkové skóre zůstalo stejné (' + skoreB + ' bodů)' + (zlepseno || zhorseno ? ', i když se v jednotlivých oblastech něco přesunulo - ' + zlepseno + ' zlepšení, ' + zhorseno + ' zhoršení.' : '.');
+  }
+
+  document.getElementById('porovnani-obsah').innerHTML =
+    '<div style="display:flex;justify-content:space-between;gap:16px;margin-bottom:14px;">' +
+      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">' + datumA + '</div><div style="font-size:22px;font-weight:800;">' + skoreA + '<span style="font-size:13px;color:var(--light);"> b.</span></div></div>' +
+      '<div style="align-self:center;font-size:20px;color:var(--light);">→</div>' +
+      '<div style="text-align:right;"><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">' + datumB + '</div><div style="font-size:22px;font-weight:800;">' + skoreB + '<span style="font-size:13px;color:var(--light);"> b.</span></div></div>' +
+    '</div>' +
+    '<div style="background:var(--paper,#faf9f6);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:16px;">' + shrnutiText + '</div>' +
+    radky;
+  document.getElementById('modal-porovnani').style.display = 'flex';
+}
+
+function zavritModalPorovnani() {
+  document.getElementById('modal-porovnani').style.display = 'none';
+}
 
 function otevritModalDetailVysledku(i) {
   const r = posledniHistorie[i];
