@@ -1783,7 +1783,16 @@ function otevritModalPorovnani() {
   const datumB = new Date(b.created_at).toLocaleDateString('cs-CZ');
   const skoreA = a.hlavni_hodnota_cislo;
   const skoreB = b.hlavni_hodnota_cislo;
-  const delta = skoreB - skoreA;
+  // Maximum bodů se mění podle počtu otázek označených "nevím" (méně
+  // zodpovězených otázek = nižší maximum), takže holá čísla skóre mezi
+  // dvěma audity nejdou přímo srovnat, pokud se počet "nevím" liší -
+  // porovnává se proto hlavně procento ze svého maxima, ne body samotné.
+  const maxA = parseInt(((a.hlavni_hodnota_jednotka || '').match(/\d+/) || [30])[0], 10);
+  const maxB = parseInt(((b.hlavni_hodnota_jednotka || '').match(/\d+/) || [30])[0], 10);
+  const pomerA = maxA > 0 ? Math.round(skoreA / maxA * 100) : 0;
+  const pomerB = maxB > 0 ? Math.round(skoreB / maxB * 100) : 0;
+  const deltaPct = pomerB - pomerA;
+  const maxSeLisi = maxA !== maxB;
 
   const odpA = (a.data || {}).odpovedi || {};
   const odpB = (b.data || {}).odpovedi || {};
@@ -1803,7 +1812,7 @@ function otevritModalPorovnani() {
     } else if (aJeNevim && !bJeNevim) {
       znacka = 'Nově zjištěno: ' + popisOdpovediPorovnani(odpB[q]); trida = odpB[q] === 0 ? 'dobre' : odpB[q] === 1 ? 'stredni' : 'spatne';
     } else if (!aJeNevim && bJeNevim) {
-      znacka = 'Teď nevíte'; trida = 'nevim';
+      znacka = 'Dřív víc jasno, teď nevíte'; trida = 'nevim';
     } else {
       const diff = (odpB[q] || 0) - (odpA[q] || 0);
       znacka = popisOdpovediPorovnani(odpB[q]);
@@ -1817,20 +1826,23 @@ function otevritModalPorovnani() {
   }).join('');
 
   let shrnutiText;
-  if (delta < 0) {
-    shrnutiText = 'Skóre kleslo z ' + skoreA + ' na ' + skoreB + ' bodů - zlepšujete se! ' + zlepseno + ' ' + (zlepseno === 1 ? 'oblast se zlepšila' : 'oblastí se zlepšilo') + (zhorseno ? ', ' + zhorseno + ' se zhoršilo' : '') + '.';
+  if (deltaPct < 0) {
+    shrnutiText = 'Podíl problémů klesl z ' + pomerA + ' % na ' + pomerB + ' % - zlepšujete se! ' + zlepseno + ' ' + (zlepseno === 1 ? 'oblast se zlepšila' : 'oblastí se zlepšilo') + (zhorseno ? ', ' + zhorseno + ' se zhoršilo' : '') + '.';
     if (nejlepsiZlepseni) shrnutiText += ' Nejvíc znát to je u: „' + nejlepsiZlepseni.text + '".';
-  } else if (delta > 0) {
-    shrnutiText = 'Skóre stouplo z ' + skoreA + ' na ' + skoreB + ' bodů - ' + zhorseno + ' ' + (zhorseno === 1 ? 'oblast se zhoršila' : 'oblastí se zhoršilo') + (zlepseno ? ', ' + zlepseno + ' se naopak zlepšilo' : '') + '. Nic se neděje, teď aspoň víte, kam se podívat nejdřív.';
+  } else if (deltaPct > 0) {
+    shrnutiText = 'Podíl problémů stoupl z ' + pomerA + ' % na ' + pomerB + ' % - ' + zhorseno + ' ' + (zhorseno === 1 ? 'oblast se zhoršila' : 'oblastí se zhoršilo') + (zlepseno ? ', ' + zlepseno + ' se naopak zlepšilo' : '') + '. Nic se neděje, teď aspoň víte, kam se podívat nejdřív.';
   } else {
-    shrnutiText = 'Celkové skóre zůstalo stejné (' + skoreB + ' bodů)' + (zlepseno || zhorseno ? ', i když se v jednotlivých oblastech něco přesunulo - ' + zlepseno + ' zlepšení, ' + zhorseno + ' zhoršení.' : '.');
+    shrnutiText = 'Celkový podíl problémů zůstal stejný (' + pomerB + ' %)' + (zlepseno || zhorseno ? ', i když se v jednotlivých oblastech něco přesunulo - ' + zlepseno + ' zlepšení, ' + zhorseno + ' zhoršení.' : '.');
+  }
+  if (maxSeLisi) {
+    shrnutiText += ' Pozor, mezi audity se změnil počet otázek označených „nevím" (dřív ' + (10 - maxA/3) + ', teď ' + (10 - maxB/3) + '), takže se maximum bodů liší (' + maxA + ' vs. ' + maxB + ') - proto se porovnává hlavně procento problémů, ne holé body.';
   }
 
   document.getElementById('porovnani-obsah').innerHTML =
     '<div style="display:flex;justify-content:space-between;gap:16px;margin-bottom:14px;">' +
-      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">' + datumA + '</div><div style="font-size:22px;font-weight:800;">' + skoreA + '<span style="font-size:13px;color:var(--light);"> b.</span></div></div>' +
+      '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">' + datumA + '</div><div style="font-size:22px;font-weight:800;">' + pomerA + '<span style="font-size:13px;color:var(--light);"> %</span></div><div style="font-size:12px;color:var(--light);">' + skoreA + ' z ' + maxA + ' b.</div></div>' +
       '<div style="align-self:center;font-size:20px;color:var(--light);">→</div>' +
-      '<div style="text-align:right;"><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">' + datumB + '</div><div style="font-size:22px;font-weight:800;">' + skoreB + '<span style="font-size:13px;color:var(--light);"> b.</span></div></div>' +
+      '<div style="text-align:right;"><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">' + datumB + '</div><div style="font-size:22px;font-weight:800;">' + pomerB + '<span style="font-size:13px;color:var(--light);"> %</span></div><div style="font-size:12px;color:var(--light);">' + skoreB + ' z ' + maxB + ' b.</div></div>' +
     '</div>' +
     '<div style="background:var(--paper,#faf9f6);border-radius:10px;padding:12px 14px;font-size:13px;line-height:1.6;margin-bottom:16px;">' + shrnutiText + '</div>' +
     radky;
