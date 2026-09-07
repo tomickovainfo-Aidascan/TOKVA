@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Projekty – souhrn a prezentační mód | Tokva</title>
+<meta name="description" content="Souhrn toho, co se u projektu dělalo a kdy - a proklik do prezentačního módu na poradu.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://tokva.cz/projekty/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#e9a91b; --gold-dark:#c48e10; --gold-light:#fdf3d9;
+  --black:#000; --dark:#111; --mid:#545454; --light:#a8a6a6;
+  --white:#fff; --paper:#f5f4f0; --border:#e2e2e2;
+  --green:#2a7a4f; --green-light:#e8f5ee;
+  --blue:#1a6aaa; --red:#c0392b;
+  --pro:#c48e10;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--dark);min-height:100vh;line-height:1.6;}
+
+nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--black);text-decoration:none;}
+.nav-brand span{color:var(--gold);}
+.nav-tool{font-size:12px;color:var(--mid);font-weight:500;margin-left:10px;padding-left:10px;border-left:1px solid var(--border);}
+@media (max-width:600px){.nav-tool{display:none;}}
+.nav-badge{font-size:10px;font-weight:700;color:var(--pro);background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);padding:3px 8px;border-radius:3px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-btn{background:transparent;border:1px solid var(--border);color:var(--mid);font-size:12px;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;white-space:nowrap;text-decoration:none;display:inline-block;}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
+
+.hero{background:var(--black);padding:36px 20px 30px;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;top:-70px;right:-70px;width:240px;height:240px;border-radius:50%;border:42px solid rgba(233,169,27,0.07);pointer-events:none;}
+.hero-inner{max-width:1080px;margin:0 auto;position:relative;z-index:1;}
+.tool-badge{display:inline-block;background:rgba(233,169,27,0.15);border:1px solid rgba(233,169,27,0.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:14px;}
+.hero h1{font-family:"Poppins",sans-serif;font-size:clamp(22px,3.6vw,32px);font-weight:900;color:var(--white);line-height:1.2;letter-spacing:-0.4px;margin-bottom:10px;}
+.hero h1 em{color:var(--gold);font-style:normal;}
+.hero p{font-size:14px;color:rgba(255,255,255,0.55);max-width:640px;line-height:1.7;font-weight:300;}
+
+.prihlaseni{max-width:420px;margin:40px auto;padding:0 16px;}
+.prih-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 24px;text-align:center;}
+.prih-card h2{font-family:"Poppins",sans-serif;font-size:18px;font-weight:800;color:var(--dark);margin-bottom:8px;}
+.prih-card p{font-size:13px;color:var(--mid);margin-bottom:20px;line-height:1.7;}
+.prih-err{font-size:12px;color:var(--red);margin-top:8px;display:none;}
+.prih-btn{width:100%;background:var(--gold);color:var(--black);border:none;border-radius:8px;padding:13px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-top:12px;transition:all .2s;}
+.prih-btn:hover{background:var(--gold-dark);color:white;}
+
+.main{max-width:1080px;margin:0 auto;padding:24px 16px 80px;}
+
+/* SEZNAM PROJEKTU */
+.seznam-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px;flex-wrap:wrap;}
+.seznam-toolbar h2{font-family:"Poppins",sans-serif;font-size:17px;font-weight:800;}
+.prazdny-stav{background:var(--white);border:1px dashed var(--border);border-radius:12px;padding:40px 20px;text-align:center;color:var(--mid);font-size:14px;}
+.projekty-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.projekt-karta{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:18px 20px;cursor:pointer;transition:border .15s,box-shadow .15s;}
+.projekt-karta:hover{border-color:var(--gold);box-shadow:0 4px 14px rgba(0,0,0,.06);}
+.projekt-karta-hlavicka{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.projekt-karta h3{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);line-height:1.4;}
+.projekt-karta p.popis{font-size:12.5px;color:var(--mid);margin-bottom:10px;line-height:1.6;}
+.projekt-karta .meta{font-size:12px;color:var(--light);display:flex;flex-wrap:wrap;gap:10px;}
+.stav-badge{font-size:10px;font-weight:700;letter-spacing:.3px;padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.stav-aktivni{background:rgba(233,169,27,.15);color:var(--gold-dark);}
+.stav-dokonceny{background:var(--green-light);color:var(--green);}
+.stav-archivovany{background:#eee;color:#777;}
+
+.btn-gold{background:var(--gold);color:var(--black);border:none;border-radius:6px;padding:9px 16px;font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-gold:hover{background:var(--gold-dark);color:white;}
+.btn-secondary{background:var(--white);color:var(--dark);border:1px solid var(--border);border-radius:6px;padding:9px 16px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.btn-secondary:hover{border-color:var(--gold);}
+
+/* DETAIL PROJEKTU */
+.back-link{font-size:12.5px;color:var(--mid);text-decoration:none;display:inline-block;margin-bottom:14px;}
+.back-link:hover{color:var(--gold-dark);}
+.detail-hlavicka{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-bottom:20px;}
+.detail-hlavicka-radek{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+.detail-nazev{font-family:"Poppins",sans-serif;font-size:22px;font-weight:900;color:var(--dark);line-height:1.25;}
+.detail-akce{display:flex;gap:8px;flex-wrap:wrap;}
+.detail-meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;padding-top:14px;border-top:1px solid var(--border);}
+.detail-meta-pol{}
+.detail-meta-pol .label{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--light);margin-bottom:3px;}
+.detail-meta-pol .hodnota{font-size:14.5px;color:var(--dark);font-weight:600;}
+.detail-meta-pol .hodnota.prazdna{color:var(--light);font-weight:400;font-style:italic;}
+.detail-meta-pol .hodnota.zeleny{color:var(--green);}
+.detail-meta-pol .hodnota.zlaty{color:var(--gold-dark);}
+
+/* FAZE SLOUPCE */
+.faze-sloupce{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+@media (max-width:860px){.faze-sloupce{grid-template-columns:1fr 1fr;}}
+@media (max-width:520px){.faze-sloupce{grid-template-columns:1fr;}}
+.faze-sloupec{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:120px;}
+.faze-sloupec-hlavicka{margin-bottom:2px;}
+.faze-sloupec-hlavicka .cislo{font-family:"DM Mono",monospace;font-size:10px;color:var(--gold-dark);font-weight:700;}
+.faze-sloupec-hlavicka h4{font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;letter-spacing:.4px;color:var(--dark);margin-top:2px;}
+.faze-sloupec-hlavicka .pod{font-size:11px;color:var(--light);}
+.faze-prazdno{font-size:12px;color:var(--light);font-style:italic;padding:10px 2px;}
+.faze-karta{background:var(--paper);border:1px solid var(--border);border-radius:8px;padding:10px 11px;text-decoration:none;color:inherit;display:block;cursor:pointer;transition:border .15s;}
+.faze-karta:hover{border-color:var(--gold);}
+.faze-karta .nazev{font-size:12.5px;font-weight:700;color:var(--dark);line-height:1.4;margin-bottom:3px;}
+.faze-karta .shrnuti{font-size:11.5px;color:var(--mid);line-height:1.5;margin-bottom:4px;}
+.faze-karta .spodek{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:10.5px;color:var(--light);}
+.faze-karta .hodnota{font-weight:700;color:var(--gold-dark);}
+.faze-status-mini{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.fs-novy{background:#eee;color:#555;}
+.fs-probiha{background:rgba(26,106,170,.12);color:var(--blue);}
+.fs-hotovo{background:var(--green-light);color:var(--green);}
+.fs-overit_vysledek{background:rgba(233,169,27,.15);color:var(--gold-dark);}
+.fs-uzavreno{background:#1112;color:var(--dark);}
+.fs-potvrzeno{background:var(--green-light);color:var(--green);}
+.fs-nepotvrzeno{background:#fbe4e1;color:var(--red);}
+.fs-ceka{background:rgba(233,169,27,.15);color:var(--gold-dark);}
+
+/* CASOVA OSA */
+.casova-osa-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px;}
+.casova-osa-wrap h4{font-family:"Poppins",sans-serif;font-size:11.5px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px;}
+.casova-osa{display:flex;gap:0;overflow-x:auto;padding-bottom:4px;}
+.osa-bod{flex-shrink:0;text-align:center;min-width:110px;position:relative;padding:0 6px;}
+.osa-bod::before{content:"";position:absolute;top:5px;left:0;right:0;height:2px;background:var(--border);}
+.osa-bod:first-child::before{left:50%;}
+.osa-bod:last-child::before{right:50%;}
+.osa-tecka{width:10px;height:10px;border-radius:50%;background:var(--gold);margin:0 auto 6px;position:relative;z-index:1;border:2px solid var(--white);}
+.osa-datum{font-size:10px;color:var(--light);font-weight:600;}
+.osa-nazev{font-size:11px;color:var(--dark);margin-top:2px;line-height:1.4;}
+
+/* PREZENTACE MOD */
+body.prezentace{background:var(--black);}
+body.prezentace nav,body.prezentace .hero,body.prezentace .casova-osa-wrap,body.prezentace .skryt-v-prezentaci{display:none !important;}
+body.prezentace .main{max-width:1100px;padding-top:30px;}
+body.prezentace .detail-hlavicka{background:transparent;border:none;padding:0 0 24px;}
+body.prezentace .detail-nazev{color:var(--white);font-size:clamp(26px,4vw,40px);}
+body.prezentace .detail-meta-pol .label{color:rgba(255,255,255,.4);}
+body.prezentace .detail-meta-pol .hodnota{color:rgba(255,255,255,.9);font-size:17px;}
+body.prezentace .detail-meta-pol .hodnota.zeleny{color:#4fd497;}
+body.prezentace .detail-meta-pol .hodnota.zlaty{color:var(--gold);}
+body.prezentace .faze-sloupce{display:block;}
+body.prezentace .faze-krok-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+body.prezentace .faze-krok-nav button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:var(--white);border-radius:8px;padding:12px 22px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+body.prezentace .faze-krok-nav button:hover{border-color:var(--gold);color:var(--gold);}
+body.prezentace .faze-krok-nav button:disabled{opacity:.3;cursor:default;}
+body.prezentace .faze-krok-oznaceni{font-family:"DM Mono",monospace;font-size:13px;color:rgba(255,255,255,.5);letter-spacing:1px;}
+body.prezentace .faze-sloupec{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);min-height:50vh;padding:26px 28px;}
+body.prezentace .faze-sloupec-hlavicka .cislo{color:var(--gold);font-size:13px;}
+body.prezentace .faze-sloupec-hlavicka h4{color:var(--white);font-size:22px;margin-top:6px;}
+body.prezentace .faze-sloupec-hlavicka .pod{color:rgba(255,255,255,.45);font-size:14px;}
+body.prezentace .faze-prazdno{color:rgba(255,255,255,.35);font-size:15px;padding:20px 2px;}
+body.prezentace .faze-karta{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);padding:16px 18px;margin-bottom:4px;}
+body.prezentace .faze-karta .nazev{color:var(--white);font-size:16px;}
+body.prezentace .faze-karta .shrnuti{color:rgba(255,255,255,.6);font-size:13.5px;}
+body.prezentace .faze-karta .spodek{color:rgba(255,255,255,.4);}
+body.prezentace .faze-karta .hodnota{color:var(--gold);font-size:13px;}
+body.prezentace .ukoncit-prezentaci{position:fixed;top:16px;right:16px;z-index:50;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;}
+.modal-overlay.visible{display:flex;}
+.modal{background:var(--white);border-radius:12px;padding:26px;max-width:520px;width:100%;margin:auto 0;}
+.modal h3{font-family:"Poppins",sans-serif;font-size:17px;font-weight:800;margin-bottom:4px;}
+.modal .modal-sub{font-size:12.5px;color:var(--mid);margin-bottom:18px;}
+.field label{font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
+.field textarea{resize:vertical;min-height:52px;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);background:white;}
+.field+.field,.field+.field-row,.field-row+.field,.field-row+.field-row{margin-top:12px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media (max-width:480px){.field-row{grid-template-columns:1fr;}}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;}
+.btn-modal-ok{background:var(--gold);color:var(--black);border:none;border-radius:6px;padding:10px 22px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-modal-cancel{background:transparent;color:var(--mid);border:1px solid var(--border);border-radius:6px;padding:10px 16px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;}
+.modal-err{font-size:12px;color:var(--red);margin-top:10px;display:none;}
+
+footer{max-width:1080px;margin:30px auto 0;padding:20px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.footer-brand{font-family:"Poppins",sans-serif;font-size:12px;font-weight:800;color:var(--dark);}
+.footer-brand span{color:var(--gold);}
+body.prezentace footer{display:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/" class="nav-brand">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Projekty</span></div>
+  <div class="nav-right">
+    <span class="nav-badge">Pro verze</span>
+    <a href="https://tokva.cz/akcni-plan/" class="nav-btn">Akční plán</a>
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="tool-badge">Placený nástroj – Tokva Pro</div>
+    <h1>Co se u projektu <em>dělo a proč</em></h1>
+    <p>Jedna stránka na projekt – co jste zjistili, co jste změřili, co jste změnili a jestli to pomohlo. A z ní proklik do prezentačního módu na poradu.</p>
+  </div>
+</div>
+
+<div id="prihlaseni" class="prihlaseni">
+  <div class="prih-card">
+    <h2 id="prih-nadpis">Přihlaste se ke svému účtu</h2>
+    <p id="prih-text">Projekty jsou součástí Tokva Pro. Přihlaste se svým účtem Tokva.</p>
+    <div class="prih-err" id="prih-err" style="display:none;">Přihlášení se nepodařilo. Zkuste to znovu nebo napište na tomickova.info@gmail.com</div>
+    <button class="prih-btn" id="prih-btn" onclick="klikNaPrihlaseni()">Přihlásit se</button>
+    <p style="margin-top:16px;font-size:12px;color:var(--light);">Nemáte přístup? <a href="https://tokva.cz/pro/" style="color:var(--gold);text-decoration:none;font-weight:700;">Zjistit více o Tokva Pro</a></p>
+  </div>
+</div>
+
+<div class="main" id="app" style="display:none;">
+
+  <!-- SEZNAM -->
+  <div id="pohled-seznam">
+    <div class="seznam-toolbar">
+      <h2>Projekty</h2>
+      <button class="btn-gold" onclick="otevritModalNovyProjekt()">+ Nový projekt</button>
+    </div>
+    <div id="seznam-obsah"></div>
+  </div>
+
+  <!-- DETAIL -->
+  <div id="pohled-detail" style="display:none;">
+    <a href="#" class="back-link skryt-v-prezentaci" onclick="zavritDetail();return false;">← Všechny projekty</a>
+
+    <div class="detail-hlavicka">
+      <div class="detail-hlavicka-radek">
+        <div class="detail-nazev" id="det-nazev"></div>
+        <div class="detail-akce skryt-v-prezentaci">
+          <button class="btn-secondary" onclick="otevritModalHlavicka()">Upravit hlavičku</button>
+          <button class="btn-gold" id="btn-prezentovat" onclick="prepnoutPrezentaci()">▶ Prezentovat</button>
+        </div>
+        <button class="btn-secondary ukoncit-prezentaci" style="display:none;" id="btn-ukoncit-prezentaci" onclick="prepnoutPrezentaci()">✕ Ukončit prezentaci</button>
+      </div>
+      <div class="detail-meta-grid">
+        <div class="detail-meta-pol"><div class="label">Stav</div><div class="hodnota" id="det-stav"></div></div>
+        <div class="detail-meta-pol"><div class="label">Odpovědná osoba</div><div class="hodnota" id="det-osoba"></div></div>
+        <div class="detail-meta-pol"><div class="label">Datum začátku</div><div class="hodnota" id="det-datum"></div></div>
+        <div class="detail-meta-pol"><div class="label">Další krok</div><div class="hodnota" id="det-krok"></div></div>
+        <div class="detail-meta-pol"><div class="label">Očekávaný potenciál</div><div class="hodnota" id="det-potencial"></div></div>
+        <div class="detail-meta-pol"><div class="label">Ověřený přínos</div><div class="hodnota" id="det-overeno"></div></div>
+      </div>
+    </div>
+
+    <div class="faze-krok-nav" style="display:none;">
+      <button id="btn-krok-zpet" onclick="prezentaceKrokZmena(-1)">◀ Zpět</button>
+      <span class="faze-krok-oznaceni" id="krok-oznaceni"></span>
+      <button id="btn-krok-dal" onclick="prezentaceKrokZmena(1)">Další ▶</button>
+    </div>
+
+    <div class="faze-sloupce" id="faze-sloupce"></div>
+
+    <div class="casova-osa-wrap" id="casova-osa-wrap" style="display:none;">
+      <h4>Časová osa</h4>
+      <div class="casova-osa" id="casova-osa"></div>
+    </div>
+
+    <p class="skryt-v-prezentaci" style="margin-bottom:20px;"><a href="#" id="odkaz-akcni-plan-projektu" style="color:var(--gold-dark);font-weight:700;font-size:13px;text-decoration:none;" target="_blank">→ Otevřít akční plán tohohle projektu</a></p>
+  </div>
+
+</div>
+
+<!-- MODAL: novy projekt -->
+<div class="modal-overlay" id="modal-projekt-overlay">
+  <div class="modal">
+    <h3>Nový projekt</h3>
+    <p class="modal-sub">Založí se prázdný, dalšího krok a potenciál doplníte hned na stránce projektu.</p>
+    <form id="form-projekt" onsubmit="ulozitProjekt(event)">
+      <div class="field">
+        <label for="pr-nazev">Název projektu</label>
+        <input type="text" id="pr-nazev" required placeholder="např. Zkrácení času balení zásilek">
+      </div>
+      <div class="field">
+        <label for="pr-popis">V čem je problém (volitelné)</label>
+        <textarea id="pr-popis" placeholder="pár vět, o co jde"></textarea>
+      </div>
+      <div class="modal-err" id="modal-projekt-err">Založení se nepodařilo. Zkuste to prosím znovu.</div>
+      <div class="modal-btns">
+        <button type="button" class="btn-modal-cancel" onclick="zavritModalProjekt()">Zrušit</button>
+        <button type="submit" class="btn-modal-ok">Založit projekt</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL: upravit hlavicku -->
+<div class="modal-overlay" id="modal-hlavicka-overlay">
+  <div class="modal">
+    <h3>Upravit hlavičku projektu</h3>
+    <p class="modal-sub">Tyhle údaje se ukazují nahoře na stránce projektu i v prezentačním módu.</p>
+    <form id="form-hlavicka" onsubmit="ulozitHlavicku(event)">
+      <div class="field">
+        <label for="hl-nazev">Název projektu</label>
+        <input type="text" id="hl-nazev" required>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="hl-stav">Stav</label>
+          <select id="hl-stav">
+            <option value="aktivni">🟡 Probíhá</option>
+            <option value="dokonceny">🟢 Dokončeno</option>
+            <option value="archivovany">⚪ Archivováno</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="hl-osoba">Odpovědná osoba</label>
+          <input type="text" id="hl-osoba" placeholder="jméno">
+        </div>
+      </div>
+      <div class="field">
+        <label for="hl-krok">Další krok</label>
+        <input type="text" id="hl-krok" placeholder="co je potřeba udělat dál">
+      </div>
+      <div class="field">
+        <label for="hl-potencial">Očekávaný potenciál (Kč/rok, volitelné)</label>
+        <input type="number" id="hl-potencial" min="0" step="1" placeholder="např. 80000">
+      </div>
+      <div class="field">
+        <label for="hl-popis">V čem je problém (volitelné)</label>
+        <textarea id="hl-popis"></textarea>
+      </div>
+      <div class="modal-err" id="modal-hlavicka-err">Uložení se nepodařilo. Zkuste to prosím znovu.</div>
+      <div class="modal-btns">
+        <button type="button" class="btn-modal-cancel" onclick="zavritModalHlavicka()">Zrušit</button>
+        <button type="submit" class="btn-modal-ok">Uložit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">Tokva <span>Gabriela Tomíčková</span></div>
+  <div class="footer-legal"><a href="https://tokva.cz/">← Zpět na Tokvu</a></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-client.js"></script>
+<script src="../auth.js"></script>
+<script>
+// =============================================
+// PŘIHLAŠOVÁNÍ - Tokva Pro (Supabase), celá appka je Pro
+// =============================================
+let session = null;
+let clenstvi = null;
+let jePro = false;
+
+let projekty = [];
+let pocetVysledku = {};
+let pocetUkolu = {};
+let posledniAktivita = {};
+
+let pohled = 'seznam';
+let aktualniProjekt = null;
+let aktualniToolRuny = [];
+let aktualniAkce = [];
+let prezentace = false;
+let prezentaceKrok = 0;
+
+const FAZE_RADY = [
+  { klic: 'videt', nadpis: 'VIDĚT', pod: 'Co jsme zjistili' },
+  { klic: 'zmerit', nadpis: 'ZMĚŘIT', pod: 'Co říkají čísla' },
+  { klic: 'zmenit', nadpis: 'ZMĚNIT', pod: 'Co s tím děláme' },
+  { klic: 'overit', nadpis: 'OVĚŘIT', pod: 'Pomohlo to?' }
+];
+
+const FAZE_TOOL_DEFAULT = {
+  '5s': 'videt', '5x-proc': 'videt', 'kviz-sklad': 'videt', 'kviz-komunikacniho-chaosu': 'videt',
+  'mini-audit-skladu': 'videt', 'mini-audit-vyroby': 'videt',
+  'casova-studie': 'zmerit', 'kalkulacka-m2': 'zmerit', 'meric-plytvani-pro': 'zmerit', 'spaghetti-pro': 'zmerit'
+};
+
+const NASTROJ_URL = {
+  '5s': 'https://tokva.cz/nastroje/5S_audit/',
+  '5x-proc': 'https://tokva.cz/nastroje/5x-proc-ai-kouc/',
+  'casova-studie': 'https://tokva.cz/nastroje/casova-studie/',
+  'kalkulacka-m2': 'https://tokva.cz/nastroje/kalkulacka-nakladu-skladu/',
+  'kviz-sklad': 'https://tokva.cz/nastroje/kviz-jak-znate-svuj-sklad/',
+  'kviz-komunikacniho-chaosu': 'https://tokva.cz/nastroje/kviz-komunikacniho-chaosu/',
+  'meric-plytvani-pro': 'https://tokva.cz/nastroje/meric-plytvani-pro/',
+  'mini-audit-skladu': 'https://tokva.cz/nastroje/mini-audit-skladu/',
+  'mini-audit-vyroby': 'https://tokva.cz/nastroje/mini-audit-vyroby/',
+  'spaghetti-pro': 'https://tokva.cz/nastroje/spaghetti-pro/'
+};
+
+const NAZVY_STAVU_AKCE = { novy: 'Nový', probiha: 'Probíhá', hotovo: 'Hotovo', overit_vysledek: 'Ověřit výsledek', uzavreno: 'Uzavřeno' };
+const NAZVY_STAVU_PROJEKTU = { aktivni: '🟡 Probíhá', dokonceny: '🟢 Dokončeno', archivovany: '⚪ Archivováno' };
+
+async function nacistPrihlaseniStav() {
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
+    session = null; clenstvi = null; jePro = false;
+  }
+  renderUcetNav();
+  renderPrihlaseniStav();
+}
+
+function renderUcetNav() {
+  const info = document.getElementById('nav-ucet-info');
+  const btn = document.getElementById('nav-ucet-btn');
+  if (session && clenstvi) {
+    info.style.display = 'inline-block';
+    info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    btn.textContent = 'Odhlásit';
+  } else {
+    info.style.display = 'none';
+    btn.textContent = 'Přihlásit se';
+  }
+}
+
+async function klikNaUcet() {
+  if (session) {
+    try { await odhlasit(); } catch (e) { console.warn('Odhlášení se nepodařilo.', e); }
+    location.reload();
+  } else {
+    try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
+  }
+}
+
+async function klikNaPrihlaseni() {
+  const err = document.getElementById('prih-err');
+  err.style.display = 'none';
+  try { await vyzadovatPrihlaseni(); } catch (e) {
+    console.warn('Přihlášení se nepodařilo spustit.', e);
+    err.style.display = 'block';
+  }
+}
+
+function renderPrihlaseniStav() {
+  if (jePro) {
+    vstoupitDoAplikace();
+    return;
+  }
+  document.getElementById('prihlaseni').style.display = 'block';
+  document.getElementById('app').style.display = 'none';
+  const nadpis = document.getElementById('prih-nadpis');
+  const text = document.getElementById('prih-text');
+  const btn = document.getElementById('prih-btn');
+  if (session) {
+    nadpis.textContent = 'K tomuto účtu není aktivní Pro';
+    text.textContent = 'Jste přihlášeni jako ' + (clenstvi ? clenstvi.organizations.name : 'váš účet') + ', ale Projekty k tomuhle účtu zatím nejsou aktivní.';
+    btn.style.display = 'none';
+  } else {
+    nadpis.textContent = 'Přihlaste se ke svému účtu';
+    text.textContent = 'Projekty jsou součástí Tokva Pro. Přihlaste se svým účtem Tokva.';
+    btn.style.display = 'block';
+    btn.textContent = 'Přihlásit se';
+  }
+}
+
+async function vstoupitDoAplikace() {
+  document.getElementById('prihlaseni').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  await nacistSeznamProjektu();
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (id) {
+    await otevritDetailProjektu(id);
+    if (params.get('prezentace') === '1' && !prezentace) prepnoutPrezentaci();
+  }
+}
+
+// =============================================
+// NAČTENÍ SEZNAMU
+// =============================================
+async function nacistSeznamProjektu() {
+  const orgId = clenstvi.organization_id;
+  const [projRes, trRes, akceRes] = await Promise.all([
+    supabaseClient.from('projects').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
+    supabaseClient.from('tool_runs').select('id,project_id,created_at').eq('organization_id', orgId).not('project_id', 'is', null),
+    supabaseClient.from('actions').select('id,project_id,created_at').eq('organization_id', orgId).not('project_id', 'is', null)
+  ]);
+
+  projekty = projRes.error ? [] : (projRes.data || []);
+  if (projRes.error) console.warn('Načtení projektů selhalo.', projRes.error);
+
+  pocetVysledku = {}; pocetUkolu = {}; posledniAktivita = {};
+  const trData = trRes.error ? [] : (trRes.data || []);
+  const akceData = akceRes.error ? [] : (akceRes.data || []);
+  trData.forEach(t => {
+    pocetVysledku[t.project_id] = (pocetVysledku[t.project_id] || 0) + 1;
+    const ts = new Date(t.created_at).getTime();
+    if (!posledniAktivita[t.project_id] || ts > posledniAktivita[t.project_id]) posledniAktivita[t.project_id] = ts;
+  });
+  akceData.forEach(a => {
+    pocetUkolu[a.project_id] = (pocetUkolu[a.project_id] || 0) + 1;
+    const ts = new Date(a.created_at).getTime();
+    if (!posledniAktivita[a.project_id] || ts > posledniAktivita[a.project_id]) posledniAktivita[a.project_id] = ts;
+  });
+
+  renderSeznam();
+}
+
+function renderSeznam() {
+  const wrap = document.getElementById('seznam-obsah');
+  if (!projekty.length) {
+    wrap.innerHTML = '<div class="prazdny-stav">Zatím žádný projekt. Založte první tlačítkem „+ Nový projekt“ nahoře.</div>';
+    return;
+  }
+  wrap.innerHTML = '<div class="projekty-grid">' + projekty.map(p => {
+    const vysledku = pocetVysledku[p.id] || 0;
+    const ukolu = pocetUkolu[p.id] || 0;
+    const aktivita = posledniAktivita[p.id] ? new Date(posledniAktivita[p.id]).toLocaleDateString('cs-CZ') : 'zatím žádná';
+    return '<div class="projekt-karta" onclick="otevritDetailProjektu(\'' + p.id + '\')">' +
+      '<div class="projekt-karta-hlavicka"><h3>' + escapovat(p.name) + '</h3>' +
+      '<span class="stav-badge stav-' + p.status + '">' + (NAZVY_STAVU_PROJEKTU[p.status] || p.status) + '</span></div>' +
+      (p.description ? '<p class="popis">' + escapovat(zkratit(p.description, 90)) + '</p>' : '') +
+      '<div class="meta"><span>' + vysledku + ' výsledků</span><span>' + ukolu + ' úkolů</span><span>poslední aktivita ' + aktivita + '</span></div>' +
+      '</div>';
+  }).join('') + '</div>';
+}
+
+// =============================================
+// DETAIL PROJEKTU
+// =============================================
+async function otevritDetailProjektu(id) {
+  let projekt = projekty.find(p => p.id === id);
+  if (!projekt) {
+    const { data, error } = await supabaseClient.from('projects').select('*').eq('id', id).maybeSingle();
+    if (error || !data) { console.warn('Projekt se nepodařilo najít.', error); return; }
+    projekt = data;
+    projekty.unshift(projekt);
+  }
+  aktualniProjekt = projekt;
+
+  const [trRes, akceRes] = await Promise.all([
+    supabaseClient.from('tool_runs').select('*').eq('project_id', id).order('created_at', { ascending: true }),
+    supabaseClient.from('actions').select('*').eq('project_id', id).order('created_at', { ascending: true })
+  ]);
+  aktualniToolRuny = trRes.error ? [] : (trRes.data || []);
+  aktualniAkce = akceRes.error ? [] : (akceRes.data || []);
+  if (trRes.error) console.warn('Načtení výsledků projektu selhalo.', trRes.error);
+  if (akceRes.error) console.warn('Načtení úkolů projektu selhalo.', akceRes.error);
+
+  pohled = 'detail';
+  prezentaceKrok = 0;
+  document.getElementById('pohled-seznam').style.display = 'none';
+  document.getElementById('pohled-detail').style.display = 'block';
+  history.replaceState(null, '', '?id=' + id);
+  renderDetail();
+}
+
+function zavritDetail() {
+  if (prezentace) prepnoutPrezentaci();
+  pohled = 'seznam';
+  document.getElementById('pohled-detail').style.display = 'none';
+  document.getElementById('pohled-seznam').style.display = 'block';
+  history.replaceState(null, '', window.location.pathname);
+  nacistSeznamProjektu();
+}
+
+function fazeVysledku(tr) {
+  if (tr.premereni_pro) return 'overit';
+  if (tr.faze) return tr.faze;
+  return FAZE_TOOL_DEFAULT[tr.nastroj] || 'videt';
+}
+
+function renderDetail() {
+  const p = aktualniProjekt;
+  document.getElementById('det-nazev').textContent = p.name;
+  document.getElementById('det-stav').textContent = NAZVY_STAVU_PROJEKTU[p.status] || p.status;
+  document.getElementById('det-osoba').innerHTML = p.responsible_person ? escapovat(p.responsible_person) : '<span class="prazdna">nepřiřazeno</span>';
+  document.getElementById('det-datum').textContent = new Date(p.created_at).toLocaleDateString('cs-CZ');
+  document.getElementById('det-krok').innerHTML = p.next_step ? escapovat(p.next_step) : '<span class="prazdna">nezadáno</span>';
+  document.getElementById('det-potencial').innerHTML = (p.expected_potential_kc || p.expected_potential_kc === 0) ? '<span class="zlaty">' + formatKc(p.expected_potential_kc) + '/rok</span>' : '<span class="prazdna">nezadáno</span>';
+
+  const overeneAkce = aktualniAkce.filter(a => a.verification_confirmed === true && a.actual_benefit != null);
+  if (overeneAkce.length) {
+    const soucet = overeneAkce.reduce((s, a) => s + Number(a.actual_benefit || 0), 0);
+    document.getElementById('det-overeno').innerHTML = '<span class="zeleny">' + formatKc(soucet) + '/rok</span>';
+  } else {
+    document.getElementById('det-overeno').innerHTML = '<span class="prazdna">zatím neověřeno</span>';
+  }
+
+  document.getElementById('odkaz-akcni-plan-projektu').href = 'https://tokva.cz/akcni-plan/?projekt=' + p.id;
+
+  renderFazeSloupce();
+  renderCasovaOsa();
+}
+
+function toolNazev(tr) {
+  return tr.nazev || tr.nastroj;
+}
+
+function fazeKartaHtml(polozka) {
+  if (polozka.typ === 'vysledek') {
+    const tr = polozka.data;
+    const url = NASTROJ_URL[tr.nastroj];
+    const obsah = '<div class="nazev">' + escapovat(toolNazev(tr)) + '</div>' +
+      (tr.shrnuti ? '<div class="shrnuti">' + escapovat(zkratit(tr.shrnuti, 100)) + '</div>' : '') +
+      '<div class="spodek"><span>' + new Date(tr.created_at).toLocaleDateString('cs-CZ') + '</span>' +
+      (tr.hlavni_hodnota_cislo != null ? '<span class="hodnota">' + tr.hlavni_hodnota_cislo + (tr.hlavni_hodnota_jednotka ? ' ' + tr.hlavni_hodnota_jednotka : '') + '</span>' : '') + '</div>';
+    if (url) {
+      return '<a class="faze-karta" href="' + url + '?vysledek=' + tr.id + '" target="_blank" rel="noopener">' + obsah + '</a>';
+    }
+    return '<div class="faze-karta">' + obsah + '</div>';
+  }
+  if (polozka.typ === 'ukol') {
+    const a = polozka.data;
+    return '<a class="faze-karta" href="https://tokva.cz/akcni-plan/?projekt=' + a.project_id + '" target="_blank" rel="noopener">' +
+      '<div class="nazev">' + escapovat(a.title) + '</div>' +
+      (a.responsible_person ? '<div class="shrnuti">' + escapovat(a.responsible_person) + '</div>' : '') +
+      '<div class="spodek"><span>' + (a.due_date ? new Date(a.due_date + 'T00:00:00').toLocaleDateString('cs-CZ') : '') + '</span>' +
+      '<span class="faze-status-mini fs-' + a.status + '">' + (NAZVY_STAVU_AKCE[a.status] || a.status) + '</span></div></a>';
+  }
+  if (polozka.typ === 'overeni') {
+    const a = polozka.data;
+    let stavTrida = 'fs-ceka', stavText = '⏳ Čeká na ověření';
+    if (a.verification_confirmed === true) { stavTrida = 'fs-potvrzeno'; stavText = '✅ Potvrzeno'; }
+    else if (a.verification_confirmed === false) { stavTrida = 'fs-nepotvrzeno'; stavText = '❌ Nepotvrdilo se'; }
+    return '<a class="faze-karta" href="https://tokva.cz/akcni-plan/?projekt=' + a.project_id + '" target="_blank" rel="noopener">' +
+      '<div class="nazev">' + escapovat(a.title) + '</div>' +
+      '<div class="spodek"><span>' + new Date(a.verification_date + 'T00:00:00').toLocaleDateString('cs-CZ') + '</span>' +
+      (a.actual_benefit != null ? '<span class="hodnota">' + formatKc(a.actual_benefit) + '/rok</span>' : '') + '</div>' +
+      '<div class="spodek" style="margin-top:4px;"><span class="faze-status-mini ' + stavTrida + '">' + stavText + '</span></div></a>';
+  }
+  return '';
+}
+
+function sestavitSloupce() {
+  const sloupce = { videt: [], zmerit: [], zmenit: [], overit: [] };
+  aktualniToolRuny.forEach(tr => {
+    const f = fazeVysledku(tr);
+    (sloupce[f] || sloupce.videt).push({ typ: 'vysledek', data: tr, cas: new Date(tr.created_at).getTime() });
+  });
+  aktualniAkce.forEach(a => {
+    sloupce.zmenit.push({ typ: 'ukol', data: a, cas: new Date(a.created_at).getTime() });
+    if (a.verification_date) {
+      sloupce.overit.push({ typ: 'overeni', data: a, cas: new Date(a.verification_date).getTime() });
+    }
+  });
+  Object.keys(sloupce).forEach(k => sloupce[k].sort((x, y) => x.cas - y.cas));
+  return sloupce;
+}
+
+function renderFazeSloupce() {
+  const sloupce = sestavitSloupce();
+  const wrap = document.getElementById('faze-sloupce');
+  const krokNav = document.querySelector('.faze-krok-nav');
+
+  if (prezentace) {
+    krokNav.style.display = 'flex';
+    const rada = FAZE_RADY[prezentaceKrok];
+    document.getElementById('krok-oznaceni').textContent = (prezentaceKrok + 1) + ' / 4 — ' + rada.nadpis;
+    document.getElementById('btn-krok-zpet').disabled = prezentaceKrok === 0;
+    document.getElementById('btn-krok-dal').disabled = prezentaceKrok === FAZE_RADY.length - 1;
+    wrap.innerHTML = jedenSloupecHtml(rada, sloupce[rada.klic], 1);
+  } else {
+    krokNav.style.display = 'none';
+    wrap.innerHTML = FAZE_RADY.map((rada, i) => jedenSloupecHtml(rada, sloupce[rada.klic], i + 1)).join('');
+  }
+}
+
+function jedenSloupecHtml(rada, polozky, cislo) {
+  const obsah = polozky.length ? polozky.map(fazeKartaHtml).join('') : '<div class="faze-prazdno">Zatím nic</div>';
+  return '<div class="faze-sloupec">' +
+    '<div class="faze-sloupec-hlavicka"><div class="cislo">' + cislo + '.</div><h4>' + rada.nadpis + '</h4><div class="pod">' + rada.pod + '</div></div>' +
+    obsah + '</div>';
+}
+
+function prezentaceKrokZmena(smer) {
+  prezentaceKrok = Math.max(0, Math.min(FAZE_RADY.length - 1, prezentaceKrok + smer));
+  renderFazeSloupce();
+}
+
+function prepnoutPrezentaci() {
+  prezentace = !prezentace;
+  prezentaceKrok = 0;
+  document.body.classList.toggle('prezentace', prezentace);
+  document.getElementById('btn-prezentovat').style.display = prezentace ? 'none' : '';
+  document.getElementById('btn-ukoncit-prezentaci').style.display = prezentace ? 'inline-block' : 'none';
+  document.getElementById('casova-osa-wrap').style.display = prezentace ? 'none' : (aktualniToolRuny.length + aktualniAkce.length ? 'block' : 'none');
+  renderFazeSloupce();
+  if (prezentace) window.scrollTo(0, 0);
+}
+
+function renderCasovaOsa() {
+  const wrap = document.getElementById('casova-osa-wrap');
+  const osa = document.getElementById('casova-osa');
+  const body = [];
+  aktualniToolRuny.forEach(tr => body.push({ cas: new Date(tr.created_at).getTime(), nazev: toolNazev(tr) }));
+  aktualniAkce.forEach(a => body.push({ cas: new Date(a.created_at).getTime(), nazev: a.title }));
+  body.sort((x, y) => x.cas - y.cas);
+  if (!body.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = prezentace ? 'none' : 'block';
+  osa.innerHTML = body.map(b => '<div class="osa-bod"><div class="osa-tecka"></div><div class="osa-datum">' + new Date(b.cas).toLocaleDateString('cs-CZ') + '</div><div class="osa-nazev">' + escapovat(zkratit(b.nazev, 26)) + '</div></div>').join('');
+}
+
+// =============================================
+// MODAL: novy projekt
+// =============================================
+function otevritModalNovyProjekt() {
+  document.getElementById('form-projekt').reset();
+  document.getElementById('modal-projekt-err').style.display = 'none';
+  document.getElementById('modal-projekt-overlay').classList.add('visible');
+}
+function zavritModalProjekt() {
+  document.getElementById('modal-projekt-overlay').classList.remove('visible');
+}
+async function ulozitProjekt(e) {
+  e.preventDefault();
+  const err = document.getElementById('modal-projekt-err');
+  err.style.display = 'none';
+  const payload = {
+    organization_id: clenstvi.organization_id,
+    name: document.getElementById('pr-nazev').value.trim(),
+    description: textNeboNull(document.getElementById('pr-popis').value),
+    created_by: session.user.id
+  };
+  try {
+    const { data, error } = await supabaseClient.from('projects').insert(payload).select().single();
+    if (error) throw error;
+    zavritModalProjekt();
+    await nacistSeznamProjektu();
+    if (data && data.id) otevritDetailProjektu(data.id);
+  } catch (ex) {
+    console.warn('Založení projektu se nepodařilo.', ex);
+    err.style.display = 'block';
+  }
+}
+
+// =============================================
+// MODAL: upravit hlavicku
+// =============================================
+function otevritModalHlavicka() {
+  const p = aktualniProjekt;
+  document.getElementById('hl-nazev').value = p.name || '';
+  document.getElementById('hl-stav').value = p.status || 'aktivni';
+  document.getElementById('hl-osoba').value = p.responsible_person || '';
+  document.getElementById('hl-krok').value = p.next_step || '';
+  document.getElementById('hl-potencial').value = (p.expected_potential_kc != null) ? p.expected_potential_kc : '';
+  document.getElementById('hl-popis').value = p.description || '';
+  document.getElementById('modal-hlavicka-err').style.display = 'none';
+  document.getElementById('modal-hlavicka-overlay').classList.add('visible');
+}
+function zavritModalHlavicka() {
+  document.getElementById('modal-hlavicka-overlay').classList.remove('visible');
+}
+async function ulozitHlavicku(e) {
+  e.preventDefault();
+  const err = document.getElementById('modal-hlavicka-err');
+  err.style.display = 'none';
+  const potencialVal = document.getElementById('hl-potencial').value;
+  const payload = {
+    name: document.getElementById('hl-nazev').value.trim(),
+    status: document.getElementById('hl-stav').value,
+    responsible_person: textNeboNull(document.getElementById('hl-osoba').value),
+    next_step: textNeboNull(document.getElementById('hl-krok').value),
+    expected_potential_kc: potencialVal === '' ? null : Number(potencialVal),
+    description: textNeboNull(document.getElementById('hl-popis').value)
+  };
+  try {
+    const { data, error } = await supabaseClient.from('projects').update(payload).eq('id', aktualniProjekt.id).select().single();
+    if (error) throw error;
+    aktualniProjekt = data;
+    const idx = projekty.findIndex(p => p.id === data.id);
+    if (idx > -1) projekty[idx] = data;
+    zavritModalHlavicka();
+    renderDetail();
+  } catch (ex) {
+    console.warn('Uložení hlavičky se nepodařilo. Zkontrolujte, jestli je spuštěná migrace nových sloupců (responsible_person, next_step, expected_potential_kc) v Supabase.', ex);
+    err.style.display = 'block';
+  }
+}
+
+// =============================================
+// POMOCNÉ FUNKCE
+// =============================================
+function escapovat(text) {
+  const div = document.createElement('div');
+  div.textContent = text == null ? '' : String(text);
+  return div.innerHTML;
+}
+function zkratit(text, max) {
+  if (!text) return '';
+  return text.length > max ? text.slice(0, max - 1) + '…' : text;
+}
+function formatKc(cislo) {
+  return Number(cislo).toLocaleString('cs-CZ') + ' Kč';
+}
+function textNeboNull(val) {
+  const t = (val || '').trim();
+  return t === '' ? null : t;
+}
+
+nacistPrihlaseniStav();
+</script>
+</body>
+</html>
