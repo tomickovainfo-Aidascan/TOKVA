@@ -1802,28 +1802,49 @@ function otevritModalPorovnani() {
   let zlepseno = 0, zhorseno = 0, stejne = 0;
   let nejlepsiZlepseni = null; // { text, diff }
 
-  const radky = OTAZKY.map((text, idx) => {
+  function tridaProHodnotu(h) { return h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne'; }
+  function badge(popis, trida) {
+    return '<span class="detail-otazka-odp ' + trida + '" style="display:inline-block;">' + popis + '</span>';
+  }
+
+  const radkyPole = OTAZKY.map((text, idx) => {
     const q = String(idx + 1);
     const aJeNevim = nevimA.includes(q);
     const bJeNevim = nevimB.includes(q);
-    let znacka, trida, diffText = '';
+
+    const drivPopis = aJeNevim ? 'Nevím' : popisOdpovediPorovnani(odpA[q]) + ' (' + odpA[q] + ' b.)';
+    const drivTrida = aJeNevim ? 'nevim' : tridaProHodnotu(odpA[q]);
+
+    let tedPopis, tedTrida, zmenaText = '', zmenaBarva = 'var(--mid)';
     if (aJeNevim && bJeNevim) {
-      znacka = 'Pořád nevíte'; trida = 'nevim';
+      tedPopis = 'Nevím'; tedTrida = 'nevim'; zmenaText = 'Pořád nevíte';
     } else if (aJeNevim && !bJeNevim) {
-      znacka = 'Nově zjištěno: ' + popisOdpovediPorovnani(odpB[q]); trida = odpB[q] === 0 ? 'dobre' : odpB[q] === 1 ? 'stredni' : 'spatne';
+      tedPopis = popisOdpovediPorovnani(odpB[q]) + ' (' + odpB[q] + ' b.)'; tedTrida = tridaProHodnotu(odpB[q]);
+      zmenaText = 'Nově zjištěno';
     } else if (!aJeNevim && bJeNevim) {
-      znacka = 'Dřív víc jasno, teď nevíte'; trida = 'nevim';
+      tedPopis = 'Nevím'; tedTrida = 'nevim';
+      zmenaText = 'Dřív víc jasno, teď nevíte';
     } else {
       const diff = (odpB[q] || 0) - (odpA[q] || 0);
-      znacka = popisOdpovediPorovnani(odpB[q]);
-      trida = odpB[q] === 0 ? 'dobre' : odpB[q] === 1 ? 'stredni' : 'spatne';
-      if (diff < 0) { zlepseno++; diffText = ' ↓ zlepšení'; if (nejlepsiZlepseni === null || diff < nejlepsiZlepseni.diff) nejlepsiZlepseni = { text, diff }; }
-      else if (diff > 0) { zhorseno++; diffText = ' ↑ zhoršení'; }
-      else { stejne++; }
+      tedPopis = popisOdpovediPorovnani(odpB[q]) + ' (' + odpB[q] + ' b.)'; tedTrida = tridaProHodnotu(odpB[q]);
+      if (diff < 0) { zlepseno++; zmenaText = '↓ zlepšení'; zmenaBarva = '#2a7a4f'; if (nejlepsiZlepseni === null || diff < nejlepsiZlepseni.diff) nejlepsiZlepseni = { text, diff }; }
+      else if (diff > 0) { zhorseno++; zmenaText = '↑ zhoršení'; zmenaBarva = '#b91c1c'; }
+      else { stejne++; zmenaText = 'beze změny'; }
     }
-    return '<div class="detail-otazka"><div class="detail-otazka-text">' + text + '</div>' +
-      '<div class="detail-otazka-odp ' + trida + '">' + znacka + diffText + '</div></div>';
+
+    return '<tr>' +
+      '<td style="padding:10px 6px;border-bottom:1px solid #f0f0f0;vertical-align:top;">' + text + '</td>' +
+      '<td style="padding:10px 6px;border-bottom:1px solid #f0f0f0;vertical-align:top;white-space:nowrap;">' + badge(drivPopis, drivTrida) + '</td>' +
+      '<td style="padding:10px 6px;border-bottom:1px solid #f0f0f0;vertical-align:top;white-space:nowrap;">' + badge(tedPopis, tedTrida) + '<div style="font-size:11px;font-weight:700;color:' + zmenaBarva + ';margin-top:3px;">' + zmenaText + '</div></td>' +
+      '</tr>';
   }).join('');
+
+  const radky = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+    '<thead><tr>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Otázka</th>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Dřív</th>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Teď</th>' +
+    '</tr></thead><tbody>' + radkyPole + '</tbody></table></div>';
 
   let shrnutiText;
   if (deltaPct < 0) {
