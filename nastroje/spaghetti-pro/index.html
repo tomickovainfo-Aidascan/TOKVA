@@ -1366,14 +1366,15 @@ function otevritModalPorovnaniProjektu() {
   const datumA = a.ulozenoAt ? new Date(a.ulozenoAt).toLocaleDateString('cs-CZ') : '';
   const datumB = b.ulozenoAt ? new Date(b.ulozenoAt).toLocaleDateString('cs-CZ') : '';
 
-  function radek(label, va, vb, jednotka, formatFn) {
+  function radek(label, va, vb, jednotka, formatFn, nizsiJeLip) {
     if (va == null && vb == null) return '';
     const f = formatFn || (x => x == null ? '—' : Math.round(x).toLocaleString('cs-CZ') + ' ' + jednotka);
     let barva = 'var(--mid)', text = '';
     if (va != null && vb != null) {
       const rozdil = vb - va;
       if (rozdil !== 0) {
-        barva = rozdil < 0 ? '#2a7a4f' : '#b91c1c';
+        const jeLepsi = nizsiJeLip ? rozdil < 0 : rozdil > 0;
+        barva = jeLepsi ? '#2a7a4f' : '#b91c1c';
         text = (rozdil > 0 ? '+' : '') + Math.round(rozdil).toLocaleString('cs-CZ') + ' ' + jednotka;
       }
     }
@@ -1386,9 +1387,9 @@ function otevritModalPorovnaniProjektu() {
   }
 
   let radky = radek('Počet tras', sa.pocetTras, sb.pocetTras, '');
-  radky += radek('Celková délka tras', sa.celkovaDelka, sb.celkovaDelka, 'm');
-  radky += radek('Cesta - současný stav', sa.dSoucasny, sb.dSoucasny, 'm');
-  radky += radek('Cesta - návrh', sa.dNavrh, sb.dNavrh, 'm');
+  radky += radek('Celková délka tras', sa.celkovaDelka, sb.celkovaDelka, 'm', null, true);
+  radky += radek('Cesta - současný stav', sa.dSoucasny, sb.dSoucasny, 'm', null, true);
+  radky += radek('Cesta - návrh', sa.dNavrh, sb.dNavrh, 'm', null, true);
   radky += radek('Potenciál úspory', sa.potencialKc, sb.potencialKc, 'Kč/rok');
   radky += radek('Potenciál úspory času', sa.potencialH, sb.potencialH, 'h/rok');
 
