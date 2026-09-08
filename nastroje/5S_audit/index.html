@@ -1578,7 +1578,40 @@ function renderMista() {
       </button>
       <button class="misto-del" onclick="smazatMisto('${m.id}')" title="Smazat místo">×</button>
     </div>`;
-  }).join('') + `<button class="add-misto" onclick="novaMista()">+ Přidat místo</button>`;
+  }).join('') + `<button class="add-misto" onclick="novaMista()">+ Přidat místo</button>` +
+    (clenstvi ? `<button class="add-misto" onclick="exportovatData()">⬇ Export CSV</button>` : '');
+}
+
+async function exportovatData() {
+  if (!clenstvi) return;
+  try {
+    const { data: radky, error } = await supabaseClient
+      .from('tool_runs')
+      .select('*')
+      .eq('nastroj', '5s')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    if (!radky || !radky.length) { alert('Zatím nemáte žádná uložená data k exportu.'); return; }
+    const hlavicky = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
+    const csvRadky = radky.map(r => hlavicky.map(h => {
+      const v = r[h] == null ? '' : String(r[h]).replace(/"/g, '""');
+      return '"' + v + '"';
+    }).join(','));
+    const csv = hlavicky.join(',') + '\n' + csvRadky.join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '5s-audit-data.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.warn('Export se nepodařil.', e);
+    alert('Export se teď nepodařil, zkuste to prosím znovu.');
+  }
 }
 
 // MAIN RENDER

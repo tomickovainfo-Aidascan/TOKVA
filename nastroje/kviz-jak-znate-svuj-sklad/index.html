@@ -699,6 +699,11 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
       <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
     </div>
 
+    <div class="vysledky-detail" id="export-panel" style="display:none;">
+      <div class="detail-header" style="margin:-20px -22px 14px;padding:16px 20px;border-bottom:1px solid var(--border);">Vaše data</div>
+      <button class="btn-gold" style="width:100%;" onclick="exportovatData()">Exportovat moje data (CSV)</button>
+    </div>
+
     <div class="vysledky-detail">
       <div style="display:flex;gap:12px;flex-wrap:wrap;">
         <button class="btn-zpet" onclick="zacitZnovu()">Vyplnit znovu</button>
@@ -1142,22 +1147,57 @@ function zavritModalPorovnani() {
   document.getElementById('modal-porovnani').style.display = 'none';
 }
 
+async function exportovatData() {
+  if (!clenstvi) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('*')
+      .eq('nastroj', 'kviz-sklad')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    if (!data || !data.length) { alert('Zatím nemáte žádná uložená data k exportu.'); return; }
+    const hlavicky = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
+    const radky = data.map(r => hlavicky.map(h => {
+      const v = r[h] == null ? '' : String(r[h]).replace(/"/g, '""');
+      return '"' + v + '"';
+    }).join(','));
+    const csv = hlavicky.join(',') + '\n' + radky.join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'kviz-jak-znate-svuj-sklad-data.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.warn('Export se nepodařil.', e);
+    alert('Export se teď nepodařil, zkuste to prosím znovu.');
+  }
+}
+
 async function renderHistorie() {
   const zamceno = document.getElementById('historie-zamceno');
   const obsah = document.getElementById('historie-obsah');
   const projektPanel = document.getElementById('projekt-panel');
   const akcniPanel = document.getElementById('akcni-panel');
+  const exportPanel = document.getElementById('export-panel');
   if (!jePro || !clenstvi) {
     zamceno.style.display = 'block';
     obsah.style.display = 'none';
     if (projektPanel) projektPanel.style.display = 'none';
     if (akcniPanel) akcniPanel.style.display = 'none';
+    if (exportPanel) exportPanel.style.display = 'none';
     return;
   }
   zamceno.style.display = 'none';
   obsah.style.display = 'block';
   if (projektPanel) { projektPanel.style.display = 'block'; nacistProjekty(); }
   if (akcniPanel) akcniPanel.style.display = 'block';
+  if (exportPanel) exportPanel.style.display = 'block';
   obsah.innerHTML = '<div style="padding:14px 18px;font-size:13px;color:var(--light);">Načítám historii…</div>';
   try {
     const { data, error } = await supabaseClient
