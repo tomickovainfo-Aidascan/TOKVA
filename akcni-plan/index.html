@@ -178,6 +178,7 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/" class="nav-brand">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Akční plán</span></div>
   <div class="nav-right">
     <span class="nav-badge">Pro verze</span>
+    <a href="https://tokva.cz/moje-tokva/" class="nav-btn" id="nav-moje-tokva" style="display:none;text-decoration:none;">Přehled</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
@@ -390,6 +391,7 @@ async function nacistPrihlaseniStav() {
   }
   renderUcetNav();
   zobrazitOdkazProjekty(jePro);
+  zobrazitOdkazMojeTokva(!!clenstvi);
   renderPrihlaseniStav();
 }
 

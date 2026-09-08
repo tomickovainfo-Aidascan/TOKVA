@@ -341,7 +341,10 @@ async function odeslatZalozeniFirmy(e) {
 function presmerovatPoPrihlaseni() {
   const params = new URLSearchParams(window.location.search);
   const zpet = params.get('zpet');
-  window.location.href = zpet ? decodeURIComponent(zpet) : KOREN_TOKVA;
+  // Bez konkrétního "zpet" appka dřív posílala rovnou na veřejnou homepage,
+  // kde přihlášený uživatel neviděl nic jiného než marketingový obsah -
+  // teď ho pošle rovnou na centrální přehled Moje Tokva.
+  window.location.href = zpet ? decodeURIComponent(zpet) : (KOREN_TOKVA + 'moje-tokva/');
 }
 
 function prelozitChybu(msg) {

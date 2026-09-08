@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Moje Tokva – přehled firmy | Tokva</title>
+<meta name="description" content="Přehled toho, co se ve vaší firmě v Tokvě děje - otevřené akce, poslední výsledky nástrojů a rychlé odkazy na Akční plán a Projekty.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://tokva.cz/moje-tokva/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#e9a91b; --gold-dark:#c48e10; --gold-light:#fdf3d9;
+  --black:#000; --dark:#111; --mid:#545454; --light:#a8a6a6;
+  --white:#fff; --paper:#f5f4f0; --border:#e2e2e2;
+  --green:#2a7a4f; --green-light:#e8f5ee;
+  --blue:#1a6aaa; --red:#c0392b;
+  --pro:#c48e10;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--dark);min-height:100vh;line-height:1.6;}
+
+nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.05); flex-wrap:wrap; row-gap:8px;}
+.nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--black);text-decoration:none;}
+.nav-brand span{color:var(--gold);}
+.nav-tool{font-size:12px;color:var(--mid);font-weight:500;margin-left:10px;padding-left:10px;border-left:1px solid var(--border);}
+@media (max-width:600px){.nav-tool{display:none;}}
+.nav-badge{font-size:10px;font-weight:700;color:var(--pro);background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);padding:3px 8px;border-radius:3px;}
+.nav-right {display:flex;align-items:center;gap:12px; flex-wrap:wrap; row-gap:8px;}
+.nav-btn{background:transparent;border:1px solid var(--border);color:var(--mid);font-size:12px;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;white-space:nowrap;text-decoration:none;display:inline-block;}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
+
+.hero{background:var(--black);padding:36px 20px 30px;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;top:-70px;right:-70px;width:240px;height:240px;border-radius:50%;border:42px solid rgba(233,169,27,0.07);pointer-events:none;}
+.hero-inner{max-width:1040px;margin:0 auto;position:relative;z-index:1;}
+.tool-badge{display:inline-block;background:rgba(233,169,27,0.15);border:1px solid rgba(233,169,27,0.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:14px;}
+.hero h1{font-family:"Poppins",sans-serif;font-size:clamp(22px,3.6vw,32px);font-weight:900;color:var(--white);line-height:1.2;letter-spacing:-0.4px;margin-bottom:10px;}
+.hero h1 em{color:var(--gold);font-style:normal;}
+.hero p{font-size:14px;color:rgba(255,255,255,0.55);max-width:640px;line-height:1.7;font-weight:300;}
+
+.prihlaseni{max-width:420px;margin:40px auto;padding:0 16px;}
+.prih-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 24px;text-align:center;}
+.prih-card h2{font-family:"Poppins",sans-serif;font-size:18px;font-weight:800;color:var(--dark);margin-bottom:8px;}
+.prih-card p{font-size:13px;color:var(--mid);margin-bottom:20px;line-height:1.7;}
+.prih-err{font-size:12px;color:var(--red);margin-top:8px;display:none;}
+.prih-btn{width:100%;background:var(--gold);color:var(--black);border:none;border-radius:8px;padding:13px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-top:12px;transition:all .2s;}
+.prih-btn:hover{background:var(--gold-dark);color:white;}
+
+.main{max-width:1040px;margin:0 auto;padding:24px 16px 80px;}
+
+.banner-free{background:var(--gold-light);border:1px solid rgba(196,142,16,.3);border-radius:10px;padding:14px 18px;font-size:13.5px;color:var(--gold-dark);margin-bottom:22px;line-height:1.6;}
+.banner-free a{color:var(--gold-dark);font-weight:700;}
+
+.souhrn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+@media (max-width:640px){.souhrn-grid{grid-template-columns:1fr;}}
+.souhrn-tile{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
+.souhrn-tile .cislo{font-family:"Poppins",sans-serif;font-size:26px;font-weight:900;color:var(--dark);line-height:1;}
+.souhrn-tile .popis{font-size:12px;color:var(--mid);margin-top:4px;}
+
+.sekce-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+@media (max-width:800px){.sekce-grid{grid-template-columns:1fr;}}
+.sekce{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.sekce h2{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px;}
+.sekce .sekce-pod{font-size:12px;color:var(--light);margin-bottom:14px;}
+.sekce-prazdno{font-size:13px;color:var(--mid);padding:14px 0;text-align:center;}
+.sekce-prazdno a{color:var(--gold-dark);font-weight:700;}
+.radek-akce{display:block;text-decoration:none;color:inherit;padding:10px 0;border-bottom:1px solid var(--border);}
+.radek-akce:last-child{border-bottom:none;}
+.radek-akce .nazev{font-size:13.5px;font-weight:700;color:var(--dark);margin-bottom:3px;}
+.radek-akce .meta{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11.5px;color:var(--light);}
+.stav-pill{font-size:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.status-novy{background:#eee;color:#555;}
+.status-probiha{background:rgba(26,106,170,.12);color:var(--blue);}
+.status-hotovo{background:var(--green-light);color:var(--green);}
+.status-overit_vysledek{background:rgba(233,169,27,.15);color:var(--gold-dark);}
+.status-uzavreno{background:#1112;color:var(--dark);}
+.radek-vysledek{display:block;text-decoration:none;color:inherit;padding:10px 0;border-bottom:1px solid var(--border);}
+.radek-vysledek:last-child{border-bottom:none;}
+.radek-vysledek .nazev{font-size:13.5px;font-weight:700;color:var(--dark);margin-bottom:2px;}
+.radek-vysledek .shrnuti{font-size:12px;color:var(--mid);line-height:1.5;margin-bottom:3px;}
+.radek-vysledek .datum{font-size:11px;color:var(--light);}
+
+.odkazy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media (max-width:640px){.odkazy-grid{grid-template-columns:1fr;}}
+.odkaz-karta{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 18px;text-decoration:none;color:inherit;display:block;transition:border .15s;}
+.odkaz-karta:hover{border-color:var(--gold);}
+.odkaz-karta .nazev{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px;}
+.odkaz-karta .popis{font-size:12px;color:var(--mid);line-height:1.5;}
+
+.zalozeni-firmy{max-width:420px;margin:40px auto;padding:0 16px;text-align:center;}
+
+footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.footer-brand{font-family:"Poppins",sans-serif;font-size:12px;font-weight:800;color:var(--dark);}
+.footer-brand span{color:var(--gold);}
+.footer-legal a{font-size:11px;color:var(--light);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/" class="nav-brand">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Moje Tokva</span></div>
+  <div class="nav-right">
+    <span class="nav-badge">Pro verze</span>
+    <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;">Akční plán</a>
+    <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;">Projekty</a>
+    <a href="https://tokva.cz/nastroje/" class="nav-btn">Všechny nástroje</a>
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="tool-badge">Moje Tokva</div>
+    <h1 id="hero-nadpis">Vítejte zpátky</h1>
+    <p id="hero-text">Přehled toho, co se ve firmě děje - otevřené akce, poslední výsledky a rychlé odkazy na to, co používáte nejčastěji.</p>
+  </div>
+</div>
+
+<div class="prihlaseni" id="prihlaseni" style="display:none;">
+  <div class="prih-card">
+    <h2 id="prih-nadpis">Přihlaste se ke svému účtu</h2>
+    <p id="prih-text">Moje Tokva je součástí Tokva Pro. Přihlaste se svým účtem Tokva.</p>
+    <button class="prih-btn" id="prih-btn" onclick="klikNaPrihlaseni()">Přihlásit se</button>
+    <div class="prih-err" id="prih-err">Přihlášení se nepodařilo spustit, zkuste to prosím znovu.</div>
+  </div>
+</div>
+
+<div class="zalozeni-firmy" id="zalozeni-firmy" style="display:none;">
+  <div class="prih-card">
+    <h2>Ještě nemáte založenou firmu</h2>
+    <p>Než uvidíte přehled, potřebujeme vědět, pro jakou firmu nebo provoz appku zakládáte.</p>
+    <button class="prih-btn" onclick="presmerovatNaZalozeniFirmy()">Založit firmu</button>
+  </div>
+</div>
+
+<div class="main" id="app" style="display:none;">
+
+  <div class="banner-free" id="banner-free" style="display:none;">
+    Tahle firma zatím nemá aktivní Tokva Pro - vidíte jen omezený přehled. Diagnostické nástroje zdarma fungují naplno dál, Pro propojuje výsledky do akčního plánu a ukládá historii. Víc na <a href="https://tokva.cz/pro/">stránce Tokva Pro</a>.
+  </div>
+
+  <div class="souhrn-grid">
+    <div class="souhrn-tile"><div class="cislo" id="souhrn-akce">0</div><div class="popis">Otevřených akcí</div></div>
+    <div class="souhrn-tile"><div class="cislo" id="souhrn-projekty">0</div><div class="popis">Rozpracovaných projektů</div></div>
+    <div class="souhrn-tile"><div class="cislo" id="souhrn-vysledky">0</div><div class="popis">Uložených výsledků nástrojů</div></div>
+  </div>
+
+  <div class="sekce-grid">
+    <div class="sekce">
+      <h2>Co potřebuje pozornost</h2>
+      <div class="sekce-pod">Nejbližší otevřené akce z akčního plánu</div>
+      <div id="seznam-akci"><div class="sekce-prazdno">Načítám…</div></div>
+    </div>
+    <div class="sekce">
+      <h2>Poslední výsledky nástrojů</h2>
+      <div class="sekce-pod">Napříč všemi appkami, nejnovější nahoře</div>
+      <div id="seznam-vysledku"><div class="sekce-prazdno">Načítám…</div></div>
+    </div>
+  </div>
+
+  <div class="odkazy-grid">
+    <a href="https://tokva.cz/akcni-plan/" class="odkaz-karta"><div class="nazev">Akční plán →</div><div class="popis">Všechny úkoly, termíny a odpovědné osoby na jednom místě.</div></a>
+    <a href="https://tokva.cz/projekty/" class="odkaz-karta"><div class="nazev">Projekty →</div><div class="popis">Zlepšování rozdělené podle oblastí, s prezentačním režimem.</div></a>
+    <a href="https://tokva.cz/nastroje/" class="odkaz-karta"><div class="nazev">Všechny nástroje →</div><div class="popis">Katalog diagnostických nástrojů podle toho, co vás pálí.</div></a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">Tokva <span>·</span> Gabriela Tomíčková</div>
+  <div class="footer-legal"><a href="https://tokva.cz/">Zpět na Tokvu</a></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-client.js"></script>
+<script src="../auth.js"></script>
+<script>
+let session = null, clenstvi = null, jePro = false;
+
+const NASTROJ_URL = {
+  '5s': 'https://tokva.cz/nastroje/5S_audit/',
+  '5x-proc': 'https://tokva.cz/nastroje/5x-proc-ai-kouc/',
+  'casova-studie': 'https://tokva.cz/nastroje/casova-studie/',
+  'kalkulacka-m2': 'https://tokva.cz/nastroje/kalkulacka-nakladu-skladu/',
+  'kviz-sklad': 'https://tokva.cz/nastroje/kviz-jak-znate-svuj-sklad/',
+  'kviz-komunikacniho-chaosu': 'https://tokva.cz/nastroje/kviz-komunikacniho-chaosu/',
+  'meric-plytvani-pro': 'https://tokva.cz/nastroje/meric-plytvani-pro/',
+  'mini-audit-skladu': 'https://tokva.cz/nastroje/mini-audit-skladu/',
+  'mini-audit-vyroby': 'https://tokva.cz/nastroje/mini-audit-vyroby/',
+  'spaghetti-pro': 'https://tokva.cz/nastroje/spaghetti-pro/'
+};
+const NASTROJ_PODPORUJE_ODKAZ = ['5s', '5x-proc', 'casova-studie', 'kalkulacka-m2', 'kviz-sklad', 'kviz-komunikacniho-chaosu', 'meric-plytvani-pro', 'mini-audit-skladu', 'mini-audit-vyroby', 'spaghetti-pro'];
+const NAZVY_STAVU = { novy:'Nový', probiha:'Probíhá', hotovo:'Hotovo', overit_vysledek:'Ověřit výsledek', uzavreno:'Uzavřeno' };
+
+function escapovat(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function formatDatum(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return d.toLocaleDateString('cs-CZ');
+}
+
+async function nacistPrihlaseniStav() {
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+    jePro = maAktivniPro(clenstvi);
+  } catch (e) {
+    console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
+    session = null; clenstvi = null; jePro = false;
+  }
+  renderUcetNav();
+  zobrazitOdkazAkcniPlan(jePro);
+  zobrazitOdkazProjekty(jePro);
+  renderStav();
+}
+
+function renderUcetNav() {
+  const info = document.getElementById('nav-ucet-info');
+  const btn = document.getElementById('nav-ucet-btn');
+  if (session && clenstvi) {
+    info.style.display = 'inline-block';
+    info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    btn.textContent = 'Odhlásit';
+  } else {
+    info.style.display = 'none';
+    btn.textContent = 'Přihlásit se';
+  }
+}
+
+async function klikNaUcet() {
+  if (session) {
+    try { await odhlasit(); } catch (e) { console.warn('Odhlášení se nepodařilo.', e); }
+    location.reload();
+  } else {
+    try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
+  }
+}
+async function klikNaPrihlaseni() {
+  const err = document.getElementById('prih-err');
+  err.style.display = 'none';
+  try { await vyzadovatPrihlaseni(); } catch (e) {
+    console.warn('Přihlášení se nepodařilo spustit.', e);
+    err.style.display = 'block';
+  }
+}
+function presmerovatNaZalozeniFirmy() {
+  const zpet = encodeURIComponent(window.location.href);
+  window.location.href = '../prihlaseni.html?zpet=' + zpet;
+}
+
+function renderStav() {
+  document.getElementById('prihlaseni').style.display = 'none';
+  document.getElementById('zalozeni-firmy').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
+
+  if (!session) {
+    document.getElementById('prihlaseni').style.display = 'block';
+    return;
+  }
+  if (!clenstvi) {
+    document.getElementById('zalozeni-firmy').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('hero-nadpis').textContent = clenstvi.organizations.name;
+  document.getElementById('hero-text').textContent = jePro
+    ? 'Přehled otevřených akcí a posledních výsledků napříč nástroji.'
+    : 'Diagnostické nástroje zdarma fungují naplno. Propojení do akčního plánu a historie je součástí Tokva Pro.';
+  document.getElementById('banner-free').style.display = jePro ? 'none' : 'block';
+  document.getElementById('app').style.display = 'block';
+
+  nacistData();
+}
+
+async function nacistData() {
+  const orgId = clenstvi.organization_id;
+
+  const [projektyRes, akceRes, vysledkyRes] = await Promise.all([
+    supabaseClient.from('projects').select('id,status').eq('organization_id', orgId),
+    supabaseClient.from('actions').select('id,title,status,due_date,projects(name)').eq('organization_id', orgId).order('due_date', { ascending: true, nullsFirst: false }),
+    supabaseClient.from('tool_runs').select('id,nastroj,nazev,shrnuti,created_at').eq('organization_id', orgId).order('created_at', { ascending: false }).limit(8)
+  ]);
+
+  const projekty = projektyRes.error ? [] : (projektyRes.data || []);
+  const akce = akceRes.error ? [] : (akceRes.data || []);
+  const vysledky = vysledkyRes.error ? [] : (vysledkyRes.data || []);
+
+  const otevreneAkce = akce.filter(a => a.status !== 'hotovo' && a.status !== 'uzavreno');
+  const rozpracovaneProjekty = projekty.filter(p => p.status !== 'uzavreno' && p.status !== 'archivovano');
+
+  document.getElementById('souhrn-akce').textContent = otevreneAkce.length;
+  document.getElementById('souhrn-projekty').textContent = rozpracovaneProjekty.length;
+  document.getElementById('souhrn-vysledky').textContent = vysledky.length;
+
+  const seznamAkci = document.getElementById('seznam-akci');
+  if (otevreneAkce.length === 0) {
+    seznamAkci.innerHTML = '<div class="sekce-prazdno">Žádné otevřené akce. <a href="https://tokva.cz/akcni-plan/">Otevřít akční plán →</a></div>';
+  } else {
+    seznamAkci.innerHTML = otevreneAkce.slice(0, 6).map(a =>
+      '<a class="radek-akce" href="https://tokva.cz/akcni-plan/">' +
+        '<div class="nazev">' + escapovat(a.title) + '</div>' +
+        '<div class="meta">' +
+          '<span>' + (a.projects ? escapovat(a.projects.name) : 'Bez projektu') + (a.due_date ? ' · ' + formatDatum(a.due_date) : '') + '</span>' +
+          '<span class="stav-pill status-' + a.status + '">' + (NAZVY_STAVU[a.status] || a.status) + '</span>' +
+        '</div>' +
+      '</a>'
+    ).join('');
+  }
+
+  const seznamVysledku = document.getElementById('seznam-vysledku');
+  if (vysledky.length === 0) {
+    seznamVysledku.innerHTML = '<div class="sekce-prazdno">Zatím žádný uložený výsledek. <a href="https://tokva.cz/nastroje/">Vyzkoušet nástroj →</a></div>';
+  } else {
+    seznamVysledku.innerHTML = vysledky.map(v => {
+      const podporuje = NASTROJ_PODPORUJE_ODKAZ.includes(v.nastroj) && NASTROJ_URL[v.nastroj];
+      const href = podporuje ? (NASTROJ_URL[v.nastroj] + '?vysledek=' + v.id) : (NASTROJ_URL[v.nastroj] || 'https://tokva.cz/nastroje/');
+      return '<a class="radek-vysledek" href="' + href + '">' +
+        '<div class="nazev">' + escapovat(v.nazev || 'Výsledek nástroje') + '</div>' +
+        (v.shrnuti ? '<div class="shrnuti">' + escapovat(v.shrnuti) + '</div>' : '') +
+        '<div class="datum">' + formatDatum(v.created_at) + '</div>' +
+      '</a>';
+    }).join('');
+  }
+}
+
+nacistPrihlaseniStav();
+</script>
+
+</body>
+</html>

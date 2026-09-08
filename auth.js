@@ -112,6 +112,16 @@ function zobrazitOdkazProjekty(jePro) {
   el.style.display = jePro ? '' : 'none';
 }
 
+// Ukáže/schová trvalý odkaz na Moje Tokva (centrální přehled po přihlášení)
+// v horní liště appky - na rozdíl od zobrazitOdkazAkcniPlan/Projekty výš tenhle
+// odkaz nepodmiňuje Pro, appka Moje Tokva umí ukázat i omezený přehled zdarma
+// firmě - stačí, že vůbec existuje firma (clenstvi), ne že má aktivní Pro.
+function zobrazitOdkazMojeTokva(maFirmu) {
+  const el = document.getElementById('nav-moje-tokva');
+  if (!el) return;
+  el.style.display = maFirmu ? '' : 'none';
+}
+
 // Odhlášení, s přesměrováním zpátky na přihlašovací stránku.
 async function odhlasit() {
   await supabaseClient.auth.signOut();
