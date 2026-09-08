@@ -967,6 +967,11 @@ Až dospějeme ke kořenové příčině, řekni uživateli že jste u konce ana
 10. OTEVŘENÉ OTÁZKY: ...
 ===KONEC===
 
+Důležité - appka tenhle výstup strojově zpracovává:
+- Každý řádek se sekcí musí začínat přesně číslem a tečkou, žádné jiné znaky před tím.
+- NEPOUŽÍVEJ Markdown formátování u těchhle řádků - žádné #, ##, hvězdičky ani odrážky před číslem sekce.
+- Nic mezi ===VÝSTUP=== a první sekcí, žádný úvodní komentář.
+
 Styl komunikace:
 - mluv česky,
 - buď klidný, lidský a podporující,
@@ -1132,6 +1137,14 @@ function formatText(text) {
     .replace(/\n/g, '<br>');
 }
 
+// AI je instruovaná, ať sekce nezabaluje do Markdownu, ale občas to stejně
+// udělá (##, hvězdičky, odrážka před číslem) - appka na přesný tvar řádku
+// spoléhá strojově (uložení do historie, založení úkolů), tak radši
+// ošetřit i tuhle odchylku, než aby se celý výstup tiše ztratil.
+function ocistitRadek(line) {
+  return line.replace(/^[\s#*_>\-]+/, '').replace(/\*\*/g, '');
+}
+
 // Vytáhne text jedné očíslované sekce z výstupu (podle stejných klíčů
 // jako labels v renderOutput níž) - používá se pro uložení do Supabase
 // a pro založení navazujících úkolů, ne jen pro zobrazení.
@@ -1143,7 +1156,8 @@ function extrahovatSekci(raw, klic) {
   const lines = raw.split('\n');
   let sbirat = false;
   let out = [];
-  for (const line of lines) {
+  for (const raw_line of lines) {
+    const line = ocistitRadek(raw_line);
     const matched = klice.find(k => line.startsWith(k));
     if (matched) {
       if (sbirat) break;
@@ -1219,7 +1233,13 @@ async function vytvoritUkolyZAnalyzy(raw, btn) {
     expected_benefit: prinos,
     status: 'novy'
   }));
-  if (ukoly.length === 0) return;
+  if (ukoly.length === 0) {
+    // Sekce "Doporučené opatření" / "První krok" se z výstupu nepodařilo
+    // vytáhnout (AI se nedrželo formátu) - dřív appka tady jen tiše skončila
+    // bez jakékoli reakce, což vypadalo jako mrtvé tlačítko.
+    btn.textContent = 'Nepodařilo se najít doporučení a první krok ve výstupu, zkuste analýzu spustit znovu';
+    return;
+  }
   btn.disabled = true;
   btn.textContent = 'Zakládám...';
   try {
@@ -1286,7 +1306,8 @@ function renderOutput(raw, ulozit = true) {
     currentText = [];
   }
 
-  lines.forEach(line => {
+  lines.forEach(raw_line => {
+    const line = ocistitRadek(raw_line);
     const matchedKey = Object.keys(labels).find(k => line.startsWith(k));
     if (matchedKey) {
       flush();
@@ -1294,10 +1315,28 @@ function renderOutput(raw, ulozit = true) {
       const rest = line.slice(matchedKey.length).replace(/^:\s*/, '');
       if (rest) currentText.push(rest);
     } else if (currentKey) {
-      currentText.push(line);
+      currentText.push(raw_line);
     }
   });
   flush();
+
+  // Appka nenašla ani jednu sekci (AI se nedrželo přesného formátu ani po
+  // vyčištění Markdownu) - radši ukázat aspoň syrový text a možnost zkusit
+  // znovu, než prázdnou kartu jen s nadpisem a beze slova vysvětlení.
+  if (!card.querySelector('.output-section')) {
+    const zaloha = document.createElement('div');
+    zaloha.className = 'output-section';
+    const zalohaText = document.createElement('div');
+    zalohaText.className = 'output-section-text';
+    zalohaText.innerHTML = formatText(raw);
+    zaloha.appendChild(zalohaText);
+    card.appendChild(zaloha);
+
+    const upozorneni = document.createElement('p');
+    upozorneni.style.cssText = 'font-size:12px;color:var(--mid);margin-top:10px;';
+    upozorneni.textContent = 'Výstup se nepodařilo rozdělit do sekcí, tohle je nezpracovaný text z AI. Založení navazujících úkolů teď nemusí fungovat - zkuste analýzu spustit znovu.';
+    card.appendChild(upozorneni);
+  }
 
   const btnRow = document.createElement('div');
   btnRow.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;';
