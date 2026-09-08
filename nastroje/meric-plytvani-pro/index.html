@@ -1286,7 +1286,7 @@ function otevritModalAkcniPlan(i, e) {
   document.getElementById('ap-osoba').value = '';
   document.getElementById('ap-investice').value = '';
   document.getElementById('ap-prinos').value = '';
-  document.getElementById('ap-termin').value = '';
+  document.getElementById('ap-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+90);return d.toISOString().slice(0,10);})();
   document.getElementById('ap-stav').textContent = '';
   document.getElementById('ap-projekt-novy-nazev').value = '';
   document.getElementById('ap-projekt-novy-nazev').style.display = 'none';

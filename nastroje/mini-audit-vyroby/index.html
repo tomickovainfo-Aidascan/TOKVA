@@ -1447,6 +1447,8 @@ function zobrazVysledky() {
     cta.textContent = nejhorsi.ob.nastroj.cta;
     const akceNazevPole = document.getElementById('akce-nazev');
     if (akceNazevPole && !akceNazevPole.value) akceNazevPole.value = 'Zlepšit: ' + nejhorsi.ob.nazev.toLowerCase();
+    const akceTerminPole = document.getElementById('akce-termin');
+    if (akceTerminPole && !akceTerminPole.value) { const dTermin = new Date(); dTermin.setDate(dTermin.getDate() + 30); akceTerminPole.value = dTermin.toISOString().slice(0, 10); }
     const dalsiNastroje = znameOblasti.slice(1, 3)
       .map(o => o.ob.nastroj.cta.replace('Spustit ', ''))
       .filter((v, i, arr) => arr.indexOf(v) !== -1 && v !== nejhorsi.ob.nastroj.cta.replace('Spustit ', ''));

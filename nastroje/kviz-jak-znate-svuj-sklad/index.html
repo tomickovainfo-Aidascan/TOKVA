@@ -1515,6 +1515,8 @@ function zobrazVysledky() {
   if (top.length > 0) {
     const akceNazevPole = document.getElementById('akce-nazev');
     if (akceNazevPole && !akceNazevPole.value) akceNazevPole.value = 'Zlepšit: ' + OTAZKY_NAZVY[top[0].i - 1].toLowerCase();
+    const akceTerminPole = document.getElementById('akce-termin');
+    if (akceTerminPole && !akceTerminPole.value) { const dTermin = new Date(); dTermin.setDate(dTermin.getDate() + 30); akceTerminPole.value = dTermin.toISOString().slice(0, 10); }
   }
 
   if (top.length === 0) {

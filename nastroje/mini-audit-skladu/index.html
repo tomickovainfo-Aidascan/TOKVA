@@ -1334,6 +1334,8 @@ function zobrazVysledky() {
     });
     const akceNazevPole = document.getElementById('akce-nazev');
     if (akceNazevPole && !akceNazevPole.value) akceNazevPole.value = 'Zlepšit: ' + OTAZKY[serazene[0][0]-1].toLowerCase();
+    const akceTerminPole = document.getElementById('akce-termin');
+    if (akceTerminPole && !akceTerminPole.value) { const dTermin = new Date(); dTermin.setDate(dTermin.getDate() + 30); akceTerminPole.value = dTermin.toISOString().slice(0, 10); }
   } else {
     top3wrap.style.display = 'none';
   }

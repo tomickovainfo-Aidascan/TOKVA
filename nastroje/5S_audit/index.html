@@ -1904,6 +1904,7 @@ function renderUkolySekce(misto) {
 
   const posledniKontrola = (misto.kontroly || []).length ? misto.kontroly[misto.kontroly.length - 1] : null;
   const maZdroj = posledniKontrola && posledniKontrola.toolRunId;
+  const terminZaMesic = (function () { const d = new Date(); d.setDate(d.getDate() + 30); return d.toISOString().slice(0, 10); })();
   const formHtml = maZdroj
     ? `<div class="ukol-form">
       <input type="text" id="ukol-text" placeholder="Co je potřeba udělat...">
@@ -1912,6 +1913,7 @@ function renderUkolySekce(misto) {
       <input type="number" id="ukol-investice" placeholder="Investice (Kč)">
       <input type="number" id="ukol-prinos" placeholder="Očekávaný přínos (Kč/rok)">
       <button class="plan-btn" style="border-color:rgba(42,122,79,.4);color:var(--green);" onclick="pridatUkol()">+ Přidat úkol</button>
+      <button class="plan-btn" style="border-color:rgba(233,169,27,.4);color:var(--gold-dark);" onclick="document.getElementById('ukol-text').value='Zopakovat kontrolu tohohle místa';document.getElementById('ukol-termin').value='${terminZaMesic}';">🔁 Naplánovat opakování za měsíc</button>
     </div>`
     : `<p style="font-size:13px;color:var(--light);padding:10px 0;">Nejdřív uložte kontrolu tohohle místa (tlačítko „Přidat kontrolu" výš), pak půjde přidat úkol se zdrojem výsledku.</p>`;
 
