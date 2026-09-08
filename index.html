@@ -71,6 +71,12 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 
 .area-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
 .area-card { background:#f0efe9; border:1.5px solid var(--border-strong); border-radius:14px; padding:30px 28px 26px; text-decoration:none; color:var(--dark); transition:border-color .15s, transform .15s, background .15s; display:flex; flex-direction:column; min-height:190px; }
+
+/* ── FOOTER ── */
+.site-footer { background:#0a0a0a; padding:22px 32px; text-align:center; margin-top:0; }
+.site-footer .footer-line { font-size:12.5px; color:rgba(255,255,255,0.35); }
+.site-footer .footer-line a { color:rgba(255,255,255,0.6); text-decoration:none; transition:color .2s; }
+.site-footer .footer-line a:hover { color:var(--gold); }
 .area-card:hover { border-color:var(--gold); background:var(--white); transform:translateY(-2px); }
 .area-card.first { background:var(--dark); border-color:var(--dark); color:var(--white); }
 .area-card h3 { font-family:'Poppins',sans-serif; font-weight:800; font-size:20px; margin-bottom:10px; }
@@ -215,6 +221,10 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
   </section>
 
 </main>
+
+<footer class="site-footer">
+  <div class="footer-line">Tokvu vytvořila <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">Gabriela Tomíčková</a>, konzultantka procesů a AI automatizace.</div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-client.js"></script>
