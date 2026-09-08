@@ -149,6 +149,15 @@ body.prezentace .faze-karta .nazev{color:var(--white);font-size:16px;}
 body.prezentace .faze-karta .shrnuti{color:rgba(255,255,255,.6);font-size:13.5px;}
 body.prezentace .faze-karta .spodek{color:rgba(255,255,255,.4);}
 body.prezentace .faze-karta .hodnota{color:var(--gold);font-size:13px;}
+body.prezentace .shrnuti-karta{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);min-height:50vh;padding:40px 44px;display:flex;flex-direction:column;justify-content:center;gap:22px;max-width:760px;margin:0 auto;}
+body.prezentace .shrnuti-karta h3{color:var(--white);font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:2px;}
+body.prezentace .shrnuti-cisla{display:flex;gap:32px;flex-wrap:wrap;}
+body.prezentace .shrnuti-cislo-pol .label{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:6px;}
+body.prezentace .shrnuti-cislo-pol .hodnota{font-family:"Poppins",sans-serif;font-size:clamp(24px,4vw,36px);font-weight:800;}
+body.prezentace .shrnuti-cislo-pol .hodnota.zlaty{color:var(--gold);}
+body.prezentace .shrnuti-cislo-pol .hodnota.zeleny{color:#4fd497;}
+body.prezentace .shrnuti-cislo-pol .hodnota.prazdna{color:rgba(255,255,255,.3);font-size:20px;font-weight:600;}
+body.prezentace .shrnuti-text{color:rgba(255,255,255,.65);font-size:16px;line-height:1.7;}
 body.prezentace .ukoncit-prezentaci{position:fixed;top:16px;right:16px;z-index:50;}
 
 /* MODAL */
@@ -687,15 +696,58 @@ function renderFazeSloupce() {
 
   if (prezentace) {
     krokNav.style.display = 'flex';
-    const rada = FAZE_RADY[prezentaceKrok];
-    document.getElementById('krok-oznaceni').textContent = (prezentaceKrok + 1) + ' / 4 — ' + rada.nadpis;
+    const jeShrnuti = prezentaceKrok === FAZE_RADY.length;
+    const rada = jeShrnuti ? { nadpis: 'SHRNUTÍ' } : FAZE_RADY[prezentaceKrok];
+    document.getElementById('krok-oznaceni').textContent = (prezentaceKrok + 1) + ' / ' + (FAZE_RADY.length + 1) + ' — ' + rada.nadpis;
     document.getElementById('btn-krok-zpet').disabled = prezentaceKrok === 0;
-    document.getElementById('btn-krok-dal').disabled = prezentaceKrok === FAZE_RADY.length - 1;
-    wrap.innerHTML = jedenSloupecHtml(rada, sloupce[rada.klic], 1);
+    document.getElementById('btn-krok-dal').disabled = prezentaceKrok === FAZE_RADY.length;
+    wrap.innerHTML = jeShrnuti ? shrnutiKartaHtml() : jedenSloupecHtml(rada, sloupce[rada.klic], 1);
   } else {
     krokNav.style.display = 'none';
     wrap.innerHTML = FAZE_RADY.map((rada, i) => jedenSloupecHtml(rada, sloupce[rada.klic], i + 1)).join('');
   }
+}
+
+// Poslední, 5. krok prezentace - jedna karta se shrnutím "vyplatilo se to, nebo
+// ne", ne dalsi sloupec vysledku. Pouziva uz existujici data z hlavicky projektu
+// (ocekavany potencial) a z overenych akci (skutecny prinos) - zadna nova migrace.
+function shrnutiKartaHtml() {
+  const p = aktualniProjekt;
+  const potencialHtml = (p.expected_potential_kc || p.expected_potential_kc === 0)
+    ? '<span class="hodnota zlaty">' + formatKc(p.expected_potential_kc) + '/rok</span>'
+    : '<span class="hodnota prazdna">nezadáno</span>';
+
+  const overeneAkce = aktualniAkce.filter(a => a.verification_confirmed === true && a.actual_benefit != null);
+  const prinosHtml = overeneAkce.length
+    ? '<span class="hodnota zeleny">' + formatKc(overeneAkce.reduce((s, a) => s + Number(a.actual_benefit || 0), 0)) + '/rok</span>'
+    : '<span class="hodnota prazdna">zatím neověřeno</span>';
+
+  const prvniVysledek = aktualniToolRuny.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at))[0];
+  const uzavreneAkce = aktualniAkce.filter(a => a.status === 'hotovo' || a.status === 'uzavreno');
+  const poslVerifikace = overeneAkce.slice().sort((a, b) => new Date(b.verification_date) - new Date(a.verification_date))[0];
+
+  let text = '';
+  if (prvniVysledek) {
+    text += 'Zjistili jsme, že ' + escapovat((prvniVysledek.shrnuti || prvniVysledek.nazev || '').toLowerCase()) + '. ';
+  }
+  if (aktualniAkce.length) {
+    text += 'Uzavřeli jsme ' + uzavreneAkce.length + ' z ' + aktualniAkce.length + ' ' + (aktualniAkce.length === 1 ? 'akce' : 'akcí') + '. ';
+  }
+  if (poslVerifikace) {
+    text += 'Poslední ověření ' + new Date(poslVerifikace.verification_date + 'T00:00:00').toLocaleDateString('cs-CZ') + '.';
+  } else if (aktualniAkce.length) {
+    text += 'Zatím žádná akce nebyla ověřená.';
+  }
+  if (!text) text = 'Zatím tu není co shrnout - přidejte výsledek nebo akci.';
+
+  return '<div class="shrnuti-karta">' +
+    '<h3>Co to přineslo</h3>' +
+    '<div class="shrnuti-cisla">' +
+      '<div class="shrnuti-cislo-pol"><div class="label">Očekávaný potenciál</div>' + potencialHtml + '</div>' +
+      '<div class="shrnuti-cislo-pol"><div class="label">Skutečný přínos (ověřeno)</div>' + prinosHtml + '</div>' +
+    '</div>' +
+    '<div class="shrnuti-text">' + text + '</div>' +
+  '</div>';
 }
 
 function jedenSloupecHtml(rada, polozky, cislo) {
@@ -706,7 +758,7 @@ function jedenSloupecHtml(rada, polozky, cislo) {
 }
 
 function prezentaceKrokZmena(smer) {
-  prezentaceKrok = Math.max(0, Math.min(FAZE_RADY.length - 1, prezentaceKrok + smer));
+  prezentaceKrok = Math.max(0, Math.min(FAZE_RADY.length, prezentaceKrok + smer));
   renderFazeSloupce();
 }
 
