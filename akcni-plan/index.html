@@ -235,6 +235,7 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
       </div>
     </div>
     <div class="toolbar-akce">
+      <button class="btn-secondary" onclick="exportovatCSV()">⬇ Export CSV</button>
       <button class="btn-secondary" onclick="otevritModalNovyProjekt()">+ Nový projekt</button>
       <button class="btn-gold" onclick="otevritModalNovaAkce()">+ Nová akce</button>
     </div>
@@ -534,6 +535,41 @@ function filtrovaneAkce() {
     if (stavFiltr !== 'vse' && a.status !== stavFiltr) return false;
     return true;
   });
+}
+
+function exportovatCSV() {
+  const seznam = filtrovaneAkce();
+  if (!seznam.length) { alert('Nic k exportu, zkuste změnit filtr.'); return; }
+  const hlavicky = ['Název', 'Projekt', 'Stav', 'Zodpovědná osoba', 'Termín', 'Důvod', 'Poznámka', 'Odhadovaná investice', 'Očekávaný přínos', 'Skutečný stav', 'Skutečný přínos', 'Datum ověření', 'Výsledek potvrzen', 'Vytvořeno'];
+  const radky = seznam.map(a => {
+    const hodnoty = [
+      a.title || '',
+      (a.projects && a.projects.name) || '',
+      NAZVY_STAVU[a.status] || a.status || '',
+      a.responsible_person || '',
+      a.due_date ? formatDatum(a.due_date) : '',
+      a.reason || '',
+      a.note || '',
+      a.estimated_investment != null ? a.estimated_investment : '',
+      a.expected_benefit != null ? a.expected_benefit : '',
+      a.actual_state || '',
+      a.actual_benefit != null ? a.actual_benefit : '',
+      a.verification_date ? formatDatum(a.verification_date) : '',
+      a.verification_confirmed === true ? 'Ano' : (a.verification_confirmed === false ? 'Ne' : ''),
+      a.created_at ? new Date(a.created_at).toLocaleDateString('cs-CZ') : ''
+    ];
+    return hodnoty.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',');
+  });
+  const csv = hlavicky.map(h => '"' + h + '"').join(',') + '\n' + radky.join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'akcni-plan-' + new Date().toISOString().slice(0, 10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 function renderSouhrn(seznam) {

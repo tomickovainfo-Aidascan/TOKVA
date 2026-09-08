@@ -224,6 +224,7 @@ body.prezentace footer{display:none;}
       <div class="detail-hlavicka-radek">
         <div class="detail-nazev" id="det-nazev"></div>
         <div class="detail-akce skryt-v-prezentaci">
+          <button class="btn-secondary" onclick="exportovatProjektCSV()">⬇ Export CSV</button>
           <button class="btn-secondary" onclick="otevritModalHlavicka()">Upravit hlavičku</button>
           <button class="btn-gold" id="btn-prezentovat" onclick="prepnoutPrezentaci()">▶ Prezentovat</button>
         </div>
@@ -580,6 +581,50 @@ function renderDetail() {
 
 function toolNazev(tr) {
   return tr.nazev || tr.nastroj;
+}
+
+function exportovatProjektCSV() {
+  if (!aktualniProjekt) return;
+  if (!aktualniToolRuny.length && !aktualniAkce.length) { alert('U tohohle projektu zatím nejsou žádná data k exportu.'); return; }
+
+  const radkyVysledky = aktualniToolRuny.map(tr => [
+    toolNazev(tr),
+    tr.shrnuti || '',
+    tr.hlavni_hodnota_cislo != null ? (tr.hlavni_hodnota_cislo + (tr.hlavni_hodnota_jednotka ? ' ' + tr.hlavni_hodnota_jednotka : '')) : '',
+    new Date(tr.created_at).toLocaleDateString('cs-CZ')
+  ]);
+
+  const radkyAkce = aktualniAkce.map(a => [
+    a.title || '',
+    NAZVY_STAVU_AKCE[a.status] || a.status || '',
+    a.responsible_person || '',
+    a.due_date ? new Date(a.due_date + 'T00:00:00').toLocaleDateString('cs-CZ') : '',
+    a.actual_benefit != null ? a.actual_benefit : '',
+    a.verification_confirmed === true ? 'Ano' : (a.verification_confirmed === false ? 'Ne' : ''),
+    new Date(a.created_at).toLocaleDateString('cs-CZ')
+  ]);
+
+  function radek(hodnoty) {
+    return hodnoty.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',');
+  }
+
+  let csv = '"Projekt: ' + String(aktualniProjekt.name).replace(/"/g, '""') + '"\n\n';
+  csv += '"Výsledky appek"\n';
+  csv += radek(['Nástroj / výsledek', 'Shrnutí', 'Hlavní hodnota', 'Datum']) + '\n';
+  csv += (radkyVysledky.length ? radkyVysledky.map(radek).join('\n') : radek(['(zatím nic)', '', '', ''])) + '\n\n';
+  csv += '"Úkoly / akční plán"\n';
+  csv += radek(['Název', 'Stav', 'Zodpovědná osoba', 'Termín', 'Skutečný přínos', 'Výsledek potvrzen', 'Vytvořeno']) + '\n';
+  csv += (radkyAkce.length ? radkyAkce.map(radek).join('\n') : radek(['(zatím nic)', '', '', '', '', '', '']));
+
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'projekt-' + aktualniProjekt.id + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 function fazeKartaHtml(polozka) {
