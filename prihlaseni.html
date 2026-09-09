@@ -64,13 +64,8 @@ input:focus { border-color:var(--gold); }
 
   <!-- KROK 1: přihlášení / registrace -->
   <div id="krok-ucet" class="krok aktivni">
-    <h1 id="nadpis-ucet">Přihlásit se</h1>
-    <p class="podnadpis" id="podnadpis-ucet">Přístup ke svým nástrojům, projektům a akčnímu plánu.</p>
-
-    <div class="taby">
-      <button class="tab-btn active" id="tab-prihlasit" onclick="prepnoutTab('prihlasit')">Přihlásit se</button>
-      <button class="tab-btn" id="tab-registrovat" onclick="prepnoutTab('registrovat')">Založit účet</button>
-    </div>
+    <h1>Přihlásit se</h1>
+    <p class="podnadpis">Přístup ke svým nástrojům, projektům a akčnímu plánu. Účet vzniká automaticky při objednávce Tokva Pro.</p>
 
     <form id="form-ucet" onsubmit="odeslatFormularUctu(event); return false;">
       <label for="email">E-mail</label>
@@ -147,21 +142,6 @@ input:focus { border-color:var(--gold); }
 <script src="supabase-client.js"></script>
 <script src="auth.js"></script>
 <script>
-let aktivniTab = 'prihlasit';
-
-function prepnoutTab(tab) {
-  aktivniTab = tab;
-  document.getElementById('tab-prihlasit').classList.toggle('active', tab === 'prihlasit');
-  document.getElementById('tab-registrovat').classList.toggle('active', tab === 'registrovat');
-  document.getElementById('nadpis-ucet').textContent = tab === 'prihlasit' ? 'Přihlásit se' : 'Založit účet';
-  document.getElementById('podnadpis-ucet').textContent = tab === 'prihlasit'
-    ? 'Přístup ke svým nástrojům, projektům a akčnímu plánu.'
-    : 'Zabere to necelou minutu, e-mail a heslo stačí.';
-  document.getElementById('btn-ucet').textContent = tab === 'prihlasit' ? 'Chci se přihlásit' : 'Chci si založit účet';
-  document.getElementById('odkaz-zapomenute-heslo').style.display = tab === 'prihlasit' ? 'block' : 'none';
-  ukazatZpravuUcet('');
-}
-
 function ukazatZpravuUcet(text, jeChyba) {
   const el = document.getElementById('zprava-ucet');
   el.textContent = text;
@@ -183,16 +163,9 @@ async function odeslatFormularUctu(e) {
   ukazatZpravuUcet('');
 
   try {
-    if (aktivniTab === 'registrovat') {
-      const { error } = await supabaseClient.auth.signUp({ email, password: heslo });
-      if (error) throw error;
-      ukazatZpravuUcet('Účet založen. Zkontrolujte e-mail a potvrďte registraci, pak se přihlaste.', false);
-      prepnoutTab('prihlasit');
-    } else {
-      const { error } = await supabaseClient.auth.signInWithPassword({ email, password: heslo });
-      if (error) throw error;
-      await poPrihlaseni();
-    }
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password: heslo });
+    if (error) throw error;
+    await poPrihlaseni();
   } catch (e) {
     ukazatZpravuUcet(prelozitChybu(e.message), true);
   }
@@ -209,6 +182,8 @@ async function poPrihlaseni() {
     const session = await ziskatSession();
     const info = document.getElementById('prihlaseny-jako');
     if (info && session) info.textContent = 'Přihlášeni jako ' + session.user.email;
+    const ulozenyNazev = session && session.user.user_metadata && session.user.user_metadata.company_name;
+    if (ulozenyNazev) document.getElementById('nazev-firmy').value = ulozenyNazev;
     document.getElementById('krok-ucet').classList.remove('aktivni');
     document.getElementById('krok-firma').classList.add('aktivni');
   }
@@ -223,7 +198,6 @@ async function odhlasitAZkusitJinak(e) {
   document.getElementById('krok-ucet').classList.add('aktivni');
   document.getElementById('email').value = '';
   document.getElementById('heslo').value = '';
-  prepnoutTab('prihlasit');
 }
 
 function skrytVsechnyKroky() {

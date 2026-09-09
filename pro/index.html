@@ -318,7 +318,7 @@ async function odeslatObjednavku(e) {
 
   btn.disabled = true;
   try {
-    const { error: signUpError } = await supabaseClient.auth.signUp({ email, password: heslo });
+    const { error: signUpError } = await supabaseClient.auth.signUp({ email, password: heslo, options: { data: { company_name: firma } } });
     if (signUpError) throw signUpError;
 
     const { data: variabilniSymbol, error: orderError } = await supabaseClient.rpc('vytvorit_objednavku', {
