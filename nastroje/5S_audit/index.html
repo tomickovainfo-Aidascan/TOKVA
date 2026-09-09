@@ -1592,7 +1592,7 @@ async function exportovatData() {
       .eq('organization_id', clenstvi.organization_id)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    if (!radky || !radky.length) { alert('Zatím nemáte žádná uložená data k exportu.'); return; }
+    if (!radky || !radky.length) { ukazatUpozorneni('Zatím nemáte žádná uložená data k exportu.'); return; }
     const hlavicky = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
     const csvRadky = radky.map(r => hlavicky.map(h => {
       const v = r[h] == null ? '' : String(r[h]).replace(/"/g, '""');
@@ -1610,7 +1610,7 @@ async function exportovatData() {
     URL.revokeObjectURL(url);
   } catch (e) {
     console.warn('Export se nepodařil.', e);
-    alert('Export se teď nepodařil, zkuste to prosím znovu.');
+    ukazatUpozorneni('Export se teď nepodařil, zkuste to prosím znovu.');
   }
 }
 

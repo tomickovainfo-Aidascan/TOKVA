@@ -181,6 +181,71 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 .footer-brand{font-family:"Poppins",sans-serif;font-size:12px;font-weight:800;color:var(--dark);}
 .footer-brand span{color:var(--gold);}
 .footer-legal a{font-size:11px;color:var(--light);text-decoration:none;}
+/* UPOZORNENI - vlastni vystredeny modal misto browser alert()/confirm() */
+.notice-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.notice-box {
+  background: var(--white);
+  border: 1px solid rgba(233,169,27,.3);
+  border-radius: 16px;
+  padding: 28px 24px 22px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  animation: noticeIn .18s ease;
+}
+@keyframes noticeIn {
+  from { transform: scale(.94); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.notice-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(233,169,27,.12);
+  color: var(--gold);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+.notice-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--dark);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.notice-btn {
+  background: var(--gold);
+  color: var(--dark);
+  border: none;
+  border-radius: 10px;
+  padding: 11px 28px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.notice-btn:hover { background: var(--gold-dark); }
+.notice-btns { display: flex; gap: 10px; justify-content: center; }
+.notice-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--mid);
+}
+.notice-btn.secondary:hover { border-color: var(--light); color: var(--dark); }
 </style>
 </head>
 <body>
@@ -387,6 +452,36 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 <script src="../supabase-client.js"></script>
 <script src="../auth.js"></script>
 <script>
+// MODALY - jednotne upozorneni/potvrzeni misto browser alert()/confirm()
+let _noticeConfirmCb = null;
+function ukazatUpozorneni(text, icon) {
+  document.getElementById('notice-icon').textContent = icon || '!';
+  document.getElementById('notice-text').textContent = text;
+  document.getElementById('notice-btn-cancel').style.display = 'none';
+  const btnOk = document.getElementById('notice-btn-ok');
+  btnOk.textContent = 'Rozumím';
+  btnOk.onclick = zavritUpozorneni;
+  _noticeConfirmCb = null;
+  document.getElementById('notice-overlay').style.display = 'flex';
+}
+function ukazatPotvrzeni(text, onConfirm, potvrditLabel) {
+  document.getElementById('notice-icon').textContent = '?';
+  document.getElementById('notice-text').textContent = text;
+  document.getElementById('notice-btn-cancel').style.display = 'inline-block';
+  const btnOk = document.getElementById('notice-btn-ok');
+  btnOk.textContent = potvrditLabel || 'Smazat';
+  _noticeConfirmCb = onConfirm;
+  btnOk.onclick = () => {
+    const potvrzeno = _noticeConfirmCb;
+    zavritUpozorneni();
+    if (potvrzeno) potvrzeno();
+  };
+  document.getElementById('notice-overlay').style.display = 'flex';
+}
+function zavritUpozorneni() {
+  document.getElementById('notice-overlay').style.display = 'none';
+  _noticeConfirmCb = null;
+}
 // =============================================
 // PŘIHLAŠOVÁNÍ - Tokva Pro (Supabase), celá appka je Pro
 // =============================================
@@ -573,7 +668,7 @@ function filtrovaneAkce() {
 
 function exportovatCSV() {
   const seznam = filtrovaneAkce();
-  if (!seznam.length) { alert('Nic k exportu, zkuste změnit filtr.'); return; }
+  if (!seznam.length) { ukazatUpozorneni('Nic k exportu, zkuste změnit filtr.'); return; }
   const hlavicky = ['Název', 'Projekt', 'Stav', 'Zodpovědná osoba', 'Termín', 'Důvod', 'Poznámka', 'Odhadovaná investice', 'Očekávaný přínos', 'Skutečný stav', 'Skutečný přínos', 'Datum ověření', 'Výsledek potvrzen', 'Vytvořeno'];
   const radky = seznam.map(a => {
     const hodnoty = [
@@ -850,12 +945,13 @@ async function zmenitStatus(id, novyStatus) {
   renderSeznam();
 }
 
-async function smazatAkci(id) {
-  if (!confirm('Opravdu smazat tuhle akci? Nejde vrátit zpět.')) return;
-  const { error } = await supabaseClient.from('actions').delete().eq('id', id);
-  if (error) { console.warn('Smazání se nepodařilo.', error); return; }
-  akce = akce.filter(a => a.id !== id);
-  renderSeznam();
+function smazatAkci(id) {
+  ukazatPotvrzeni('Opravdu smazat tuhle akci? Nejde vrátit zpět.', async () => {
+    const { error } = await supabaseClient.from('actions').delete().eq('id', id);
+    if (error) { console.warn('Smazání se nepodařilo.', error); return; }
+    akce = akce.filter(a => a.id !== id);
+    renderSeznam();
+  });
 }
 
 function otevritModalDuvod(akceId) {
@@ -1156,5 +1252,15 @@ function formatKc(cislo) {
 
 nacistPrihlaseniStav();
 </script>
+<div class="notice-overlay" id="notice-overlay" style="display:none;" onclick="if(event.target===this) zavritUpozorneni()">
+  <div class="notice-box">
+    <div class="notice-icon" id="notice-icon">!</div>
+    <div class="notice-text" id="notice-text"></div>
+    <div class="notice-btns">
+      <button class="notice-btn secondary" id="notice-btn-cancel" style="display:none;" onclick="zavritUpozorneni()">Zrušit</button>
+      <button class="notice-btn" id="notice-btn-ok" onclick="zavritUpozorneni()">Rozumím</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

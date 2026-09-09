@@ -69,6 +69,8 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .btn-gold:hover{background:var(--gold-dark);color:white;}
 .btn-secondary{background:var(--white);color:var(--dark);border:1px solid var(--border);border-radius:6px;padding:9px 16px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;}
 .btn-secondary:hover{border-color:var(--gold);}
+.btn-secondary.danger{color:var(--red);}
+.btn-secondary.danger:hover{border-color:var(--red);background:rgba(192,57,43,.06);}
 
 /* DETAIL PROJEKTU */
 .back-link{font-size:12.5px;color:var(--mid);text-decoration:none;display:inline-block;margin-bottom:14px;}
@@ -182,6 +184,71 @@ footer{max-width:1080px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 .footer-brand{font-family:"Poppins",sans-serif;font-size:12px;font-weight:800;color:var(--dark);}
 .footer-brand span{color:var(--gold);}
 body.prezentace footer{display:none;}
+/* UPOZORNENI - vlastni vystredeny modal misto browser alert()/confirm() */
+.notice-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.notice-box {
+  background: var(--white);
+  border: 1px solid rgba(233,169,27,.3);
+  border-radius: 16px;
+  padding: 28px 24px 22px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  animation: noticeIn .18s ease;
+}
+@keyframes noticeIn {
+  from { transform: scale(.94); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.notice-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(233,169,27,.12);
+  color: var(--gold);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+.notice-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--dark);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.notice-btn {
+  background: var(--gold);
+  color: var(--dark);
+  border: none;
+  border-radius: 10px;
+  padding: 11px 28px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.notice-btn:hover { background: var(--gold-dark); }
+.notice-btns { display: flex; gap: 10px; justify-content: center; }
+.notice-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--mid);
+}
+.notice-btn.secondary:hover { border-color: var(--light); color: var(--dark); }
 </style>
 </head>
 <body>
@@ -236,6 +303,7 @@ body.prezentace footer{display:none;}
         <div class="detail-akce skryt-v-prezentaci">
           <button class="btn-secondary" onclick="exportovatProjektCSV()">⬇ Export CSV</button>
           <button class="btn-secondary" onclick="otevritModalHlavicka()">Upravit hlavičku</button>
+          <button class="btn-secondary danger" onclick="smazatProjekt()">Smazat projekt</button>
           <button class="btn-gold" id="btn-prezentovat" onclick="prepnoutPrezentaci()">▶ Prezentovat</button>
         </div>
         <button class="btn-secondary ukoncit-prezentaci" style="display:none;" id="btn-ukoncit-prezentaci" onclick="prepnoutPrezentaci()">✕ Ukončit prezentaci</button>
@@ -345,6 +413,36 @@ body.prezentace footer{display:none;}
 <script src="../supabase-client.js"></script>
 <script src="../auth.js"></script>
 <script>
+// MODALY - jednotne upozorneni/potvrzeni misto browser alert()/confirm()
+let _noticeConfirmCb = null;
+function ukazatUpozorneni(text, icon) {
+  document.getElementById('notice-icon').textContent = icon || '!';
+  document.getElementById('notice-text').textContent = text;
+  document.getElementById('notice-btn-cancel').style.display = 'none';
+  const btnOk = document.getElementById('notice-btn-ok');
+  btnOk.textContent = 'Rozumím';
+  btnOk.onclick = zavritUpozorneni;
+  _noticeConfirmCb = null;
+  document.getElementById('notice-overlay').style.display = 'flex';
+}
+function ukazatPotvrzeni(text, onConfirm, potvrditLabel) {
+  document.getElementById('notice-icon').textContent = '?';
+  document.getElementById('notice-text').textContent = text;
+  document.getElementById('notice-btn-cancel').style.display = 'inline-block';
+  const btnOk = document.getElementById('notice-btn-ok');
+  btnOk.textContent = potvrditLabel || 'Smazat';
+  _noticeConfirmCb = onConfirm;
+  btnOk.onclick = () => {
+    const potvrzeno = _noticeConfirmCb;
+    zavritUpozorneni();
+    if (potvrzeno) potvrzeno();
+  };
+  document.getElementById('notice-overlay').style.display = 'flex';
+}
+function zavritUpozorneni() {
+  document.getElementById('notice-overlay').style.display = 'none';
+  _noticeConfirmCb = null;
+}
 // =============================================
 // PŘIHLAŠOVÁNÍ - Tokva Pro (Supabase), celá appka je Pro
 // =============================================
@@ -561,6 +659,27 @@ function zavritDetail() {
   nacistSeznamProjektu();
 }
 
+function smazatProjekt() {
+  if (!aktualniProjekt) return;
+  const nazev = aktualniProjekt.name || 'tenhle projekt';
+  ukazatPotvrzeni(
+    'Opravdu smazat projekt „' + nazev + '"? Výsledky nástrojů a úkoly z akčního plánu zůstanou zachované, jen se od projektu odpojí. Nejde vrátit zpět.',
+    async () => {
+      const id = aktualniProjekt.id;
+      const { error } = await supabaseClient.from('projects').delete().eq('id', id);
+      if (error) {
+        console.warn('Smazání projektu se nepodařilo.', error);
+        ukazatUpozorneni('Smazání se teď nepodařilo, zkuste to prosím znovu.');
+        return;
+      }
+      projekty = projekty.filter(p => p.id !== id);
+      aktualniProjekt = null;
+      zavritDetail();
+    },
+    'Smazat'
+  );
+}
+
 function fazeVysledku(tr) {
   if (tr.premereni_pro) return 'overit';
   if (tr.faze) return tr.faze;
@@ -596,7 +715,7 @@ function toolNazev(tr) {
 
 function exportovatProjektCSV() {
   if (!aktualniProjekt) return;
-  if (!aktualniToolRuny.length && !aktualniAkce.length) { alert('U tohohle projektu zatím nejsou žádná data k exportu.'); return; }
+  if (!aktualniToolRuny.length && !aktualniAkce.length) { ukazatUpozorneni('U tohohle projektu zatím nejsou žádná data k exportu.'); return; }
 
   const radkyVysledky = aktualniToolRuny.map(tr => [
     toolNazev(tr),
@@ -884,5 +1003,15 @@ function textNeboNull(val) {
 
 nacistPrihlaseniStav();
 </script>
+<div class="notice-overlay" id="notice-overlay" style="display:none;" onclick="if(event.target===this) zavritUpozorneni()">
+  <div class="notice-box">
+    <div class="notice-icon" id="notice-icon">!</div>
+    <div class="notice-text" id="notice-text"></div>
+    <div class="notice-btns">
+      <button class="notice-btn secondary" id="notice-btn-cancel" style="display:none;" onclick="zavritUpozorneni()">Zrušit</button>
+      <button class="notice-btn" id="notice-btn-ok" onclick="zavritUpozorneni()">Rozumím</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
