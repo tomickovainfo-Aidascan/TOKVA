@@ -4,7 +4,9 @@
 // tuhle appku).
 //
 // Dohledá i e-mail majitele firmy (servisní klíč), ať je hned jasné,
-// kam poslat fakturu.
+// kam poslat fakturu. Dotazy jsou zvlášť (ne přes vnořené .select), protože
+// mezi organization_members a profiles není nastavený foreign key, který
+// by Supabase potřeboval pro automatické spojení.
 //
 // Zabezpečení: volání musí mít hlavičku x-webhook-secret shodnou s
 // WEBHOOK_SECRET (nastaveno přes `supabase secrets set`).
@@ -29,14 +31,22 @@ Deno.serve(async (req) => {
 
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
-  const { data: majitel } = await supabase
+  let email = "nenalezen - zkontroluj v Table Editoru";
+  const { data: clen } = await supabase
     .from("organization_members")
-    .select("profiles(email, full_name)")
+    .select("user_id")
     .eq("organization_id", org.id)
     .eq("role", "majitel")
     .maybeSingle();
 
-  const email = majitel?.profiles?.email || "nenalezen - zkontroluj v Table Editoru";
+  if (clen?.user_id) {
+    const { data: profil } = await supabase
+      .from("profiles")
+      .select("email")
+      .eq("id", clen.user_id)
+      .maybeSingle();
+    if (profil?.email) email = profil.email;
+  }
 
   const res = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",

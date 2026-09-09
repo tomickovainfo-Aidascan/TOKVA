@@ -8,6 +8,10 @@
 // Používá service role klíč, protože potřebuje číst napříč všemi
 // firmami, ne jen tou, pod kterou by byl přihlášený uživatel.
 //
+// Dotazy na organization_members a profiles jsou zvlášť (ne přes vnořené
+// .select), protože mezi těmi tabulkami není nastavený foreign key, který
+// by Supabase potřeboval pro automatické spojení.
+//
 // Zabezpečení: volání musí mít hlavičku x-webhook-secret shodnou s
 // WEBHOOK_SECRET (nastaveno přes `supabase secrets set`).
 
@@ -46,16 +50,27 @@ Deno.serve(async (req) => {
   let odeslano = 0;
 
   for (const org of orgs || []) {
-    const { data: majitel, error: memberErr } = await supabase
+    const { data: clen, error: memberErr } = await supabase
       .from("organization_members")
-      .select("profiles(email, full_name)")
+      .select("user_id")
       .eq("organization_id", org.id)
       .eq("role", "majitel")
       .maybeSingle();
 
-    const email = majitel?.profiles?.email;
-    if (memberErr || !email) {
-      console.warn("Bez e-mailu majitele, přeskočeno", org.id, memberErr);
+    if (memberErr || !clen?.user_id) {
+      console.warn("Bez majitele, přeskočeno", org.id, memberErr);
+      continue;
+    }
+
+    const { data: profil, error: profilErr } = await supabase
+      .from("profiles")
+      .select("email, full_name")
+      .eq("id", clen.user_id)
+      .maybeSingle();
+
+    const email = profil?.email;
+    if (profilErr || !email) {
+      console.warn("Bez e-mailu majitele, přeskočeno", org.id, profilErr);
       continue;
     }
 
@@ -74,7 +89,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         templateId: TEMPLATE_ID,
-        to: [{ email, name: majitel?.profiles?.full_name || "" }],
+        to: [{ email, name: profil?.full_name || "" }],
         params: {
           COMPANY_NAME: org.name,
           ORG_ID: org.id,
