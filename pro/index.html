@@ -282,9 +282,9 @@ async function nacistZbyvajiciMista() {
 nacistZbyvajiciMista();
 
 function prelozitChybuObjednavky(msg) {
-  if (msg.includes('already registered')) return 'Tenhle e-mail už má u nás účet – přihlaste se prosím a napište mi rovnou na gabriela@tokva.cz, objednávku vyřídíme ručně.';
+  if (msg.includes('already registered')) return 'Tenhle e-mail už má u nás účet – přihlaste se prosím a napište mi rovnou na tomickova.info@gmail.com, objednávku vyřídíme ručně.';
   if (msg.includes('Password should be')) return 'Heslo musí mít aspoň 6 znaků.';
-  return 'Něco se nepovedlo: ' + msg + '. Napište mi prosím rovnou na gabriela@tokva.cz.';
+  return 'Něco se nepovedlo: ' + msg + '. Napište mi prosím rovnou na tomickova.info@gmail.com.';
 }
 
 async function odeslatObjednavku(e) {
@@ -334,7 +334,7 @@ async function odeslatObjednavku(e) {
     });
     if (orderError) {
       console.warn('Účet vznikl, ale objednávka se neuložila.', orderError);
-      err.textContent = 'Účet se založil, ale fakturační údaje se bohužel neuložily. Napište mi je prosím rovnou na gabriela@tokva.cz, ať mám na fakturu všechno správně.';
+      err.textContent = 'Účet se založil, ale fakturační údaje se bohužel neuložily. Napište mi je prosím rovnou na tomickova.info@gmail.com, ať mám na fakturu všechno správně.';
       err.style.display = 'block';
       btn.disabled = false;
       return false;
