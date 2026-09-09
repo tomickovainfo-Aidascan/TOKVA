@@ -93,11 +93,35 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .notify-honeypot { position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
 .notify-msg.show { display:block; }
 
+.objednavka-box { margin-top:20px; padding:28px 26px; background:var(--dark); border-radius:12px; }
+.objednavka-box h3 { font-family:'Poppins',sans-serif; font-weight:800; font-size:16px; color:var(--white); margin-bottom:10px; }
+.objednavka-box > p { font-size:13.5px; color:rgba(255,255,255,.65); margin-bottom:18px; max-width:560px; }
+.objednavka-cena { font-weight:800; color:var(--gold); }
+.zbyva-mist-pill { display:inline-block; background:rgba(233,169,27,.15); color:var(--gold); font-weight:700; font-size:12.5px; padding:5px 12px; border-radius:100px; margin-bottom:14px; }
+.obj-field { margin-bottom:12px; }
+.obj-field label { display:block; font-size:12px; font-weight:700; color:rgba(255,255,255,.6); margin-bottom:5px; }
+.obj-field input, .obj-field textarea { width:100%; padding:11px 14px; border-radius:8px; border:1.5px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; box-sizing:border-box; }
+.obj-field input::placeholder, .obj-field textarea::placeholder { color:rgba(255,255,255,.35); }
+.obj-field input:focus, .obj-field textarea:focus { outline:none; border-color:var(--gold); }
+.obj-field textarea { resize:vertical; min-height:44px; font-family:'DM Sans',sans-serif; }
+.obj-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.objednavka-submit { background:var(--gold); color:var(--black); border:none; border-radius:8px; padding:13px 24px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:14.5px; cursor:pointer; width:100%; margin-top:6px; transition:background .15s; }
+.objednavka-submit:hover { background:var(--gold-dark); color:var(--white); }
+.objednavka-submit:disabled { opacity:.6; cursor:default; }
+.objednavka-err { display:none; font-size:13px; color:#ff9d9d; margin-top:12px; }
+.objednavka-ok { display:none; }
+.objednavka-ok p { font-size:14px; color:var(--white); margin-bottom:14px; line-height:1.6; }
+.objednavka-ok .btn-secondary-dark { display:inline-block; background:transparent; color:var(--gold); border:1.5px solid var(--gold); border-radius:8px; padding:11px 20px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:13.5px; text-decoration:none; }
+.objednavka-ok .btn-secondary-dark:hover { background:var(--gold); color:var(--black); }
+.objednavka-privacy { font-size:11.5px; color:rgba(255,255,255,.4); margin-top:16px; }
+.objednavka-privacy a { color:rgba(255,255,255,.55); }
+
 @media (max-width:600px) {
   .topbar { padding:12px 16px; }
   .main { padding:32px 16px 80px; }
   .compare { grid-template-columns:1fr; }
   .pilire { grid-template-columns:1fr; }
+  .obj-row { grid-template-columns:1fr; }
   .notify-form { flex-direction:column; }
   .notify-form button { width:100%; }
 }
@@ -174,13 +198,14 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <li><b>Moje Tokva</b> – přehled firmy po přihlášení: aktivní projekty, poslední výsledky, otevřené úkoly, doporučený další krok.</li>
     <li><b>Appka Projekty</b> – souhrn jednoho projektu ve čtyřech fázích Vidět/Změřit/Změnit/Ověřit, s prezentačním režimem na poradu (černé pozadí, velké písmo, krokování).</li>
     <li><b>Export CSV</b> – u vybraných appek (mini audity, kalkulačka nákladů skladu) a v Akčním plánu.</li>
+    <li><b>Objednávka a fakturace</b> – objednáte přímo tady na stránce, platí se převodem na fakturu, appku na Pro přepnu po přijetí platby.</li>
   </ul>
 
   <div class="stav-nadpis"><h2>Co se ještě dodělává</h2><span class="stav-chip pripravujeme">Připravujeme</span></div>
   <ul class="stav-list">
     <li>Porovnání PŘED × PO u 5S auditu a 5x Proč AI kouče – zatím ho mají jen ostatní appky s historií.</li>
     <li>Prezentace jednoho konkrétního výsledku samostatně – dnes appka umí prezentovat celý projekt, ne ještě jeden vybraný výsledek zvlášť.</li>
-    <li>Cena a možnost si Pro rovnou koupit – appka funguje, ale zatím není za co platit. Běží testovací provoz s prvními zákazníky.</li>
+    <li>Automatická platba kartou – zatím jen převodem na fakturu, appku odemykám ručně po přijetí platby.</li>
   </ul>
 
   <div class="stav-nadpis"><h2>Co je v plánu dál</h2><span class="stav-chip planu">V plánu</span></div>
@@ -190,33 +215,139 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <li>Širší export a tisk (PDF) napříč všemi appkami, ne jen u těch, co ho mají dnes.</li>
   </ul>
 
-  <div class="note">Tokva Pro se testuje na prvních zákaznících. Appky zdarma fungují naplno i bez přihlášení – Pro zatím nemá stanovenou cenu ani otevřený prodej. Až bude připravená, dozvíte se to tady i na appkách samotných.</div>
+  <div class="note">Tokva Pro se testuje na prvních zákaznících. Appky zdarma fungují naplno i bez přihlášení – Pro appky si objednáte tady na stránce, platí se převodem na fakturu, appku odemknu po přijetí platby.</div>
 
   <p class="podpora-note">Podporu k appkám dělám vždycky osobně já, Gabriela Tomíčková. Pokud byste kromě appky potřebovali i pomoc přímo ve firmě, najdete mě na <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a>.</p>
 
-  <div class="notify-box">
-    <h3>Chcete vědět, až půjde Tokva Pro koupit?</h3>
-    <p>Appka reálně funguje a testuje se s prvními zákazníky. Necháte e-mail a napíšeme vám, jakmile bude otevřený prodej.</p>
-    <p style="font-weight:800; color:var(--white);">Prvních 10 lidí, co si Tokva Pro po spuštění pořídí, dostane zvýhodněnou cenu na celý první rok.</p>
-    <p>Žádný spam, kdykoli se můžete odhlásit.</p>
-    <form id="notify-form" class="notify-form" method="POST" action="https://2f524664.sibforms.com/serve/MUIFAFdlMbVvcxCFI5Sh8HhlV6hr4i4rFi6YJvn-ZUmMuAxoDA3uDyqtXg92YYkAmhensXbCNw0Hn2R_TZwDKdYOkbP3ZZuroJEWn8uTDAnbsJLL2zsj5VX3ekeCFqf7m6u3PIynSybcBFc5PW7qwBbCbFZPIQXYkg35yoxjP4j-qOkQCUpMFL7l8z1YYxffvV0o54IeeZzMJY9QwQ==" onsubmit="return odeslatNotify(event)">
-      <input type="email" name="EMAIL" id="notify-email" placeholder="vas@email.cz" required>
-      <input type="text" name="email_address_check" value="" class="notify-honeypot" tabindex="-1" autocomplete="off">
-      <input type="hidden" name="locale" value="en">
-      <button type="submit">Dát vědět</button>
+  <div class="objednavka-box">
+    <h3>Objednat Tokva Pro</h3>
+    <div class="zbyva-mist-pill" id="zbyva-mist-pill" style="display:none;"></div>
+    <p id="objednavka-cena-popis">Zakladatelská cena <span class="objednavka-cena">499 Kč/měsíc</span> platí pro prvních 10 firem po celý první rok, pak <span class="objednavka-cena">699 Kč/měsíc</span>. Platí se převodem na fakturu – pošlu vám ji na zadaný e-mail, appku na Pro přepnu po přijetí platby.</p>
+
+    <form id="objednavka-form" onsubmit="return odeslatObjednavku(event)">
+      <div class="obj-field"><label>Firma *</label><input type="text" id="obj-firma" required></div>
+      <div class="obj-row">
+        <div class="obj-field"><label>IČO</label><input type="text" id="obj-ico"></div>
+        <div class="obj-field"><label>DIČ</label><input type="text" id="obj-dic"></div>
+      </div>
+      <div class="obj-field"><label>Fakturační adresa</label><input type="text" id="obj-adresa" placeholder="Ulice, město, PSČ"></div>
+      <div class="obj-row">
+        <div class="obj-field"><label>Kontaktní osoba *</label><input type="text" id="obj-osoba" required></div>
+        <div class="obj-field"><label>Telefon</label><input type="tel" id="obj-telefon"></div>
+      </div>
+      <div class="obj-field"><label>E-mail (bude i přihlašovací) *</label><input type="email" id="obj-email" required></div>
+      <div class="obj-row">
+        <div class="obj-field"><label>Heslo *</label><input type="password" id="obj-heslo" required minlength="6"></div>
+        <div class="obj-field"><label>Heslo znovu *</label><input type="password" id="obj-heslo2" required minlength="6"></div>
+      </div>
+      <div class="obj-field"><label>Poznámka</label><textarea id="obj-poznamka" rows="2"></textarea></div>
+      <div class="objednavka-err" id="objednavka-err"></div>
+      <button type="submit" class="objednavka-submit" id="objednavka-btn">Odeslat objednávku</button>
     </form>
-    <div class="notify-msg" id="notify-msg">Byli jste přidáni na čekací listinu Tokva Pro.</div>
-    <p class="notify-privacy">Jako marketingovou platformu používám Brevo. Odesláním souhlasíte s předáním e-mailu společnosti Brevo ke zpracování v souladu s <a target="_blank" href="https://www.brevo.com/en/legal/privacypolicy/" rel="nofollow noopener">jejich zásadami ochrany osobních údajů</a>.</p>
+
+    <div class="objednavka-ok" id="objednavka-ok">
+      <p>Díky! Objednávka je zapsaná. Fakturu vám pošlu do pár dnů na e-mail, appku na Pro přepnu po přijetí platby. Přihlásit se můžete rovnou teď – appky uvidíte ve verzi zdarma, dokud platba nedorazí.</p>
+      <a href="https://tokva.cz/prihlaseni.html" class="btn-secondary-dark">Přihlásit se →</a>
+    </div>
+
+    <p class="objednavka-privacy">Fakturační a kontaktní údaje použiju jen k vystavení faktury a domluvě kolem objednávky. Víc v <a href="https://gdpr.gabrielatomickova.cz" target="_blank" rel="noopener">zásadách ochrany osobních údajů</a>.</p>
   </div>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-client.js"></script>
 <script>
-function odeslatNotify(e) {
-  var form = document.getElementById('notify-form');
-  var msg = document.getElementById('notify-msg');
-  fetch(form.action, { method: 'POST', body: new FormData(form), mode: 'no-cors' });
-  form.style.display = 'none';
-  msg.classList.add('show');
+let aktualniCenaKc = 699;
+
+async function nacistZbyvajiciMista() {
+  const pill = document.getElementById('zbyva-mist-pill');
+  try {
+    const { data, error } = await supabaseClient.rpc('pocet_zakladajicich_clenu');
+    if (error) throw error;
+    const zbyva = Math.max(0, 10 - (data || 0));
+    if (zbyva > 0) {
+      pill.textContent = 'Zbývá ' + zbyva + ' z 10 zakladatelských míst';
+      pill.style.display = 'inline-block';
+      aktualniCenaKc = 499;
+    } else {
+      pill.style.display = 'none';
+      aktualniCenaKc = 699;
+    }
+  } catch (ex) {
+    console.warn('Počet zakladajících členů se nepodařilo zjistit.', ex);
+  }
+}
+nacistZbyvajiciMista();
+
+function prelozitChybuObjednavky(msg) {
+  if (msg.includes('already registered')) return 'Tenhle e-mail už má u nás účet – přihlaste se prosím a napište mi rovnou na gabriela@tokva.cz, objednávku vyřídíme ručně.';
+  if (msg.includes('Password should be')) return 'Heslo musí mít aspoň 6 znaků.';
+  return 'Něco se nepovedlo: ' + msg + '. Napište mi prosím rovnou na gabriela@tokva.cz.';
+}
+
+async function odeslatObjednavku(e) {
+  e.preventDefault();
+  const btn = document.getElementById('objednavka-btn');
+  const err = document.getElementById('objednavka-err');
+  err.style.display = 'none';
+  err.textContent = '';
+
+  const firma = document.getElementById('obj-firma').value.trim();
+  const osoba = document.getElementById('obj-osoba').value.trim();
+  const email = document.getElementById('obj-email').value.trim();
+  const heslo = document.getElementById('obj-heslo').value;
+  const heslo2 = document.getElementById('obj-heslo2').value;
+  const ico = document.getElementById('obj-ico').value.trim();
+  const dic = document.getElementById('obj-dic').value.trim();
+  const adresa = document.getElementById('obj-adresa').value.trim();
+  const telefon = document.getElementById('obj-telefon').value.trim();
+  const poznamka = document.getElementById('obj-poznamka').value.trim();
+
+  if (heslo !== heslo2) {
+    err.textContent = 'Hesla se neshodují.';
+    err.style.display = 'block';
+    return false;
+  }
+  if (heslo.length < 6) {
+    err.textContent = 'Heslo musí mít aspoň 6 znaků.';
+    err.style.display = 'block';
+    return false;
+  }
+
+  btn.disabled = true;
+  try {
+    const { error: signUpError } = await supabaseClient.auth.signUp({ email, password: heslo });
+    if (signUpError) throw signUpError;
+
+    const { error: orderError } = await supabaseClient.from('orders').insert({
+      email: email,
+      contact_name: osoba,
+      company_name: firma,
+      ico: ico || null,
+      dic: dic || null,
+      billing_address: adresa || null,
+      phone: telefon || null,
+      note: poznamka || null,
+      expected_price_kc: aktualniCenaKc
+    });
+    if (orderError) {
+      console.warn('Účet vznikl, ale objednávka se neuložila.', orderError);
+      err.textContent = 'Účet se založil, ale fakturační údaje se bohužel neuložily. Napište mi je prosím rovnou na gabriela@tokva.cz, ať mám na fakturu všechno správně.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      return false;
+    }
+
+    document.getElementById('objednavka-form').style.display = 'none';
+    document.getElementById('zbyva-mist-pill').style.display = 'none';
+    document.getElementById('objednavka-cena-popis').style.display = 'none';
+    document.getElementById('objednavka-ok').style.display = 'block';
+  } catch (ex) {
+    err.textContent = prelozitChybuObjednavky(ex.message || String(ex));
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+  }
   return false;
 }
 </script>
