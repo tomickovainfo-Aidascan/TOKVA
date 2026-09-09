@@ -332,6 +332,7 @@ async function odeslatZalozeniFirmy(e) {
     await zalozitOrganizaci(nazev);
     presmerovatPoPrihlaseni();
   } catch (e) {
+    console.warn('Založení firmy se nepodařilo.', e);
     zprava.textContent = 'Nepodařilo se založit firmu, zkuste to znovu.';
     zprava.className = 'zprava chyba';
     btn.disabled = false;
