@@ -11,13 +11,13 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tokva Pro – propojte výsledky se změnou | Tokva</title>
-<meta name="description" content="Jednotlivé nástroje vám ukážou, co se děje. Tokva Pro propojí výsledky a pomůže vám změnu dotáhnout. Připravujeme.">
+<title>Tokva Pro – propojený systém pro zlepšování firmy | Tokva</title>
+<meta name="description" content="Tokva Pro není balíček placených kalkulaček. Pamatuje si výsledky, propojí je s projekty a úkoly a ověří, jestli změna doopravdy pomohla. Momentálně se testuje.">
 <meta name="author" content="Gabriela Tomíčková">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tokva.cz/pro/">
-<meta property="og:title" content="Tokva Pro – propojte výsledky se změnou | Tokva">
-<meta property="og:description" content="Jednotlivé nástroje vám ukážou, co se děje. Tokva Pro propojí výsledky a pomůže vám změnu dotáhnout.">
+<meta property="og:title" content="Tokva Pro – propojený systém pro zlepšování firmy | Tokva">
+<meta property="og:description" content="Tokva Pro není balíček placených kalkulaček. Pamatuje si výsledky, propojí je s projekty a úkoly a ověří, jestli změna doopravdy pomohla.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -54,6 +54,25 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .flow-arrow { text-align:center; color:var(--silver); font-size:13px; padding:2px 0; }
 .compare-col.pro .flow-arrow { color:rgba(255,255,255,.35); }
 
+.pilire-uvod { font-family:'Poppins',sans-serif; font-size:17px; font-weight:800; margin:44px 0 6px; line-height:1.4; }
+.pilire-uvod-sub { font-size:14px; color:var(--mid); margin-bottom:20px; }
+.pilire { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:40px; }
+.pilir { background:var(--white); border:1px solid var(--border2); border-radius:12px; padding:18px 20px; }
+.pilir h3 { font-family:'Poppins',sans-serif; font-size:14.5px; font-weight:800; margin-bottom:6px; }
+.pilir p { font-size:13.5px; color:var(--mid); }
+
+.stav-nadpis { display:flex; align-items:center; gap:10px; margin:34px 0 10px; flex-wrap:wrap; }
+.stav-nadpis h2 { font-family:'Poppins',sans-serif; font-size:16px; font-weight:800; }
+.stav-chip { font-family:'Poppins',sans-serif; font-size:10px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; padding:4px 11px; border-radius:100px; white-space:nowrap; }
+.stav-chip.funguje { background:#e3f3e3; color:#1f7a3d; }
+.stav-chip.pripravujeme { background:var(--gold-light); color:var(--gold-dark); }
+.stav-chip.planu { background:#ececec; color:#666; }
+.stav-list { list-style:none; margin-bottom:8px; }
+.stav-list li { font-size:14px; color:var(--dark); padding:8px 2px; border-bottom:1px dashed var(--border2); line-height:1.55; }
+.stav-list li:last-child { border-bottom:none; }
+.stav-list li b { font-weight:700; }
+.stav-popis { font-size:13px; color:var(--mid); margin-bottom:12px; }
+
 .note { margin-top:36px; font-size:13.5px; color:var(--mid); border-left:3px solid var(--gold); padding:14px 18px; background:var(--white); border-radius:0 8px 8px 0; }
 .podpora-note { font-size:12.5px; color:var(--mid); margin-top:14px; }
 .podpora-note a { color:var(--gold-dark); text-decoration:none; }
@@ -78,6 +97,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   .topbar { padding:12px 16px; }
   .main { padding:32px 16px 80px; }
   .compare { grid-template-columns:1fr; }
+  .pilire { grid-template-columns:1fr; }
   .notify-form { flex-direction:column; }
   .notify-form button { width:100%; }
 }
@@ -92,9 +112,9 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
 <main class="main">
   <a class="back-link" href="https://tokva.cz/">← Zpět na Tokvu</a>
-  <div class="badge">Připravujeme</div>
-  <h1>Jednotlivé nástroje vám ukážou, co se děje. Tokva Pro propojí výsledky a pomůže vám změnu dotáhnout.</h1>
-  <p class="lead">Tohle je rozdíl mezi appkou, kterou použijete jednou, a systémem, který vám pomůže problém doopravdy vyřešit.</p>
+  <div class="badge">Pro se testuje</div>
+  <h1>Tokva Pro si pamatuje, co jste zjistili, propojí to s projekty a úkoly a ukáže, jestli změna doopravdy pomohla.</h1>
+  <p class="lead">Jednotlivé nástroje problém odhalí nebo změří. Tokva Pro k tomu přidá paměť, souvislosti mezi appkami, realizaci opatření a ověření, jestli fakt zabralo. Není to balíček placených kalkulaček – je to systém, co vás provede od zjištění po ověřený přínos.</p>
 
   <div class="compare">
     <div class="compare-col free">
@@ -121,13 +141,62 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     </div>
   </div>
 
-  <div class="note">Tokva Pro se teprve staví. Zatím žádná cena, žádné přihlašování k placené verzi – appky zdarma fungují naplno i bez toho. Až bude připravená, dozvíte se to tady i na appkách samotných.</div>
+  <p class="pilire-uvod">Čtyři věci, které appky zdarma neumí</p>
+  <p class="pilire-uvod-sub">Free appka vám dá jedno číslo. Tohle je to, co se s ním stane dál.</p>
+  <div class="pilire">
+    <div class="pilir">
+      <h3>Všechno na jednom místě</h3>
+      <p>Výsledky, projekty, úkoly, fotky i doporučení pohromadě – nemusíte hledat, ve které appce jste co dřív zjistili.</p>
+    </div>
+    <div class="pilir">
+      <h3>Vidíte změnu v čase</h3>
+      <p>Zopakujete audit nebo měření a appka vám sama ukáže, co se zlepšilo, co ne a co zůstalo stejné.</p>
+    </div>
+    <div class="pilir">
+      <h3>Z výsledku rovnou k akci</h3>
+      <p>Z každého zjištění uděláte úkol s odpovědným člověkem a termínem – ne papír, co skončí v šuplíku.</p>
+    </div>
+    <div class="pilir">
+      <h3>Ověříte skutečný přínos</h3>
+      <p>Po dokončení opatření appka připomene, ať to změříte znovu, a ukáže, jestli to fakt pomohlo.</p>
+    </div>
+  </div>
+
+  <div class="stav-nadpis"><h2>Co Tokva Pro dnes reálně umí</h2><span class="stav-chip funguje">Funguje nyní</span></div>
+  <p class="stav-popis">Tohle není plán do budoucna – tyhle věci appky dělají už teď, na živém webu.</p>
+  <ul class="stav-list">
+    <li><b>Přihlášení a firemní účet</b> – appky zdarma fungují bez přihlášení, Pro appky vás poznají a ukládají výsledky přímo k vaší firmě.</li>
+    <li><b>Kompletní historie výsledků</b> – appka si nepamatuje jen skóre, ale celý výsledek (odpovědi, naměřené hodnoty, fotky, poznámky) u všech nástrojů s historií.</li>
+    <li><b>Firma → projekt → výsledek → úkol</b> – výsledky jde zařadit k projektu, projekty se dají zakládat a filtrovat, i bez projektu se výsledek neztratí.</li>
+    <li><b>Centrální Akční plán</b> – jeden seznam úkolů napříč všemi appkami, karty i tabulka s filtry a řazením, fotka k akci (třeba stav před/po).</li>
+    <li><b>Klikatelný zdroj úkolu</b> – z úkolu se vždycky vrátíte na celý výsledek, ze kterého vznikl, ne jen na text.</li>
+    <li><b>Opakovaná měření a porovnání PŘED × PO</b> – u mini auditů, obou kvízů, časové studie, kalkulačky nákladů skladu, měřiče plýtvání a spaghetti diagramu appka ukáže, co se zlepšilo, zhoršilo nebo zůstalo stejné.</li>
+    <li><b>Moje Tokva</b> – přehled firmy po přihlášení: aktivní projekty, poslední výsledky, otevřené úkoly, doporučený další krok.</li>
+    <li><b>Appka Projekty</b> – souhrn jednoho projektu ve čtyřech fázích Vidět/Změřit/Změnit/Ověřit, s prezentačním režimem na poradu (černé pozadí, velké písmo, krokování).</li>
+    <li><b>Export CSV</b> – u vybraných appek (mini audity, kalkulačka nákladů skladu) a v Akčním plánu.</li>
+  </ul>
+
+  <div class="stav-nadpis"><h2>Co se ještě dodělává</h2><span class="stav-chip pripravujeme">Připravujeme</span></div>
+  <ul class="stav-list">
+    <li>Porovnání PŘED × PO u 5S auditu a 5x Proč AI kouče – zatím ho mají jen ostatní appky s historií.</li>
+    <li>Prezentace jednoho konkrétního výsledku samostatně – dnes appka umí prezentovat celý projekt, ne ještě jeden vybraný výsledek zvlášť.</li>
+    <li>Cena a možnost si Pro rovnou koupit – appka funguje, ale zatím není za co platit. Běží testovací provoz s prvními zákazníky.</li>
+  </ul>
+
+  <div class="stav-nadpis"><h2>Co je v plánu dál</h2><span class="stav-chip planu">V plánu</span></div>
+  <ul class="stav-list">
+    <li>Víc firem pod jedním účtem a přepínání mezi nimi.</li>
+    <li>Týmová spolupráce – víc lidí v jedné firmě, role a oprávnění, kdo co smí vidět a upravovat.</li>
+    <li>Širší export a tisk (PDF) napříč všemi appkami, ne jen u těch, co ho mají dnes.</li>
+  </ul>
+
+  <div class="note">Tokva Pro se testuje na prvních zákaznících. Appky zdarma fungují naplno i bez přihlášení – Pro zatím nemá stanovenou cenu ani otevřený prodej. Až bude připravená, dozvíte se to tady i na appkách samotných.</div>
 
   <p class="podpora-note">Podporu k appkám dělám vždycky osobně já, Gabriela Tomíčková. Pokud byste kromě appky potřebovali i pomoc přímo ve firmě, najdete mě na <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a>.</p>
 
   <div class="notify-box">
-    <h3>Chcete vědět, až Tokva Pro spustíme?</h3>
-    <p>Necháte e-mail a napíšeme vám, jakmile bude připravená.</p>
+    <h3>Chcete vědět, až půjde Tokva Pro koupit?</h3>
+    <p>Appka reálně funguje a testuje se s prvními zákazníky. Necháte e-mail a napíšeme vám, jakmile bude otevřený prodej.</p>
     <p style="font-weight:800; color:var(--white);">Prvních 10 lidí, co si Tokva Pro po spuštění pořídí, dostane zvýhodněnou cenu na celý první rok.</p>
     <p>Žádný spam, kdykoli se můžete odhlásit.</p>
     <form id="notify-form" class="notify-form" method="POST" action="https://2f524664.sibforms.com/serve/MUIFAFdlMbVvcxCFI5Sh8HhlV6hr4i4rFi6YJvn-ZUmMuAxoDA3uDyqtXg92YYkAmhensXbCNw0Hn2R_TZwDKdYOkbP3ZZuroJEWn8uTDAnbsJLL2zsj5VX3ekeCFqf7m6u3PIynSybcBFc5PW7qwBbCbFZPIQXYkg35yoxjP4j-qOkQCUpMFL7l8z1YYxffvV0o54IeeZzMJY9QwQ==" onsubmit="return odeslatNotify(event)">
