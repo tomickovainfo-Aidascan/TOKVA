@@ -32,19 +32,21 @@ Deno.serve(async (req) => {
   const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
   let email = "nenalezen - zkontroluj v Table Editoru";
-  const { data: clen } = await supabase
+  const { data: clen, error: clenErr } = await supabase
     .from("organization_members")
     .select("user_id")
     .eq("organization_id", org.id)
     .eq("role", "majitel")
     .maybeSingle();
+  console.log("DEBUG org.id:", org.id, "clen:", JSON.stringify(clen), "clenErr:", JSON.stringify(clenErr));
 
   if (clen?.user_id) {
-    const { data: profil } = await supabase
+    const { data: profil, error: profilErr } = await supabase
       .from("profiles")
       .select("email")
       .eq("id", clen.user_id)
       .maybeSingle();
+    console.log("DEBUG profil:", JSON.stringify(profil), "profilErr:", JSON.stringify(profilErr));
     if (profil?.email) email = profil.email;
   }
 
