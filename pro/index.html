@@ -98,6 +98,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .objednavka-box > p { font-size:13.5px; color:rgba(255,255,255,.65); margin-bottom:18px; max-width:560px; }
 .objednavka-cena { font-weight:800; color:var(--gold); }
 .zbyva-mist-pill { display:inline-block; background:rgba(233,169,27,.15); color:var(--gold); font-weight:700; font-size:12.5px; padding:5px 12px; border-radius:100px; margin-bottom:14px; }
+.objednavka-vs { font-weight:700; font-size:15px; margin:10px 0; }
 .obj-field { margin-bottom:12px; }
 .obj-field label { display:block; font-size:12px; font-weight:700; color:rgba(255,255,255,.6); margin-bottom:5px; }
 .obj-field input, .obj-field textarea { width:100%; padding:11px 14px; border-radius:8px; border:1.5px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; box-sizing:border-box; }
@@ -247,6 +248,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
     <div class="objednavka-ok" id="objednavka-ok">
       <p>Díky! Objednávka je zapsaná. Fakturu vám pošlu do pár dnů na e-mail, appku na Pro přepnu po přijetí platby. Přihlásit se můžete rovnou teď – appky uvidíte ve verzi zdarma, dokud platba nedorazí.</p>
+      <p class="objednavka-vs" id="objednavka-vs"></p>
       <a href="https://tokva.cz/prihlaseni.html" class="btn-secondary-dark">Přihlásit se →</a>
     </div>
 
@@ -319,16 +321,16 @@ async function odeslatObjednavku(e) {
     const { error: signUpError } = await supabaseClient.auth.signUp({ email, password: heslo });
     if (signUpError) throw signUpError;
 
-    const { error: orderError } = await supabaseClient.from('orders').insert({
-      email: email,
-      contact_name: osoba,
-      company_name: firma,
-      ico: ico || null,
-      dic: dic || null,
-      billing_address: adresa || null,
-      phone: telefon || null,
-      note: poznamka || null,
-      expected_price_kc: aktualniCenaKc
+    const { data: variabilniSymbol, error: orderError } = await supabaseClient.rpc('vytvorit_objednavku', {
+      p_email: email,
+      p_contact_name: osoba,
+      p_company_name: firma,
+      p_ico: ico || null,
+      p_dic: dic || null,
+      p_billing_address: adresa || null,
+      p_phone: telefon || null,
+      p_note: poznamka || null,
+      p_expected_price_kc: aktualniCenaKc
     });
     if (orderError) {
       console.warn('Účet vznikl, ale objednávka se neuložila.', orderError);
@@ -341,6 +343,7 @@ async function odeslatObjednavku(e) {
     document.getElementById('objednavka-form').style.display = 'none';
     document.getElementById('zbyva-mist-pill').style.display = 'none';
     document.getElementById('objednavka-cena-popis').style.display = 'none';
+    document.getElementById('objednavka-vs').textContent = 'Variabilní symbol k platbě: ' + variabilniSymbol;
     document.getElementById('objednavka-ok').style.display = 'block';
   } catch (ex) {
     err.textContent = prelozitChybuObjednavky(ex.message || String(ex));
