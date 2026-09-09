@@ -3,11 +3,18 @@
 // zapíše pokracovani_potvrzeno_at, SQL trigger na organizations pak zavolá
 // tuhle appku).
 //
+// Dohledá i e-mail majitele firmy (servisní klíč), ať je hned jasné,
+// kam poslat fakturu.
+//
 // Zabezpečení: volání musí mít hlavičku x-webhook-secret shodnou s
 // WEBHOOK_SECRET (nastaveno přes `supabase secrets set`).
 
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const BREVO_API_KEY = Deno.env.get("BREVO_API_KEY")!;
 const WEBHOOK_SECRET = Deno.env.get("WEBHOOK_SECRET")!;
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 Deno.serve(async (req) => {
   if (req.headers.get("x-webhook-secret") !== WEBHOOK_SECRET) {
@@ -19,6 +26,17 @@ Deno.serve(async (req) => {
   if (!org) {
     return new Response("Chybí data firmy", { status: 400 });
   }
+
+  const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
+
+  const { data: majitel } = await supabase
+    .from("organization_members")
+    .select("profiles(email, full_name)")
+    .eq("organization_id", org.id)
+    .eq("role", "majitel")
+    .maybeSingle();
+
+  const email = majitel?.profiles?.email || "nenalezen - zkontroluj v Table Editoru";
 
   const res = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
@@ -33,6 +51,7 @@ Deno.serve(async (req) => {
       htmlContent:
         "<p>Firma potvrdila, že chce pokračovat v Tokva Pro:</p>" +
         "<p>Firma: " + (org.name || "-") + "<br>" +
+        "E-mail pro fakturu: " + email + "<br>" +
         "ID firmy: " + org.id + "<br>" +
         "Konec předplatného (do teď): " + (org.plan_expires_at || "-") + "</p>" +
         "<p>Pošli fakturu na další měsíc.</p>",
