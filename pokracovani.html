@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokračování Tokva Pro</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23000'/%3E%3Cpolygon points='4,9 18,9 28,16 18,23 4,23' fill='%23e9a91b'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b; --gold-dark: #976e12; --gold-light: #fdf3d9;
+  --black: #000000; --dark: #111111; --mid: #545454; --silver: #a8a6a6;
+  --white: #ffffff; --paper: #fafaf8; --border: #e8e8e8;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--dark);
+  line-height:1.6; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+}
+.karta {
+  background:var(--white); border:1px solid var(--border); border-radius:16px;
+  padding:36px 32px; max-width:420px; width:100%; text-align:center;
+}
+.logo { font-family:'Poppins',sans-serif; font-weight:800; font-size:16px; margin-bottom:28px; }
+.logo span { color:var(--gold); }
+h1 { font-family:'Poppins',sans-serif; font-size:20px; font-weight:800; margin-bottom:10px; }
+p { font-size:14px; color:var(--mid); margin-bottom:8px; }
+.btn-gold {
+  width:100%; background:var(--gold); border:none; color:var(--black); font-size:14px;
+  font-weight:700; padding:13px 16px; border-radius:8px; cursor:pointer; margin-top:22px;
+  transition:background .15s; font-family:'DM Sans',sans-serif;
+}
+.btn-gold:hover { background:var(--gold-dark); color:var(--white); }
+.btn-gold:disabled { opacity:.6; cursor:default; }
+.stav-ok { display:none; }
+.stav-ok.aktivni { display:block; }
+.stav-form.skryty { display:none; }
+.ikona-ok {
+  width:52px; height:52px; border-radius:50%; background:var(--gold-light); color:var(--gold-dark);
+  font-family:'Poppins',sans-serif; font-weight:800; font-size:24px; display:flex; align-items:center;
+  justify-content:center; margin:0 auto 16px;
+}
+.zprava { font-size:13px; margin-top:14px; padding:10px 12px; border-radius:8px; display:none; }
+.zprava.chyba { display:block; background:#fdecec; color:#a12626; }
+.zpatky-link { font-size:12.5px; color:var(--mid); text-align:center; margin-top:20px; display:block; text-decoration:none; }
+.zpatky-link:hover { color:var(--gold-dark); }
+</style>
+</head>
+<body>
+
+<div class="karta">
+  <div class="logo">Moje <span>Tokva</span></div>
+
+  <div id="stav-form">
+    <h1 id="nadpis">Pokračovat v Tokva Pro?</h1>
+    <p id="popis">Za chvíli vám pošlu fakturu na další měsíc.</p>
+    <button class="btn-gold" id="btn-potvrdit" onclick="potvrditPokracovani()">Ano, chci pokračovat →</button>
+    <div class="zprava" id="zprava"></div>
+  </div>
+
+  <div class="stav-ok" id="stav-ok">
+    <div class="ikona-ok">✓</div>
+    <h1>Díky!</h1>
+    <p>Pokračování je zapsané. Fakturu na další měsíc pošlu do pár dnů.</p>
+  </div>
+
+  <a class="zpatky-link" href="https://tokva.cz/moje-tokva/">← Zpět do Tokvy</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script>
+const params = new URLSearchParams(window.location.search);
+const orgId = params.get('org');
+
+async function nacistNazevFirmy() {
+  if (!orgId) {
+    document.getElementById('popis').textContent = 'Chybí odkaz na firmu - otevřete prosím odkaz přímo z e-mailu.';
+    document.getElementById('btn-potvrdit').disabled = true;
+    return;
+  }
+  try {
+    const { data, error } = await supabaseClient.rpc('nazev_organizace_verejne', { p_org_id: orgId });
+    if (error) throw error;
+    if (data) {
+      document.getElementById('nadpis').textContent = 'Pokračovat, ' + data + '?';
+    }
+  } catch (ex) {
+    console.warn('Načtení názvu firmy se nepovedlo.', ex);
+  }
+}
+nacistNazevFirmy();
+
+async function potvrditPokracovani() {
+  const btn = document.getElementById('btn-potvrdit');
+  const zprava = document.getElementById('zprava');
+  zprava.style.display = 'none';
+  btn.disabled = true;
+  try {
+    const { error } = await supabaseClient.rpc('potvrdit_pokracovani', { p_org_id: orgId });
+    if (error) throw error;
+    document.getElementById('stav-form').classList.add('skryty');
+    document.getElementById('stav-ok').classList.add('aktivni');
+  } catch (ex) {
+    console.warn('Potvrzení pokračování se nepovedlo.', ex);
+    zprava.textContent = 'Něco se nepovedlo, zkuste to prosím znovu nebo napište na tomickova.info@gmail.com.';
+    zprava.style.display = 'block';
+    btn.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>
