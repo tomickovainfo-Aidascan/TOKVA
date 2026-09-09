@@ -45,5 +45,32 @@ Deno.serve(async (req) => {
     return new Response("Brevo error: " + text, { status: 500 });
   }
 
+  // Interní upozornění pro Gábinu - ať ví, že přišla nová objednávka.
+  // Pošle se, i kdyby tenhle krok selhal, hlavní e-mail zákazníkovi
+  // už odešel výš, takže se to jen zaloguje a appka pořád vrátí OK.
+  try {
+    await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": BREVO_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
+        to: [{ email: "tomickova.info@gmail.com" }],
+        subject: "Nová objednávka - " + (order.company_name || order.email),
+        htmlContent:
+          "<p>Přišla nová objednávka Tokva Pro:</p>" +
+          "<p>Firma: " + (order.company_name || "-") + "<br>" +
+          "Kontakt: " + (order.contact_name || "-") + "<br>" +
+          "E-mail: " + order.email + "<br>" +
+          "VS: " + (order.variabilni_symbol || "-") + "<br>" +
+          "Cena: " + (order.expected_price_kc || "-") + " Kč</p>",
+      }),
+    });
+  } catch (e) {
+    console.error("Interní upozornění se nepodařilo poslat", e);
+  }
+
   return new Response("OK", { status: 200 });
 });
