@@ -84,10 +84,15 @@ Deno.serve(async (req) => {
     const token = await ziskatToken();
     log("Token OK");
 
-    // Najít kontakt podle názvu firmy
-    const filtr = encodeURIComponent(`CompanyName~eq~'${(org.name || "").replace(/'/g, "''")}'`);
-    const hledani = await idokladFetch(token, "/Contacts?filter=" + filtr);
-    log("Hledání kontaktu: " + JSON.stringify(hledani).slice(0, 300));
+    // Najít kontakt podle názvu firmy - filtr přes URL se spolehlivě
+    // netrefoval (vracel vždy 0 výsledků), takže appka stáhne stránku
+    // kontaktů a hledá shodu sama, case-insensitive.
+    const hledani = await idokladFetch(token, "/Contacts?pageSize=200");
+    const vsechnyKontakty = hledani?.Data?.Items ?? [];
+    const nazevHledany = (org.name || "").trim().toLowerCase();
+    log(
+      "Hledání kontaktu mezi " + vsechnyKontakty.length + " existujícími pro název: " + nazevHledany
+    );
 
     // Dohledat e-mail majitele (i pro předvyplnění kontaktu z objednávky)
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
@@ -108,9 +113,11 @@ Deno.serve(async (req) => {
     }
 
     let partnerId: number | null = null;
-    const nalezeniKontakti = hledani?.Data?.Items ?? [];
-    if (nalezeniKontakti.length > 0) {
-      partnerId = nalezeniKontakti[0].Id;
+    const shoda = vsechnyKontakty.find(
+      (k: any) => (k.CompanyName || "").trim().toLowerCase() === nazevHledany
+    );
+    if (shoda) {
+      partnerId = shoda.Id;
       log("Kontakt nalezen, Id=" + partnerId);
     } else {
       const zeme = await idokladFetch(token, "/Countries");
