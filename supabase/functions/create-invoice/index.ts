@@ -112,10 +112,14 @@ Deno.serve(async (req) => {
     }
 
     // Výchozí hodnoty potřebné appkou - číselná řada, způsob platby, měna
-    const rady = await idokladFetch(token, "/NumericSequences?filter=DocumentType~eq~'IssuedInvoice'");
-    const seznamRad = rady?.Data?.Items ?? [];
-    const numericSequenceId = seznamRad[0]?.Id;
-    log("Číselná řada: " + JSON.stringify(seznamRad[0]));
+    const rady = await idokladFetch(token, "/NumericSequences");
+    const vsechnyRady = rady?.Data?.Items ?? [];
+    log("Všechny číselné řady: " + JSON.stringify(vsechnyRady).slice(0, 800));
+    const radaProFaktury = vsechnyRady.find((r: any) =>
+      /invoice|faktur/i.test(r.DocumentType || r.Name || "")
+    ) ?? vsechnyRady[0];
+    const numericSequenceId = radaProFaktury?.Id;
+    log("Vybraná číselná řada: " + JSON.stringify(radaProFaktury));
 
     const platby = await idokladFetch(token, "/PaymentOptions");
     const seznamPlateb = platby?.Data?.Items ?? [];
