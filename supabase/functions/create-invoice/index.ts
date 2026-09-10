@@ -176,8 +176,7 @@ Deno.serve(async (req) => {
     const ucty = await idokladFetch(token, "/BankAccounts");
     const seznamUctu = ucty?.Data?.Items ?? [];
     const vychoziUcet = seznamUctu.find((u: any) => u.IsDefault) ?? seznamUctu[0];
-    const myBankAccountId = vychoziUcet?.Id;
-    log("Bankovní účty: " + JSON.stringify(seznamUctu).slice(0, 500) + " -> vybráno Id=" + myBankAccountId);
+    log("Bankovní účty: " + JSON.stringify(seznamUctu));
 
     const meny = await idokladFetch(token, "/Currencies");
     const seznamMen = meny?.Data?.Items ?? [];
@@ -203,7 +202,14 @@ Deno.serve(async (req) => {
         DateOfTaxing: dnes,
         DateOfMaturity: splatnostStr,
         DocumentSerialNumber: dalsiCislo,
-        MyBankAccountId: myBankAccountId,
+        MyAddress: vychoziUcet
+          ? {
+              AccountNumber: vychoziUcet.AccountNumber || "",
+              BankCode: vychoziUcet.Iban ? vychoziUcet.Iban.slice(4, 8) : "",
+              Iban: vychoziUcet.Iban || "",
+              Swift: vychoziUcet.Swift || "",
+            }
+          : undefined,
         IsEet: false,
         IsIncomeTax: false,
         Description: "Tokva Pro - měsíční předplatné",
