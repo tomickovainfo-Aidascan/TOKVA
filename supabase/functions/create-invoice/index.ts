@@ -200,7 +200,7 @@ Deno.serve(async (req) => {
           "<p>Firma: " + (org.name || "-") + "<br>" +
           "Cena: " + cena + " Kč<br>" +
           "E-mail zákazníka: " + email + "<br>" +
-          "Číslo dokladu: " + (faktura?.DocumentNumber || faktura?.Id || "-") + "</p>" +
+          "Číslo dokladu: " + (faktura?.Data?.DocumentNumber || faktura?.Data?.Id || faktura?.DocumentNumber || faktura?.Id || "-") + "</p>" +
           "<p>Zkontroluj IČO a adresu v kontaktu, doplň, a pošli zákazníkovi.</p>",
       }),
     });
