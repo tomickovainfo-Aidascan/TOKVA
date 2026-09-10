@@ -94,9 +94,14 @@ Deno.serve(async (req) => {
       partnerId = hledani.Data[0].Id;
       log("Kontakt nalezen, Id=" + partnerId);
     } else {
-      const zeme = await idokladFetch(token, "/Countries?filter=Code~eq~'CZ'");
-      const countryId = zeme?.Data?.[0]?.Id;
-      log("Země: " + JSON.stringify(zeme?.Data?.[0]));
+      const zeme = await idokladFetch(token, "/Countries");
+      log("Země (celá odpověď, prvních 800 znaků): " + JSON.stringify(zeme).slice(0, 800));
+      const seznamZemi = zeme?.Data ?? zeme?.Items ?? (Array.isArray(zeme) ? zeme : []);
+      const ceskoZaznam = seznamZemi.find((z: any) =>
+        z.Code === "CZ" || z.Code === "CZE" || /česk/i.test(z.Name || "")
+      );
+      const countryId = ceskoZaznam?.Id;
+      log("Česko nalezeno: " + JSON.stringify(ceskoZaznam));
 
       const novyKontakt = await idokladFetch(token, "/Contacts", {
         method: "POST",
