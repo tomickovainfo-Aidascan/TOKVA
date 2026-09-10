@@ -220,7 +220,7 @@ Deno.serve(async (req) => {
         ],
       }),
     });
-    log("Faktura vytvořena: " + JSON.stringify(faktura).slice(0, 500));
+    log("Faktura vytvořena: " + JSON.stringify(faktura));
 
     await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
