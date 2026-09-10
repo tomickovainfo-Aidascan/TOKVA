@@ -146,8 +146,8 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           CompanyName: org.name,
           CountryId: countryId,
-          RegistrationNumber: ico,
-          VatRegNumber: dic,
+          IdentificationNumber: ico,
+          VatIdentificationNumber: dic,
           Street: street,
           Email: email !== "-" ? email : null,
         }),
