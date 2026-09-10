@@ -127,10 +127,11 @@ Deno.serve(async (req) => {
       ?? seznamPlateb[0]?.Id;
     log("Způsob platby: " + JSON.stringify(seznamPlateb));
 
-    const meny = await idokladFetch(token, "/Currencies?filter=Code~eq~'CZK'");
+    const meny = await idokladFetch(token, "/Currencies");
     const seznamMen = meny?.Data?.Items ?? [];
-    const currencyId = seznamMen[0]?.Id;
-    log("Měna: " + JSON.stringify(seznamMen[0]));
+    const czk = seznamMen.find((m: any) => m.Code === "CZK") ?? seznamMen[0];
+    const currencyId = czk?.Id;
+    log("Měna: " + JSON.stringify(czk));
 
     const dnes = new Date().toISOString().slice(0, 10);
     const splatnost = new Date();
@@ -149,7 +150,6 @@ Deno.serve(async (req) => {
         DateOfIssue: dnes,
         DateOfTaxing: dnes,
         DateOfMaturity: splatnostStr,
-        ReportLanguage: "Czech",
         Description: "Tokva Pro - měsíční předplatné",
         Items: [
           {
@@ -158,6 +158,8 @@ Deno.serve(async (req) => {
             UnitPrice: cena,
             PriceType: "WithoutVat",
             VatRateType: "Zero",
+            DiscountPercentage: 0,
+            IsTaxMovement: false,
           },
         ],
       }),
