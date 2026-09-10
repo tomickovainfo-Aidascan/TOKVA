@@ -90,13 +90,13 @@ Deno.serve(async (req) => {
     log("Hledání kontaktu: " + JSON.stringify(hledani).slice(0, 300));
 
     let partnerId: number | null = null;
-    if (hledani?.Data?.length > 0) {
-      partnerId = hledani.Data[0].Id;
+    const nalezeniKontakti = hledani?.Data?.Items ?? [];
+    if (nalezeniKontakti.length > 0) {
+      partnerId = nalezeniKontakti[0].Id;
       log("Kontakt nalezen, Id=" + partnerId);
     } else {
       const zeme = await idokladFetch(token, "/Countries");
-      log("Země (celá odpověď, prvních 800 znaků): " + JSON.stringify(zeme).slice(0, 800));
-      const seznamZemi = zeme?.Data ?? zeme?.Items ?? (Array.isArray(zeme) ? zeme : []);
+      const seznamZemi = zeme?.Data?.Items ?? [];
       const ceskoZaznam = seznamZemi.find((z: any) =>
         z.Code === "CZ" || z.Code === "CZE" || /česk/i.test(z.Name || "")
       );
@@ -113,17 +113,20 @@ Deno.serve(async (req) => {
 
     // Výchozí hodnoty potřebné appkou - číselná řada, způsob platby, měna
     const rady = await idokladFetch(token, "/NumericSequences?filter=DocumentType~eq~'IssuedInvoice'");
-    const numericSequenceId = rady?.Data?.[0]?.Id;
-    log("Číselná řada: " + JSON.stringify(rady?.Data?.[0]));
+    const seznamRad = rady?.Data?.Items ?? [];
+    const numericSequenceId = seznamRad[0]?.Id;
+    log("Číselná řada: " + JSON.stringify(seznamRad[0]));
 
     const platby = await idokladFetch(token, "/PaymentOptions");
-    const paymentOptionId = platby?.Data?.find((p: any) => /převod|transfer/i.test(p.Name))?.Id
-      ?? platby?.Data?.[0]?.Id;
-    log("Způsob platby: " + JSON.stringify(platby?.Data));
+    const seznamPlateb = platby?.Data?.Items ?? [];
+    const paymentOptionId = seznamPlateb.find((p: any) => /převod|transfer/i.test(p.Name || ""))?.Id
+      ?? seznamPlateb[0]?.Id;
+    log("Způsob platby: " + JSON.stringify(seznamPlateb));
 
     const meny = await idokladFetch(token, "/Currencies?filter=Code~eq~'CZK'");
-    const currencyId = meny?.Data?.[0]?.Id;
-    log("Měna: " + JSON.stringify(meny?.Data?.[0]));
+    const seznamMen = meny?.Data?.Items ?? [];
+    const currencyId = seznamMen[0]?.Id;
+    log("Měna: " + JSON.stringify(seznamMen[0]));
 
     const dnes = new Date().toISOString().slice(0, 10);
     const splatnost = new Date();
