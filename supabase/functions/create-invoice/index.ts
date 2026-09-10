@@ -202,14 +202,8 @@ Deno.serve(async (req) => {
         DateOfTaxing: dnes,
         DateOfMaturity: splatnostStr,
         DocumentSerialNumber: dalsiCislo,
-        MyAddress: vychoziUcet
-          ? {
-              AccountNumber: vychoziUcet.AccountNumber || "",
-              BankCode: vychoziUcet.Iban ? vychoziUcet.Iban.slice(4, 8) : "",
-              Iban: vychoziUcet.Iban || "",
-              Swift: vychoziUcet.Swift || "",
-            }
-          : undefined,
+        AccountNumber: vychoziUcet?.AccountNumber || undefined,
+        BankId: vychoziUcet?.BankId || undefined,
         IsEet: false,
         IsIncomeTax: false,
         Description: "Tokva Pro - měsíční předplatné",
