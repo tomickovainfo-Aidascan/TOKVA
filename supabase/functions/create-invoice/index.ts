@@ -119,7 +119,8 @@ Deno.serve(async (req) => {
       /invoice|faktur/i.test(r.DocumentType || r.Name || "")
     ) ?? vsechnyRady[0];
     const numericSequenceId = radaProFaktury?.Id;
-    log("Vybraná číselná řada: " + JSON.stringify(radaProFaktury));
+    const dalsiCislo = (radaProFaktury?.LastNumber ?? radaProFaktury?.LastSerialNumber ?? 0) + 1;
+    log("Vybraná číselná řada (plně): " + JSON.stringify(radaProFaktury) + " -> další číslo=" + dalsiCislo);
 
     const platby = await idokladFetch(token, "/PaymentOptions");
     const seznamPlateb = platby?.Data?.Items ?? [];
@@ -150,7 +151,7 @@ Deno.serve(async (req) => {
         DateOfIssue: dnes,
         DateOfTaxing: dnes,
         DateOfMaturity: splatnostStr,
-        DocumentSerialNumber: "",
+        DocumentSerialNumber: dalsiCislo,
         IsEet: false,
         IsIncomeTax: false,
         Description: "Tokva Pro - měsíční předplatné",
