@@ -89,6 +89,24 @@ Deno.serve(async (req) => {
     const hledani = await idokladFetch(token, "/Contacts?filter=" + filtr);
     log("Hledání kontaktu: " + JSON.stringify(hledani).slice(0, 300));
 
+    // Dohledat e-mail majitele (i pro předvyplnění kontaktu z objednávky)
+    const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
+    let email = "-";
+    const { data: clen } = await supabase
+      .from("organization_members")
+      .select("user_id")
+      .eq("organization_id", org.id)
+      .eq("role", "majitel")
+      .maybeSingle();
+    if (clen?.user_id) {
+      const { data: profil } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("id", clen.user_id)
+        .maybeSingle();
+      if (profil?.email) email = profil.email;
+    }
+
     let partnerId: number | null = null;
     const nalezeniKontakti = hledani?.Data?.Items ?? [];
     if (nalezeniKontakti.length > 0) {
@@ -103,9 +121,36 @@ Deno.serve(async (req) => {
       const countryId = ceskoZaznam?.Id;
       log("Česko nalezeno: " + JSON.stringify(ceskoZaznam));
 
+      // Zkusit dohledat IČO/DIČ/adresu z poslední objednávky téhož e-mailu
+      let ico: string | null = null;
+      let dic: string | null = null;
+      let street = "";
+      if (email !== "-") {
+        const { data: objednavka } = await supabase
+          .from("orders")
+          .select("ico, dic, billing_address")
+          .eq("email", email)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (objednavka) {
+          ico = objednavka.ico || null;
+          dic = objednavka.dic || null;
+          street = objednavka.billing_address || "";
+        }
+        log("Objednávka pro předvyplnění: " + JSON.stringify(objednavka));
+      }
+
       const novyKontakt = await idokladFetch(token, "/Contacts", {
         method: "POST",
-        body: JSON.stringify({ CompanyName: org.name, CountryId: countryId }),
+        body: JSON.stringify({
+          CompanyName: org.name,
+          CountryId: countryId,
+          RegistrationNumber: ico,
+          VatRegNumber: dic,
+          Street: street,
+          Email: email !== "-" ? email : null,
+        }),
       });
       partnerId = novyKontakt?.Data?.Id ?? novyKontakt?.Id;
       log("Kontakt založen: " + JSON.stringify(novyKontakt).slice(0, 300) + " -> Id=" + partnerId);
@@ -169,24 +214,6 @@ Deno.serve(async (req) => {
       }),
     });
     log("Faktura vytvořena: " + JSON.stringify(faktura).slice(0, 500));
-
-    // Dohledat e-mail majitele (pro info v e-mailu, appka fakturu sama neposílá)
-    const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
-    let email = "-";
-    const { data: clen } = await supabase
-      .from("organization_members")
-      .select("user_id")
-      .eq("organization_id", org.id)
-      .eq("role", "majitel")
-      .maybeSingle();
-    if (clen?.user_id) {
-      const { data: profil } = await supabase
-        .from("profiles")
-        .select("email")
-        .eq("id", clen.user_id)
-        .maybeSingle();
-      if (profil?.email) email = profil.email;
-    }
 
     await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
