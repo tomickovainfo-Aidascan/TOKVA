@@ -150,6 +150,7 @@ Deno.serve(async (req) => {
         DateOfTaxing: dnes,
         DateOfMaturity: splatnostStr,
         ReportLanguage: "Czech",
+        Description: "Tokva Pro - měsíční předplatné",
         Items: [
           {
             Name: "Tokva Pro - měsíční předplatné",
