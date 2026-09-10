@@ -107,8 +107,8 @@ Deno.serve(async (req) => {
         method: "POST",
         body: JSON.stringify({ CompanyName: org.name, CountryId: countryId }),
       });
-      partnerId = novyKontakt.Id;
-      log("Kontakt založen, Id=" + partnerId);
+      partnerId = novyKontakt?.Data?.Id ?? novyKontakt?.Id;
+      log("Kontakt založen: " + JSON.stringify(novyKontakt).slice(0, 300) + " -> Id=" + partnerId);
     }
 
     // Výchozí hodnoty potřebné appkou - číselná řada, způsob platby, měna
@@ -150,6 +150,9 @@ Deno.serve(async (req) => {
         DateOfIssue: dnes,
         DateOfTaxing: dnes,
         DateOfMaturity: splatnostStr,
+        DocumentSerialNumber: "",
+        IsEet: false,
+        IsIncomeTax: false,
         Description: "Tokva Pro - měsíční předplatné",
         Items: [
           {
