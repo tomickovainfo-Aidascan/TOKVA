@@ -1146,6 +1146,21 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-nazev" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-box-head">
+      <h3 id="modal-nazev-title">Název výpočtu</h3>
+      <button class="modal-box-close" onclick="zavritModalNazev()">×</button>
+    </div>
+    <p id="modal-nazev-text"></p>
+    <input type="text" id="modal-nazev-input" onkeydown="if(event.key==='Enter') potvrdModalNazev()">
+    <div class="modal-box-btns">
+      <button class="btn-modal-cancel" onclick="zavritModalNazev()">Zrušit</button>
+      <button class="btn-gold" onclick="potvrdModalNazev()">Uložit</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Přidat do akčního plánu -->
 <div class="modal-overlay" id="modal-akcni-plan" style="display:none;">
   <div class="modal-box">
@@ -1623,6 +1638,26 @@ function potvrdModalNotice() {
   if (cb) cb();
 }
 
+let _modalNazevCb = null;
+function zeptatSeNaNazev(text, defaultValue, callback, title) {
+  document.getElementById('modal-nazev-title').textContent = title || 'Název výpočtu';
+  document.getElementById('modal-nazev-text').textContent = text || '';
+  document.getElementById('modal-nazev-input').value = defaultValue || '';
+  _modalNazevCb = callback;
+  document.getElementById('modal-nazev').style.display = 'flex';
+  setTimeout(() => document.getElementById('modal-nazev-input').focus(), 50);
+}
+function zavritModalNazev() {
+  document.getElementById('modal-nazev').style.display = 'none';
+  _modalNazevCb = null;
+}
+function potvrdModalNazev() {
+  const cb = _modalNazevCb;
+  const val = document.getElementById('modal-nazev-input').value;
+  zavritModalNazev();
+  if (cb) cb(val);
+}
+
 document.addEventListener('click', function(e) {
   var overlay = document.getElementById('modal-pro');
   if (e.target === overlay) zavritModalPro();
@@ -1631,26 +1666,26 @@ document.addEventListener('click', function(e) {
 function ulozitVypocet() {
   if (!jePro) { otevritModalPro(); return; }
   var navrh = (posledniVysledek.mode === 'najem' ? 'Sklad – pronájem' : 'Sklad – vlastní budova') + ', ' + fmt(posledniVysledek.plocha) + ' m²';
-  var nazev = prompt('Název výpočtu (např. "Vrchlabí – hlavní sklad" nebo "Leden 2026"):', navrh);
-  if (nazev === null) return;
-  nazev = nazev.trim() || navrh;
-  var polozka = {
-    id: 'v_' + Date.now(),
-    ts: Date.now(),
-    nazev: nazev,
-    datum: new Date().toLocaleDateString('cs-CZ'),
-    plocha: posledniVysledek.plocha,
-    mode: posledniVysledek.mode,
-    m2mesic: Math.round(posledniVysledek.m2Mesic),
-    mesic: Math.round(posledniVysledek.celkem),
-    rok: Math.round(posledniVysledek.celkemRok),
-    m2rok: Math.round(posledniVysledek.m2Rok),
-    kategorie: posledniVysledek.kategorie
-  };
-  ulozene.push(polozka);
-  localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
-  renderUlozene();
-  odeslatVypocetDoSupabase(polozka);
+  zeptatSeNaNazev('Pojmenujte si výpočet, ať ho pak snadno najdete a porovnáte s dalším.', navrh, function(nazev) {
+    nazev = (nazev || '').trim() || navrh;
+    var polozka = {
+      id: 'v_' + Date.now(),
+      ts: Date.now(),
+      nazev: nazev,
+      datum: new Date().toLocaleDateString('cs-CZ'),
+      plocha: posledniVysledek.plocha,
+      mode: posledniVysledek.mode,
+      m2mesic: Math.round(posledniVysledek.m2Mesic),
+      mesic: Math.round(posledniVysledek.celkem),
+      rok: Math.round(posledniVysledek.celkemRok),
+      m2rok: Math.round(posledniVysledek.m2Rok),
+      kategorie: posledniVysledek.kategorie
+    };
+    ulozene.push(polozka);
+    localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
+    renderUlozene();
+    odeslatVypocetDoSupabase(polozka);
+  }, 'Název výpočtu');
 }
 
 // Uloží uložený výpočet i do Supabase (tool_runs + measurements) - jen pro Pro
