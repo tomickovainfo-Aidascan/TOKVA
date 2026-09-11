@@ -1422,6 +1422,46 @@ function hideTyping() {
   if (t) t.remove();
 }
 
+// Volá backend (Google Apps Script). Appka dřív posílala celou historii
+// konverzace v URL (GET), což po pár výměnách (10-20 zpráv, appka to
+// neomezovala) přesáhlo limit délky adresy a spadla se spojovací chybou
+// uprostřed rozhovoru - to byl skutečný kořen chyby z zářijového testu.
+// Zkouší se nejdřív POST s tělem (bez limitu délky), a dokud backend
+// (Apps Script) POST nepodporuje, potichu spadne zpátky na starý GET
+// způsob - appka tak nejde rozbít nasazením týhle změny bez zásahu do
+// Apps Scriptu, jen se to plně opraví, až se doplní i tam (viz
+// 5x-proc-apps-script-post-fix.md). Navíc 2 automatická opakování při
+// výpadku, ať appka nespadne hned na první přechodnou chybu sítě.
+async function zavolatAI(messages, pokus) {
+  pokus = pokus || 0;
+  try {
+    const res = await fetch(LOGIN_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'ai', messages: messages })
+    });
+    const data = await res.json();
+    if (data && data.type === 'error' && /at least one message/i.test(data.error?.message || '')) {
+      // Backend ještě neumí POST tělo přečíst (stará verze Apps Scriptu) -
+      // spadnout zpátky na starý, funkční GET způsob.
+      return await zavolatAI_GET(messages);
+    }
+    return data;
+  } catch (e) {
+    if (pokus < 2) {
+      await new Promise(r => setTimeout(r, 1200 * (pokus + 1)));
+      return zavolatAI(messages, pokus + 1);
+    }
+    throw e;
+  }
+}
+
+async function zavolatAI_GET(messages) {
+  const url = LOGIN_SCRIPT_URL + '?action=ai&messages=' + encodeURIComponent(JSON.stringify(messages));
+  const res = await fetch(url);
+  return await res.json();
+}
+
 async function odeslat() {
   const input = document.getElementById('input');
   const text = input.value.trim();
@@ -1436,12 +1476,12 @@ async function odeslat() {
   isLoading = true;
   document.getElementById('send-btn').disabled = true;
   showTyping();
+  // Uložit hned, ať se otázka neztratí, i kdyby odpověď selhala nebo
+  // uživatel stránku mezitím obnovil.
+  ulozitStavAnalyzy(false, null);
 
   try {
-    const url = 'https://script.google.com/macros/s/AKfycbyP2l58OvGi5mzk-PXMaGNRZoMj4E8C3vn7o4Ib89DVhqdePdj90OWUUHXC1hYiQ5pC/exec?action=ai&messages=' + encodeURIComponent(JSON.stringify(history));
-    const res = await fetch(url);
-
-    const data = await res.json();
+    const data = await zavolatAI(history);
     hideTyping();
 
     const reply = data.content?.[0]?.text || 'Omlouvám se, něco se pokazilo.';
@@ -1455,7 +1495,7 @@ async function odeslat() {
   } catch (e) {
     hideTyping();
     console.error('Chyba odeslat:', e);
-    addMsg('ai', 'Nepodařilo se spojit se serverem. Zkuste to znovu.');
+    addMsg('ai', 'Nepodařilo se spojit se serverem. Vaše otázka zůstala uložená, zkuste to prosím znovu za chvíli.');
   }
 
   isLoading = false;
@@ -1595,10 +1635,7 @@ async function start() {
   showTyping();
 
   try {
-    const url = 'https://script.google.com/macros/s/AKfycbyP2l58OvGi5mzk-PXMaGNRZoMj4E8C3vn7o4Ib89DVhqdePdj90OWUUHXC1hYiQ5pC/exec?action=ai&messages=' + encodeURIComponent(JSON.stringify([{ role: 'user', content: 'Začni.' }]));
-    const res = await fetch(url);
-
-    const data = await res.json();
+    const data = await zavolatAI([{ role: 'user', content: 'Začni.' }]);
     hideTyping();
     const reply = data.content?.[0]?.text || '';
     history.push({ role: 'user', content: 'Začni.' });
@@ -1609,7 +1646,7 @@ async function start() {
   } catch (e) {
     hideTyping();
     console.error('Chyba start:', e);
-    addMsg('ai', 'Nepodařilo se načíst. Obnovte stránku.');
+    addMsg('ai', 'Nepodařilo se spustit analýzu. Zkuste to prosím znovu za chvíli.');
   }
 
   isLoading = false;
