@@ -1195,9 +1195,10 @@ const OBLASTI = [
     nastroj: { url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání" } },
 ];
 
-// Stav kvízu - odpovedi ukladame primo jako "zdravi" 0-2 (2=Ano, 1=Castecne,
-// 0=Ne), aby vyssi cislo = lepsi stav (na rozdil od Mini auditu skladu, kde
-// vyssi cislo = horsi stav). Prochazi se to zvlast v procentech.
+// Stav kvizu - jednotlive odpovedi ukladame primo jako "zdravi" 0-2 (2=Ano,
+// 1=Castecne, 0=Ne), tenhle rozsah zustava beze zmeny. Vysledne procento
+// (viz zobrazVysledky) uz ale prevracime na "podil problemu", aby vyssi
+// cislo = horsi stav stejne jako u Mini auditu skladu a ostatnich nastroju.
 const odpovedi = {};
 const nevimSet = new Set();
 const OTAZKY = [
@@ -1281,7 +1282,10 @@ function zobrazVysledky() {
   const label = document.getElementById('skore-label');
   const popis = document.getElementById('skore-popis');
 
-  const pomer = maxS > 0 ? skore / maxS : 0;
+  // pomer je ted "podil problemu" (0 = vsechno OK, 1 = samy problemy),
+  // aby vyssi procento vzdy znamenalo horsi stav - stejne jako u ostatnich nastroju.
+  const pomerZdravi = maxS > 0 ? skore / maxS : 0;
+  const pomer = maxS > 0 ? 1 - pomerZdravi : 0;
   const procenta = Math.round(pomer * 100);
   cislo.innerHTML = procenta + '<span class="skore-max">%</span>';
 
@@ -1289,15 +1293,15 @@ function zobrazVysledky() {
     hero.className = 'skore-hero oranzova';
     label.textContent = 'Zatím jen "nevím"';
     popis.textContent = 'Na všechny otázky jste odpověděli "nevím" - to je samo o sobě důležité zjištění, viz níž.';
-  } else if (pomer >= 0.8) {
+  } else if (pomer <= 0.2) {
     hero.className = 'skore-hero zelena';
     label.textContent = 'Výroba je v zásadě pod kontrolou';
     popis.textContent = 'Výsledek naznačuje, že provoz funguje dobře. Vždy je ale prostor na zlepšení a preventivní audit se vyplatí dřív, než problémy narostou.';
-  } else if (pomer >= 0.55) {
+  } else if (pomer <= 0.45) {
     hero.className = 'skore-hero zluta';
     label.textContent = 'Funguje, ale výkon někde uniká';
     popis.textContent = 'Výroba funguje, ale část výkonu pravděpodobně mizí v čekání, pohybu nebo nejasném řešení problémů.';
-  } else if (pomer >= 0.3) {
+  } else if (pomer <= 0.7) {
     hero.className = 'skore-hero oranzova';
     label.textContent = 'Provoz jede hlavně díky lidem a hašení';
     popis.textContent = 'Provoz závisí na zkušených lidech a improvizaci. Systémové změny by uvolnily kapacitu a snížily každodenní tlak na vedení i pracovníky.';
@@ -1319,7 +1323,8 @@ function zobrazVysledky() {
     if (zname.length === 0) return { ob, vsechnyNevim: true };
     const soucet = zname.reduce((a, q) => a + (odpovedi[q] || 0), 0);
     const maxOb = 2 * zname.length;
-    const proc = Math.round((soucet / maxOb) * 100);
+    // proc je "podil problemu" v teto oblasti - vyssi cislo = horsi stav.
+    const proc = Math.round((1 - soucet / maxOb) * 100);
     return { ob, vsechnyNevim: false, proc };
   });
   oblastiVysledky.forEach(({ ob, vsechnyNevim, proc }) => {
@@ -1334,8 +1339,8 @@ function zobrazVysledky() {
         <div class="oblast-bar-track"><div class="oblast-bar-fill nevime" style="width:100%"></div></div>
       `;
     } else {
-      const trida = proc >= 70 ? 'dobre' : proc >= 40 ? 'stredni' : 'spatne';
-      const znacka = proc < 40 ? ' 🔴' : proc < 70 ? ' 🟠' : '';
+      const trida = proc <= 30 ? 'dobre' : proc <= 60 ? 'stredni' : 'spatne';
+      const znacka = proc > 60 ? ' 🔴' : proc > 30 ? ' 🟠' : '';
       row.innerHTML = `
         <div class="oblast-row-top">
           <span class="oblast-nazev">${ob.nazev}${znacka}</span>
@@ -1444,7 +1449,7 @@ function zobrazVysledky() {
     cta.textContent = 'Spustit Měřič plýtvání';
     document.getElementById('co-prvni-dalsi').innerHTML = '';
   } else {
-    znameOblasti.sort((a, b) => a.proc - b.proc);
+    znameOblasti.sort((a, b) => b.proc - a.proc);
     const nejhorsi = znameOblasti[0];
     coPrvniPanel.style.display = 'block';
     document.getElementById('co-prvni-title').textContent = 'Začněte tímhle: ' + nejhorsi.ob.nazev.toLowerCase() + '.';
@@ -1847,7 +1852,7 @@ async function renderHistorie() {
     obsah.innerHTML = data.map((r, i) => {
       const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
       const proc = r.hlavni_hodnota_cislo;
-      const barva = proc >= 80 ? '#2a7a4f' : proc >= 55 ? '#d97706' : proc >= 30 ? '#b45309' : '#b91c1c';
+      const barva = proc <= 20 ? '#2a7a4f' : proc <= 45 ? '#d97706' : proc <= 70 ? '#b45309' : '#b91c1c';
       const zaskrtnuto = vybraneKPorovnani.includes(i);
       return '<div class="vysledek-row" onclick="otevritModalDetailVysledku(' + i + ')">' +
         '<input type="checkbox" class="vysledek-checkbox" onclick="event.stopPropagation()" onchange="zaskrtnoutKPorovnani(' + i + ', this.checked)"' + (zaskrtnuto ? ' checked' : '') + ' style="flex-shrink:0;width:16px;height:16px;">' +
@@ -1986,11 +1991,11 @@ function otevritModalPorovnani() {
     '</tr></thead><tbody>' + radkyPole + '</tbody></table></div>';
 
   let shrnutiText;
-  if (deltaPct > 0) {
-    shrnutiText = 'Skóre vzrostlo z ' + procA + ' % na ' + procB + ' % - zlepšujete se! ' + zlepseno + ' ' + (zlepseno === 1 ? 'oblast se zlepšila' : 'oblastí se zlepšilo') + (zhorseno ? ', ' + zhorseno + ' se zhoršilo' : '') + '.';
+  if (deltaPct < 0) {
+    shrnutiText = 'Skóre problémů kleslo z ' + procA + ' % na ' + procB + ' % - zlepšujete se! ' + zlepseno + ' ' + (zlepseno === 1 ? 'oblast se zlepšila' : 'oblastí se zlepšilo') + (zhorseno ? ', ' + zhorseno + ' se zhoršilo' : '') + '.';
     if (nejlepsiZlepseni) shrnutiText += ' Nejvíc znát to je u: „' + nejlepsiZlepseni.text + '".';
-  } else if (deltaPct < 0) {
-    shrnutiText = 'Skóre kleslo z ' + procA + ' % na ' + procB + ' % - ' + zhorseno + ' ' + (zhorseno === 1 ? 'oblast se zhoršila' : 'oblastí se zhoršilo') + (zlepseno ? ', ' + zlepseno + ' se naopak zlepšilo' : '') + '. Nic se neděje, teď aspoň víte, kam se podívat nejdřív.';
+  } else if (deltaPct > 0) {
+    shrnutiText = 'Skóre problémů vzrostlo z ' + procA + ' % na ' + procB + ' % - ' + zhorseno + ' ' + (zhorseno === 1 ? 'oblast se zhoršila' : 'oblastí se zhoršilo') + (zlepseno ? ', ' + zlepseno + ' se naopak zlepšilo' : '') + '. Nic se neděje, teď aspoň víte, kam se podívat nejdřív.';
   } else {
     shrnutiText = 'Celkové skóre zůstalo stejné (' + procB + ' %)' + (zlepseno || zhorseno ? ', i když se v jednotlivých oblastech něco přesunulo - ' + zlepseno + ' zlepšení, ' + zhorseno + ' zhoršení.' : '.');
   }
