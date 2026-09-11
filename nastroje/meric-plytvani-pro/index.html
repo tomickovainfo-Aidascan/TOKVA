@@ -1351,6 +1351,17 @@ async function pridatDoAkcnihoPlanu() {
       if (chybaProjekt) throw chybaProjekt;
       projektId = novyProjekt.id;
     }
+    // Přiřadit projekt i samotnému měření (tool_runs), ne jen vznikajícímu
+    // úkolu - jinak appka Projekty tohle měření pod projektem nikdy neukáže
+    // v sloupci ZMĚŘIT, protože ten čte project_id přímo z tool_runs, ne z
+    // navázaných úkolů. Best-effort, ať se kvůli tomu neshodí založení úkolu.
+    if (projektId) {
+      try {
+        await supabaseClient.from('tool_runs').update({ project_id: projektId }).eq('id', z.toolRunId);
+      } catch (ex) {
+        console.warn('Přiřazení měření k projektu se nepodařilo, úkol se přesto založí.', ex);
+      }
+    }
     const { error } = await supabaseClient.from('actions').insert({
       organization_id: clenstvi.organization_id,
       project_id: projektId,
