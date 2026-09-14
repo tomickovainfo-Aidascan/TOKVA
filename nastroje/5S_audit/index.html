@@ -1205,6 +1205,11 @@ nav {
     </div>
     <input class="modal-input" id="input-misto" placeholder="Např. Kuchyň, Dílna, Kancelář..."
       onkeydown="if(event.key==='Enter') ulozitMisto()">
+    <select id="misto-projekt-select" class="projekt-select-5s" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-top:10px;font-family:'DM Sans',sans-serif;">
+      <option value="">Bez projektu</option>
+      <option value="__novy__">+ Nový projekt…</option>
+    </select>
+    <input id="misto-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-top:10px;box-sizing:border-box;">
     <button class="modal-save" onclick="ulozitMisto()">Vytvořit</button>
   </div>
 </div>
@@ -1492,15 +1497,83 @@ function vykreslitDetailKontroly(k) {
 // MÍSTA
 function novaMista() {
   if (data.mista.length >= 1 && !jePro) { otevritModal('modal-pro'); return; }
+  const projektSelect = document.getElementById('misto-projekt-select');
+  const projektNovyInput = document.getElementById('misto-projekt-novy-nazev');
+  projektSelect.value = '';
+  projektNovyInput.value = '';
+  projektNovyInput.style.display = 'none';
+  projektSelect.style.display = clenstvi ? 'block' : 'none';
+  if (clenstvi) nacistProjekty5S();
   otevritModal('modal-misto');
+}
+
+// Načte projekty firmy do všech selectů appky (nové místo, úkol z kroku,
+// obecná sekce Úkoly) - stejný seznam, tři různá místa, kde se dá vybrat.
+async function nacistProjekty5S() {
+  if (!clenstvi) return;
+  try {
+    const { data: projekty, error } = await supabaseClient
+      .from('projects')
+      .select('id, name')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    document.querySelectorAll('select.projekt-select-5s').forEach(select => {
+      const puvodniHodnota = select.value;
+      select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
+      (projekty || []).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        opt.setAttribute('data-projekt', '1');
+        select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+      });
+      if ([...select.options].some(o => o.value === puvodniHodnota)) select.value = puvodniHodnota;
+    });
+  } catch (e) {
+    console.warn('Projekty se nepodařilo načíst.', e);
+  }
+}
+
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'misto-projekt-select') {
+    document.getElementById('misto-projekt-novy-nazev').style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+});
+
+// Vytvoří nový projekt (nebo vrátí null pro "bez projektu") podle hodnoty
+// selectu - sdílené mezi založením místa a rychlým přidáním úkolu z kroku.
+async function projektIdZeSelectu(selectId, novyNazevId) {
+  const select = document.getElementById(selectId);
+  if (!select || !select.value) return null;
+  if (select.value !== '__novy__') return select.value;
+  const nazev = (document.getElementById(novyNazevId).value || '').trim();
+  if (!nazev) return undefined; // signál "chybí název", volající to ošetří
+  const { data, error } = await supabaseClient.from('projects').insert({
+    organization_id: clenstvi.organization_id,
+    name: nazev
+  }).select('id').single();
+  if (error) throw error;
+  return data.id;
 }
 
 async function ulozitMisto() {
   const nazev = document.getElementById('input-misto').value.trim();
   if (!nazev) return;
+  let projektId = null;
+  if (clenstvi) {
+    try {
+      projektId = await projektIdZeSelectu('misto-projekt-select', 'misto-projekt-novy-nazev');
+      if (projektId === undefined) { ukazatUpozorneni('Zadejte název nového projektu.'); return; }
+    } catch (e) {
+      console.warn('Projekt se nepodařilo založit, místo se založí bez projektu.', e);
+      projektId = null;
+    }
+  }
   const misto = {
     id: 'misto_' + Date.now(),
     nazev,
+    projekt_id: projektId || null,
     location_id: null, // doplní se u Pro, viz zajistitLokaciProMisto()
     splneno: {},
     fotky: {},
@@ -1693,6 +1766,7 @@ function renderMain() {
           <textarea class="poznamky-area" id="tab-zbyva-${s.id}" style="display:none;"
             placeholder="Co ještě zbývá dokončit..."
             onchange="ulozitZbyvaCo('${s.id}', this.value)">${zbyvaCo}</textarea>
+          ${jePro ? `<button class="plan-btn" style="margin-top:8px;border-color:rgba(42,122,79,.4);color:var(--green);" onclick="pridatUkolZKroku('${s.id}')">+ Přidat do akčního plánu</button>` : ''}
         </div>
 
         ${s.id === 's4' && jePro ? standardBlockHtml(misto) : ''}
@@ -1895,18 +1969,15 @@ function renderUkolySekce(misto) {
       <div class="ukol-item ${u.hotovo ? 'hotovo' : ''}">
         <input type="checkbox" class="ukol-check" ${u.hotovo ? 'checked' : ''} onchange="prepnoutUkol('${u.id}')">
         <div class="ukol-body">
-          <div class="ukol-text">${u.text}</div>
+          <div class="ukol-text">${u.text}${u.krok ? ` <span style="color:var(--light);font-weight:400;">(${u.krok})</span>` : ''}</div>
           <div class="ukol-meta">${[u.kdo, u.termin ? ('do ' + new Date(u.termin).toLocaleDateString('cs-CZ')) : ''].filter(Boolean).join(' · ') || '—'}</div>
         </div>
         <button class="ukol-del" onclick="smazatUkol('${u.id}')" title="Smazat">×</button>
       </div>`).join('')
     : '<p style="font-size:13px;color:var(--light);padding:8px 0;">Zatím žádné úkoly.</p>';
 
-  const posledniKontrola = (misto.kontroly || []).length ? misto.kontroly[misto.kontroly.length - 1] : null;
-  const maZdroj = posledniKontrola && posledniKontrola.toolRunId;
   const terminZaMesic = (function () { const d = new Date(); d.setDate(d.getDate() + 30); return d.toISOString().slice(0, 10); })();
-  const formHtml = maZdroj
-    ? `<div class="ukol-form">
+  const formHtml = `<div class="ukol-form">
       <input type="text" id="ukol-text" placeholder="Co je potřeba udělat...">
       <input type="text" id="ukol-kdo" placeholder="Kdo">
       <input type="date" id="ukol-termin">
@@ -1914,8 +1985,7 @@ function renderUkolySekce(misto) {
       <input type="number" id="ukol-prinos" placeholder="Očekávaný přínos (Kč/rok)">
       <button class="plan-btn" style="border-color:rgba(42,122,79,.4);color:var(--green);" onclick="pridatUkol()">+ Přidat úkol</button>
       <button class="plan-btn" style="border-color:rgba(233,169,27,.4);color:var(--gold-dark);" onclick="document.getElementById('ukol-text').value='Zopakovat kontrolu tohohle místa';document.getElementById('ukol-termin').value='${terminZaMesic}';">🔁 Naplánovat opakování za měsíc</button>
-    </div>`
-    : `<p style="font-size:13px;color:var(--light);padding:10px 0;">Nejdřív uložte kontrolu tohohle místa (tlačítko „Přidat kontrolu" výš), pak půjde přidat úkol se zdrojem výsledku.</p>`;
+    </div>`;
 
   div.innerHTML = `
     <div class="kontroly-title">Úkoly a rozpracované problémy <span class="pro-lock-badge">Pro</span></div>
@@ -1925,39 +1995,31 @@ function renderUkolySekce(misto) {
   return div;
 }
 
-async function pridatUkol() {
-  const misto = aktivniMistoData();
-  if (!misto) return;
-  const posledniKontrola = (misto.kontroly || []).length ? misto.kontroly[misto.kontroly.length - 1] : null;
-  if (!posledniKontrola || !posledniKontrola.toolRunId) {
-    upozornit('Nejdřív uložte kontrolu tohohle místa, pak půjde přidat úkol se zdrojem výsledku.');
-    return;
-  }
-  const textEl = document.getElementById('ukol-text');
-  const text = textEl.value.trim();
-  if (!text) return;
-  const kdo = document.getElementById('ukol-kdo').value.trim();
-  const termin = document.getElementById('ukol-termin').value;
-  const investiceStr = (document.getElementById('ukol-investice').value || '').trim();
-  const prinosStr = (document.getElementById('ukol-prinos').value || '').trim();
+// Sdílené založení úkolu - používá obecná sekce Úkoly, tlačítko "Přidat do
+// akčního plánu" u každého kroku 5S i návrh kontroly po dokončení 4S.
+// Nevyžaduje existující kontrolu (tool_run_id je nepovinné, actions.tool_run_id
+// dovoluje null) - dřív appka úkol bez uložené kontroly vůbec nenabídla přidat.
+async function pridatUkolInterni(misto, { text, kdo, termin, investice, prinos, reason, krok }) {
   if (!misto.ukoly) misto.ukoly = [];
-  const ukol = { id: 'u_' + Date.now(), actionId: null, text, kdo, termin, hotovo: false };
+  const ukol = { id: 'u_' + Date.now(), actionId: null, text, kdo: kdo || '', termin: termin || '', hotovo: false, krok: krok || null };
   misto.ukoly.push(ukol);
   ulozit();
   renderMain();
   if (jePro && clenstvi) {
+    const posledniKontrola = (misto.kontroly || []).length ? misto.kontroly[misto.kontroly.length - 1] : null;
     try {
       const { data: radek, error } = await supabaseClient
         .from('actions')
         .insert({
           organization_id: clenstvi.organization_id,
-          tool_run_id: posledniKontrola.toolRunId,
-          reason: 'Výsledek 5S kontroly — ' + misto.nazev + ' ze dne ' + posledniKontrola.datum,
+          project_id: misto.projekt_id || null,
+          tool_run_id: (posledniKontrola && posledniKontrola.toolRunId) || null,
+          reason: reason || ('5S — ' + misto.nazev),
           title: text,
           responsible_person: kdo || null,
           due_date: termin || null,
-          estimated_investment: investiceStr ? Number(investiceStr) : null,
-          expected_benefit: prinosStr ? Number(prinosStr) : null,
+          estimated_investment: (investice || investice === 0) ? investice : null,
+          expected_benefit: (prinos || prinos === 0) ? prinos : null,
           status: 'novy'
         })
         .select()
@@ -1969,6 +2031,43 @@ async function pridatUkol() {
       console.warn('Úkol se nepodařilo uložit do Akčního plánu (Supabase), zůstává aspoň lokálně.', e);
     }
   }
+  return ukol;
+}
+
+async function pridatUkol() {
+  const misto = aktivniMistoData();
+  if (!misto) return;
+  const text = document.getElementById('ukol-text').value.trim();
+  if (!text) return;
+  const kdo = document.getElementById('ukol-kdo').value.trim();
+  const termin = document.getElementById('ukol-termin').value;
+  const investiceStr = (document.getElementById('ukol-investice').value || '').trim();
+  const prinosStr = (document.getElementById('ukol-prinos').value || '').trim();
+  await pridatUkolInterni(misto, {
+    text, kdo, termin,
+    investice: investiceStr ? Number(investiceStr) : null,
+    prinos: prinosStr ? Number(prinosStr) : null,
+    reason: 'Úkol z 5S — ' + misto.nazev
+  });
+}
+
+// Rychlé přidání do akčního plánu přímo u kroku 5S - vezme text z "Co ještě
+// zbývá" (nebo "Co jsem udělal", případně jen název kroku), ať nemusíte
+// psát znovu to, co jste už napsali do poznámky.
+async function pridatUkolZKroku(sId) {
+  const misto = aktivniMistoData();
+  if (!misto) return;
+  const s = S_DATA.find(x => x.id === sId);
+  const text = (misto.zbyvaCo[sId] || '').trim() || (misto.poznamky[sId] || '').trim() || (s.num + ' ' + s.name + ' — ' + misto.nazev);
+  const ukol = await pridatUkolInterni(misto, {
+    text,
+    reason: 'Krok ' + s.num + ' (' + s.name + ') — ' + misto.nazev,
+    krok: s.num
+  });
+  ukazatUpozorneni(
+    ukol.actionId ? 'Přidáno do akčního plánu.' : 'Přidáno do appky, do akčního plánu se to teď nepodařilo uložit — zkuste to prosím znovu.',
+    ukol.actionId ? '✓' : '!'
+  );
 }
 
 async function prepnoutUkol(id) {
@@ -2165,7 +2264,7 @@ function splnitS(sId) {
   const jePravePotvrzeno = !!misto.splneno[sId];
   let pochvalaText = S_DATA.find(x => x.id === sId).pochvala;
   if (sId === 's4' && jePro) {
-    pochvalaText = 'Máte standard. Teď ho stačí udržet. V sekci Kontroly si sami naplánujte, kdy appka má připomenout další kontrolu tohodle místa.';
+    pochvalaText = 'Máte standard. Teď ho stačí udržet.';
   }
 
   ulozit();
@@ -2180,7 +2279,31 @@ function splnitS(sId) {
         card.classList.add('open');
       }
     }
-    if (jePravePotvrzeno) ukazatUpozorneni(pochvalaText, '✓');
+    if (jePravePotvrzeno && sId === 's4' && jePro) {
+      // Standard je hotový, ale bez kontroly za pár týdnů zpravidla vydrží
+      // jen na papíře - appka rovnou navrhne termín kontroly do akčního
+      // plánu, místo aby jen zmínila, že sekce Kontroly existuje.
+      const terminKontroly = (function () { const d = new Date(); d.setDate(d.getDate() + 30); return d.toISOString().slice(0, 10); })();
+      ukazatPotvrzeni(
+        pochvalaText + ' Chcete si rovnou přidat do akčního plánu termín kontroly, jestli tenhle stav za měsíc pořád drží?',
+        async () => {
+          const ukol = await pridatUkolInterni(misto, {
+            text: 'Zkontrolovat, jestli drží zavedený standard — ' + misto.nazev,
+            termin: terminKontroly,
+            reason: 'Kontrola udržení standardu po kroku 4S — ' + misto.nazev
+          });
+          ukazatUpozorneni(
+            ukol.actionId
+              ? 'Přidáno do akčního plánu na ' + new Date(terminKontroly).toLocaleDateString('cs-CZ') + '.'
+              : 'Přidáno do appky, do akčního plánu se to teď nepodařilo uložit — zkuste to prosím znovu.',
+            '✓'
+          );
+        },
+        'Přidat termín kontroly'
+      );
+    } else if (jePravePotvrzeno) {
+      ukazatUpozorneni(pochvalaText, '✓');
+    }
   }, 50);
 }
 
@@ -2249,6 +2372,7 @@ async function ulozitKontrolu() {
     try {
       const { data: run, error: errRun } = await supabaseClient.from('tool_runs').insert({
         organization_id: clenstvi.organization_id,
+        project_id: misto.projekt_id || null,
         location_id: misto.location_id || null,
         nastroj: '5s',
         nazev: '5S — ' + misto.nazev,
