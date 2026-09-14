@@ -202,7 +202,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     </div>
   </section>
 
-  <section class="pro-section" style="margin:0 -24px; padding-left:24px; padding-right:24px;">
+  <section class="pro-section" id="pro-section" style="margin:0 -24px; padding-left:24px; padding-right:24px;">
     <div class="section-title" style="color:var(--gold);">Jedna appka vyřeší jednu otázku. Tokva Pro propojí celý problém.</div>
     <p class="lead">Bezplatné nástroje vám pomůžou rychle zjistit, co se děje. V Tokva Pro budou výsledky navázané na vaši firmu a projekty, abyste nemuseli pokaždé začínat znovu.</p>
     <div class="pro-grid">
@@ -251,6 +251,8 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     if (typeof zobrazitOdkazAkcniPlan === 'function') zobrazitOdkazAkcniPlan(jePro);
     if (typeof zobrazitOdkazProjekty === 'function') zobrazitOdkazProjekty(jePro);
     if (typeof zobrazitOdkazMojeTokva === 'function') zobrazitOdkazMojeTokva(true);
+    const proSekce = document.getElementById('pro-section');
+    if (proSekce) proSekce.style.display = 'none';
     btn.textContent = 'Odhlásit';
     btn.removeAttribute('href');
     btn.style.cursor = 'pointer';
