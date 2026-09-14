@@ -95,6 +95,18 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .step-item > div:last-child{font-size:13.5px;color:var(--mid);line-height:1.65;}
 @media (max-width:600px){.two-col{grid-template-columns:1fr;}}
 
+/* Z PRAXE - stejný blok jako u free appky */
+.d-example{background:var(--black);color:var(--white);border-radius:14px;padding:28px 24px;margin-bottom:20px;}
+.d-example-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2.2px;color:var(--gold);margin-bottom:12px;}
+.d-example h4{font-family:"Poppins",sans-serif;font-weight:900;font-size:clamp(18px,2.6vw,22px);line-height:1.2;letter-spacing:-.5px;margin-bottom:16px;}
+.d-example-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;align-items:start;}
+.d-example-text p{font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.8);margin-bottom:10px;}
+.d-example-text p:last-child{margin-bottom:0;}
+.d-example-stat{border-left:3px solid var(--gold);padding-left:16px;}
+.d-example-stat .stat-num{font-family:"Poppins",sans-serif;font-weight:900;font-size:30px;color:var(--gold);line-height:1.05;margin-bottom:8px;}
+.d-example-stat .stat-note{font-size:12px;line-height:1.6;color:rgba(255,255,255,.6);}
+@media (max-width:600px){.d-example-grid{grid-template-columns:1fr;}}
+
 /* PRIHLASENI */
 .prihlaseni{max-width:420px;margin:40px auto;padding:0 16px;}
 .prih-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 24px;text-align:center;}
@@ -108,19 +120,21 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 
 .main{max-width:560px;margin:0 auto;padding:20px 16px 80px;}
 
-/* SETUP */
-.setup-krok{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;}
+/* SETUP - karty, kam se něco zadává, mají světle šedé pozadí (--paper), aby šly
+   na první pohled rozeznat od čistě informativních karet (--white, třída .info) */
+.setup-krok{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;}
+.setup-krok.info{background:var(--white);}
 .krok-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
 .krok-title{font-family:"Poppins",sans-serif;font-size:14px;font-weight:700;color:var(--dark);margin-bottom:10px;}
 
 .field label{font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:5px;}
-.field input,.field select{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
+.field input,.field select{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--white);transition:border .2s;}
 .field input:focus,.field select:focus{border-color:var(--gold);background:white;}
 .field+.field{margin-top:10px;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
-/* OPERACE */
-.operace-sekce{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;}
+/* OPERACE - taky karta k vyplnění (přidávají se vlastní položky) */
+.operace-sekce{background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;}
 .operace-title{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:4px;}
 .operace-sub{font-size:12px;color:var(--light);margin-bottom:10px;line-height:1.6;}
 .operace-list{display:flex;flex-direction:column;gap:7px;margin-bottom:8px;}
@@ -135,7 +149,7 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 
 /* SMENA SELECT */
 .smena-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px;}
-.smena-btn{background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:8px 4px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--mid);cursor:pointer;text-align:center;transition:all .15s;}
+.smena-btn{background:var(--white);border:1px solid var(--border);border-radius:6px;padding:8px 4px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--mid);cursor:pointer;text-align:center;transition:all .15s;}
 .smena-btn.on{background:var(--gold-light);border-color:var(--gold);color:var(--gold-dark);}
 .smena-vlastni{display:none;margin-top:6px;}
 .smena-vlastni input{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:"DM Sans",sans-serif;font-size:13px;outline:none;}
@@ -353,7 +367,23 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   <div class="content-inner">
     <details class="info-detail">
       <summary class="info-summary">Chci vědět víc</summary>
-      <div class="two-col" style="margin-top:18px;">
+
+      <div class="d-example" style="margin-top:18px;">
+        <div class="d-example-eyebrow">Z praxe</div>
+        <h4>Kam se ztrácí čas, o kterém nikdo neví?</h4>
+        <div class="d-example-grid">
+          <div class="d-example-text">
+            <p>Vedoucí skladu byl přesvědčený, že lidi na vychystávání makají skoro pořád. Změřil tři cykly stopkami v appce a vyšlo mu, že skoro třetina času padá na chození pro materiál, který ležel na druhém konci skladu.</p>
+            <p>Stačilo přesunout pár nejčastěji vychystávaných položek blíž k výdeji. Beze změny směn, beze změny lidí. V Pro verzi by rovnou viděl i to, kolik ho ta chůze stála v korunách za rok.</p>
+          </div>
+          <div class="d-example-stat">
+            <div class="stat-num">31 %</div>
+            <div class="stat-note">času padalo na chození pro materiál, který stačilo mít blíž po ruce.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col" style="margin-top:0;">
         <div class="content-card">
           <div class="content-card-title">Hodí se vám to, pokud:</div>
           <ul class="check-list">
@@ -404,7 +434,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 
   </div>
 
-  <div class="setup-krok">
+  <div class="setup-krok info">
     <div class="krok-num">Krok 2 — Jak fungují tlačítka měření</div>
     <div class="krok-title">Klikněte vždy na začátku dané činnosti</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;">
