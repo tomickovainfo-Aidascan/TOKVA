@@ -37,6 +37,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 .sidebar { position:sticky; top:53px; height:calc(100vh - 53px); overflow-y:auto; background:var(--paper); border-right:1px solid var(--border); padding:22px 14px 60px; }
 .sb-group { margin-bottom:10px; }
 .sb-group-title { font-family:'Poppins',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--gold-dark); padding:14px 10px 10px; }
+.sb-group-help { font-size:11.5px; color:var(--mid); line-height:1.5; padding:0 10px 10px; }
 .sb-home { display:flex; align-items:center; width:100%; text-align:left; background:none; border:none; border-bottom:1px solid var(--border); cursor:pointer; padding:10px 10px 16px; margin-bottom:8px; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:700; color:var(--dark); transition:color .15s; text-decoration:none; }
 .sb-home:hover { color:var(--gold-dark); }
 .sb-home.active { color:var(--gold-dark); }
@@ -305,6 +306,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
     <button class="sb-home active" data-home="1" id="home-link" style="border-bottom:none;margin-bottom:0;padding-bottom:8px;">Zobrazit celý katalog</button>
     <div class="sb-group">
       <div class="sb-group-title">Všechny nástroje</div>
+      <div class="sb-group-help">Klikněte na název a nástroj rovnou spustíte. Přes „i“ zjistíte, jak funguje.</div>
       <div class="sb-all-list" id="sb-all-list"></div>
     </div>
   </nav>
@@ -1093,9 +1095,9 @@ function sbAllListHtml() {
   const row = t => {
     const href = toolHref(t);
     const nazev = href
-      ? `<a class="sb-item-link" href="${href}" target="_blank" rel="noopener"><span class="ic"></span>${t.name}</a>`
+      ? `<a class="sb-item-link" href="${href}" target="_blank" rel="noopener" title="Spustit appku ${t.name}"><span class="ic"></span>${t.name}</a>`
       : `<span class="sb-item-link" style="cursor:default;"><span class="ic"></span>${t.name}</span>`;
-    return `<div class="sb-item ${cls}" data-id="${t.id}">${nazev}<button class="sb-item-info" data-id="${t.id}" title="O appce ${t.name}" aria-label="O appce ${t.name}">i</button></div>`;
+    return `<div class="sb-item ${cls}" data-id="${t.id}">${nazev}<button class="sb-item-info" data-id="${t.id}" title="Jak appka ${t.name} funguje" aria-label="Jak appka ${t.name} funguje">i</button></div>`;
   };
   return visibleTools().map(row).join("");
 }
