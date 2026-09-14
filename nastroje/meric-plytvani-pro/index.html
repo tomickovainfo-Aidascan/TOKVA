@@ -228,6 +228,8 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 
 /* SOUHRN */
 .souhrn{display:none;max-width:620px;margin:0 auto;padding:18px 16px 80px;}
+.vysledky-detail{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px;}
+.vysledky-detail-header{padding:14px 20px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mid);}
 .s-header{background:var(--black);border-radius:12px;padding:16px;margin-bottom:12px;}
 .s-nazev{font-family:"Poppins",sans-serif;font-size:16px;font-weight:800;color:white;margin-bottom:3px;}
 .s-meta{font-size:11px;color:rgba(255,255,255,.4);}
@@ -628,8 +630,46 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   <!-- INSIGHTS -->
   <div id="insights"></div>
 
+  <!-- ZAŘADIT K PROJEKTU -->
+  <div class="vysledky-detail">
+    <div class="vysledky-detail-header">Zařadit k projektu</div>
+    <div style="padding:16px 20px;">
+      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Nepovinné. Pomůže vám tenhle výsledek později najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
+      <select id="s-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;font-family:'DM Sans',sans-serif;">
+        <option value="">Bez projektu</option>
+        <option value="__novy__">+ Nový projekt…</option>
+      </select>
+      <input id="s-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <button class="btn-spustit" style="margin-top:0;" onclick="ulozitZarazeniProjektuVysledek()">Uložit zařazení</button>
+      <div id="s-projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <!-- PRIDAT DO AKCNIHO PLANU -->
+  <div class="vysledky-detail">
+    <div class="vysledky-detail-header">Přidat do akčního plánu</div>
+    <div style="padding:16px 20px;">
+      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tohle měření. Projekt je nepovinný, ale pokud výsledek k nějakému patří, vyberte ho, ať se v akčním plánu neztratí.</p>
+      <input id="s-akce-nazev" type="text" placeholder="Co se má udělat" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <select id="s-akce-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;font-family:'DM Sans',sans-serif;">
+        <option value="">Bez projektu</option>
+        <option value="__novy__">+ Nový projekt…</option>
+      </select>
+      <input id="s-akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <input id="s-akce-investice" type="number" placeholder="Investice (Kč)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+        <input id="s-akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <input id="s-akce-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+        <input id="s-akce-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+      </div>
+      <button class="btn-spustit" style="margin-top:0;" onclick="pridatDoAkcnihoPlanuVysledek()">+ Přidat do akčního plánu</button>
+      <div id="s-akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+    </div>
+  </div>
+
   <!-- AKCE -->
-  <button class="btn-spustit" style="margin-bottom:10px;" onclick="otevritModalAkcniPlanNejnovejsi()">+ Přidat do akčního plánu / zařadit k projektu</button>
   <div class="btn-row">
     <button class="btn-akce btn-gmail" onclick="tiskReport()">Tisk / PDF</button>
     <button class="btn-akce btn-csv" onclick="stahnoutCSV()">Stáhnout CSV</button>
@@ -1321,6 +1361,24 @@ function ukoncit() {
     ins.innerHTML = '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;">Kde začít</div>' + insHtml;
   }
 
+  // Panely Zařadit k projektu / Přidat do akčního plánu - připravit na nový
+  // výsledek. toolRunId dorazí až o chvíli později (viz ulozitDoHistorie).
+  posledniToolRunId = null;
+  document.getElementById('s-projekt-stav').textContent = '';
+  document.getElementById('s-projekt-select').value = '';
+  document.getElementById('s-projekt-novy-nazev').value = '';
+  document.getElementById('s-projekt-novy-nazev').style.display = 'none';
+  document.getElementById('s-akce-nazev').value = 'Snížit plýtvání: ' + nazev;
+  document.getElementById('s-akce-projekt-select').value = '';
+  document.getElementById('s-akce-projekt-novy-nazev').value = '';
+  document.getElementById('s-akce-projekt-novy-nazev').style.display = 'none';
+  document.getElementById('s-akce-osoba').value = '';
+  document.getElementById('s-akce-investice').value = '';
+  document.getElementById('s-akce-prinos').value = '';
+  document.getElementById('s-akce-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+90);return d.toISOString().slice(0,10);})();
+  document.getElementById('s-akce-stav').textContent = '';
+  nacistProjektyMeric();
+
   // Uložit do localStorage (historie)
   ulozitDoHistorie();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1359,6 +1417,7 @@ function ulozitDoHistorie() {
 
   ulozitDoSupabase(zaznam, plyKcRok).then(runId => {
     if (!runId) return;
+    posledniToolRunId = runId;
     let hist2 = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
     const polozka = hist2.find(z => z.id === zaznam.id);
     if (polozka) {
@@ -1428,18 +1487,11 @@ async function synchronizovatHistoriiSeSupabase() {
 }
 
 let akcniPlanAktivniIdx = null;
-
-// Tlačítko přímo na obrazovce výsledku - měření je vždy na indexu 0 (naposledy
-// uložené), toolRunId se přiřadí asynchronně chvíli po ukoncit(), proto tu
-// je hláška pro ten vzácný případ, kdy uživatel klikne dřív, než se stihne uložit.
-function otevritModalAkcniPlanNejnovejsi() {
-  const hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
-  if (!hist[0] || !hist[0].toolRunId) {
-    upozornit('Měření se ještě ukládá do účtu, zkuste to prosím za pár vteřin znovu.');
-    return;
-  }
-  otevritModalAkcniPlan(0, null);
-}
+// toolRunId měření, které appka právě zobrazuje na obrazovce výsledku -
+// přiřadí se asynchronně chvíli po ukoncit(), proto ho panely Zařadit
+// k projektu / Přidat do akčního plánu hlídají a případně poprosí o chvilku
+// strpení, než appka měření dokončí uložit do účtu.
+let posledniToolRunId = null;
 
 function otevritModalAkcniPlan(i, e) {
   if (e) e.stopPropagation();
@@ -1472,15 +1524,19 @@ async function nacistProjektyMeric() {
       .eq('organization_id', clenstvi.organization_id)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    const select = document.getElementById('ap-projekt-select');
-    if (!select) return;
-    select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
-    (data || []).forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.name;
-      opt.setAttribute('data-projekt', '1');
-      select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+    ['ap-projekt-select', 's-projekt-select', 's-akce-projekt-select'].forEach(id => {
+      const select = document.getElementById(id);
+      if (!select) return;
+      const puvodniHodnota = select.value;
+      select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
+      (data || []).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        opt.setAttribute('data-projekt', '1');
+        select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+      });
+      if ([...select.options].some(o => o.value === puvodniHodnota)) select.value = puvodniHodnota;
     });
   } catch (e) {
     console.warn('Projekty se nepodařilo načíst.', e);
@@ -1488,8 +1544,13 @@ async function nacistProjektyMeric() {
 }
 
 document.addEventListener('change', function (e) {
-  if (e.target && e.target.id === 'ap-projekt-select') {
-    const novyInput = document.getElementById('ap-projekt-novy-nazev');
+  const paryVyberProNovy = {
+    'ap-projekt-select': 'ap-projekt-novy-nazev',
+    's-projekt-select': 's-projekt-novy-nazev',
+    's-akce-projekt-select': 's-akce-projekt-novy-nazev'
+  };
+  if (e.target && paryVyberProNovy[e.target.id]) {
+    const novyInput = document.getElementById(paryVyberProNovy[e.target.id]);
     if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
   }
 });
@@ -1537,6 +1598,88 @@ async function pridatDoAkcnihoPlanu() {
       estimated_investment: (document.getElementById('ap-investice').value || '').trim() ? Number(document.getElementById('ap-investice').value) : null,
       expected_benefit: (document.getElementById('ap-prinos').value || '').trim() ? Number(document.getElementById('ap-prinos').value) : null,
       due_date: document.getElementById('ap-termin').value || null,
+      status: 'novy',
+      created_by: session.user.id
+    });
+    if (error) throw error;
+    stav.innerHTML = 'Přidáno. <a href="https://tokva.cz/akcni-plan/' + (projektId ? ('?projekt=' + projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;">Otevřít akční plán →</a>';
+  } catch (e) {
+    console.warn('Přidání do akčního plánu se nepodařilo.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
+// Panel "Zařadit k projektu" přímo na obrazovce výsledku - jen přiřadí
+// tenhle výsledek k projektu, bez založení úkolu v akčním plánu.
+async function ulozitZarazeniProjektuVysledek() {
+  const stav = document.getElementById('s-projekt-stav');
+  const select = document.getElementById('s-projekt-select');
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Měření se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    let projektId = select.value || null;
+    if (projektId === '__novy__') {
+      const nazev = (document.getElementById('s-projekt-novy-nazev').value || '').trim();
+      if (!nazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data, error } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: nazev
+      }).select('id').single();
+      if (error) throw error;
+      projektId = data.id;
+    }
+    const { error: chybaUpdate } = await supabaseClient
+      .from('tool_runs')
+      .update({ project_id: projektId })
+      .eq('id', posledniToolRunId);
+    if (chybaUpdate) throw chybaUpdate;
+    stav.textContent = projektId ? 'Uloženo, výsledek patří k projektu.' : 'Uloženo, bez projektu.';
+    await nacistProjektyMeric();
+  } catch (e) {
+    console.warn('Zařazení k projektu se nepodařilo uložit.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
+// Panel "Přidat do akčního plánu" přímo na obrazovce výsledku - stejná
+// logika jako pridatDoAkcnihoPlanu(), jen pro právě dokončené měření
+// (posledniToolRunId) a vlastní sadu polí s předponou s-akce-.
+async function pridatDoAkcnihoPlanuVysledek() {
+  const stav = document.getElementById('s-akce-stav');
+  const nazev = (document.getElementById('s-akce-nazev').value || '').trim();
+  if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Měření se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    const selectProjekt = document.getElementById('s-akce-projekt-select');
+    let projektId = (selectProjekt && selectProjekt.value && selectProjekt.value !== '__novy__') ? selectProjekt.value : null;
+    if (selectProjekt && selectProjekt.value === '__novy__') {
+      const novyNazev = (document.getElementById('s-akce-projekt-novy-nazev').value || '').trim();
+      if (!novyNazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data: novyProjekt, error: chybaProjekt } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: novyNazev
+      }).select('id').single();
+      if (chybaProjekt) throw chybaProjekt;
+      projektId = novyProjekt.id;
+    }
+    if (projektId) {
+      try {
+        await supabaseClient.from('tool_runs').update({ project_id: projektId }).eq('id', posledniToolRunId);
+      } catch (ex) {
+        console.warn('Přiřazení měření k projektu se nepodařilo, úkol se přesto založí.', ex);
+      }
+    }
+    const { error } = await supabaseClient.from('actions').insert({
+      organization_id: clenstvi.organization_id,
+      project_id: projektId,
+      tool_run_id: posledniToolRunId,
+      title: nazev,
+      reason: 'Výsledek Měřiče plýtvání Pro ze dne ' + new Date().toLocaleDateString('cs-CZ'),
+      responsible_person: (document.getElementById('s-akce-osoba').value || '').trim() || null,
+      estimated_investment: (document.getElementById('s-akce-investice').value || '').trim() ? Number(document.getElementById('s-akce-investice').value) : null,
+      expected_benefit: (document.getElementById('s-akce-prinos').value || '').trim() ? Number(document.getElementById('s-akce-prinos').value) : null,
+      due_date: document.getElementById('s-akce-termin').value || null,
       status: 'novy',
       created_by: session.user.id
     });
