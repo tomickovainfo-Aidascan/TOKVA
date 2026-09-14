@@ -43,11 +43,6 @@
       },
       {
         "@type": "Question",
-        "name": "Musím se registrovat nebo zadávat e-mail?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Ne. Appka je celá zdarma a funguje rovnou v prohlížeči, bez registrace. Diagram si jen stáhnete nebo vytisknete." }
-      },
-      {
-        "@type": "Question",
         "name": "Jde appka použít i na mobilu nebo tabletu?",
         "acceptedAnswer": { "@type": "Answer", "text": "Ano, ovládá se dotykem stejně jako myší - jedním prstem kreslíte trasu, dvěma prsty plánek přibližujete a posouváte." }
       },
@@ -55,11 +50,6 @@
         "@type": "Question",
         "name": "Můžu zaznamenat víc tras najednou?",
         "acceptedAnswer": { "@type": "Answer", "text": "Ano, tlačítkem \"+ Nová zakázka\" přidáte do stejného plánku další trasu, každá dostane vlastní barvu, takže je uvidíte vedle sebe." }
-      },
-      {
-        "@type": "Question",
-        "name": "Co dostanu navíc v Pro verzi?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Pro umí navíc porovnat víc návrhů v jedné mapě a spočítat úsporu v korunách, viz panel Tokva Pro níže. Free verze zůstává celá zdarma pro jednu osobu a jednu trasu v čase." }
       }
     ]
   }
@@ -98,6 +88,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 
 .howto-block { background:var(--white); border-bottom:1px solid var(--border); padding:18px 24px; }
 .howto-inner { max-width:700px; margin:0 auto; }
+.info-detail { scroll-margin-top:80px; }
 .info-detail summary { cursor:pointer; list-style:none; }
 .info-detail summary::-webkit-details-marker { display:none; }
 .info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
@@ -236,6 +227,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
   border:2px dashed var(--border); border-radius:10px;
   padding:28px 20px; text-align:center; cursor:pointer;
   transition:all 0.2s; background:var(--paper); margin-bottom:16px;
+  scroll-margin-top:80px;
 }
 .upload-zone:hover { border-color:var(--gold); background:var(--gold-light); }
 .upload-zone.dragover { border-color:var(--gold); background:var(--gold-light); }
@@ -675,10 +667,6 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
           <div class="faq-a">Ano, bez kalibrace appka neví, jaké vzdálenosti na plánku odpovídají skutečným metrům. Stačí ale označit dva body, jejichž reálnou vzdálenost znáte (třeba délku regálu), a appka si dopočítá zbytek sama.</div>
         </div>
         <div class="faq-item">
-          <div class="faq-q">Musím se registrovat nebo zadávat e-mail?</div>
-          <div class="faq-a">Ne. Appka je celá zdarma a funguje rovnou v prohlížeči, bez registrace. Diagram si jen stáhnete nebo vytisknete.</div>
-        </div>
-        <div class="faq-item">
           <div class="faq-q">Jde appka použít i na mobilu nebo tabletu?</div>
           <div class="faq-a">Ano, ovládá se dotykem stejně jako myší - jedním prstem kreslíte trasu, dvěma prsty plánek přibližujete a posouváte.</div>
         </div>
@@ -686,14 +674,10 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
           <div class="faq-q">Můžu zaznamenat víc tras najednou?</div>
           <div class="faq-a">Ano, tlačítkem "+ Nová zakázka" přidáte do stejného plánku další trasu, každá dostane vlastní barvu, takže je uvidíte vedle sebe.</div>
         </div>
-        <div class="faq-item">
-          <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
-          <div class="faq-a">Pro umí navíc porovnat víc návrhů v jedné mapě a spočítat úsporu v korunách, viz panel Tokva Pro níže. Free verze zůstává celá zdarma pro jednu osobu a jednu trasu v čase.</div>
-        </div>
       </div>
     </div>
 
-    <div class="pro-final-panel">
+    <div class="pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Pro se testuje</span>
       <div class="pro-final-title">Co appka umí navíc v Pro</div>
       <div class="pro-final-list">
@@ -1638,16 +1622,19 @@ async function nacistPrihlaseniStav() {
 function renderUcetNav() {
   const btn = document.getElementById('nav-ucet-btn');
   const info = document.getElementById('nav-ucet-info');
+  const proPanel = document.getElementById('pro-final-panel');
   if (!ucetSession) {
     btn.textContent = 'Přihlásit se';
     btn.style.display = '';
     info.style.display = 'none';
+    if (proPanel) proPanel.style.display = '';
     return;
   }
   btn.textContent = 'Odhlásit';
   btn.style.display = '';
   info.style.display = '';
   const nazevFirmy = ucetClenstvi && ucetClenstvi.organizations ? ucetClenstvi.organizations.name : ucetSession.user.email;
+  if (proPanel) proPanel.style.display = maAktivniPro(ucetClenstvi) ? 'none' : '';
   info.textContent = maAktivniPro(ucetClenstvi) ? (nazevFirmy + ' \u00b7 Pro') : nazevFirmy;
 }
 

@@ -252,7 +252,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     if (typeof zobrazitOdkazProjekty === 'function') zobrazitOdkazProjekty(jePro);
     if (typeof zobrazitOdkazMojeTokva === 'function') zobrazitOdkazMojeTokva(true);
     const proSekce = document.getElementById('pro-section');
-    if (proSekce) proSekce.style.display = 'none';
+    if (proSekce) proSekce.style.display = jePro ? 'none' : '';
     btn.textContent = 'Odhlásit';
     btn.removeAttribute('href');
     btn.style.cursor = 'pointer';

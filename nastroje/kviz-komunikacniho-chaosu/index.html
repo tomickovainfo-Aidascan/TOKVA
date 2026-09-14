@@ -1020,7 +1020,7 @@ function renderUcetNav() {
   info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
   historieBtn.style.display = jePro ? '' : 'none';
   tymBtn.style.display = jePro ? '' : 'none';
-  if (proPanel) proPanel.style.display = 'none';
+  if (proPanel) proPanel.style.display = jePro ? 'none' : '';
 }
 
 async function klikNaUcet() {

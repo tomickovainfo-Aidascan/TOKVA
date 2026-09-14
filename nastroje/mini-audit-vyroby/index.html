@@ -38,14 +38,6 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Musím pro Mini audit výroby zadat e-mail?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Ne. Audit je zdarma a spustíte ho rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit."
-      }
-    },
-    {
-      "@type": "Question",
       "name": "Co když nevím odpověď na některou otázku v auditu?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -58,14 +50,6 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte. 5 minut najdete vždy."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Co dostanu navíc v Pro verzi Mini auditu výroby?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Pro uloží výsledek do vašeho účtu. Audit zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se stav výroby zlepšuje, nebo je pořád stejný. Samotný audit je pořád celý zdarma, Pro jen přidává historii."
       }
     },
     {
@@ -166,7 +150,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .main { max-width:700px; margin:0 auto; padding:40px 40px 80px; }
 
 /* OTAZKA */
-.otazka-wrap { display:none; animation:slideIn 0.3s ease; }
+.otazka-wrap { display:none; animation:slideIn 0.3s ease; scroll-margin-top:80px; }
 .otazka-wrap.active { display:block; }
 @keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
 
@@ -228,7 +212,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .btn-dal .arrow { display:inline-block; width:16px; height:10px; background:currentColor; clip-path:polygon(0 0, 65% 0, 100% 50%, 65% 100%, 0 100%); }
 
 /* VYSLEDKY */
-.vysledky-wrap { display:none; animation:slideIn 0.3s ease; }
+.vysledky-wrap { display:none; animation:slideIn 0.3s ease; scroll-margin-top:80px; }
 .vysledky-wrap.active { display:block; }
 
 .skore-hero {
@@ -349,6 +333,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 .dalsi-nastroj-nazev{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;}
 .dalsi-nastroj-popis{font-size:13px;color:var(--mid);margin-bottom:14px;}
 .dalsi-nastroj-btn{display:inline-block;background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;}
+.info-detail { scroll-margin-top:80px; }
 .info-detail summary { cursor:pointer; list-style:none; }
 .info-detail summary::-webkit-details-marker { display:none; }
 .info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
@@ -1057,10 +1042,6 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
     <div class="faq-block">
       <h3 class="content-card-title" style="font-family:Poppins,sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Časté otázky</h3>
       <div class="faq-item">
-        <div class="faq-q">Musím zadat e-mail?</div>
-        <div class="faq-a">Ne. Audit je zdarma a spustíte ho rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit.</div>
-      </div>
-      <div class="faq-item">
         <div class="faq-q">Co když nevím odpověď na některou otázku?</div>
         <div class="faq-a">Zvolte "Nevím / nemáme data". Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku - protože nevědět je samo o sobě důležité zjištění, ne totéž co "máme to pod kontrolou".</div>
       </div>
@@ -1069,16 +1050,12 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
         <div class="faq-a">Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte. 5 minut najdete vždy.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
-        <div class="faq-a">Pro uloží výsledek do vašeho účtu. Audit zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se stav výroby zlepšuje, nebo je pořád stejný. Samotný audit je pořád celý zdarma, Pro jen přidává historii.</div>
-      </div>
-      <div class="faq-item">
         <div class="faq-q">Co appka vlastně kontroluje a analyzuje?</div>
         <div class="faq-a">Deset otázek pokrývá základní kontrolu výroby - jasnost priorit, tok materiálu, kapacitu výroby a to, jak se ve firmě řeší problémy. Je to rychlá orientační analýza výroby, ne náhrada podrobného měření, na to slouží další appky (Měřič plýtvání, Spaghetti diagram).</div>
       </div>
     </div>
 
-    <div class="pro-final-panel">
+    <div class="pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Pro se testuje</span>
       <div class="pro-final-title">Co appka umí navíc v Pro</div>
       <div class="pro-final-list">
@@ -1567,6 +1544,8 @@ function renderUcetNav() {
     info.style.display = 'none';
     btn.textContent = 'Přihlásit se';
   }
+  const proPanel = document.getElementById('pro-final-panel');
+  if (proPanel) proPanel.style.display = jePro ? 'none' : '';
 }
 
 async function klikNaUcet() {
