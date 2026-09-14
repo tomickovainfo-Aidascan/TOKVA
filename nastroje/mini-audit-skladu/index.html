@@ -142,7 +142,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .main { max-width:700px; margin:0 auto; padding:40px 40px 80px; }
 
 /* OTAZKA */
-.otazka-wrap { display:none; animation:slideIn 0.3s ease; }
+.otazka-wrap { display:none; animation:slideIn 0.3s ease; scroll-margin-top:80px; }
 .otazka-wrap.active { display:block; }
 @keyframes slideIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
 
@@ -232,7 +232,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .email-loading.visible { display:block; }
 
 /* VYSLEDKY */
-.vysledky-wrap { display:none; animation:slideIn 0.3s ease; }
+.vysledky-wrap { display:none; animation:slideIn 0.3s ease; scroll-margin-top:80px; }
 .vysledky-wrap.active { display:block; }
 
 .skore-hero {
@@ -353,6 +353,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 .dalsi-nastroj-nazev{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:6px;}
 .dalsi-nastroj-popis{font-size:13px;color:var(--mid);margin-bottom:14px;}
 .dalsi-nastroj-btn{display:inline-block;background:var(--black);color:var(--white);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;}
+.info-detail { scroll-margin-top:80px; }
 .info-detail summary { cursor:pointer; list-style:none; }
 .info-detail summary::-webkit-details-marker { display:none; }
 .info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
