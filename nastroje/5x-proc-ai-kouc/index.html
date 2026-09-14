@@ -1214,21 +1214,16 @@ async function vytvoritUkolyZAnalyzy(raw, btn) {
     btn.textContent = 'Analýza se ještě neuložila, zkuste to za chvíli znovu';
     return;
   }
-  const investiceStr = (document.getElementById('ukoly-investice') || {}).value || '';
-  const prinosStr = (document.getElementById('ukoly-prinos') || {}).value || '';
+  // Každá dokončená analýza má vlastní kartu se stejnými id (ukoly-investice
+  // apod.) - hledá se vždy jen uvnitř karty patřící ke kliknutému tlačítku,
+  // ať appka nesáhne omylem na pole jiné, dřívější analýzy.
+  const karta = btn.closest('.output-card') || document;
+  const investiceStr = (karta.querySelector('#ukoly-investice') || {}).value || '';
+  const prinosStr = (karta.querySelector('#ukoly-prinos') || {}).value || '';
   const investice = investiceStr.trim() ? Number(investiceStr) : null;
   const prinos = prinosStr.trim() ? Number(prinosStr) : null;
   const reason = 'Výsledek 5x Proč analýzy' + (pricina ? (' — kořenová příčina: ' + pricina.slice(0, 300)) : '');
-  const ukoly = [opatreni, prvniKrok].filter(t => t).map(t => ({
-    organization_id: clenstvi.organization_id,
-    tool_run_id: aktivniRunId,
-    reason,
-    title: t.slice(0, 300),
-    estimated_investment: investice,
-    expected_benefit: prinos,
-    status: 'novy'
-  }));
-  if (ukoly.length === 0) {
+  if (ukoly_prazdna(opatreni, prvniKrok)) {
     // Sekce "Doporučené opatření" / "První krok" se z výstupu nepodařilo
     // vytáhnout (AI se nedrželo formátu) - dřív appka tady jen tiše skončila
     // bez jakékoli reakce, což vypadalo jako mrtvé tlačítko.
@@ -1237,6 +1232,28 @@ async function vytvoritUkolyZAnalyzy(raw, btn) {
   }
   btn.disabled = true;
   btn.textContent = 'Zakládám...';
+  let projektId = null;
+  try {
+    projektId = await projektIdZeSelectu5x(karta.querySelector('#ukoly-projekt-select'), karta.querySelector('#ukoly-projekt-novy-nazev'));
+    if (projektId === undefined) {
+      btn.disabled = false;
+      btn.textContent = 'Zadejte název nového projektu';
+      return;
+    }
+  } catch (e) {
+    console.warn('Projekt se nepodařilo založit, úkoly se založí bez projektu.', e);
+    projektId = null;
+  }
+  const ukoly = [opatreni, prvniKrok].filter(t => t).map(t => ({
+    organization_id: clenstvi.organization_id,
+    project_id: projektId,
+    tool_run_id: aktivniRunId,
+    reason,
+    title: t.slice(0, 300),
+    estimated_investment: investice,
+    expected_benefit: prinos,
+    status: 'novy'
+  }));
   try {
     const { error } = await supabaseClient.from('actions').insert(ukoly);
     if (error) throw error;
@@ -1246,6 +1263,57 @@ async function vytvoritUkolyZAnalyzy(raw, btn) {
     btn.disabled = false;
     btn.textContent = 'Nepodařilo se, zkusit znovu';
   }
+}
+function ukoly_prazdna(opatreni, prvniKrok) {
+  return [opatreni, prvniKrok].filter(t => t).length === 0;
+}
+
+// Načte projekty firmy do všech selectů appky vytvořených z výstupů analýz -
+// každá dokončená analýza má vlastní select, proto se prochází třídou.
+async function nacistProjekty5x() {
+  if (!clenstvi) return;
+  try {
+    const { data: projekty, error } = await supabaseClient
+      .from('projects')
+      .select('id, name')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    document.querySelectorAll('select.projekt-select-5x').forEach(select => {
+      const puvodniHodnota = select.value;
+      select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
+      (projekty || []).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        opt.setAttribute('data-projekt', '1');
+        select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+      });
+      if ([...select.options].some(o => o.value === puvodniHodnota)) select.value = puvodniHodnota;
+    });
+  } catch (e) {
+    console.warn('Projekty se nepodařilo načíst.', e);
+  }
+}
+
+document.addEventListener('change', function (e) {
+  if (e.target && e.target.id === 'ukoly-projekt-select') {
+    const novyInput = e.target.parentElement.querySelector('#ukoly-projekt-novy-nazev');
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+});
+
+async function projektIdZeSelectu5x(select, novyNazevInput) {
+  if (!select || !select.value) return null;
+  if (select.value !== '__novy__') return select.value;
+  const nazev = ((novyNazevInput && novyNazevInput.value) || '').trim();
+  if (!nazev) return undefined;
+  const { data, error } = await supabaseClient.from('projects').insert({
+    organization_id: clenstvi.organization_id,
+    name: nazev
+  }).select('id').single();
+  if (error) throw error;
+  return data.id;
 }
 
 // ulozit=false při zobrazení staré (už hotové) analýzy z historie - jinak by
@@ -1353,6 +1421,16 @@ function renderOutput(raw, ulozit = true) {
   if (jePro) {
     const ukolyPole = document.createElement('div');
     ukolyPole.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;width:100%;';
+    const projektSelect = document.createElement('select');
+    projektSelect.id = 'ukoly-projekt-select';
+    projektSelect.className = 'projekt-select-5x';
+    projektSelect.style.cssText = 'flex:1;min-width:160px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;font-family:"DM Sans",sans-serif;';
+    projektSelect.innerHTML = '<option value="">Bez projektu</option><option value="__novy__">+ Nový projekt…</option>';
+    const projektNovyInput = document.createElement('input');
+    projektNovyInput.type = 'text';
+    projektNovyInput.id = 'ukoly-projekt-novy-nazev';
+    projektNovyInput.placeholder = 'Název nového projektu';
+    projektNovyInput.style.cssText = 'display:none;flex:1;min-width:160px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;';
     const investiceInput = document.createElement('input');
     investiceInput.type = 'number';
     investiceInput.id = 'ukoly-investice';
@@ -1363,9 +1441,12 @@ function renderOutput(raw, ulozit = true) {
     prinosInput.id = 'ukoly-prinos';
     prinosInput.placeholder = 'Očekávaný přínos (Kč/rok)';
     prinosInput.style.cssText = 'flex:1;min-width:140px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;';
+    ukolyPole.appendChild(projektSelect);
+    ukolyPole.appendChild(projektNovyInput);
     ukolyPole.appendChild(investiceInput);
     ukolyPole.appendChild(prinosInput);
     card.appendChild(ukolyPole);
+    nacistProjekty5x();
 
     const ukolyBtn = document.createElement('button');
     ukolyBtn.className = 'export-output';
