@@ -397,8 +397,8 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 
   <!-- MOJE PROJEKTY, rychly pristup -->
   <div id="moje-projekty-bar" style="display:none;background:#eef2ff;border:1px solid #c7d2fe;border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
-    <div style="font-size:13px;color:#4338ca;"><strong id="moje-projekty-pocet">0</strong> uložených projektů čeká na otevření.</div>
-    <button class="tool-btn" onclick="otevritSeznamProjektu()" style="background:#fff;border-color:#c7d2fe;color:#4338ca;">Otevřít projekt</button>
+    <div style="font-size:13px;color:#4338ca;"><strong id="moje-projekty-pocet">0</strong> uložených nákresů čeká na otevření.</div>
+    <button class="tool-btn" onclick="otevritSeznamProjektu()" style="background:#fff;border-color:#c7d2fe;color:#4338ca;">Otevřít nákres</button>
   </div>
 
   <!-- UPLOAD -->
@@ -539,10 +539,10 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
       Upravit měřítko
     </button>
     <button class="tool-btn" onclick="ulozitProjekt()" style="background:#eef2ff;border-color:#c7d2fe;color:#4338ca;margin-left:8px;">
-      💾 Uložit projekt
+      💾 Uložit nákres
     </button>
     <button class="tool-btn" onclick="otevritSeznamProjektu()">
-      Otevřít projekt
+      Otevřít nákres
     </button>
   </div>
 
@@ -685,10 +685,10 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 </div>
 
 
-<!-- MODAL ULOZIT PROJEKT -->
+<!-- MODAL ULOZIT NAKRES -->
 <div class="modal-overlay" id="modal-ulozit-projekt">
   <div class="modal">
-    <h3>Uložit projekt</h3>
+    <h3>Uložit nákres</h3>
     <p>Uloží se půdorys, všechny trasy, zastávky, poznámky i nastavení nákladů. Příště ho otevřete přesně tam, kde jste skončili.</p>
     <input type="text" class="modal-input" id="projekt-nazev" placeholder="např. Vychystávání hala A">
     <div class="modal-btns">
@@ -698,11 +698,11 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   </div>
 </div>
 
-<!-- MODAL SEZNAM PROJEKTU -->
+<!-- MODAL SEZNAM NAKRESU -->
 <div class="modal-overlay" id="modal-projekty">
   <div class="modal" style="max-width:520px;">
-    <h3>Uložené projekty</h3>
-    <p id="projekty-prazdno" style="display:none;">Zatím nemáte žádný uložený projekt. Rozkreslete plánek a klikněte na "Uložit projekt".</p>
+    <h3>Uložené nákresy</h3>
+    <p id="projekty-prazdno" style="display:none;">Zatím nemáte žádný uložený nákres. Rozkreslete plánek a klikněte na "Uložit nákres".</p>
     <div class="zakazky-list" id="projekty-list" style="max-height:340px;margin-bottom:8px;"></div>
     <div class="projekty-porovnat-bar" id="projekty-porovnat-bar" style="display:none;margin-bottom:12px;">
       <button class="btn-modal-ok" style="width:100%;" id="btn-porovnat-projekty" onclick="otevritModalPorovnaniProjektu()" disabled>Porovnat vybrané (0/2)</button>
@@ -715,7 +715,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 
 <div class="modal-overlay" id="modal-porovnani-projekty">
   <div class="modal" style="max-width:600px;max-height:86vh;overflow-y:auto;">
-    <h3>Porovnání dvou projektů</h3>
+    <h3>Porovnání dvou nákresů</h3>
     <div id="porovnani-projekty-obsah"></div>
     <div class="modal-btns">
       <button class="btn-modal-cancel" onclick="zavritModalPorovnaniProjektu()">Zavřít</button>
@@ -756,7 +756,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 <div class="modal-overlay" id="modal-akcni-plan">
   <div class="modal">
     <h3>Přidat do akčního plánu</h3>
-    <p style="margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle projekt. Projekt v Akčním plánu je nepovinný (jiná věc než projekt tras zde).</p>
+    <p style="margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle nákres. Projekt je nepovinný, ale pokud nákres k nějakému patří, vyberte ho, ať se v akčním plánu neztratí.</p>
     <input id="ap-nazev" type="text" placeholder="Co se má udělat" class="modal-input" style="margin-bottom:10px;">
     <select id="ap-projekt-select" class="modal-input" style="margin-bottom:8px;">
       <option value="">Bez projektu</option>
@@ -1138,7 +1138,7 @@ function ulozitSeznamProjektu(seznam) {
     localStorage.setItem(PROJEKTY_KEY, JSON.stringify(seznam));
     return true;
   } catch (e) {
-    upozornit('Projekt se nepodařilo uložit do prohlížeče - asi došlo místo. Zkuste v seznamu "Otevřít projekt" smazat nějaký starší.');
+    upozornit('Nákres se nepodařilo uložit do prohlížeče - asi došlo místo. Zkuste v seznamu "Otevřít nákres" smazat nějaký starší.');
     return false;
   }
 }
@@ -1194,7 +1194,7 @@ async function ulozitProjektDoSupabase(zaznam) {
       await supabaseClient.from('tool_runs').insert(payload);
     }
   } catch (e) {
-    console.warn('Uložení projektu do účtu se nepodařilo, projekt zůstává uložený v appce.', e);
+    console.warn('Uložení nákresu do účtu se nepodařilo, nákres zůstává uložený v appce.', e);
   }
 }
 
@@ -1208,7 +1208,7 @@ async function smazatProjektZeSupabase(id) {
       .eq('nastroj', 'spaghetti-pro')
       .eq('data->>id', id);
   } catch (e) {
-    console.warn('Smazání projektu z účtu se nepodařilo.', e);
+    console.warn('Smazání nákresu z účtu se nepodařilo.', e);
   }
 }
 
@@ -1240,7 +1240,7 @@ async function synchronizovatProjektySeSupabase() {
     ulozitSeznamProjektu(seznam);
     aktualizovatMojeProjektyBar();
   } catch (e) {
-    console.warn('Projekty z účtu se nenačetly, appka jede z místních projektů.', e);
+    console.warn('Nákresy z účtu se nenačetly, appka jede z místních nákresů.', e);
   }
 }
 
@@ -1260,7 +1260,7 @@ function zavritModalUlozitProjekt() {
 
 function potvrditUlozeniProjektu() {
   const nazev = document.getElementById('projekt-nazev').value.trim();
-  if (!nazev) { upozornit('Zadejte název projektu.'); return; }
+  if (!nazev) { upozornit('Zadejte název nákresu.'); return; }
   const seznam = nacistSeznamProjektu();
   const id = aktualniProjektId || (Date.now() + '-' + Math.random().toString(36).slice(2, 8));
   const zaznam = {
@@ -1280,7 +1280,7 @@ function potvrditUlozeniProjektu() {
     seznam[existujiciIdx] = zaznam;
   } else {
     if (seznam.length >= MAX_PROJEKTU) {
-      upozornit('Máte uloženo už ' + MAX_PROJEKTU + ' projektů - to je zatím limit. Otevřete "Otevřít projekt" a nějaký starší smažte, než uložíte další.');
+      upozornit('Máte uloženo už ' + MAX_PROJEKTU + ' nákresů - to je zatím limit. Otevřete "Otevřít nákres" a nějaký starší smažte, než uložíte další.');
       return;
     }
     seznam.push(zaznam);
@@ -1552,11 +1552,11 @@ async function otevritModalAkcniPlan(id, e) {
     if (error) throw error;
     akcniPlanAktivniToolRunId = (data && data[0]) ? data[0].id : null;
   } catch (err) {
-    console.warn('Nepodařilo se najít uložený výsledek k tomuhle projektu.', err);
+    console.warn('Nepodařilo se najít uložený výsledek k tomuhle nákresu.', err);
     akcniPlanAktivniToolRunId = null;
   }
   if (!akcniPlanAktivniToolRunId) {
-    upozornit('Tenhle projekt se ještě nesynchronizoval do účtu, zkuste to prosím za chvíli.');
+    upozornit('Tenhle nákres se ještě nesynchronizoval do účtu, zkuste to prosím za chvíli.');
     return;
   }
   akcniPlanAktivniProjektId = id;
@@ -1613,7 +1613,7 @@ async function pridatDoAkcnihoPlanu() {
   const nazevInput = document.getElementById('ap-nazev');
   const nazev = (nazevInput.value || '').trim();
   if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
-  if (!akcniPlanAktivniToolRunId || !clenstvi) { stav.textContent = 'Projekt se ještě nesynchronizoval do účtu, zkuste to prosím znovu.'; return; }
+  if (!akcniPlanAktivniToolRunId || !clenstvi) { stav.textContent = 'Nákres se ještě nesynchronizoval do účtu, zkuste to prosím znovu.'; return; }
   stav.textContent = 'Ukládám…';
   try {
     const selectProjekt = document.getElementById('ap-projekt-select');
@@ -1654,7 +1654,7 @@ function smazatProjekt(id, e) {
   const seznam = nacistSeznamProjektu();
   const p = seznam.find(z => z.id === id);
   if (!p) return;
-  potvrdit('Smazat uložený projekt "' + p.nazev + '"? Tohle nejde vzít zpět.', 'Smazat projekt', function() {
+  potvrdit('Smazat uložený nákres "' + p.nazev + '"? Tohle nejde vzít zpět.', 'Smazat nákres', function() {
     const novy = seznam.filter(z => z.id !== id);
     if (!ulozitSeznamProjektu(novy)) return;
     if (aktualniProjektId === id) aktualniProjektId = null;
@@ -2919,7 +2919,7 @@ async function otevritVysledekZAdresy() {
     }
     nacistProjektZeZaznamu(zaznam);
   } catch (e) {
-    console.warn('Nepodařilo se najít konkrétní projekt podle adresy.', e);
+    console.warn('Nepodařilo se najít konkrétní nákres podle adresy.', e);
   }
 }
 
