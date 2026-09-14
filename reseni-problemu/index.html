@@ -211,6 +211,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,38px); font-weig
     if (typeof zobrazitOdkazAkcniPlan === 'function') zobrazitOdkazAkcniPlan(jePro);
     if (typeof zobrazitOdkazProjekty === 'function') zobrazitOdkazProjekty(jePro);
     if (typeof zobrazitOdkazMojeTokva === 'function') zobrazitOdkazMojeTokva(true);
+    if (typeof prepnoutOdkazyNaPro === 'function') prepnoutOdkazyNaPro(jePro);
     btn.textContent = 'Odhlásit';
     btn.removeAttribute('href');
     btn.style.cursor = 'pointer';
