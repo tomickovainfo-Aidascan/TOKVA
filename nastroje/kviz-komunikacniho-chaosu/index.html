@@ -35,11 +35,6 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Musím zadat e-mail?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Ne. Kvíz spustíte rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte jen pokud chcete i podrobnější rozbor poslat na později." }
-    },
-    {
-      "@type": "Question",
       "name": "Je to test znalostí?",
       "acceptedAnswer": { "@type": "Answer", "text": "Ne, jde o to, jak si ve firmě reálně předáváte informace, ne co byste teoreticky měli dělat. Odpovídejte podle skutečnosti, ne podle toho, jak by to mělo vypadat." }
     },
@@ -47,11 +42,6 @@
       "@type": "Question",
       "name": "Co znamená skóre a pásmo?",
       "acceptedAnswer": { "@type": "Answer", "text": "Čím víc bodů, tím větší chaos v předávání informací. Kvíz vám navíc ukáže, která z 6 oblastí (e-maily, WhatsApp, předání mezi lidmi, zodpovědnosti...) vás brzdí nejvíc." }
-    },
-    {
-      "@type": "Question",
-      "name": "Co dostanu navíc v Pro verzi?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Pro uloží výsledek do vašeho účtu. Kvíz zopakujete za čas a hned vidíte, jestli se komunikace zlepšuje, nebo je pořád stejná. Samotný kvíz je pořád celý zdarma, Pro jen přidává historii." }
     }
   ]
 }
@@ -102,6 +92,7 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .intro-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 20px;margin-bottom:14px;}
 .intro-card p{font-size:14px;color:var(--mid);margin-bottom:10px;}
 .intro-card p:last-of-type{margin-bottom:0;}
+.info-detail { scroll-margin-top:80px; }
 .info-detail summary { cursor:pointer; list-style:none; }
 .info-detail summary::-webkit-details-marker { display:none; }
 .info-summary { font-family:"Poppins",sans-serif; font-size:15px; font-weight:700; color:var(--gold-dark); display:flex; align-items:center; gap:10px; }
@@ -571,7 +562,8 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <button class="btn-spustit" style="width:100%;" onclick="pridatDoAkcnihoPlanu()">+ Přidat do akčního plánu</button>
     <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
   </div>
-  <div class="email-card">
+  <div class="email-card" style="display:none;">
+    <!-- Dočasně skryto - e-mail s rozborem se přes formulář neposílal. -->
     <h3>Chcete podrobnější rozbor?</h3>
     <p>Na e-mail vám pošlu váš výsledek i s doporučením, co s vaší nejslabší oblastí dělat jako první.</p>
     <button type="button" class="btn-spustit" id="btn-poslat-email-chaos" onclick="ukazatEmailFormChaos()">Poslat podrobný výsledek na e-mail</button>
@@ -699,10 +691,6 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
       <h3 class="content-card-title">Časté otázky</h3>
       <div class="faq-block">
         <div class="faq-item">
-          <div class="faq-q">Musím zadat e-mail?</div>
-          <div class="faq-a">Ne. Kvíz spustíte rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte jen pokud chcete i podrobnější rozbor poslat na později.</div>
-        </div>
-        <div class="faq-item">
           <div class="faq-q">Je to test znalostí?</div>
           <div class="faq-a">Ne, jde o to, jak si ve firmě reálně předáváte informace, ne co byste teoreticky měli dělat. Odpovídejte podle skutečnosti, ne podle toho, jak by to mělo vypadat.</div>
         </div>
@@ -710,14 +698,10 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
           <div class="faq-q">Co znamená skóre a pásmo?</div>
           <div class="faq-a">Čím víc bodů, tím větší chaos v předávání informací. Kvíz vám navíc ukáže, která z 6 oblastí (e-maily, WhatsApp, předání mezi lidmi, zodpovědnosti...) vás brzdí nejvíc.</div>
         </div>
-        <div class="faq-item">
-          <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
-          <div class="faq-a">Pro uloží výsledek do vašeho účtu. Kvíz zopakujete za čas a hned vidíte, jestli se komunikace zlepšuje, nebo je pořád stejná. Samotný kvíz je pořád celý zdarma, Pro jen přidává historii.</div>
-        </div>
       </div>
     </div>
 
-    <div class="pro-final-panel">
+    <div class="pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Pro se testuje</span>
       <div class="pro-final-title">Co appka umí navíc v Pro</div>
       <div class="pro-final-list">
@@ -1021,11 +1005,13 @@ function renderUcetNav() {
   const info = document.getElementById('nav-ucet-info');
   const historieBtn = document.getElementById('nav-historie-btn');
   const tymBtn = document.getElementById('nav-tym-btn');
+  const proPanel = document.getElementById('pro-final-panel');
   if (!session) {
     btn.textContent = 'Přihlásit se';
     info.style.display = 'none';
     historieBtn.style.display = 'none';
     tymBtn.style.display = 'none';
+    if (proPanel) proPanel.style.display = '';
     return;
   }
   btn.textContent = 'Odhlásit';
@@ -1034,6 +1020,7 @@ function renderUcetNav() {
   info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
   historieBtn.style.display = jePro ? '' : 'none';
   tymBtn.style.display = jePro ? '' : 'none';
+  if (proPanel) proPanel.style.display = 'none';
 }
 
 async function klikNaUcet() {
