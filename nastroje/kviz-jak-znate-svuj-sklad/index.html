@@ -37,11 +37,6 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Musím zadat e-mail?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Ne. Kvíz je zdarma a spustíte ho rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit." }
-    },
-    {
-      "@type": "Question",
       "name": "Jaký je rozdíl mezi kvízem a mini auditem skladu?",
       "acceptedAnswer": { "@type": "Answer", "text": "Kvíz odhaluje slepá místa v přehledu: co nevíte, co neměříte, kde chybí čísla. Mini audit skladu hledá kde konkrétně vznikají ztráty v procesech." }
     },
@@ -49,11 +44,6 @@
       "@type": "Question",
       "name": "Musím projít celý kvíz najednou?",
       "acceptedAnswer": { "@type": "Answer", "text": "Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte. 5 minut najdete vždy." }
-    },
-    {
-      "@type": "Question",
-      "name": "Co dostanu navíc v Pro verzi?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Pro uloží výsledek do vašeho účtu. Kvíz zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se přehled zlepšuje, nebo je pořád stejný. Samotný kvíz je pořád celý zdarma, Pro jen přidává historii." }
     }
   ]
 }
@@ -128,7 +118,7 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:13px 24
 .email-note{font-size:11px;color:var(--light);margin-top:10px;}
 
 /* OTAZKY */
-.otazka-wrap{display:none;animation:slideIn .3s ease;}
+.otazka-wrap{display:none;animation:slideIn .3s ease;scroll-margin-top:80px;}
 .otazka-wrap.active{display:block;}
 @keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
 
@@ -156,7 +146,7 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:13px 24
 .btn-dal .arrow{display:inline-block;width:16px;height:10px;background:currentColor;clip-path:polygon(0 0,65% 0,100% 50%,65% 100%,0 100%);}
 
 /* VYSLEDKY */
-.vysledky-wrap{display:none;animation:slideIn .3s ease;}
+.vysledky-wrap{display:none;animation:slideIn .3s ease;scroll-margin-top:80px;}
 .vysledky-wrap.active{display:block;}
 
 .skore-hero{border-radius:12px;padding:28px 24px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden;}
@@ -901,10 +891,6 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
     <div>
       <h3 style="font-family:Poppins,sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--dark);margin-bottom:16px;">Časté otázky</h3>
       <div class="faq-item">
-        <div class="faq-q">Musím zadat e-mail?</div>
-        <div class="faq-a">Ne. Kvíz je zdarma a spustíte ho rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit.</div>
-      </div>
-      <div class="faq-item">
         <div class="faq-q">Jaký je rozdíl mezi kvízem a mini auditem skladu?</div>
         <div class="faq-a">Kvíz odhaluje slepá místa v přehledu: co nevíte, co neměříte, kde chybí čísla. Mini audit skladu hledá kde konkrétně vznikají ztráty v procesech.</div>
       </div>
@@ -912,13 +898,9 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
         <div class="faq-q">Musím projít celý kvíz najednou?</div>
         <div class="faq-a">Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte. 5 minut najdete vždy.</div>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
-        <div class="faq-a">Pro uloží výsledek do vašeho účtu. Kvíz zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se přehled zlepšuje, nebo je pořád stejný. Samotný kvíz je pořád celý zdarma, Pro jen přidává historii.</div>
-      </div>
     </div>
 
-    <div class="pro-final-panel">
+    <div class="pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Pro se testuje</span>
       <div class="pro-final-title">Co appka umí navíc v Pro</div>
       <div class="pro-final-list">
@@ -1056,6 +1038,8 @@ function renderUcetNav() {
     info.style.display = 'none';
     btn.textContent = 'Přihlásit se';
   }
+  const proPanel = document.getElementById('pro-final-panel');
+  if (proPanel) proPanel.style.display = (session && clenstvi) ? 'none' : '';
 }
 
 async function klikNaUcet() {
