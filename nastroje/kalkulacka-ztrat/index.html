@@ -234,6 +234,20 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   footer { padding:20px; flex-direction:column; text-align:center; }
 }
 
+.btn-gold { background:var(--gold); border:none; color:var(--black); font-size:13px; font-weight:700; padding:10px 16px; border-radius:6px; cursor:pointer; transition:background .15s; }
+.btn-gold:hover { background:var(--gold-dark); color:white; }
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
+.modal-box { background:var(--white); border-radius:14px; padding:28px; max-width:420px; width:100%; }
+.modal-box-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; }
+.modal-box h3 { font-family:"Poppins",sans-serif; font-size:17px; font-weight:800; color:var(--dark); }
+.modal-box-close { background:none; border:none; font-size:20px; color:var(--light); cursor:pointer; line-height:1; }
+.modal-box p { font-size:13px; color:var(--mid); line-height:1.65; margin-bottom:16px; }
+.modal-err { font-size:12px; color:var(--red); min-height:16px; margin-bottom:6px; }
+.modal-box-link { font-size:12px; color:var(--light); margin-top:12px; text-align:center; }
+.modal-box-link a { color:var(--gold-dark); text-decoration:none; }
+.uloz-btn-row { margin-bottom:16px; }
+.uloz-panel-vstup { width:100%; padding:11px 14px; border-radius:8px; border:1px solid var(--border); font-size:14px; margin-bottom:10px; font-family:"DM Sans",sans-serif; box-sizing:border-box; }
+
 .collapse-back{text-align:center;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
 .collapse-back-link{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:var(--gold-dark);text-decoration:none;cursor:pointer;}
 .collapse-back-link:hover{text-decoration:underline;}
@@ -498,7 +512,63 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <a class="top-loss-cta" id="top-loss-cta" href="#" target="_blank" style="display:none;">Zjistit teď →</a>
       </div>
 
+      <div class="uloz-btn-row" style="margin-top:16px;">
+        <button class="btn-gold" style="width:100%;" onclick="ulozitVypocetZtrat()">💾 Uložit tento výpočet</button>
+      </div>
+
+      <!-- ZAŘADIT K PROJEKTU (Pro) -->
+      <div class="breakdown" id="s-projekt-panel" style="display:none;margin-bottom:16px;">
+        <div class="breakdown-title">Zařadit k projektu</div>
+        <div style="padding:16px 20px;">
+          <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Nepovinné. Pomůže vám tenhle výpočet později najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
+          <select id="s-projekt-select" class="uloz-panel-vstup">
+            <option value="">Bez projektu</option>
+            <option value="__novy__">+ Nový projekt…</option>
+          </select>
+          <input id="s-projekt-novy-nazev" type="text" placeholder="Název nového projektu" class="uloz-panel-vstup" style="display:none;">
+          <button class="btn-gold" style="width:100%;" onclick="ulozitZarazeniProjektuVysledek()">Uložit zařazení</button>
+          <div id="s-projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+        </div>
+      </div>
+
+      <!-- PRIDAT DO AKCNIHO PLANU (Pro) -->
+      <div class="breakdown" id="s-akce-panel" style="display:none;margin-bottom:16px;">
+        <div class="breakdown-title">Přidat do akčního plánu</div>
+        <div style="padding:16px 20px;">
+          <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle výpočet. Projekt je nepovinný, ale pokud výpočet k nějakému patří, vyberte ho, ať se v akčním plánu neztratí.</p>
+          <input id="s-akce-nazev" type="text" placeholder="Co se má udělat" class="uloz-panel-vstup">
+          <select id="s-akce-projekt-select" class="uloz-panel-vstup">
+            <option value="">Bez projektu</option>
+            <option value="__novy__">+ Nový projekt…</option>
+          </select>
+          <input id="s-akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" class="uloz-panel-vstup" style="display:none;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <input id="s-akce-investice" type="number" placeholder="Investice (Kč)" class="uloz-panel-vstup" style="margin-bottom:0;">
+            <input id="s-akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" class="uloz-panel-vstup" style="margin-bottom:0;">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <input id="s-akce-osoba" type="text" placeholder="Odpovědná osoba" class="uloz-panel-vstup" style="margin-bottom:0;">
+            <input id="s-akce-termin" type="date" class="uloz-panel-vstup" style="margin-bottom:0;">
+          </div>
+          <button class="btn-gold" style="width:100%;" onclick="pridatDoAkcnihoPlanuVysledek()">+ Přidat do akčního plánu</button>
+          <div id="s-akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+        </div>
+      </div>
+
     </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-pro" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-box-head">
+      <h3>Odemknout Pro</h3>
+      <button class="modal-box-close" onclick="zavritModalPro()">×</button>
+    </div>
+    <p>Pro verze umí uložit výpočet do vašeho účtu, zařadit ho k projektu a rovnou z něj založit úkol v akčním plánu. Samotná kalkulačka zůstává navždy zdarma, bez přihlášení.</p>
+    <div class="modal-err" id="pro-err"></div>
+    <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
+    <div class="modal-box-link">Ještě nemáte Pro? <a href="https://tokva.cz/">Zjistit víc o Tokva Pro</a></div>
   </div>
 </div>
 
@@ -680,6 +750,10 @@ function aktualizovatNejvetsiZtratu(hodnoty, celkem) {
 
 let session = null;
 let clenstvi = null;
+let jePro = false;
+// toolRunId naposledy uloženého výpočtu - panely Zařadit k projektu / Přidat
+// do akčního plánu se váží vždy na tenhle výpočet, viz ulozitVypocetZtrat().
+let posledniToolRunId = null;
 
 update();
 
@@ -697,10 +771,11 @@ async function nacistPrihlaseniStav() {
     session = null;
     clenstvi = null;
   }
+  jePro = maAktivniPro(clenstvi);
   renderUcetNav();
-  prepnoutOdkazyNaPro(maAktivniPro(clenstvi));
-  zobrazitOdkazAkcniPlan(maAktivniPro(clenstvi));
-  zobrazitOdkazProjekty(maAktivniPro(clenstvi));
+  prepnoutOdkazyNaPro(jePro);
+  zobrazitOdkazAkcniPlan(jePro);
+  zobrazitOdkazProjekty(jePro);
 }
 
 function renderUcetNav() {
@@ -710,26 +785,206 @@ function renderUcetNav() {
     btn.textContent = 'Přihlásit se';
     btn.style.display = '';
     info.style.display = 'none';
+    document.getElementById('s-projekt-panel').style.display = 'none';
+    document.getElementById('s-akce-panel').style.display = 'none';
     return;
   }
   btn.textContent = 'Odhlásit';
   btn.style.display = '';
   info.style.display = '';
+  document.getElementById('s-projekt-panel').style.display = jePro ? 'block' : 'none';
+  document.getElementById('s-akce-panel').style.display = jePro ? 'block' : 'none';
   const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
-  info.textContent = maAktivniPro(clenstvi) ? (nazevFirmy + ' \u00b7 Pro') : nazevFirmy;
+  info.textContent = jePro ? (nazevFirmy + ' \u00b7 Pro') : nazevFirmy;
 }
 
 async function klikNaUcet() {
   try {
     if (session) {
       await odhlasit();
-      session = null; clenstvi = null;
+      session = null; clenstvi = null; jePro = false;
       renderUcetNav();
       return;
     }
     await vyzadovatPrihlaseni();
   } catch (e) {
     console.warn('Přihlášení/odhlášení se nepovedlo.', e);
+  }
+}
+
+function otevritModalPro() {
+  document.getElementById('pro-err').textContent = '';
+  document.getElementById('modal-pro').style.display = 'flex';
+}
+function zavritModalPro() {
+  document.getElementById('modal-pro').style.display = 'none';
+}
+async function klikVModaluPro() {
+  document.getElementById('pro-err').textContent = '';
+  try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
+}
+document.addEventListener('click', function (e) {
+  if (e.target === document.getElementById('modal-pro')) zavritModalPro();
+});
+
+// Uloží aktuální výpočet do účtu (Pro) - appka nemá historii ani porovnání
+// víc výpočtů jako Kalkulačka nákladů skladu, jde jen o poslední výpočet
+// k dispozici pro zařazení k projektu a akční plán.
+function ulozitVypocetZtrat() {
+  if (!jePro) { otevritModalPro(); return; }
+  posledniToolRunId = null;
+  document.getElementById('s-projekt-stav').textContent = '';
+  document.getElementById('s-projekt-select').value = '';
+  document.getElementById('s-projekt-novy-nazev').value = '';
+  document.getElementById('s-projekt-novy-nazev').style.display = 'none';
+  document.getElementById('s-akce-nazev').value = 'Snížit provozní ztráty';
+  document.getElementById('s-akce-projekt-select').value = '';
+  document.getElementById('s-akce-projekt-novy-nazev').value = '';
+  document.getElementById('s-akce-projekt-novy-nazev').style.display = 'none';
+  document.getElementById('s-akce-osoba').value = '';
+  document.getElementById('s-akce-investice').value = '';
+  document.getElementById('s-akce-prinos').value = '';
+  document.getElementById('s-akce-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+90);return d.toISOString().slice(0,10);})();
+  document.getElementById('s-akce-stav').textContent = '';
+  nacistProjektyZtrat();
+  odeslatZtratyDoSupabase();
+}
+
+async function odeslatZtratyDoSupabase() {
+  if (!jePro || !clenstvi) return;
+  try {
+    var rok = document.getElementById('res-rok').textContent;
+    var vysledek = await supabaseClient.from('tool_runs').insert({
+      organization_id: clenstvi.organization_id,
+      nastroj: 'kalkulacka-ztrat',
+      nazev: 'Kalkulačka ztrát — ' + new Date().toLocaleDateString('cs-CZ'),
+      shrnuti: 'Odhadovaný roční potenciál: ' + rok,
+      hlavni_hodnota_jednotka: 'Kč/rok',
+      hlavni_hodnota_typ: 'potencial_kc',
+      hlavni_hodnota_text: rok,
+      data: { rok: rok }
+    }).select().single();
+    if (vysledek.error) throw vysledek.error;
+    if (vysledek.data) posledniToolRunId = vysledek.data.id;
+  } catch (e) {
+    console.warn('Výpočet se nepodařilo uložit do Supabase.', e);
+  }
+}
+
+async function nacistProjektyZtrat() {
+  if (!clenstvi) return;
+  try {
+    var vysledek = await supabaseClient
+      .from('projects')
+      .select('id, name')
+      .eq('organization_id', clenstvi.organization_id)
+      .order('created_at', { ascending: false });
+    if (vysledek.error) throw vysledek.error;
+    var data = vysledek.data;
+    ['s-projekt-select', 's-akce-projekt-select'].forEach(function (id) {
+      var select = document.getElementById(id);
+      if (!select) return;
+      var puvodniHodnota = select.value;
+      select.querySelectorAll('option[data-projekt]').forEach(function (o) { o.remove(); });
+      (data || []).forEach(function (p) {
+        var opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        opt.setAttribute('data-projekt', '1');
+        select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+      });
+      if ([].slice.call(select.options).some(function (o) { return o.value === puvodniHodnota; })) select.value = puvodniHodnota;
+    });
+  } catch (e) {
+    console.warn('Projekty se nepodařilo načíst.', e);
+  }
+}
+
+document.addEventListener('change', function (e) {
+  var paryVyberProNovy = {
+    's-projekt-select': 's-projekt-novy-nazev',
+    's-akce-projekt-select': 's-akce-projekt-novy-nazev'
+  };
+  if (e.target && paryVyberProNovy[e.target.id]) {
+    var novyInput = document.getElementById(paryVyberProNovy[e.target.id]);
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+});
+
+async function ulozitZarazeniProjektuVysledek() {
+  var stav = document.getElementById('s-projekt-stav');
+  var select = document.getElementById('s-projekt-select');
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Výpočet se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    var projektId = select.value || null;
+    if (projektId === '__novy__') {
+      var nazev = (document.getElementById('s-projekt-novy-nazev').value || '').trim();
+      if (!nazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      var vysledekProjekt = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: nazev
+      }).select('id').single();
+      if (vysledekProjekt.error) throw vysledekProjekt.error;
+      projektId = vysledekProjekt.data.id;
+    }
+    var vysledekUpdate = await supabaseClient
+      .from('tool_runs')
+      .update({ project_id: projektId })
+      .eq('id', posledniToolRunId);
+    if (vysledekUpdate.error) throw vysledekUpdate.error;
+    stav.textContent = projektId ? 'Uloženo, výpočet patří k projektu.' : 'Uloženo, bez projektu.';
+    await nacistProjektyZtrat();
+  } catch (e) {
+    console.warn('Zařazení k projektu se nepodařilo uložit.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
+async function pridatDoAkcnihoPlanuVysledek() {
+  var stav = document.getElementById('s-akce-stav');
+  var nazev = (document.getElementById('s-akce-nazev').value || '').trim();
+  if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Výpočet se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    var selectProjekt = document.getElementById('s-akce-projekt-select');
+    var projektId = (selectProjekt && selectProjekt.value && selectProjekt.value !== '__novy__') ? selectProjekt.value : null;
+    if (selectProjekt && selectProjekt.value === '__novy__') {
+      var novyNazev = (document.getElementById('s-akce-projekt-novy-nazev').value || '').trim();
+      if (!novyNazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      var vysledekProjekt2 = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: novyNazev
+      }).select('id').single();
+      if (vysledekProjekt2.error) throw vysledekProjekt2.error;
+      projektId = vysledekProjekt2.data.id;
+    }
+    if (projektId) {
+      try {
+        await supabaseClient.from('tool_runs').update({ project_id: projektId }).eq('id', posledniToolRunId);
+      } catch (ex) {
+        console.warn('Přiřazení výpočtu k projektu se nepodařilo, úkol se přesto založí.', ex);
+      }
+    }
+    var vysledekAkce = await supabaseClient.from('actions').insert({
+      organization_id: clenstvi.organization_id,
+      project_id: projektId,
+      tool_run_id: posledniToolRunId,
+      title: nazev,
+      reason: 'Výsledek Kalkulačky ztrát ze dne ' + new Date().toLocaleDateString('cs-CZ'),
+      responsible_person: (document.getElementById('s-akce-osoba').value || '').trim() || null,
+      estimated_investment: (document.getElementById('s-akce-investice').value || '').trim() ? Number(document.getElementById('s-akce-investice').value) : null,
+      expected_benefit: (document.getElementById('s-akce-prinos').value || '').trim() ? Number(document.getElementById('s-akce-prinos').value) : null,
+      due_date: document.getElementById('s-akce-termin').value || null,
+      status: 'novy',
+      created_by: session.user.id
+    });
+    if (vysledekAkce.error) throw vysledekAkce.error;
+    stav.innerHTML = 'Přidáno. <a href="https://tokva.cz/akcni-plan/' + (projektId ? ('?projekt=' + projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;">Otevřít akční plán →</a>';
+  } catch (e) {
+    console.warn('Přidání do akčního plánu se nepodařilo.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
   }
 }
 
