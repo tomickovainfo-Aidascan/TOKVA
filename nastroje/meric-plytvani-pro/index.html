@@ -141,14 +141,12 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .krok2-lead{font-size:12px;color:var(--light);line-height:1.6;margin-bottom:14px;}
 .std-kat-row{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);transition:opacity .15s;}
 .std-kat-row.vyrazeno{opacity:.4;}
-.std-kat-fixed{background:var(--paper);margin-bottom:8px;align-items:center;}
 .std-kat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
 .std-kat-grid label.std-kat-row{cursor:pointer;}
 .std-kat-grid label.std-kat-row input[type=checkbox]{margin-top:3px;flex-shrink:0;width:15px;height:15px;accent-color:var(--gold-dark);cursor:pointer;}
 .std-kat-swatch{width:12px;height:8px;flex-shrink:0;margin-top:3px;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);}
 .std-kat-nazev{font-size:12px;font-weight:700;color:var(--dark);}
 .std-kat-popis{font-size:11px;color:var(--light);line-height:1.5;}
-.std-kat-vzdy{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--light);margin-left:auto;}
 
 .navrh-wrap{margin-top:14px;}
 .navrh-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px;}
@@ -187,6 +185,8 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .m-header{background:var(--black);border-radius:12px;padding:13px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
 .m-nazev{font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;color:white;}
 .m-cykly{font-family:"DM Mono",monospace;font-size:11px;color:rgba(255,255,255,.4);}
+.m-upravit-link{display:inline-block;font-size:11px;color:var(--light);text-decoration:none;margin:6px 0 10px;}
+.m-upravit-link:hover{color:var(--gold-dark);text-decoration:underline;}
 
 .instrukce{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:8px;padding:11px 14px;margin-bottom:10px;font-size:13px;color:var(--dark);line-height:1.65;}
 .instrukce strong{color:var(--gold-dark);}
@@ -462,13 +462,12 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <div class="krok-title">Vyberte kategorie a přidejte vlastní kroky</div>
     <p class="krok2-lead">Při měření klikněte vždy na tlačítko na začátku dané činnosti. Kategorie, které pro váš proces nedávají smysl, odškrtněte — při měření se nezobrazí.</p>
 
-    <div class="std-kat-row std-kat-fixed">
-      <div class="std-kat-swatch" style="background:var(--prace);"></div>
-      <div class="std-kat-info"><div class="std-kat-nazev">Práce</div><div class="std-kat-popis">Čistá přidaná hodnota — skutečná výrobní nebo manipulační činnost</div></div>
-      <div class="std-kat-vzdy">vždy</div>
-    </div>
-
     <div class="std-kat-grid">
+      <label class="std-kat-row">
+        <input type="checkbox" checked data-kat="prace" onchange="prepnoutStdKat(this)">
+        <div class="std-kat-swatch" style="background:var(--prace);"></div>
+        <div class="std-kat-info"><div class="std-kat-nazev">Práce</div><div class="std-kat-popis">Čistá přidaná hodnota — skutečná výrobní nebo manipulační činnost</div></div>
+      </label>
       <label class="std-kat-row">
         <input type="checkbox" checked data-kat="presun" onchange="prepnoutStdKat(this)">
         <div class="std-kat-swatch" style="background:var(--presun);"></div>
@@ -554,6 +553,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <div class="m-nazev" id="m-nazev">-</div>
     <div class="m-cykly" id="m-cykly">Cyklus 1</div>
   </div>
+  <a class="m-upravit-link" href="#" onclick="upravitNastaveni(); return false;">← Upravit nastavení a tlačítka</a>
 
   <div class="instrukce">
     <strong>Jak měřit:</strong> Klikněte na tlačítko vždy na <strong>začátku</strong> dané činnosti. Časomíra se spustí prvním kliknutím. Aplikace automaticky ukončí předchozí a začne měřit novou. Až cyklus skončí, klikněte STOP.
@@ -901,8 +901,25 @@ function toggleVlastniSmena() {
   document.querySelectorAll('.smena-btn').forEach(b => b.classList.remove('on'));
 }
 
+// Práce nemusí být zrovna vestavěné tlačítko Práce - klidně ho vypněte a měřte
+// jen přes vlastní tlačítko typu Práce. Appka jen hlídá, ať kategorie Práce
+// nezůstane úplně prázdná (bez ní ztrácí smysl počítat % mimo přímou práci).
+function pocetAktivnichPraci(vynechatOpIdx) {
+  const vestavenaAktivni = !vyrazeneStd.has('prace') ? 1 : 0;
+  const vlastniPrace = vlastniOp.filter((o, idx) => idx !== vynechatOpIdx && o.typ === 'prace' && o.nazev.trim()).length;
+  return vestavenaAktivni + vlastniPrace;
+}
+
 function prepnoutStdKat(cb) {
   const kat = cb.dataset.kat;
+  if (kat === 'prace' && !cb.checked) {
+    const vlastniPrace = vlastniOp.filter(o => o.typ === 'prace' && o.nazev.trim()).length;
+    if (vlastniPrace < 1) {
+      upozornit('V kategorii Práce musí zůstat aspoň jedno tlačítko. Přidejte nejdřív vlastní tlačítko typu Práce, pak tohle můžete vypnout.');
+      cb.checked = true;
+      return;
+    }
+  }
   if (cb.checked) vyrazeneStd.delete(kat); else vyrazeneStd.add(kat);
   cb.closest('.std-kat-row').classList.toggle('vyrazeno', !cb.checked);
 }
@@ -949,11 +966,20 @@ function renderOperace() {
 }
 
 function smazatOp(i) {
+  if (vlastniOp[i].typ === 'prace' && pocetAktivnichPraci(i) < 1) {
+    upozornit('V kategorii Práce musí zůstat aspoň jedno tlačítko. Zapněte vestavěné tlačítko Práce, nebo nejdřív přidejte jiné vlastní tlačítko typu Práce.');
+    return;
+  }
   const [odebrana] = vlastniOp.splice(i, 1);
   if (odebrana && pouziteNavrhy.has(odebrana.id)) { pouziteNavrhy.delete(odebrana.id); renderNavrh(); }
   renderOperace();
 }
 function zmenitTypOperace(i, typ) {
+  if (vlastniOp[i].typ === 'prace' && typ !== 'prace' && pocetAktivnichPraci(i) < 1) {
+    upozornit('V kategorii Práce musí zůstat aspoň jedno tlačítko. Zapněte vestavěné tlačítko Práce, nebo nejdřív přidejte jiné vlastní tlačítko typu Práce.');
+    renderOperace();
+    return;
+  }
   vlastniOp[i].typ = typ;
   const paleta = typ === 'prace' ? ZELENA_BARVY : VLASTNI_BARVY;
   vlastniOp[i].barva = paleta[i % paleta.length];
@@ -972,11 +998,15 @@ function spustit() {
   hodinovaSazba = parseFloat(document.getElementById('inp-sazba').value) || 250;
   pocetPracovniku = parseInt(document.getElementById('inp-pocet-pracovniku').value) || 1;
 
-  vsechnyKat = STD.filter(k => k === 'prace' || !vyrazeneStd.has(k));
+  if (pocetAktivnichPraci() < 1) {
+    upozornit('V kategorii Práce musí zůstat aspoň jedno tlačítko - zapněte vestavěné tlačítko Práce, nebo přidejte vlastní tlačítko typu Práce v Kroku 2.');
+    return;
+  }
+
+  vsechnyKat = STD.filter(k => !vyrazeneStd.has(k));
   vlastniOp.filter(o => o.nazev.trim()).forEach(o => vsechnyKat.push(o.id));
 
   STD.forEach(k => {
-    if (k === 'prace') return;
     const btn = document.querySelector('.kat-btn.k-' + k);
     if (btn) btn.style.display = vyrazeneStd.has(k) ? 'none' : '';
   });
@@ -1866,6 +1896,34 @@ function kopirovat() {
     btn.textContent = 'Zkopírováno!';
     setTimeout(() => { btn.textContent = 'Kopírovat'; }, 2000);
   });
+}
+
+// Zpět z obrazovky měření na nastavení (Krok 1-4), třeba když se někdo
+// uklikne s vlastními tlačítky. Na rozdíl od zacitZnovu() nechává beze
+// změny název procesu, směnu, náklady i seznam vlastních tlačítek -
+// jen se ztratí rozměřené cykly tohohle pokusu, protože po úpravě tlačítek
+// by stejně neseděly na nové kategorie.
+function upravitNastaveni() {
+  const provest = function () {
+    clearInterval(timerInt); clearInterval(katInt);
+    cykly = []; aktCyklus = null; aktivniKat = null; cyklusStart = null;
+    document.querySelectorAll('#grid-hodnota .k-vlastni, #grid-plytvani .k-vlastni').forEach(b => b.remove());
+    document.getElementById('uloz-list').innerHTML = '';
+    document.getElementById('ulozene').style.display = 'none';
+    document.getElementById('mereni').style.display = 'none';
+    document.getElementById('setup').style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
+  };
+  if (cykly.length > 0 || cyklusStart) {
+    document.getElementById('modal-notice-title').textContent = 'Upravit nastavení?';
+    document.getElementById('modal-notice-text').textContent = 'Vrátíte se k nastavení a tlačítkům. Rozměřené cykly u tohohle měření se ztratí, po úpravě začnete měřit znovu od prvního cyklu.';
+    document.getElementById('modal-notice-cancel').style.display = '';
+    document.getElementById('modal-notice-ok').textContent = 'Upravit nastavení';
+    _modalNoticeCb = provest;
+    document.getElementById('modal-notice').classList.add('visible');
+  } else {
+    provest();
+  }
 }
 
 function zacitZnovu() {
