@@ -132,7 +132,10 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .field input,.field select{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
 .field input:focus,.field select:focus{border-color:var(--gold);background:white;}
 .field+.field{margin-top:10px;}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.field-row{display:flex;justify-content:center;gap:20px;}
+.field-row .field{width:180px;}
+.field-row .field+.field{margin-top:0;}
+@media (max-width:400px){.field-row{flex-wrap:wrap;}.field-row .field{width:100%;max-width:220px;}}
 
 /* OPERACE - taky karta k vyplnění (přidávají se vlastní položky) */
 .operace-sekce{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;}
@@ -508,15 +511,6 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <button class="btn-pridat" onclick="pridatOperaci()">+ Přidat vlastní operaci</button>
   </div>
 
-  <div class="setup-krok">
-    <div class="krok-num">Krok 6 — Počet cyklů</div>
-    <div class="krok-title">Kolik cyklů chcete změřit?</div>
-    <div class="field">
-      <input type="number" id="inp-cykly" value="10" min="1" max="50">
-    </div>
-    <p style="font-size:12px;color:var(--light);margin-top:6px;">Doporučujeme 5-10 cyklů pro statisticky spolehlivý výsledek.</p>
-  </div>
-
   <button class="btn-spustit" onclick="spustit()">
     <span class="arr"></span> Rozumím, přejít k měření
   </button>
@@ -833,7 +827,7 @@ let vsechnyKat = [];
 let delkaSmeny = 7.5;
 let hodinovaSazba = 250;
 let pocetPracovniku = 1;
-let nazev = '', maxCyklu = 10, pocetKusu = 0;
+let nazev = '', pocetKusu = 0;
 let cykly = [], aktCyklus = null, aktivniKat = null;
 let timerInt = null, katInt = null, cyklusStart = null;
 
@@ -882,7 +876,6 @@ function zmenitBarvu(i, el) {
 
 function spustit() {
   nazev = document.getElementById('inp-nazev').value.trim() || 'Proces';
-  maxCyklu = parseInt(document.getElementById('inp-cykly').value) || 10;
   pocetKusu = parseInt(document.getElementById('inp-zakazka').value) || 0;
   hodinovaSazba = parseFloat(document.getElementById('inp-sazba').value) || 250;
   pocetPracovniku = parseInt(document.getElementById('inp-pocet-pracovniku').value) || 1;
@@ -922,7 +915,7 @@ function zacitNovyCyklus() {
   document.getElementById('btn-stop').style.display = 'block';
   document.getElementById('btn-novy').style.display = 'none';
   document.getElementById('btn-konec').style.display = 'none';
-  document.getElementById('m-cykly').textContent = 'Cyklus ' + (cykly.length + 1) + ' / ' + maxCyklu;
+  document.getElementById('m-cykly').textContent = 'Cyklus ' + (cykly.length + 1);
   document.getElementById('timer').textContent = '00:00';
   document.getElementById('timer').style.color = 'var(--dark)';
   document.getElementById('timer-kat').textContent = 'Klikněte na první činnost';
@@ -990,7 +983,7 @@ function stopCyklus() {
   pridatRadek(cykly.length, aktCyklus);
   document.getElementById('ulozene').style.display = 'block';
   document.getElementById('btn-stop').style.display = 'none';
-  if (cykly.length < maxCyklu) document.getElementById('btn-novy').style.display = 'block';
+  document.getElementById('btn-novy').style.display = 'block';
   document.getElementById('btn-konec').style.display = 'block';
   document.getElementById('timer-kat').textContent = 'Zastaven';
   document.getElementById('timer-kat').style.background = '#888';
@@ -1454,7 +1447,7 @@ function nacistHistorii() {
       </div>`).join('')}
     </div>
     <button class="btn-porovnat" id="btn-porovnat" onclick="porovnatVybrane()">Porovnat vybraná měření (PŘED × PO)</button>`;
-  setup.insertBefore(histWrap, setup.firstChild);
+  setup.insertBefore(histWrap, document.querySelector('.btn-spustit'));
 }
 
 function prepnoutVyber(i) {
