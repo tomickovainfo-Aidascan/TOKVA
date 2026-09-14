@@ -274,6 +274,11 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .modal p { font-size:14px; color:var(--mid); margin-bottom:18px; line-height:1.7; }
 .modal-input { width:100%; border:1px solid var(--border); border-radius:6px; padding:10px 14px; font-family:"DM Sans",sans-serif; font-size:14px; outline:none; margin-bottom:14px; }
 .modal-input:focus { border-color:var(--gold); }
+.uloz-panel { background:var(--white); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:12px; }
+.uloz-panel-title { padding:14px 20px; border-bottom:1px solid var(--border); font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--mid); }
+.uloz-panel-body { padding:16px 20px; }
+.uloz-panel-body p { font-size:13px; color:var(--mid); line-height:1.6; margin-bottom:10px; }
+.uloz-panel-body .modal-input { margin-bottom:10px; }
 .modal-btns { display:flex; gap:10px; justify-content:flex-end; }
 .btn-modal-ok { background:var(--gold); color:var(--black); border:none; border-radius:6px; padding:9px 20px; font-family:"DM Sans",sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
 .btn-modal-cancel { background:transparent; color:var(--mid); border:1px solid var(--border); border-radius:6px; padding:9px 16px; font-family:"DM Sans",sans-serif; font-size:13px; cursor:pointer; }
@@ -544,6 +549,45 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <button class="tool-btn" onclick="otevritSeznamProjektu()">
       Otevřít nákres
     </button>
+  </div>
+
+  <!-- ZAŘADIT K PROJEKTU (Pro) -->
+  <div class="uloz-panel" id="s-projekt-panel" style="display:none;">
+    <div class="uloz-panel-title">Zařadit k projektu</div>
+    <div class="uloz-panel-body">
+      <p>Nepovinné. Pomůže vám tenhle nákres později najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
+      <select id="s-projekt-select" class="modal-input">
+        <option value="">Bez projektu</option>
+        <option value="__novy__">+ Nový projekt…</option>
+      </select>
+      <input id="s-projekt-novy-nazev" type="text" placeholder="Název nového projektu" class="modal-input" style="display:none;">
+      <button class="tool-btn" style="background:var(--gold);border-color:var(--gold);width:100%;justify-content:center;" onclick="ulozitZarazeniProjektuVysledek()">Uložit zařazení</button>
+      <div id="s-projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <!-- PRIDAT DO AKCNIHO PLANU (Pro) -->
+  <div class="uloz-panel" id="s-akce-panel" style="display:none;">
+    <div class="uloz-panel-title">Přidat do akčního plánu</div>
+    <div class="uloz-panel-body">
+      <p>Založí úkol v Akčním plánu s odkazem na tenhle nákres. Projekt je nepovinný, ale pokud nákres k nějakému patří, vyberte ho, ať se v akčním plánu neztratí.</p>
+      <input id="s-akce-nazev" type="text" placeholder="Co se má udělat" class="modal-input">
+      <select id="s-akce-projekt-select" class="modal-input">
+        <option value="">Bez projektu</option>
+        <option value="__novy__">+ Nový projekt…</option>
+      </select>
+      <input id="s-akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" class="modal-input" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <input id="s-akce-investice" type="number" placeholder="Investice (Kč)" class="modal-input">
+        <input id="s-akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" class="modal-input">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <input id="s-akce-osoba" type="text" placeholder="Odpovědná osoba" class="modal-input">
+        <input id="s-akce-termin" type="date" class="modal-input">
+      </div>
+      <button class="tool-btn" style="background:var(--gold);border-color:var(--gold);width:100%;justify-content:center;" onclick="pridatDoAkcnihoPlanuVysledek()">+ Přidat do akčního plánu</button>
+      <div id="s-akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+    </div>
   </div>
 
   <!-- CANVAS -->
@@ -837,6 +881,9 @@ let kalibraceBody = []; // docasne 2 body pro klikaci kalibraci meritka
 let kalibracePxDist = 0;
 let nazevProjektu = ''; // jmeno aktualne otevreneho/rozpracovaneho projektu
 let aktualniProjektId = null; // id v ulozenych projektech, null = jeste neulozeno jako existujici projekt
+// toolRunId nakresu, na ktery se vazou panely Zaradit k projektu / Pridat
+// do akcniho planu v toolbaru - nastavi se po ulozeni i po otevreni nakresu.
+let posledniToolRunId = null;
 const PROJEKTY_KEY = 'spaghetti_pro_projekty';
 const MAX_PROJEKTU = 20;
 
@@ -1107,6 +1154,8 @@ function spustitKresleni() {
   document.getElementById('setup-panel').style.display = 'none';
   document.getElementById('stats-bar').style.display = 'flex';
   document.getElementById('toolbar').style.display = 'flex';
+  document.getElementById('s-projekt-panel').style.display = 'block';
+  document.getElementById('s-akce-panel').style.display = 'block';
   document.getElementById('vysvetlivky').style.display = 'block';
   document.getElementById('zakazky-panel').style.display = 'block';
   document.getElementById('dopad-panel').style.display = 'block';
@@ -1188,13 +1237,52 @@ async function ulozitProjektDoSupabase(zaznam) {
       hlavni_hodnota_typ: hlavniTyp,
       data: zaznam
     };
+    let runId = null;
     if (existujici && existujici.length) {
       await supabaseClient.from('tool_runs').update(payload).eq('id', existujici[0].id);
+      runId = existujici[0].id;
     } else {
-      await supabaseClient.from('tool_runs').insert(payload);
+      const { data: novy } = await supabaseClient.from('tool_runs').insert(payload).select().single();
+      runId = novy ? novy.id : null;
     }
+    pripravitPanelyProNakres(runId, zaznam.nazev);
   } catch (e) {
     console.warn('Uložení nákresu do účtu se nepodařilo, nákres zůstává uložený v appce.', e);
+  }
+}
+
+// Panely Zařadit k projektu / Přidat do akčního plánu se vážou vždy na
+// právě uložený nebo otevřený nákres - sdílené mezi uložením (výš)
+// a otevřením staršího nákresu (nacistProjektZeZaznamu).
+function pripravitPanelyProNakres(runId, nazev) {
+  posledniToolRunId = runId;
+  const projektStav = document.getElementById('s-projekt-stav');
+  const akceNazev = document.getElementById('s-akce-nazev');
+  const akceStav = document.getElementById('s-akce-stav');
+  if (projektStav) projektStav.textContent = '';
+  if (akceNazev) akceNazev.value = 'Přemístit / zkrátit trasu: ' + nazev;
+  if (akceStav) akceStav.textContent = '';
+  nacistProjektySpaghetti();
+}
+
+// Najde toolRunId uloženého výsledku k nákresu podle jeho místního id -
+// stejná logika jako uvnitř otevritModalAkcniPlan, sdílená i pro panely
+// rovnou v toolbaru při otevření staršího nákresu.
+async function najitToolRunIdProNakres(id) {
+  if (!jePro || !clenstvi) { posledniToolRunId = null; return; }
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('id')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'spaghetti-pro')
+      .eq('data->>id', id)
+      .limit(1);
+    if (error) throw error;
+    posledniToolRunId = (data && data[0]) ? data[0].id : null;
+  } catch (e) {
+    console.warn('Nepodařilo se najít uložený výsledek k tomuhle nákresu.', e);
+    posledniToolRunId = null;
   }
 }
 
@@ -1476,6 +1564,12 @@ function nacistProjektZeZaznamu(p) {
   rychlostChuze = p.rychlostChuze || 4.5;
   aktivniZakazka = 0;
 
+  document.getElementById('s-projekt-stav').textContent = '';
+  document.getElementById('s-akce-nazev').value = 'Přemístit / zkrátit trasu: ' + p.nazev;
+  document.getElementById('s-akce-stav').textContent = '';
+  posledniToolRunId = null;
+  najitToolRunIdProNakres(p.id).then(() => nacistProjektySpaghetti());
+
   document.getElementById('naklady-hod').value = nakladyHod;
   document.getElementById('rychlost-chuze').value = rychlostChuze;
 
@@ -1498,6 +1592,8 @@ function nacistProjektZeZaznamu(p) {
 
     document.getElementById('stats-bar').style.display = 'flex';
     document.getElementById('toolbar').style.display = 'flex';
+    document.getElementById('s-projekt-panel').style.display = 'block';
+    document.getElementById('s-akce-panel').style.display = 'block';
     document.getElementById('vysvetlivky').style.display = 'block';
     document.getElementById('zakazky-panel').style.display = 'block';
     document.getElementById('dopad-panel').style.display = 'block';
@@ -1586,20 +1682,35 @@ async function nacistProjektySpaghetti() {
       .eq('organization_id', clenstvi.organization_id)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    const select = document.getElementById('ap-projekt-select');
-    if (!select) return;
-    select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
-    (data || []).forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.name;
-      opt.setAttribute('data-projekt', '1');
-      select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+    ['ap-projekt-select', 's-projekt-select', 's-akce-projekt-select'].forEach(id => {
+      const select = document.getElementById(id);
+      if (!select) return;
+      const puvodniHodnota = select.value;
+      select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
+      (data || []).forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        opt.setAttribute('data-projekt', '1');
+        select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+      });
+      if ([...select.options].some(o => o.value === puvodniHodnota)) select.value = puvodniHodnota;
     });
   } catch (e) {
     console.warn('Projekty se nepodařilo načíst.', e);
   }
 }
+
+document.addEventListener('change', function (e) {
+  const paryVyberProNovy = {
+    's-projekt-select': 's-projekt-novy-nazev',
+    's-akce-projekt-select': 's-akce-projekt-novy-nazev'
+  };
+  if (e.target && paryVyberProNovy[e.target.id]) {
+    const novyInput = document.getElementById(paryVyberProNovy[e.target.id]);
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+  }
+});
 
 document.addEventListener('change', function (e) {
   if (e.target && e.target.id === 'ap-projekt-select') {
@@ -1638,6 +1749,87 @@ async function pridatDoAkcnihoPlanu() {
       estimated_investment: (document.getElementById('ap-investice').value || '').trim() ? Number(document.getElementById('ap-investice').value) : null,
       expected_benefit: (document.getElementById('ap-prinos').value || '').trim() ? Number(document.getElementById('ap-prinos').value) : null,
       due_date: document.getElementById('ap-termin').value || null,
+      status: 'novy',
+      created_by: session.user.id
+    });
+    if (error) throw error;
+    stav.innerHTML = 'Přidáno. <a href="https://tokva.cz/akcni-plan/' + (projektId ? ('?projekt=' + projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;">Otevřít akční plán →</a>';
+  } catch (e) {
+    console.warn('Přidání do akčního plánu se nepodařilo.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
+// Panel "Zařadit k projektu" přímo v toolbaru - přiřadí právě otevřený/
+// uložený nákres k projektu, bez založení úkolu v akčním plánu.
+async function ulozitZarazeniProjektuVysledek() {
+  const stav = document.getElementById('s-projekt-stav');
+  const select = document.getElementById('s-projekt-select');
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Nákres se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    let projektId = select.value || null;
+    if (projektId === '__novy__') {
+      const nazev = (document.getElementById('s-projekt-novy-nazev').value || '').trim();
+      if (!nazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data, error } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: nazev
+      }).select('id').single();
+      if (error) throw error;
+      projektId = data.id;
+    }
+    const { error: chybaUpdate } = await supabaseClient
+      .from('tool_runs')
+      .update({ project_id: projektId })
+      .eq('id', posledniToolRunId);
+    if (chybaUpdate) throw chybaUpdate;
+    stav.textContent = projektId ? 'Uloženo, nákres patří k projektu.' : 'Uloženo, bez projektu.';
+    await nacistProjektySpaghetti();
+  } catch (e) {
+    console.warn('Zařazení k projektu se nepodařilo uložit.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
+// Panel "Přidat do akčního plánu" přímo v toolbaru - stejná logika jako
+// pridatDoAkcnihoPlanu(), jen pro právě otevřený/uložený nákres.
+async function pridatDoAkcnihoPlanuVysledek() {
+  const stav = document.getElementById('s-akce-stav');
+  const nazev = (document.getElementById('s-akce-nazev').value || '').trim();
+  if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Nákres se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    const selectProjekt = document.getElementById('s-akce-projekt-select');
+    let projektId = (selectProjekt && selectProjekt.value && selectProjekt.value !== '__novy__') ? selectProjekt.value : null;
+    if (selectProjekt && selectProjekt.value === '__novy__') {
+      const novyNazev = (document.getElementById('s-akce-projekt-novy-nazev').value || '').trim();
+      if (!novyNazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data: novyProjekt, error: chybaProjekt } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: novyNazev
+      }).select('id').single();
+      if (chybaProjekt) throw chybaProjekt;
+      projektId = novyProjekt.id;
+    }
+    if (projektId) {
+      try {
+        await supabaseClient.from('tool_runs').update({ project_id: projektId }).eq('id', posledniToolRunId);
+      } catch (ex) {
+        console.warn('Přiřazení nákresu k projektu se nepodařilo, úkol se přesto založí.', ex);
+      }
+    }
+    const { error } = await supabaseClient.from('actions').insert({
+      organization_id: clenstvi.organization_id,
+      project_id: projektId,
+      tool_run_id: posledniToolRunId,
+      title: nazev,
+      reason: 'Výsledek Spaghetti diagramu Pro ze dne ' + new Date().toLocaleDateString('cs-CZ'),
+      responsible_person: (document.getElementById('s-akce-osoba').value || '').trim() || null,
+      estimated_investment: (document.getElementById('s-akce-investice').value || '').trim() ? Number(document.getElementById('s-akce-investice').value) : null,
+      expected_benefit: (document.getElementById('s-akce-prinos').value || '').trim() ? Number(document.getElementById('s-akce-prinos').value) : null,
+      due_date: document.getElementById('s-akce-termin').value || null,
       status: 'novy',
       created_by: session.user.id
     });
@@ -2797,6 +2989,9 @@ function resetovat() {
     document.getElementById('setup-panel').style.display = 'none';
     document.getElementById('stats-bar').style.display = 'none';
     document.getElementById('toolbar').style.display = 'none';
+    document.getElementById('s-projekt-panel').style.display = 'none';
+    document.getElementById('s-akce-panel').style.display = 'none';
+    posledniToolRunId = null;
     document.getElementById('zakazky-panel').style.display = 'none';
     document.getElementById('dopad-panel').style.display = 'none';
     document.getElementById('rocni-dopad-card').style.display = 'none';
