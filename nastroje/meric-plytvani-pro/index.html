@@ -137,14 +137,33 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .field-row .field+.field{margin-top:0;}
 @media (max-width:400px){.field-row{flex-wrap:wrap;}.field-row .field{width:100%;max-width:220px;}}
 
-/* OPERACE - taky karta k vyplnění (přidávají se vlastní položky) */
-.operace-sekce{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:12px;}
+/* KROK 2 - výběr standardních kategorií (vykřížkování) a vlastní tlačítka */
+.krok2-lead{font-size:12px;color:var(--light);line-height:1.6;margin-bottom:14px;}
+.std-kat-row{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);transition:opacity .15s;}
+.std-kat-row.vyrazeno{opacity:.4;}
+.std-kat-fixed{background:var(--paper);margin-bottom:8px;align-items:center;}
+.std-kat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;}
+.std-kat-grid label.std-kat-row{cursor:pointer;}
+.std-kat-grid label.std-kat-row input[type=checkbox]{margin-top:3px;flex-shrink:0;width:15px;height:15px;accent-color:var(--gold-dark);cursor:pointer;}
+.std-kat-swatch{width:12px;height:8px;flex-shrink:0;margin-top:3px;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);}
+.std-kat-nazev{font-size:12px;font-weight:700;color:var(--dark);}
+.std-kat-popis{font-size:11px;color:var(--light);line-height:1.5;}
+.std-kat-vzdy{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--light);margin-left:auto;}
+
+.navrh-wrap{margin-top:14px;}
+.navrh-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:8px;}
+.navrh-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.navrh-chip{background:var(--paper);border:1px solid;border-radius:20px;padding:6px 12px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.navrh-chip:hover{background:var(--white);}
+
+/* VLASTNI TLACITKO */
 .operace-title{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:4px;}
 .operace-sub{font-size:12px;color:var(--light);margin-bottom:10px;line-height:1.6;}
 .operace-list{display:flex;flex-direction:column;gap:7px;margin-bottom:8px;}
 .operace-row{display:flex;gap:8px;align-items:center;}
-.operace-row input{flex:1;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-family:"DM Sans",sans-serif;font-size:13px;outline:none;}
+.operace-row input{flex:1;min-width:0;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-family:"DM Sans",sans-serif;font-size:13px;outline:none;}
 .operace-row input:focus{border-color:var(--gold);}
+.operace-row select{border:1px solid var(--border);border-radius:6px;padding:8px 6px;font-family:"DM Sans",sans-serif;font-size:12px;color:var(--dark);background:var(--paper);outline:none;flex-shrink:0;}
 .operace-barva{width:30px;height:30px;border-radius:6px;border:2px solid var(--border);cursor:pointer;flex-shrink:0;}
 .operace-smazat{background:transparent;border:none;color:var(--light);font-size:18px;cursor:pointer;padding:0 4px;}
 .operace-smazat:hover{color:var(--cekani);}
@@ -438,40 +457,59 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 
   </div>
 
-  <div class="setup-krok info">
-    <div class="krok-num">Krok 2 — Jak fungují tlačítka měření</div>
-    <div class="krok-title">Klikněte vždy na začátku dané činnosti</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;">
-      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
-        <div style="width:12px;height:8px;background:var(--prace);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
-        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Práce</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Čistá přidaná hodnota - skutečná výrobní nebo manipulační činnost</div></div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
-        <div style="width:12px;height:8px;background:var(--presun);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
-        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Přesun</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Chůze, transport materiálu nebo výrobku z místa na místo</div></div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
-        <div style="width:12px;height:8px;background:var(--hledani);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
-        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Hledání</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Hledání nářadí, materiálu, informace nebo místa</div></div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
-        <div style="width:12px;height:8px;background:var(--cekani);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
-        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Čekání</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Čekání na materiál, informaci, stroj nebo rozhodnutí</div></div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
-        <div style="width:12px;height:8px;background:var(--papiry);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
-        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Administrativa</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Vypisování, přepisování, skenování, evidence</div></div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
-        <div style="width:12px;height:8px;background:var(--kontrola);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
-        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Kontrola</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Vizuální nebo fyzická kontrola kvality výrobku</div></div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 10px;border-radius:6px;border:1px solid var(--border);grid-column:span 2;">
-        <div style="width:12px;height:8px;background:var(--priprava);clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
-        <div><div style="font-size:12px;font-weight:700;color:var(--dark);">Příprava</div><div style="font-size:11px;color:var(--light);line-height:1.5;">Příprava pracoviště, nástrojů nebo materiálu před operací</div></div>
-      </div>
+  <div class="setup-krok">
+    <div class="krok-num">Krok 2 — Co budete měřit</div>
+    <div class="krok-title">Vyberte kategorie a přidejte vlastní kroky</div>
+    <p class="krok2-lead">Při měření klikněte vždy na tlačítko na začátku dané činnosti. Kategorie, které pro váš proces nedávají smysl, odškrtněte — při měření se nezobrazí.</p>
+
+    <div class="std-kat-row std-kat-fixed">
+      <div class="std-kat-swatch" style="background:var(--prace);"></div>
+      <div class="std-kat-info"><div class="std-kat-nazev">Práce</div><div class="std-kat-popis">Čistá přidaná hodnota — skutečná výrobní nebo manipulační činnost</div></div>
+      <div class="std-kat-vzdy">vždy</div>
     </div>
-    <p style="font-size:12px;color:var(--light);margin-top:8px;line-height:1.6;">Vlastní operace přidáte v kroku 4 - zobrazí se jako zelená tlačítka vedle Práce.</p>
+
+    <div class="std-kat-grid">
+      <label class="std-kat-row">
+        <input type="checkbox" checked data-kat="presun" onchange="prepnoutStdKat(this)">
+        <div class="std-kat-swatch" style="background:var(--presun);"></div>
+        <div class="std-kat-info"><div class="std-kat-nazev">Přesun</div><div class="std-kat-popis">Chůze, transport materiálu nebo výrobku z místa na místo</div></div>
+      </label>
+      <label class="std-kat-row">
+        <input type="checkbox" checked data-kat="hledani" onchange="prepnoutStdKat(this)">
+        <div class="std-kat-swatch" style="background:var(--hledani);"></div>
+        <div class="std-kat-info"><div class="std-kat-nazev">Hledání</div><div class="std-kat-popis">Hledání nářadí, materiálu, informace nebo místa</div></div>
+      </label>
+      <label class="std-kat-row">
+        <input type="checkbox" checked data-kat="cekani" onchange="prepnoutStdKat(this)">
+        <div class="std-kat-swatch" style="background:var(--cekani);"></div>
+        <div class="std-kat-info"><div class="std-kat-nazev">Čekání</div><div class="std-kat-popis">Čekání na materiál, informaci, stroj nebo rozhodnutí</div></div>
+      </label>
+      <label class="std-kat-row">
+        <input type="checkbox" checked data-kat="papiry" onchange="prepnoutStdKat(this)">
+        <div class="std-kat-swatch" style="background:var(--papiry);"></div>
+        <div class="std-kat-info"><div class="std-kat-nazev">Administrativa</div><div class="std-kat-popis">Vypisování, přepisování, skenování, evidence</div></div>
+      </label>
+      <label class="std-kat-row">
+        <input type="checkbox" checked data-kat="kontrola" onchange="prepnoutStdKat(this)">
+        <div class="std-kat-swatch" style="background:var(--kontrola);"></div>
+        <div class="std-kat-info"><div class="std-kat-nazev">Kontrola</div><div class="std-kat-popis">Vizuální nebo fyzická kontrola kvality výrobku</div></div>
+      </label>
+      <label class="std-kat-row">
+        <input type="checkbox" checked data-kat="priprava" onchange="prepnoutStdKat(this)">
+        <div class="std-kat-swatch" style="background:var(--priprava);"></div>
+        <div class="std-kat-info"><div class="std-kat-nazev">Příprava</div><div class="std-kat-popis">Příprava pracoviště, nástrojů nebo materiálu před operací</div></div>
+      </label>
+    </div>
+
+    <div class="navrh-wrap">
+      <div class="navrh-title">Navrhovaná tlačítka</div>
+      <div class="navrh-chips" id="navrh-chips"></div>
+    </div>
+
+    <div class="operace-title" style="margin-top:16px;">Vlastní tlačítko</div>
+    <div class="operace-sub">Přidejte konkrétní krok vašeho procesu a vyberte, jestli jde o produktivní práci, nebo o plýtvání.</div>
+    <div class="operace-list" id="operace-list"></div>
+    <button class="btn-pridat" onclick="pridatOperaci()">+ Přidat vlastní tlačítko</button>
   </div>
 
   <div class="setup-krok">
@@ -502,13 +540,6 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <div class="field"><label>Počet kusů v zakázce</label>
       <input type="number" id="inp-zakazka" placeholder="např. 500" min="1"></div>
     <p style="font-size:12px;color:var(--light);margin-top:6px;line-height:1.6;">Aplikace spočítá takt zakázky, jak dlouho potrvá bez plýtvání a co ušetříte snížením plýtvání.</p>
-  </div>
-
-  <div class="operace-sekce">
-    <div class="operace-title">Krok 5 — Vlastní operace (volitelné)</div>
-    <div class="operace-sub">Přidejte konkrétní kroky vašeho procesu. Zobrazí se jako zelená tlačítka vedle Práce.</div>
-    <div class="operace-list" id="operace-list"></div>
-    <button class="btn-pridat" onclick="pridatOperaci()">+ Přidat vlastní operaci</button>
   </div>
 
   <button class="btn-spustit" onclick="spustit()">
@@ -543,7 +574,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     </div>
 
     <div class="kat-sekce-title" style="margin-top:8px;">Plýtvání</div>
-    <div class="kat-grid tri" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="kat-grid tri" id="grid-plytvani" style="grid-template-columns:1fr 1fr 1fr;">
       <button class="kat-btn k-presun" onclick="setKat('presun','Přesun','#1a6aaa')"><div class="kat-arr"></div><div>Přesun</div><div class="kat-cas" id="k-presun">0:00</div></button>
       <button class="kat-btn k-hledani" onclick="setKat('hledani','Hledání','#d97706')"><div class="kat-arr"></div><div>Hledání</div><div class="kat-cas" id="k-hledani">0:00</div></button>
       <button class="kat-btn k-cekani" onclick="setKat('cekani','Čekání','#c0392b')"><div class="kat-arr"></div><div>Čekání</div><div class="kat-cas" id="k-cekani">0:00</div></button>
@@ -820,16 +851,38 @@ const STD = ['prace','presun','hledani','cekani','papiry','priprava','kontrola']
 const STD_NAZVY = {prace:'Práce',presun:'Přesun',hledani:'Hledání',cekani:'Čekání',papiry:'Administrativa',priprava:'Příprava',kontrola:'Kontrola'};
 const STD_BARVY = {prace:'#2a7a4f',presun:'#1a6aaa',hledani:'#d97706',cekani:'#c0392b',papiry:'#7c3aed',priprava:'#545454',kontrola:'#0891b2'};
 const PLYTVANI = ['presun','hledani','cekani','papiry','priprava','kontrola'];
-const VLASTNI_BARVY = ['#166534','#1e40af','#92400e','#6b21a8','#9f1239','#065f46','#1d4ed8','#b45309'];
+// Zelená je vyhrazená pro produktivní práci - vlastní tlačítko typu "práce" dostane
+// odstín zelené, typu "plýtvání" barvu z téhle (nezelené) palety.
+const ZELENA_BARVY = ['#2a7a4f','#166534','#15803d','#047857'];
+const VLASTNI_BARVY = ['#1e40af','#92400e','#6b21a8','#9f1239','#1d4ed8','#b45309'];
+// Návrhy na jedno kliknutí - každý patří barvou/typem k existující kategorii plýtvání,
+// takže se automaticky počítá do % plýtvání a je vidět, ke které kategorii patří.
+const NAVRHOVANA = [
+  {id:'nv_cek_material', nazev:'Čekání na materiál', kat:'cekani'},
+  {id:'nv_cek_stroj', nazev:'Čekání na stroj', kat:'cekani'},
+  {id:'nv_cek_clovek', nazev:'Čekání na kolegu', kat:'cekani'},
+  {id:'nv_cek_schvaleni', nazev:'Čekání na schválení', kat:'cekani'},
+  {id:'nv_cek_dokument', nazev:'Čekání na dokument', kat:'cekani'},
+  {id:'nv_cek_doprava', nazev:'Čekání na dopravu (VZV)', kat:'cekani'},
+  {id:'nv_serizeni', nazev:'Seřízení stroje / výměna nástroje', kat:'priprava'},
+  {id:'nv_uklid', nazev:'Úklid pracoviště', kat:'priprava'},
+  {id:'nv_znaceni', nazev:'Značení / štítkování', kat:'papiry'},
+];
 
 let vlastniOp = [];
 let vsechnyKat = [];
+let vyrazeneStd = new Set();
+let pouziteNavrhy = new Set();
 let delkaSmeny = 7.5;
 let hodinovaSazba = 250;
 let pocetPracovniku = 1;
 let nazev = '', pocetKusu = 0;
 let cykly = [], aktCyklus = null, aktivniKat = null;
 let timerInt = null, katInt = null, cyklusStart = null;
+
+function plytvaniIds() {
+  return [...PLYTVANI, ...vlastniOp.filter(o => o.typ === 'plytvani').map(o => o.id)];
+}
 
 // =============================================
 // SETUP
@@ -847,10 +900,33 @@ function toggleVlastniSmena() {
   document.querySelectorAll('.smena-btn').forEach(b => b.classList.remove('on'));
 }
 
+function prepnoutStdKat(cb) {
+  const kat = cb.dataset.kat;
+  if (cb.checked) vyrazeneStd.delete(kat); else vyrazeneStd.add(kat);
+  cb.closest('.std-kat-row').classList.toggle('vyrazeno', !cb.checked);
+}
+
+function renderNavrh() {
+  const wrap = document.getElementById('navrh-chips');
+  wrap.innerHTML = NAVRHOVANA.filter(n => !pouziteNavrhy.has(n.id)).map(n =>
+    `<button type="button" class="navrh-chip" style="border-color:${STD_BARVY[n.kat]};color:${STD_BARVY[n.kat]}" onclick="pridatNavrzenou('${n.id}')">+ ${n.nazev}</button>`
+  ).join('');
+}
+
+function pridatNavrzenou(navrhId) {
+  const n = NAVRHOVANA.find(x => x.id === navrhId);
+  if (!n) return;
+  vlastniOp.push({id: n.id, nazev: n.nazev, barva: STD_BARVY[n.kat], typ: 'plytvani'});
+  pouziteNavrhy.add(n.id);
+  renderNavrh();
+  renderOperace();
+}
+
 function pridatOperaci() {
   const id = 'op_' + Date.now();
-  const barva = VLASTNI_BARVY[vlastniOp.length % VLASTNI_BARVY.length];
-  vlastniOp.push({id, nazev:'', barva});
+  const typ = 'prace';
+  const barva = ZELENA_BARVY[vlastniOp.filter(o => o.typ === 'prace').length % ZELENA_BARVY.length];
+  vlastniOp.push({id, nazev:'', barva, typ});
   renderOperace();
 }
 
@@ -860,17 +936,32 @@ function renderOperace() {
   vlastniOp.forEach((op, i) => {
     const row = document.createElement('div');
     row.className = 'operace-row';
-    row.innerHTML = `<input type="text" placeholder="Název operace" value="${op.nazev}" oninput="vlastniOp[${i}].nazev=this.value">
+    row.innerHTML = `<input type="text" placeholder="Název tlačítka" value="${op.nazev}" oninput="vlastniOp[${i}].nazev=this.value">
+      <select onchange="zmenitTypOperace(${i}, this.value)">
+        <option value="prace" ${op.typ==='prace'?'selected':''}>Práce</option>
+        <option value="plytvani" ${op.typ==='plytvani'?'selected':''}>Plýtvání</option>
+      </select>
       <div class="operace-barva" style="background:${op.barva}" onclick="zmenitBarvu(${i}, this)"></div>
       <button class="operace-smazat" onclick="smazatOp(${i})">×</button>`;
     list.appendChild(row);
   });
 }
 
-function smazatOp(i) { vlastniOp.splice(i, 1); renderOperace(); }
+function smazatOp(i) {
+  const [odebrana] = vlastniOp.splice(i, 1);
+  if (odebrana && pouziteNavrhy.has(odebrana.id)) { pouziteNavrhy.delete(odebrana.id); renderNavrh(); }
+  renderOperace();
+}
+function zmenitTypOperace(i, typ) {
+  vlastniOp[i].typ = typ;
+  const paleta = typ === 'prace' ? ZELENA_BARVY : VLASTNI_BARVY;
+  vlastniOp[i].barva = paleta[i % paleta.length];
+  renderOperace();
+}
 function zmenitBarvu(i, el) {
-  const idx = VLASTNI_BARVY.indexOf(vlastniOp[i].barva);
-  vlastniOp[i].barva = VLASTNI_BARVY[(idx + 1) % VLASTNI_BARVY.length];
+  const paleta = vlastniOp[i].typ === 'prace' ? ZELENA_BARVY : VLASTNI_BARVY;
+  const idx = paleta.indexOf(vlastniOp[i].barva);
+  vlastniOp[i].barva = paleta[(idx + 1) % paleta.length];
   el.style.background = vlastniOp[i].barva;
 }
 
@@ -880,10 +971,17 @@ function spustit() {
   hodinovaSazba = parseFloat(document.getElementById('inp-sazba').value) || 250;
   pocetPracovniku = parseInt(document.getElementById('inp-pocet-pracovniku').value) || 1;
 
-  vsechnyKat = [...STD];
+  vsechnyKat = STD.filter(k => k === 'prace' || !vyrazeneStd.has(k));
   vlastniOp.filter(o => o.nazev.trim()).forEach(o => vsechnyKat.push(o.id));
 
-  const grid = document.getElementById('grid-hodnota');
+  STD.forEach(k => {
+    if (k === 'prace') return;
+    const btn = document.querySelector('.kat-btn.k-' + k);
+    if (btn) btn.style.display = vyrazeneStd.has(k) ? 'none' : '';
+  });
+
+  const gridPrace = document.getElementById('grid-hodnota');
+  const gridPlytvani = document.getElementById('grid-plytvani');
   vlastniOp.filter(o => o.nazev.trim()).forEach(op => {
     const btn = document.createElement('button');
     btn.className = 'kat-btn k-vlastni';
@@ -892,7 +990,7 @@ function spustit() {
     btn.style.color = op.barva;
     btn.innerHTML = `<div class="kat-arr" style="background:${op.barva}"></div><div>${op.nazev}</div><div class="kat-cas" id="k-${op.id}">0:00</div>`;
     btn.onclick = () => setKat(op.id, op.nazev, op.barva);
-    grid.appendChild(btn);
+    (op.typ === 'plytvani' ? gridPlytvani : gridPrace).appendChild(btn);
   });
 
   document.getElementById('setup').style.display = 'none';
@@ -933,7 +1031,7 @@ function setKat(kat, nazevKat, barva) {
   }
   document.querySelectorAll('.kat-btn').forEach(b => { b.classList.remove('on'); if(b.classList.contains('k-vlastni')){b.style.background='';b.style.color='';} });
   const btn = document.getElementById('btn-'+kat) || document.querySelector('.k-'+kat);
-  if (btn) { btn.classList.add('on'); if(kat.startsWith('op_')){btn.style.background=barva;btn.style.color='white';} }
+  if (btn) { btn.classList.add('on'); if(btn.classList.contains('k-vlastni')){btn.style.background=barva;btn.style.color='white';} }
   aktivniKat = kat;
   document.getElementById('timer-kat').textContent = nazevKat;
   document.getElementById('timer-kat').style.background = barva;
@@ -1045,7 +1143,7 @@ function ukoncit() {
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
   const minC = Math.min(...cykly.map(c=>c.celkem));
   const maxC = Math.max(...cykly.map(c=>c.celkem));
-  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
   const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
 
   document.getElementById('s-nazev').textContent = nazev;
@@ -1058,7 +1156,7 @@ function ukoncit() {
     h += `<tr><td>${i+1}</td>` + vsechnyKat.map(k=>`<td>${fmtC(c.cas[k]||0)}</td>`).join('') + `<td>${fmtC(c.celkem)}</td></tr>`;
   });
   h += '<tr class="avg"><td>Průměr</td>' + vsechnyKat.map(k=>`<td>${fmtC(avg[k])}</td>`).join('') + `<td>${fmtC(avgC)}</td></tr>`;
-  h += '<tr class="ply"><td>Plý.</td>' + vsechnyKat.map(k=>`<td>${PLYTVANI.includes(k)?fmtC(avg[k]):'-'}</td>`).join('') + `<td>${fmtC(plyC)} (${plyPct}%)</td></tr>`;
+  h += '<tr class="ply"><td>Plý.</td>' + vsechnyKat.map(k=>`<td>${plytvaniIds().includes(k)?fmtC(avg[k]):'-'}</td>`).join('') + `<td>${fmtC(plyC)} (${plyPct}%)</td></tr>`;
   tbl.innerHTML = h;
 
   // Porovnani cyklu
@@ -1066,7 +1164,7 @@ function ukoncit() {
   const maxCelkem = Math.max(...cykly.map(c=>c.celkem));
   porov.innerHTML = cykly.map((c,i) => {
     const pct = maxCelkem > 0 ? (c.celkem/maxCelkem*100).toFixed(1) : 0;
-    const plyPctC = c.celkem > 0 ? (PLYTVANI.reduce((s,k)=>s+(c.cas[k]||0),0)/c.celkem*100).toFixed(0) : 0;
+    const plyPctC = c.celkem > 0 ? (plytvaniIds().reduce((s,k)=>s+(c.cas[k]||0),0)/c.celkem*100).toFixed(0) : 0;
     const isMin = c.celkem === minC;
     const isMax = c.celkem === maxC;
     return `<div class="porov-row">
@@ -1206,7 +1304,7 @@ function ulozitDoHistorie() {
   const avg = {};
   vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
-  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
   const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
   const plyKcRok = avgC > 0 ? Math.round((plyC/avgC) * hodinovaSazba * delkaSmeny * 250 * pocetPracovniku) : 0;
 
@@ -1522,7 +1620,7 @@ function sestavit() {
   const avg = {};
   vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
-  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
   const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
 
   let body = 'CASOVA STUDIE PRO: ' + nazev.toUpperCase() + '\n';
@@ -1542,7 +1640,7 @@ function stahnoutCSV() {
   const avg = {};
   vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
-  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
   const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
 
   let csv = 'Casova studie Pro;' + nazev + '\n';
@@ -1572,7 +1670,7 @@ function tiskReport() {
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
   const minC = Math.min(...cykly.map(c=>c.celkem));
   const maxC = Math.max(...cykly.map(c=>c.celkem));
-  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
   const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
   const SMENA_SEK = delkaSmeny * 3600;
   const kusyZaSmenu = avgC > 0 ? Math.floor(SMENA_SEK / avgC) : 0;
@@ -1589,7 +1687,7 @@ function tiskReport() {
     tblRows += `<tr>${vsechnyKat.map(k=>`<td>${fmtC(c.cas[k]||0)}</td>`).join('')}<td><strong>${fmtC(c.celkem)}</strong></td></tr>`;
   });
   const avgRow = vsechnyKat.map(k=>`<td>${fmtC(avg[k])}</td>`).join('') + `<td><strong>${fmtC(avgC)}</strong></td>`;
-  const plyRow = vsechnyKat.map(k=>`<td>${PLYTVANI.includes(k)?fmtC(avg[k]):'-'}</td>`).join('') + `<td><strong>${fmtC(plyC)} (${plyPct}%)</strong></td>`;
+  const plyRow = vsechnyKat.map(k=>`<td>${plytvaniIds().includes(k)?fmtC(avg[k]):'-'}</td>`).join('') + `<td><strong>${fmtC(plyC)} (${plyPct}%)</strong></td>`;
 
   // Graf rozložení
   let grafRows = '';
@@ -1759,13 +1857,22 @@ function kopirovat() {
 
 function zacitZnovu() {
   cykly = []; aktCyklus = null; aktivniKat = null; cyklusStart = null;
-  vlastniOp = []; vsechnyKat = [];
+  vlastniOp = []; vsechnyKat = []; vyrazeneStd = new Set(); pouziteNavrhy = new Set();
   document.getElementById('grid-hodnota').innerHTML = `
     <button class="kat-btn k-prace" onclick="setKat('prace','Práce','#2a7a4f')">
       <div class="kat-arr"></div><div>Práce</div><div class="kat-cas" id="k-prace">0:00</div>
     </button>`;
+  document.getElementById('grid-plytvani').innerHTML = `
+    <button class="kat-btn k-presun" onclick="setKat('presun','Přesun','#1a6aaa')"><div class="kat-arr"></div><div>Přesun</div><div class="kat-cas" id="k-presun">0:00</div></button>
+    <button class="kat-btn k-hledani" onclick="setKat('hledani','Hledání','#d97706')"><div class="kat-arr"></div><div>Hledání</div><div class="kat-cas" id="k-hledani">0:00</div></button>
+    <button class="kat-btn k-cekani" onclick="setKat('cekani','Čekání','#c0392b')"><div class="kat-arr"></div><div>Čekání</div><div class="kat-cas" id="k-cekani">0:00</div></button>
+    <button class="kat-btn k-papiry" onclick="setKat('papiry','Administrativa','#7c3aed')"><div class="kat-arr"></div><div>Administrativa</div><div class="kat-cas" id="k-papiry">0:00</div></button>
+    <button class="kat-btn k-priprava" onclick="setKat('priprava','Příprava','#545454')"><div class="kat-arr"></div><div>Příprava</div><div class="kat-cas" id="k-priprava">0:00</div></button>
+    <button class="kat-btn k-kontrola" onclick="setKat('kontrola','Kontrola','#0891b2')"><div class="kat-arr"></div><div>Kontrola</div><div class="kat-cas" id="k-kontrola">0:00</div></button>`;
   document.getElementById('uloz-list').innerHTML = '';
   document.getElementById('operace-list').innerHTML = '';
+  document.querySelectorAll('.std-kat-grid input[type=checkbox]').forEach(cb => { cb.checked = true; cb.closest('.std-kat-row').classList.remove('vyrazeno'); });
+  renderNavrh();
   document.getElementById('souhrn').style.display = 'none';
   document.getElementById('setup').style.display = 'block';
   document.getElementById('timer').textContent = '00:00';
@@ -1779,6 +1886,7 @@ function getNazev(k) { return STD_NAZVY[k] || (vlastniOp.find(o=>o.id===k)||{naz
 function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
 function fmtC(s) { return pad(Math.floor(s/60)) + ':' + pad(Math.floor(s%60)); }
 
+renderNavrh();
 nacistPrihlaseniStav();
 </script>
 
