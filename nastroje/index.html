@@ -41,10 +41,15 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 .sb-home:hover { color:var(--gold-dark); }
 .sb-home.active { color:var(--gold-dark); }
 
-.sb-item { display:flex; align-items:center; gap:10px; width:100%; text-align:left; border-radius:8px; padding:11px 13px; margin-bottom:6px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:600; border:1.5px solid transparent; text-decoration:none; line-height:1.35; transition:transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s, background .2s, color .2s, border-color .2s; }
+.sb-item { display:flex; align-items:center; gap:6px; width:100%; border-radius:8px; padding:5px 7px 5px 13px; margin-bottom:6px; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:600; border:1.5px solid transparent; line-height:1.35; transition:transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s, background .2s, color .2s, border-color .2s; }
 .sb-item .ic { width:8px; height:8px; min-width:8px; border-radius:50%; border:1.5px solid currentColor; transition:background .2s; }
 .sb-item.active .ic { background:currentColor; }
-.sb-item .lock { font-size:11px; margin-left:auto; opacity:.7; }
+/* Jméno appky = přímý odkaz na appku samotnou, otevře se v novém okně */
+.sb-item-link { display:flex; align-items:center; gap:10px; flex:1; min-width:0; padding:6px 0; text-align:left; text-decoration:none; color:inherit; font:inherit; cursor:pointer; }
+/* Kolečko "i" = odkaz na kartu appky (popis, FAQ, návaznosti) uvnitř katalogu */
+.sb-item-info { flex-shrink:0; width:22px; height:22px; border-radius:50%; border:1.5px solid currentColor; background:none; color:inherit; font-family:Georgia,serif; font-style:italic; font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:.65; transition:opacity .15s, background .15s; }
+.sb-item-info:hover { opacity:1; background:rgba(0,0,0,.08); }
+.sb-item.paid .sb-item-info:hover { background:rgba(255,255,255,.12); }
 
 .sb-item.free { background:var(--gold-light); color:var(--dark); }
 .sb-item.free:hover { background:var(--gold); color:var(--black); transform:scale(1.035) rotate(-0.5deg); }
@@ -327,10 +332,12 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 <script>
 // Přihlašovací stav v horní liště: ukáže jméno firmy + Odhlásit, když je uživatel
 // přihlášený a má firmu; jinak nechá odkaz "Moje Tokva" na přihlašovací stránku.
-(async function nacistUcetIndex() {
+// Zároveň zpřístupní stav "jePro" katalogu appek níž (window.tokvaJeProPromise),
+// aby katalog věděl, jestli má appky nabídnout jako Free, nebo rovnou jako Pro.
+window.tokvaJeProPromise = (async function nacistUcetIndex() {
   const info = document.getElementById('nav-ucet-info');
   const btn = document.getElementById('nav-ucet-btn');
-  if (!info || !btn) return;
+  if (!info || !btn) return false;
   let session = null, clenstvi = null;
   try {
     session = await ziskatSession();
@@ -351,7 +358,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
       e.preventDefault();
       try { await odhlasit(); } catch (err) { console.warn('Odhlášení se nepodařilo.', err); }
     };
+    return jePro;
   }
+  return false;
 })();
 </script>
 
@@ -1023,10 +1032,50 @@ const TOOLS = [
 
 const byId = id => TOOLS.find(t => t.id === id);
 
+// t.url/t.prodejniStranka jsou uložené jako "nastroje/xy/" (bez úvodního lomítka) -
+// odkaz od kořene webu. Tahle appka (nastroje/index.html) ale sama žije na
+// tokva.cz/nastroje/, takže bez úvodního lomítka by prohlížeč adresu poskládal
+// špatně na tokva.cz/nastroje/nastroje/xy/ (neexistuje). Doplněním "/" na začátek
+// je odkaz vždy od kořene webu, správně odkudkoliv.
+function toolHref(t) {
+  const raw = t.group === "paid-solo" ? t.prodejniStranka : t.url;
+  return raw ? "/" + raw.replace(/^\/+/, "") : null;
+}
+
+// Appky, co mají oddělenou Free a Pro appku (jiné id, jiná appka - Měřič plýtvání
+// a Spaghetti diagram). Katalog podle přihlašovacího stavu vždycky ukáže jen jednu
+// appku z dvojice, nikdy obě vedle sebe a nikdy je neoznačuje jako "Zdarma"/"Placené" -
+// nepřihlášený návštěvník vidí jen Free appku, přihlášený Pro uživatel jen Pro appku.
+const PRO_PAIR = {
+  "meric-free": "meric-pro", "meric-pro": "meric-free",
+  "spaghetti-sklad": "spaghetti-vyroba", "spaghetti-vyroba": "spaghetti-sklad"
+};
+
+let jePro = false;
+
+// Vrátí id appky, které se má reálně použít podle aktuálního přihlašovacího stavu -
+// appky bez dvojice (většina appek) se vrátí beze změny.
+function resolveId(id) {
+  const par = PRO_PAIR[id];
+  if (!par) return id;
+  const jeToProAppka = byId(id).group === "paid-solo";
+  if (jePro !== jeToProAppka) return par;
+  return id;
+}
+
+// Appky, co se mají v katalogu zobrazit v aktuálním přihlašovacím stavu - jeden
+// společný seznam, bez rozdělení na Zdarma/Placené.
+function visibleTools() {
+  return TOOLS.filter(t => {
+    if (t.group === "paid-solo") return jePro;
+    if (PRO_PAIR[t.id]) return !jePro;
+    return true;
+  });
+}
+
 function krokRowHtml(t) {
-  const isPaid = t.group === "paid-solo";
-  const tag = t.krowTag ? `<span class="krok-tag${t.krowTag === "Na míru" ? " custom" : ""}">${t.krowTag}</span>` : (isPaid ? `<span class="krok-tag">🔒</span>` : "");
-  return `<button class="krok-row${isPaid ? " paid" : ""}" data-id="${t.id}">
+  const tag = t.krowTag ? `<span class="krok-tag${t.krowTag === "Na míru" ? " custom" : ""}">${t.krowTag}</span>` : "";
+  return `<button class="krok-row${jePro ? " paid" : ""}" data-id="${t.id}">
     <span class="krok-benefit">${t.benefit || t.name}</span>
     <span class="krok-meta"><span class="krok-name">${t.name}</span>${tag}<span class="arr"></span></span>
   </button>`;
@@ -1034,26 +1083,21 @@ function krokRowHtml(t) {
 
 function renderCesta() {
   const cesta = document.getElementById("cesta");
-  const skupina = (title, tools) => {
-    if (!tools.length) return "";
-    return `<div class="krok-block">
-      <div class="krok-head"><h3>${title}</h3></div>
-      <div class="krok-list">${tools.map(krokRowHtml).join("")}</div>
-    </div>`;
-  };
-  cesta.innerHTML = skupina("Zdarma", TOOLS.filter(t => t.group === "free"))
-    + skupina("Placené", TOOLS.filter(t => t.group === "paid-solo"));
+  cesta.innerHTML = `<div class="krok-block"><div class="krok-list">${visibleTools().map(krokRowHtml).join("")}</div></div>`;
 }
 
 function sbAllListHtml() {
+  const cls = jePro ? "paid" : "free";
+  // Jméno appky vede přímo do appky (nový tab), kolečko "i" vede na její kartu
+  // (popis, FAQ, návaznosti) tady v katalogu - dva cíle v jednom řádku.
   const row = t => {
-    const lock = t.group === "paid-solo" ? '<span class="lock">🔒</span>' : "";
-    const cls = t.group === "paid-solo" ? "paid" : "free";
-    return `<button class="sb-item ${cls}" data-id="${t.id}"><span class="ic"></span>${t.name}${lock}</button>`;
+    const href = toolHref(t);
+    const nazev = href
+      ? `<a class="sb-item-link" href="${href}" target="_blank" rel="noopener"><span class="ic"></span>${t.name}</a>`
+      : `<span class="sb-item-link" style="cursor:default;"><span class="ic"></span>${t.name}</span>`;
+    return `<div class="sb-item ${cls}" data-id="${t.id}">${nazev}<button class="sb-item-info" data-id="${t.id}" title="O appce ${t.name}" aria-label="O appce ${t.name}">i</button></div>`;
   };
-  const free = TOOLS.filter(t => t.group === "free");
-  const paid = TOOLS.filter(t => t.group === "paid-solo");
-  return `<div class="sb-group-title" style="padding-top:2px;">Zdarma</div>${free.map(row).join("")}<div class="sb-group-title">Placené</div>${paid.map(row).join("")}`;
+  return visibleTools().map(row).join("");
 }
 
 function renderSidebar() {
@@ -1083,45 +1127,30 @@ function ph(hint) {
   return `<div class="placeholder"><div class="ph-label">Zatím kostra, obsah doplníme</div><div class="ph-text">${hint}</div></div>`;
 }
 
+// Appka, co má dvojici (Měřič plýtvání, Spaghetti diagram), se do detailu vůbec
+// nedostane ve špatném stavu - o to se stará resolveId() při každém vstupu do
+// appky (klik, related karta, adresa v URL). Tady se proto vždycky jen otevírá,
+// nikdy nenabízí "zjistit cenu" - kdo appku vidí, ten už k ní má přístup.
 function ctaHtml(t, d2) {
-  const label = d2.ctaLabel || (t.group === "paid-solo" ? "Chci zjistit cenu" : "Chci nástroj otevřít");
+  const label = d2.ctaLabel || "Chci nástroj otevřít";
+  const href = toolHref(t);
   let btn, note;
-  if (t.group === "free") {
-    if (t.url) {
-      btn = `<a class="btn-cta" href="${t.url}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`;
-      note = d2.heroNote || "Zdarma · bez registrace";
-    } else {
-      btn = `<div class="btn-cta disabled">${t.formNote || "Připravuje se"}</div>`;
-      note = "";
-    }
-  } else if (t.group === "paid-solo") {
-    if (t.prodejniStranka) {
-      btn = `<a class="btn-cta" href="${t.prodejniStranka}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`;
-      note = d2.heroNote || "Součást měsíčního přístupu ke všem nástrojům Tokvy.";
-    } else {
-      btn = `<div class="btn-cta disabled">${t.prodejniNote || "Prodejní stránka se připravuje"}</div>`;
-      note = "";
-    }
+  if (href) {
+    btn = `<a class="btn-cta" href="${href}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`;
+    note = d2.heroNote || (t.group === "paid-solo" ? "Součást Tokva Pro" : "Zdarma · bez registrace");
   } else {
-    btn = ""; note = "";
+    btn = `<div class="btn-cta disabled">${t.formNote || t.prodejniNote || "Připravuje se"}</div>`;
+    note = "";
   }
   return btn + (note ? `<div class="d-hero-note">${note}</div>` : "");
 }
 
 function bottomCtaHtml(t, d2) {
-  const label = d2.ctaLabel || (t.group === "paid-solo" ? "Chci zjistit cenu" : "Chci nástroj otevřít");
-  let btn;
-  if (t.group === "free") {
-    btn = t.url
-      ? `<a class="btn-cta" href="${t.url}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`
-      : `<div class="btn-cta disabled">${t.formNote || "Připravuje se"}</div>`;
-  } else if (t.group === "paid-solo") {
-    btn = t.prodejniStranka
-      ? `<a class="btn-cta" href="${t.prodejniStranka}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`
-      : `<div class="btn-cta disabled">${t.prodejniNote || "Prodejní stránka se připravuje"}</div>`;
-  } else {
-    btn = `<div class="btn-cta disabled">Připravuje se</div>`;
-  }
+  const label = d2.ctaLabel || "Chci nástroj otevřít";
+  const href = toolHref(t);
+  const btn = href
+    ? `<a class="btn-cta" href="${href}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`
+    : `<div class="btn-cta disabled">${t.formNote || t.prodejniNote || "Připravuje se"}</div>`;
   return `<div class="d-bottom-cta">
     <div class="d-bottom-cta-title">${t.name}</div>
     <div class="d-bottom-cta-sub">Dočetli jste až sem? Tohle je ten okamžik, kdy to zkusit na vlastním provozu.</div>
@@ -1252,11 +1281,11 @@ function faqItemsHtml(t) {
 }
 
 function relatedCardHtml(rid, i) {
-  const rt = byId(rid);
+  const id = resolveId(rid);
+  const rt = byId(id);
   if (!rt) return "";
-  const sub = rt.group === "paid-solo" ? "Placený přístup" : "Zdarma, otevře se rovnou";
-  return `<button class="d-related-card${i === 0 ? " primary" : ""}" data-id="${rid}">
-    <div><div class="rname">${rt.name}</div><div class="rsub">${sub}</div></div>
+  return `<button class="d-related-card${i === 0 ? " primary" : ""}" data-id="${id}">
+    <div><div class="rname">${rt.name}</div><div class="rsub">Otevře se rovnou</div></div>
     <span class="rarrow">→</span>
   </button>`;
 }
@@ -1281,7 +1310,7 @@ function renderDetail(id, updateUrl) {
   html += `<div class="detail-card">`;
 
   const heroLines = (d2.heroLines && d2.heroLines.length) ? d2.heroLines : [t.name];
-  const badgeLabel = t.group === "free" ? "Zdarma" : t.group === "paid-solo" ? "Placený přístup" : "";
+  const badgeLabel = ""; // žádné "Zdarma"/"Placený přístup" - appka se ukazuje jen v jednom stavu
   const heroSub = (t.popis || "").split("\n\n").filter(Boolean)[0] || "";
   html += `<div class="d-hero">
     <div>
@@ -1334,30 +1363,43 @@ document.addEventListener("click", e => {
   }
   const krokRow = e.target.closest(".krok-row");
   if (krokRow) { renderDetail(krokRow.dataset.id); return; }
-  const sbItem = e.target.closest(".sb-item");
-  if (sbItem) { renderDetail(sbItem.dataset.id); return; }
+  const sbLink = e.target.closest(".sb-item-link");
+  if (sbLink) { return; } // necháváme prohlížeč normálně otevřít appku (nový tab)
+  const sbInfo = e.target.closest(".sb-item-info");
+  if (sbInfo) { renderDetail(sbInfo.dataset.id); return; }
   const relCard = e.target.closest(".d-related-card");
   if (relCard) { renderDetail(relCard.dataset.id); return; }
   const back = e.target.closest("[data-back]");
   if (back) { showIntro(); return; }
 });
 
-renderSidebar();
-renderCesta();
-
 // Každý nástroj jde teď otevřít přímo přes vlastní adresu (?nastroj=id v URL) -
 // jde zkopírovat z prohlížeče, poslat, nebo se vrátit tlačítkem Zpět v prohlížeči.
+// resolveId() zajistí, že i starší/sdílený odkaz na Free appku otevře Pro uživateli
+// rovnou Pro appku (a naopak), nikdy ne appku ve špatném stavu.
 function otevritZUrl() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("nastroj");
   if (id && byId(id)) {
-    renderDetail(id, false);
+    renderDetail(resolveId(id), false);
   } else {
     showIntro(false);
   }
 }
 window.addEventListener("popstate", otevritZUrl);
-otevritZUrl();
+
+// Katalog počká na zjištění přihlašovacího stavu (jePro), teprve pak appky
+// vykreslí - ať se Free/Pro appky nikdy neblýsknou ve špatném stavu.
+(async function initKatalog() {
+  try {
+    jePro = await (window.tokvaJeProPromise || Promise.resolve(false));
+  } catch (e) {
+    jePro = false;
+  }
+  renderSidebar();
+  renderCesta();
+  otevritZUrl();
+})();
 </script>
 
 <script>
