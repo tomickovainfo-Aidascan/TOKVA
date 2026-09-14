@@ -895,6 +895,45 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <button class="btn-outline" onclick="exportCSV()">⬇ Export CSV</button>
       </div>
 
+      <!-- ZAŘADIT K PROJEKTU (Pro) -->
+      <div class="breakdown" id="s-projekt-panel" style="display:none;margin-bottom:16px;">
+        <div class="breakdown-title">Zařadit k projektu</div>
+        <div style="padding:16px 20px;">
+          <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Nepovinné. Pomůže vám tenhle výpočet později najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
+          <select id="s-projekt-select" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;font-family:'DM Sans',sans-serif;">
+            <option value="">Bez projektu</option>
+            <option value="__novy__">+ Nový projekt…</option>
+          </select>
+          <input id="s-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;margin-bottom:10px;">
+          <button class="btn-gold" style="width:100%;" onclick="ulozitZarazeniProjektuVysledek()">Uložit zařazení</button>
+          <div id="s-projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+        </div>
+      </div>
+
+      <!-- PRIDAT DO AKCNIHO PLANU (Pro) -->
+      <div class="breakdown" id="s-akce-panel" style="display:none;margin-bottom:16px;">
+        <div class="breakdown-title">Přidat do akčního plánu</div>
+        <div style="padding:16px 20px;">
+          <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle výpočet. Projekt je nepovinný, ale pokud výpočet k nějakému patří, vyberte ho, ať se v akčním plánu neztratí.</p>
+          <input id="s-akce-nazev" type="text" placeholder="Co se má udělat" style="margin-bottom:10px;">
+          <select id="s-akce-projekt-select" style="width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;font-family:'DM Sans',sans-serif;">
+            <option value="">Bez projektu</option>
+            <option value="__novy__">+ Nový projekt…</option>
+          </select>
+          <input id="s-akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;margin-bottom:10px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <input id="s-akce-investice" type="number" placeholder="Investice (Kč)" style="margin-bottom:0;">
+            <input id="s-akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" style="margin-bottom:0;">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <input id="s-akce-osoba" type="text" placeholder="Odpovědná osoba" style="margin-bottom:0;">
+            <input id="s-akce-termin" type="date" style="margin-bottom:0;">
+          </div>
+          <button class="btn-gold" style="width:100%;" onclick="pridatDoAkcnihoPlanuVysledek()">+ Přidat do akčního plánu</button>
+          <div id="s-akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+        </div>
+      </div>
+
       <!-- Hero: náklady na 1 m² za měsíc -->
       <div class="result-hero">
         <div class="result-hero-label">Náklady na 1 m² za měsíc</div>
@@ -1210,6 +1249,9 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 <script>
 let mode = 'najem';
 let posledniVysledek = {};
+// toolRunId naposledy uloženého výpočtu - panely Zařadit k projektu / Přidat
+// do akčního plánu se váží vždy na tenhle výpočet, viz ulozitVypocet().
+let posledniToolRunId = null;
 
 function setMode(m) {
   mode = m;
@@ -1679,6 +1721,26 @@ function ulozitVypocet() {
     ulozene.push(polozka);
     localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
     renderUlozene();
+
+    // Panely Zařadit k projektu / Přidat do akčního plánu - připravit na
+    // nově uložený výpočet. toolRunId dorazí až o chvíli později, viz
+    // odeslatVypocetDoSupabase().
+    posledniToolRunId = null;
+    document.getElementById('s-projekt-stav').textContent = '';
+    document.getElementById('s-projekt-select').value = '';
+    document.getElementById('s-projekt-novy-nazev').value = '';
+    document.getElementById('s-projekt-novy-nazev').style.display = 'none';
+    document.getElementById('s-akce-nazev').value = 'Snížit náklady na m²: ' + nazev;
+    document.getElementById('s-akce-projekt-select').value = '';
+    document.getElementById('s-akce-projekt-novy-nazev').value = '';
+    document.getElementById('s-akce-projekt-novy-nazev').style.display = 'none';
+    document.getElementById('s-akce-osoba').value = '';
+    document.getElementById('s-akce-investice').value = '';
+    document.getElementById('s-akce-prinos').value = '';
+    document.getElementById('s-akce-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+90);return d.toISOString().slice(0,10);})();
+    document.getElementById('s-akce-stav').textContent = '';
+    nacistProjektyKalk();
+
     odeslatVypocetDoSupabase(polozka);
   }, 'Název výpočtu');
 }
@@ -1717,6 +1779,7 @@ async function odeslatVypocetDoSupabase(polozka) {
     });
     if (run) {
       polozka.toolRunId = run.id;
+      posledniToolRunId = run.id;
       localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
       renderUlozene();
     }
@@ -1756,15 +1819,19 @@ async function nacistProjektyKalk() {
       .eq('organization_id', clenstvi.organization_id)
       .order('created_at', { ascending: false });
     if (error) throw error;
-    const select = document.getElementById('ap-projekt-select');
-    if (!select) return;
-    select.querySelectorAll('option[data-projekt]').forEach(function (o) { o.remove(); });
-    (data || []).forEach(function (p) {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.name;
-      opt.setAttribute('data-projekt', '1');
-      select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+    ['ap-projekt-select', 's-projekt-select', 's-akce-projekt-select'].forEach(function (id) {
+      const select = document.getElementById(id);
+      if (!select) return;
+      const puvodniHodnota = select.value;
+      select.querySelectorAll('option[data-projekt]').forEach(function (o) { o.remove(); });
+      (data || []).forEach(function (p) {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        opt.setAttribute('data-projekt', '1');
+        select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+      });
+      if ([...select.options].some(function (o) { return o.value === puvodniHodnota; })) select.value = puvodniHodnota;
     });
   } catch (e) {
     console.warn('Projekty se nepodařilo načíst.', e);
@@ -1772,8 +1839,13 @@ async function nacistProjektyKalk() {
 }
 
 document.addEventListener('change', function (e) {
-  if (e.target && e.target.id === 'ap-projekt-select') {
-    const novyInput = document.getElementById('ap-projekt-novy-nazev');
+  const paryVyberProNovy = {
+    'ap-projekt-select': 'ap-projekt-novy-nazev',
+    's-projekt-select': 's-projekt-novy-nazev',
+    's-akce-projekt-select': 's-akce-projekt-novy-nazev'
+  };
+  if (e.target && paryVyberProNovy[e.target.id]) {
+    const novyInput = document.getElementById(paryVyberProNovy[e.target.id]);
     if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
   }
 });
@@ -1820,6 +1892,87 @@ async function pridatDoAkcnihoPlanu() {
   }
 }
 
+// Panel "Zařadit k projektu" přímo u výsledku - jen přiřadí naposledy
+// uložený výpočet k projektu, bez založení úkolu v akčním plánu.
+async function ulozitZarazeniProjektuVysledek() {
+  const stav = document.getElementById('s-projekt-stav');
+  const select = document.getElementById('s-projekt-select');
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Výpočet se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    let projektId = select.value || null;
+    if (projektId === '__novy__') {
+      const nazev = (document.getElementById('s-projekt-novy-nazev').value || '').trim();
+      if (!nazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data, error } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: nazev
+      }).select('id').single();
+      if (error) throw error;
+      projektId = data.id;
+    }
+    const { error: chybaUpdate } = await supabaseClient
+      .from('tool_runs')
+      .update({ project_id: projektId })
+      .eq('id', posledniToolRunId);
+    if (chybaUpdate) throw chybaUpdate;
+    stav.textContent = projektId ? 'Uloženo, výpočet patří k projektu.' : 'Uloženo, bez projektu.';
+    await nacistProjektyKalk();
+  } catch (e) {
+    console.warn('Zařazení k projektu se nepodařilo uložit.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
+// Panel "Přidat do akčního plánu" přímo u výsledku - stejná logika jako
+// pridatDoAkcnihoPlanu(), jen pro naposledy uložený výpočet.
+async function pridatDoAkcnihoPlanuVysledek() {
+  const stav = document.getElementById('s-akce-stav');
+  const nazev = (document.getElementById('s-akce-nazev').value || '').trim();
+  if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
+  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Výpočet se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  stav.textContent = 'Ukládám…';
+  try {
+    const selectProjekt = document.getElementById('s-akce-projekt-select');
+    let projektId = (selectProjekt && selectProjekt.value && selectProjekt.value !== '__novy__') ? selectProjekt.value : null;
+    if (selectProjekt && selectProjekt.value === '__novy__') {
+      const novyNazev = (document.getElementById('s-akce-projekt-novy-nazev').value || '').trim();
+      if (!novyNazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data: novyProjekt, error: chybaProjekt } = await supabaseClient.from('projects').insert({
+        organization_id: clenstvi.organization_id,
+        name: novyNazev
+      }).select('id').single();
+      if (chybaProjekt) throw chybaProjekt;
+      projektId = novyProjekt.id;
+    }
+    if (projektId) {
+      try {
+        await supabaseClient.from('tool_runs').update({ project_id: projektId }).eq('id', posledniToolRunId);
+      } catch (ex) {
+        console.warn('Přiřazení výpočtu k projektu se nepodařilo, úkol se přesto založí.', ex);
+      }
+    }
+    const { error } = await supabaseClient.from('actions').insert({
+      organization_id: clenstvi.organization_id,
+      project_id: projektId,
+      tool_run_id: posledniToolRunId,
+      title: nazev,
+      reason: 'Výsledek Kalkulačky nákladů skladu ze dne ' + new Date().toLocaleDateString('cs-CZ'),
+      responsible_person: (document.getElementById('s-akce-osoba').value || '').trim() || null,
+      estimated_investment: (document.getElementById('s-akce-investice').value || '').trim() ? Number(document.getElementById('s-akce-investice').value) : null,
+      expected_benefit: (document.getElementById('s-akce-prinos').value || '').trim() ? Number(document.getElementById('s-akce-prinos').value) : null,
+      due_date: document.getElementById('s-akce-termin').value || null,
+      status: 'novy',
+      created_by: session.user.id
+    });
+    if (error) throw error;
+    stav.innerHTML = 'Přidáno. <a href="https://tokva.cz/akcni-plan/' + (projektId ? ('?projekt=' + projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;">Otevřít akční plán →</a>';
+  } catch (e) {
+    console.warn('Přidání do akčního plánu se nepodařilo.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
+}
+
 function smazatUlozeny(id) {
   potvrdit('Smazat tento uložený výpočet?', 'Smazat', async function() {
     const u = posledniHistorie.find(function (x) { return x.id === id; }) || ulozene.find(function (x) { return x.id === id; });
@@ -1839,6 +1992,8 @@ function smazatUlozeny(id) {
 // než se stihne dotáhnout Supabase (viz ulozitVypocet/odeslatVypocetDoSupabase).
 async function renderUlozene() {
   var box = document.getElementById('ulozene-box');
+  document.getElementById('s-projekt-panel').style.display = jePro ? 'block' : 'none';
+  document.getElementById('s-akce-panel').style.display = jePro ? 'block' : 'none';
   if (!jePro) { box.style.display = 'none'; return; }
   box.style.display = 'block';
   var wrap = document.getElementById('ulozene-seznam');
