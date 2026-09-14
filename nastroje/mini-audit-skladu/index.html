@@ -38,14 +38,6 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Musím pro Mini audit skladu zadat e-mail?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Ne. Audit je zdarma a spustíte ho rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit."
-      }
-    },
-    {
-      "@type": "Question",
       "name": "Co když nevím odpověď na některou otázku v auditu?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -58,14 +50,6 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte. 5 minut najdete vždy."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Co dostanu navíc v Pro verzi Mini auditu skladu?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Pro uloží výsledek do vašeho účtu. Audit zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se stav skladu zlepšuje, nebo je pořád stejný. Samotný audit je pořád celý zdarma, Pro jen přidává historii."
       }
     }
   ]
@@ -1058,10 +1042,6 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
     <div class="faq-block">
       <h3 class="content-card-title" style="font-family:Poppins,sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Časté otázky</h3>
       <div class="faq-item">
-        <div class="faq-q">Musím zadat e-mail?</div>
-        <div class="faq-a">Ne. Audit je zdarma a spustíte ho rovnou bez e-mailu, výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit.</div>
-      </div>
-      <div class="faq-item">
         <div class="faq-q">Co když nevím odpověď na některou otázku?</div>
         <div class="faq-a">Zvolte "Nevím / nemáme data". Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku - protože nevědět je samo o sobě důležité zjištění, ne totéž co "nemáme problém".</div>
       </div>
@@ -1069,13 +1049,9 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
         <div class="faq-q">Musím projít celý audit najednou?</div>
         <div class="faq-a">Ano, trvá 5 minut. Nedá se uložit a vrátit, ale ani nemusíte. 5 minut najdete vždy.</div>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Co dostanu navíc v Pro verzi?</div>
-        <div class="faq-a">Pro uloží výsledek do vašeho účtu. Audit zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se stav skladu zlepšuje, nebo je pořád stejný. Samotný audit je pořád celý zdarma, Pro jen přidává historii.</div>
-      </div>
     </div>
 
-    <div class="pro-final-panel">
+    <div class="pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Pro se testuje</span>
       <div class="pro-final-title">Co appka umí navíc v Pro</div>
       <div class="pro-final-list">
@@ -1468,6 +1444,8 @@ function renderUcetNav() {
     info.style.display = 'none';
     btn.textContent = 'Přihlásit se';
   }
+  const proPanel = document.getElementById('pro-final-panel');
+  if (proPanel) proPanel.style.display = (session && clenstvi) ? 'none' : '';
 }
 
 async function klikNaUcet() {
