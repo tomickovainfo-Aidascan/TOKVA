@@ -303,7 +303,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
   <button class="mobile-nav-toggle" id="mobile-nav-toggle" data-mobile-toggle="1">☰ Tokva / Vybrat oblast</button>
 
   <nav class="sidebar" id="sidebar">
-    <button class="sb-home active" data-home="1" id="home-link" style="border-bottom:none;margin-bottom:0;padding-bottom:8px;">Zobrazit celý katalog</button>
+    <button class="sb-home active" data-home="1" id="home-link" style="display:none;border-bottom:none;margin-bottom:0;padding-bottom:8px;">← Zpět na přehled nástrojů</button>
     <div class="sb-group">
       <div class="sb-group-title">Všechny nástroje</div>
       <div class="sb-group-help">Klikněte na název a nástroj rovnou spustíte. Přes „i“ zjistíte, jak funguje.</div>
@@ -1077,9 +1077,12 @@ function visibleTools() {
 
 function krokRowHtml(t) {
   const tag = t.krowTag ? `<span class="krok-tag${t.krowTag === "Na míru" ? " custom" : ""}">${t.krowTag}</span>` : "";
+  // "Pro" v názvu appky je tu zbytečné - odemčený/zamčený stav appky už
+  // ukazuje barva karty a případný zámek (viz .krok-row.paid výš).
+  const nazev = t.name.replace(/\s+Pro$/, "");
   return `<button class="krok-row${jePro ? " paid" : ""}" data-id="${t.id}">
-    <span class="krok-benefit">${t.benefit || t.name}</span>
-    <span class="krok-meta"><span class="krok-name">${t.name}</span>${tag}<span class="arr"></span></span>
+    <span class="krok-benefit">${t.benefit || nazev}</span>
+    <span class="krok-meta"><span class="krok-name">${nazev}</span>${tag}<span class="arr"></span></span>
   </button>`;
 }
 
@@ -1090,12 +1093,12 @@ function renderCesta() {
 
 function sbAllListHtml() {
   const cls = jePro ? "paid" : "free";
-  // Jméno appky vede přímo do appky (nový tab), kolečko "i" vede na její kartu
-  // (popis, FAQ, návaznosti) tady v katalogu - dva cíle v jednom řádku.
+  // Jméno appky vede přímo do appky (stejné okno), kolečko "i" vede na její
+  // kartu (popis, FAQ, návaznosti) tady v katalogu - dva cíle v jednom řádku.
   const row = t => {
     const href = toolHref(t);
     const nazev = href
-      ? `<a class="sb-item-link" href="${href}" target="_blank" rel="noopener" title="Spustit appku ${t.name}"><span class="ic"></span>${t.name}</a>`
+      ? `<a class="sb-item-link" href="${href}" title="Spustit appku ${t.name}"><span class="ic"></span>${t.name}</a>`
       : `<span class="sb-item-link" style="cursor:default;"><span class="ic"></span>${t.name}</span>`;
     return `<div class="sb-item ${cls}" data-id="${t.id}">${nazev}<button class="sb-item-info" data-id="${t.id}" title="Jak appka ${t.name} funguje" aria-label="Jak appka ${t.name} funguje">i</button></div>`;
   };
@@ -1115,7 +1118,9 @@ function showIntro(updateUrl) {
   document.getElementById("intro").classList.add("active");
   document.getElementById("detail").classList.remove("active");
   document.querySelectorAll(".sb-item").forEach(b => b.classList.remove("active"));
-  document.getElementById("home-link").classList.add("active");
+  // Na katalogu appka už celý katalog ukazuje - "Zobrazit celý katalog" by
+  // tu bylo zbytečné a matoucí, proto se schová a znovu ukáže až v detailu.
+  document.getElementById("home-link").style.display = "none";
   document.querySelector(".main").classList.remove("wide");
   closeMobileSidebar();
   window.scrollTo({top:0, behavior:"smooth"});
@@ -1138,7 +1143,7 @@ function ctaHtml(t, d2) {
   const href = toolHref(t);
   let btn, note;
   if (href) {
-    btn = `<a class="btn-cta" href="${href}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`;
+    btn = `<a class="btn-cta" href="${href}">${label}<span class="arr"></span></a>`;
     note = d2.heroNote || (t.group === "paid-solo" ? "Součást Tokva Pro" : "Zdarma · bez registrace");
   } else {
     btn = `<div class="btn-cta disabled">${t.formNote || t.prodejniNote || "Připravuje se"}</div>`;
@@ -1151,7 +1156,7 @@ function bottomCtaHtml(t, d2) {
   const label = d2.ctaLabel || "Chci nástroj otevřít";
   const href = toolHref(t);
   const btn = href
-    ? `<a class="btn-cta" href="${href}" target="_blank" rel="noopener">${label}<span class="arr"></span></a>`
+    ? `<a class="btn-cta" href="${href}">${label}<span class="arr"></span></a>`
     : `<div class="btn-cta disabled">${t.formNote || t.prodejniNote || "Připravuje se"}</div>`;
   return `<div class="d-bottom-cta">
     <div class="d-bottom-cta-title">${t.name}</div>
@@ -1338,6 +1343,8 @@ function renderDetail(id, updateUrl) {
   document.getElementById("intro").classList.remove("active");
   document.getElementById("detail").classList.add("active");
   document.getElementById("home-link").classList.remove("active");
+  document.getElementById("home-link").style.display = "";
+  document.getElementById("home-link").textContent = "← Zpět na přehled nástrojů";
   document.querySelector(".main").classList.add("wide");
   document.querySelectorAll(".sb-item").forEach(b => b.classList.toggle("active", b.dataset.id === id));
   closeMobileSidebar();
@@ -1366,7 +1373,7 @@ document.addEventListener("click", e => {
   const krokRow = e.target.closest(".krok-row");
   if (krokRow) { renderDetail(krokRow.dataset.id); return; }
   const sbLink = e.target.closest(".sb-item-link");
-  if (sbLink) { return; } // necháváme prohlížeč normálně otevřít appku (nový tab)
+  if (sbLink) { return; } // necháváme prohlížeč normálně otevřít appku (stejné okno)
   const sbInfo = e.target.closest(".sb-item-info");
   if (sbInfo) { renderDetail(sbInfo.dataset.id); return; }
   const relCard = e.target.closest(".d-related-card");
