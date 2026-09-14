@@ -629,6 +629,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   <div id="insights"></div>
 
   <!-- AKCE -->
+  <button class="btn-spustit" style="margin-bottom:10px;" onclick="otevritModalAkcniPlanNejnovejsi()">+ Přidat do akčního plánu / zařadit k projektu</button>
   <div class="btn-row">
     <button class="btn-akce btn-gmail" onclick="tiskReport()">Tisk / PDF</button>
     <button class="btn-akce btn-csv" onclick="stahnoutCSV()">Stáhnout CSV</button>
@@ -1397,6 +1398,18 @@ async function synchronizovatHistoriiSeSupabase() {
 }
 
 let akcniPlanAktivniIdx = null;
+
+// Tlačítko přímo na obrazovce výsledku - měření je vždy na indexu 0 (naposledy
+// uložené), toolRunId se přiřadí asynchronně chvíli po ukoncit(), proto tu
+// je hláška pro ten vzácný případ, kdy uživatel klikne dřív, než se stihne uložit.
+function otevritModalAkcniPlanNejnovejsi() {
+  const hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
+  if (!hist[0] || !hist[0].toolRunId) {
+    upozornit('Měření se ještě ukládá do účtu, zkuste to prosím za pár vteřin znovu.');
+    return;
+  }
+  otevritModalAkcniPlan(0, null);
+}
 
 function otevritModalAkcniPlan(i, e) {
   if (e) e.stopPropagation();
