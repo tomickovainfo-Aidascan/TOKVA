@@ -63,6 +63,22 @@ input:focus { border-color:var(--gold); }
 <div class="karta">
   <div class="logo">Moje <span>Tokva</span></div>
 
+  <!-- KROK 0: přijetí pozvánky do firmy (jen když je v adrese ?pozvanka=token) -->
+  <div id="krok-pozvanka" class="krok">
+    <h1>Zvou vás do Tokvy</h1>
+    <p class="podnadpis" id="pozvanka-popis">Načítám pozvánku…</p>
+
+    <div id="pozvanka-obsah" style="display:none;">
+      <label for="pozvanka-heslo">Nové heslo</label>
+      <input id="pozvanka-heslo" type="password" placeholder="min. 6 znaků" autocomplete="new-password">
+      <button class="btn-gold" id="btn-pozvanka" onclick="prijmoutPozvankuNoveHeslo()">Vytvořit účet a přijmout pozvánku</button>
+      <div class="zprava" id="zprava-pozvanka"></div>
+      <a href="#" class="zapomenute-link" style="text-align:center;margin-top:14px;" onclick="pouzitStavajiciUcetProPozvanku(event)">Už mám účet Tokva – přihlásit se</a>
+    </div>
+
+    <div id="pozvanka-chyba" class="zprava chyba" style="display:none;"></div>
+  </div>
+
   <!-- KROK 1: přihlášení / registrace -->
   <div id="krok-ucet" class="krok aktivni">
     <h1>Přihlásit se</h1>
@@ -176,6 +192,14 @@ async function odeslatFormularUctu(e) {
 // Po úspěšném přihlášení zjistí, jestli má uživatel už firmu.
 // Pokud ne, zobrazí krok se založením firmy. Pokud ano, přesměruje dál.
 async function poPrihlaseni() {
+  const paramsPoz = new URLSearchParams(window.location.search);
+  const tokenPoz = paramsPoz.get('pozvanka');
+  if (tokenPoz) {
+    const { error: chybaPrijeti } = await supabaseClient.rpc('prijmout_pozvanku', { p_token: tokenPoz });
+    if (!chybaPrijeti) { presmerovatPoPrihlaseni(); return; }
+    console.warn('Přijetí pozvánky se nepovedlo:', chybaPrijeti);
+    window.__pozvankaChybaText = chybaPrijeti.message;
+  }
   const organizace = await ziskatMojiOrganizaci();
   if (organizace) {
     presmerovatPoPrihlaseni();
@@ -187,6 +211,13 @@ async function poPrihlaseni() {
     if (ulozenyNazev) document.getElementById('nazev-firmy').value = ulozenyNazev;
     document.getElementById('krok-ucet').classList.remove('aktivni');
     document.getElementById('krok-firma').classList.add('aktivni');
+    if (window.__pozvankaChybaText) {
+      const zprava = document.getElementById('zprava-firma');
+      if (zprava) {
+        zprava.textContent = 'Pozvánku se nepodařilo přijmout (' + window.__pozvankaChybaText + '). Můžete si založit vlastní firmu, nebo požádat o novou pozvánku.';
+        zprava.className = 'zprava chyba';
+      }
+    }
   }
 }
 
@@ -202,6 +233,7 @@ async function odhlasitAZkusitJinak(e) {
 }
 
 function skrytVsechnyKroky() {
+  document.getElementById('krok-pozvanka').classList.remove('aktivni');
   document.getElementById('krok-ucet').classList.remove('aktivni');
   document.getElementById('krok-firma').classList.remove('aktivni');
   document.getElementById('krok-zapomenute').classList.remove('aktivni');
@@ -322,6 +354,80 @@ function presmerovatPoPrihlaseni() {
   // teď ho pošle rovnou na centrální přehled Moje Tokva.
   window.location.href = zpet ? decodeURIComponent(zpet) : (KOREN_TOKVA + 'moje-tokva/');
 }
+
+// Zjistí z adresy (?pozvanka=token), jestli appka má rovnou nabídnout
+// přijetí pozvánky do firmy, místo běžného přihlášení. Volá se hned při
+// načtení stránky, ještě před tím, než se kdokoli přihlásí.
+async function inicializovatPozvanku() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('pozvanka');
+  if (!token) return;
+
+  skrytVsechnyKroky();
+  document.getElementById('krok-pozvanka').classList.add('aktivni');
+  window.__pozvankaToken = token;
+
+  const { data, error } = await supabaseClient.rpc('nacist_pozvanku', { p_token: token });
+  const radek = data && data[0];
+
+  if (error || !radek || !radek.platna) {
+    document.getElementById('pozvanka-popis').textContent = 'Tahle pozvánka není platná nebo už vypršela.';
+    document.getElementById('pozvanka-chyba').style.display = 'block';
+    document.getElementById('pozvanka-chyba').textContent = 'Požádejte prosím o novou pozvánku.';
+    return;
+  }
+
+  const NAZEV_ROLE = { spravce: 'správce', clen: 'člen týmu', konzultant: 'konzultant' };
+  window.__pozvankaEmail = radek.email;
+  document.getElementById('pozvanka-popis').textContent =
+    'Zvou vás do firmy "' + radek.organizace_nazev + '" jako ' + (NAZEV_ROLE[radek.role] || radek.role) + '. E-mail: ' + radek.email;
+  document.getElementById('pozvanka-obsah').style.display = '';
+}
+
+// Poprvé tady - založí nový účet přímo na e-mail z pozvánky a rovnou
+// pozvánku přijme (přidá appka do stejné firmy, ne novou).
+async function prijmoutPozvankuNoveHeslo() {
+  const heslo = document.getElementById('pozvanka-heslo').value;
+  const btn = document.getElementById('btn-pozvanka');
+  const zprava = document.getElementById('zprava-pozvanka');
+  zprava.className = 'zprava';
+
+  if (!heslo || heslo.length < 6) {
+    zprava.textContent = 'Heslo musí mít aspoň 6 znaků.';
+    zprava.className = 'zprava chyba';
+    return;
+  }
+
+  btn.disabled = true;
+  try {
+    const { error: chybaRegistrace } = await supabaseClient.auth.signUp({
+      email: window.__pozvankaEmail,
+      password: heslo
+    });
+    if (chybaRegistrace) throw chybaRegistrace;
+
+    const { error: chybaPrijeti } = await supabaseClient.rpc('prijmout_pozvanku', { p_token: window.__pozvankaToken });
+    if (chybaPrijeti) throw chybaPrijeti;
+
+    presmerovatPoPrihlaseni();
+  } catch (ex) {
+    zprava.textContent = prelozitChybu(ex.message || String(ex));
+    zprava.className = 'zprava chyba';
+    btn.disabled = false;
+  }
+}
+
+// "Už mám účet Tokva" - přepne na běžný přihlašovací formulář, e-mail
+// z pozvánky předvyplní, token zůstává v adrese, takže se po přihlášení
+// pozvánka stejně přijme (viz poPrihlaseni výš).
+function pouzitStavajiciUcetProPozvanku(e) {
+  if (e) e.preventDefault();
+  skrytVsechnyKroky();
+  document.getElementById('krok-ucet').classList.add('aktivni');
+  document.getElementById('email').value = window.__pozvankaEmail || '';
+}
+
+inicializovatPozvanku();
 
 function prelozitChybu(msg) {
   if (msg.includes('Invalid login credentials')) return 'Nesprávný e-mail nebo heslo.';

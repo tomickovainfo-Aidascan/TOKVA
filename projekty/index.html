@@ -262,6 +262,7 @@ body.prezentace footer{display:none;}
   <div class="nav-right">
     <span class="nav-badge">Pro verze</span>
     <a href="https://tokva.cz/moje-tokva/" class="nav-btn" id="nav-moje-tokva" style="display:none;text-decoration:none;">Přehled</a>
+    <a href="https://tokva.cz/nastaveni-firmy/" class="nav-btn" id="nav-nastaveni-firmy" style="display:none;text-decoration:none;">Nastavení firmy</a>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn">Akční plán</a>
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
@@ -506,6 +507,7 @@ async function nacistPrihlaseniStav() {
   }
   renderUcetNav();
   if (typeof zobrazitOdkazMojeTokva === 'function') zobrazitOdkazMojeTokva(!!clenstvi);
+  if (typeof zobrazitOdkazNastaveniFirmy === 'function') zobrazitOdkazNastaveniFirmy(jePro, clenstvi);
   renderPrihlaseniStav();
 }
 

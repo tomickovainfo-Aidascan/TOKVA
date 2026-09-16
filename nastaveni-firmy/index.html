@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJWW5ZX4J9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJWW5ZX4J9');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nastavení firmy – lidé a role | Tokva</title>
+<meta name="description" content="Pozvěte kolegy do své firmy na Tokva Pro, nastavte jim roli a spravujte přístup na jednom místě.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="canonical" href="https://tokva.cz/nastaveni-firmy/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#e9a91b; --gold-dark:#c48e10; --gold-light:#fdf3d9;
+  --black:#000; --dark:#111; --mid:#545454; --light:#a8a6a6;
+  --white:#fff; --paper:#f5f4f0; --border:#e2e2e2;
+  --green:#2a7a4f; --green-light:#e8f5ee;
+  --blue:#1a6aaa; --red:#c0392b;
+  --pro:#c48e10;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:"DM Sans",sans-serif;background:var(--paper);color:var(--dark);min-height:100vh;line-height:1.6;}
+
+nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.05); flex-wrap:wrap; row-gap:8px;}
+.nav-brand{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--black);text-decoration:none;}
+.nav-brand span{color:var(--gold);}
+.nav-tool{font-size:12px;color:var(--mid);font-weight:500;margin-left:10px;padding-left:10px;border-left:1px solid var(--border);}
+@media (max-width:600px){.nav-tool{display:none;}}
+.nav-badge{font-size:10px;font-weight:700;color:var(--pro);background:rgba(233,169,27,.15);border:1px solid rgba(233,169,27,.3);padding:3px 8px;border-radius:3px;}
+.nav-right {display:flex;align-items:center;gap:12px; flex-wrap:wrap; row-gap:8px;}
+.nav-btn{background:transparent;border:1px solid var(--border);color:var(--mid);font-size:12px;padding:7px 14px;border-radius:4px;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;white-space:nowrap;}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold-dark);}
+
+.hero{background:var(--black);padding:36px 20px 30px;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;top:-70px;right:-70px;width:240px;height:240px;border-radius:50%;border:42px solid rgba(233,169,27,0.07);pointer-events:none;}
+.hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.tool-badge{display:inline-block;background:rgba(233,169,27,0.15);border:1px solid rgba(233,169,27,0.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;padding:4px 12px;border-radius:2px;margin-bottom:14px;}
+.hero h1{font-family:"Poppins",sans-serif;font-size:clamp(22px,3.6vw,30px);font-weight:900;color:var(--white);line-height:1.2;letter-spacing:-0.4px;margin-bottom:10px;}
+.hero p{font-size:14px;color:rgba(255,255,255,0.55);max-width:600px;line-height:1.7;font-weight:300;}
+
+.prihlaseni{max-width:420px;margin:40px auto;padding:0 16px;}
+.prih-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 24px;text-align:center;}
+.prih-card h2{font-family:"Poppins",sans-serif;font-size:18px;font-weight:800;color:var(--dark);margin-bottom:8px;}
+.prih-card p{font-size:13px;color:var(--mid);margin-bottom:20px;line-height:1.7;}
+.prih-btn{width:100%;background:var(--gold);color:var(--black);border:none;border-radius:8px;padding:13px;font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;cursor:pointer;margin-top:12px;transition:all .2s;}
+.prih-btn:hover{background:var(--gold-dark);color:white;}
+
+.neni-admin{max-width:560px;margin:40px auto;padding:0 16px;}
+.neni-admin-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:28px 24px;text-align:center;color:var(--mid);font-size:14px;}
+
+.main{max-width:900px;margin:0 auto;padding:24px 16px 80px;}
+.karta{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 20px;margin-bottom:18px;}
+.karta h2{font-family:"Poppins",sans-serif;font-size:16px;font-weight:800;margin-bottom:4px;}
+.karta-pop{font-size:12.5px;color:var(--mid);margin-bottom:16px;}
+
+.pasmo-pill{display:inline-flex;align-items:center;gap:6px;background:var(--gold-light);border:1px solid rgba(196,142,16,.3);color:var(--gold-dark);font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:20px;margin-bottom:16px;}
+
+.clen-radek{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.clen-radek:last-child{border-bottom:none;}
+.clen-info{display:flex;flex-direction:column;gap:2px;}
+.clen-jmeno{font-weight:700;font-size:13.5px;color:var(--dark);}
+.clen-email{font-size:12px;color:var(--light);}
+.clen-ja{font-size:10px;font-weight:700;color:var(--gold-dark);background:var(--gold-light);padding:1px 7px;border-radius:10px;margin-left:6px;}
+.clen-akce{display:flex;align-items:center;gap:8px;}
+.role-select{border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-family:"DM Sans",sans-serif;font-size:12.5px;background:var(--white);color:var(--dark);outline:none;}
+.role-select:focus{border-color:var(--gold);}
+.ikona-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:6px 9px;cursor:pointer;color:var(--light);font-size:13px;line-height:1;}
+.ikona-btn:hover{border-color:var(--red);color:var(--red);}
+
+.pozvanka-radek{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.pozvanka-radek:last-child{border-bottom:none;}
+.pozvanka-email{font-size:13px;font-weight:600;color:var(--dark);}
+.pozvanka-meta{font-size:11.5px;color:var(--light);}
+.stav-chip{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:3px 9px;border-radius:20px;}
+.stav-cekajici{background:rgba(26,106,170,.12);color:var(--blue);}
+.stav-zruseno{background:#eee;color:#999;}
+.prazdny{color:var(--light);font-size:13px;padding:8px 0;}
+
+.form-pozvat{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.form-pozvat input[type=email]{flex:1;min-width:200px;border:2px solid var(--border);border-radius:8px;padding:11px 14px;font-size:13.5px;outline:none;}
+.form-pozvat input[type=email]:focus{border-color:var(--gold);}
+.form-pozvat select{border:2px solid var(--border);border-radius:8px;padding:11px 12px;font-size:13.5px;background:var(--white);outline:none;}
+.btn-gold{background:var(--gold);color:var(--black);border:none;border-radius:8px;padding:11px 20px;font-family:"Poppins",sans-serif;font-size:13.5px;font-weight:800;cursor:pointer;white-space:nowrap;}
+.btn-gold:hover{background:var(--gold-dark);color:white;}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed;}
+.hlaska{font-size:12.5px;margin-top:10px;display:none;padding:9px 12px;border-radius:8px;}
+.hlaska.chyba{display:block;background:#fdecea;color:var(--red);}
+.hlaska.ok{display:block;background:var(--green-light);color:var(--green);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/" class="nav-brand">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Nastavení firmy</span></div>
+  <div class="nav-right">
+    <span class="nav-badge">Pro verze</span>
+    <a href="https://tokva.cz/moje-tokva/" class="nav-btn" id="nav-moje-tokva" style="display:none;text-decoration:none;">Přehled</a>
+    <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
+    <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
+    <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="tool-badge">Placený nástroj – Tokva Pro</div>
+    <h1>Kdo je ve vaší firmě v Tokvě</h1>
+    <p>Pozvěte kolegy, nastavte jim roli a mějte přehled, kdo má k appce přístup. Data firmy vidí a upravuje kdokoli z týmu.</p>
+  </div>
+</div>
+
+<div id="prihlaseni" class="prihlaseni">
+  <div class="prih-card">
+    <h2>Přihlaste se ke svému účtu</h2>
+    <p>Nastavení firmy je součástí Tokva Pro. Přihlaste se svým účtem Tokva.</p>
+    <button class="prih-btn" onclick="klikNaPrihlaseni()">Přihlásit se</button>
+    <p style="margin-top:16px;font-size:12px;color:var(--light);">Nemáte přístup? <a href="https://tokva.cz/pro/" style="color:var(--gold);text-decoration:none;font-weight:700;">Zjistit více o Tokva Pro</a></p>
+  </div>
+</div>
+
+<div id="neni-admin" class="neni-admin" style="display:none;">
+  <div class="neni-admin-card">
+    Správu lidí ve firmě vidí jen majitel nebo správce. Pokud potřebujete pozvat kolegu, ozvěte se majiteli firmy.
+  </div>
+</div>
+
+<div class="main" id="app" style="display:none;">
+
+  <div class="karta">
+    <h2>Lidé ve firmě</h2>
+    <p class="karta-pop">Kdokoli tady vidí a upravuje výsledky, projekty i akční plán celé firmy.</p>
+    <div class="pasmo-pill" id="pasmo-pill">–</div>
+    <div id="seznam-clenu"></div>
+  </div>
+
+  <div class="karta" id="karta-pozvat">
+    <h2>Pozvat kolegu</h2>
+    <p class="karta-pop">Pošleme mu e-mail s odkazem, po přihlášení se rovnou připojí k vaší firmě.</p>
+    <div class="form-pozvat">
+      <input type="email" id="pozvat-email" placeholder="e-mail kolegy">
+      <select id="pozvat-role">
+        <option value="clen">Člen</option>
+        <option value="spravce">Správce</option>
+        <option value="konzultant">Konzultant</option>
+      </select>
+      <button class="btn-gold" onclick="odeslatPozvanku()">Pozvat</button>
+    </div>
+    <div class="hlaska" id="pozvat-hlaska"></div>
+  </div>
+
+  <div class="karta">
+    <h2>Čekající pozvánky</h2>
+    <div id="seznam-pozvanek"><p class="prazdny">Žádné čekající pozvánky.</p></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-client.js"></script>
+<script src="../auth.js"></script>
+<script>
+
+let session = null;
+let clenstvi = null;
+let jePro = false;
+let jsemMajitel = false;
+
+function pasmo(pocet) {
+  if (pocet <= 1) return { nazev: '1 uživatel', cena: 699, max: 1 };
+  if (pocet <= 5) return { nazev: '2–5 uživatelů', cena: 1390, max: 5 };
+  if (pocet <= 15) return { nazev: '6–15 uživatelů', cena: 2690, max: 15 };
+  return { nazev: '16+ uživatelů', cena: null, max: Infinity };
+}
+
+function klikNaPrihlaseni() {
+  const zpet = encodeURIComponent(window.location.href);
+  window.location.href = '../prihlaseni.html?zpet=' + zpet;
+}
+
+function klikNaUcet() {
+  if (session) { odhlasit(); } else { klikNaPrihlaseni(); }
+}
+
+async function nacistData() {
+  const { data: clenoveRaw, error: chybaClenu } = await supabaseClient
+    .from('organization_members')
+    .select('id, user_id, role, created_at')
+    .eq('organization_id', clenstvi.organization_id)
+    .order('created_at', { ascending: true });
+
+  if (chybaClenu) { console.error('nacist clenove chyba:', chybaClenu); return; }
+
+  const idClenu = (clenoveRaw || []).map(c => c.user_id);
+  let profily = {};
+  if (idClenu.length) {
+    const { data: profilyData } = await supabaseClient
+      .from('profiles')
+      .select('id, email, full_name')
+      .in('id', idClenu);
+    (profilyData || []).forEach(p => { profily[p.id] = p; });
+  }
+
+  const { data: pozvankyRaw } = await supabaseClient
+    .from('organization_invites')
+    .select('id, email, role, status, created_at')
+    .eq('organization_id', clenstvi.organization_id)
+    .order('created_at', { ascending: false });
+
+  const clenove = (clenoveRaw || []).map(c => ({ ...c, profil: profily[c.user_id] || {} }));
+  const pozvankyCekajici = (pozvankyRaw || []).filter(p => p.status === 'cekajici');
+
+  vykreslitPasmo(clenove.length + pozvankyCekajici.length);
+  vykreslitCleny(clenove);
+  vykreslitPozvanky(pozvankyRaw || []);
+}
+
+function vykreslitPasmo(pocet) {
+  const p = pasmo(pocet);
+  const el = document.getElementById('pasmo-pill');
+  el.textContent = `${pocet} ${pocet === 1 ? 'člověk' : 'lidí'} celkem (vč. čekajících pozvánek) · pásmo ${p.nazev}`;
+}
+
+const NAZEV_ROLE = { majitel: 'Majitel', spravce: 'Správce', clen: 'Člen', konzultant: 'Konzultant' };
+
+function vykreslitCleny(clenove) {
+  const wrap = document.getElementById('seznam-clenu');
+  wrap.innerHTML = '';
+  clenove.forEach(c => {
+    const jsemJa = session && c.user_id === session.user.id;
+    const radek = document.createElement('div');
+    radek.className = 'clen-radek';
+
+    const jmeno = c.profil.full_name || c.profil.email || 'Neznámý účet';
+    const info = document.createElement('div');
+    info.className = 'clen-info';
+    info.innerHTML = `<span class="clen-jmeno">${escapeHtml(jmeno)}${jsemJa ? '<span class="clen-ja">Vy</span>' : ''}</span>
+      <span class="clen-email">${escapeHtml(c.profil.email || '')}</span>`;
+
+    const akce = document.createElement('div');
+    akce.className = 'clen-akce';
+
+    if (c.role === 'majitel') {
+      akce.innerHTML = `<span class="role-select" style="border-style:dashed;cursor:default;">Majitel</span>`;
+    } else if (jsemMajitel || (jsemAdminFirmy(clenstvi) && c.role !== 'spravce')) {
+      const sel = document.createElement('select');
+      sel.className = 'role-select';
+      const moznosti = jsemMajitel ? ['spravce', 'clen', 'konzultant'] : ['clen', 'konzultant'];
+      moznosti.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r; opt.textContent = NAZEV_ROLE[r];
+        if (r === c.role) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      sel.onchange = () => zmenitRoli(c.id, sel.value, jmeno);
+      akce.appendChild(sel);
+
+      if (!jsemJa) {
+        const btn = document.createElement('button');
+        btn.className = 'ikona-btn'; btn.title = 'Odebrat z firmy'; btn.textContent = '✕';
+        btn.onclick = () => odebratClena(c.id, jmeno);
+        akce.appendChild(btn);
+      }
+    } else {
+      akce.innerHTML = `<span class="role-select" style="border-style:dashed;cursor:default;">${NAZEV_ROLE[c.role] || c.role}</span>`;
+    }
+
+    radek.appendChild(info);
+    radek.appendChild(akce);
+    wrap.appendChild(radek);
+  });
+}
+
+function vykreslitPozvanky(pozvanky) {
+  const wrap = document.getElementById('seznam-pozvanek');
+  const aktivni = pozvanky.filter(p => p.status !== 'prijato');
+  if (!aktivni.length) { wrap.innerHTML = '<p class="prazdny">Žádné čekající pozvánky.</p>'; return; }
+  wrap.innerHTML = '';
+  aktivni.forEach(p => {
+    const radek = document.createElement('div');
+    radek.className = 'pozvanka-radek';
+    const chip = p.status === 'cekajici'
+      ? '<span class="stav-chip stav-cekajici">Čeká na přijetí</span>'
+      : '<span class="stav-chip stav-zruseno">Zrušeno</span>';
+    radek.innerHTML = `
+      <div><div class="pozvanka-email">${escapeHtml(p.email)}</div>
+      <div class="pozvanka-meta">${NAZEV_ROLE[p.role] || p.role} · pozváno ${new Date(p.created_at).toLocaleDateString('cs-CZ')}</div></div>
+      <div style="display:flex;align-items:center;gap:8px;">${chip}</div>`;
+    if (p.status === 'cekajici' && jsemAdminFirmy(clenstvi)) {
+      const btn = document.createElement('button');
+      btn.className = 'ikona-btn'; btn.title = 'Zrušit pozvánku'; btn.textContent = '✕';
+      btn.onclick = () => zrusitPozvanku(p.id);
+      radek.querySelector('div[style]').appendChild(btn);
+    }
+    wrap.appendChild(radek);
+  });
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML;
+}
+
+async function odeslatPozvanku() {
+  const emailPole = document.getElementById('pozvat-email');
+  const rolePole = document.getElementById('pozvat-role');
+  const hlaska = document.getElementById('pozvat-hlaska');
+  hlaska.className = 'hlaska'; hlaska.textContent = '';
+
+  const email = emailPole.value.trim();
+  if (!email || !email.includes('@')) {
+    hlaska.className = 'hlaska chyba'; hlaska.textContent = 'Zadejte platný e-mail.'; return;
+  }
+
+  const { count: pocetClenu } = await supabaseClient
+    .from('organization_members').select('id', { count: 'exact', head: true })
+    .eq('organization_id', clenstvi.organization_id);
+  const { count: pocetPozvanek } = await supabaseClient
+    .from('organization_invites').select('id', { count: 'exact', head: true })
+    .eq('organization_id', clenstvi.organization_id).eq('status', 'cekajici');
+
+  const dnes = (pocetClenu || 0) + (pocetPozvanek || 0);
+  const poNove = dnes + 1;
+
+  if (poNove > 15) {
+    hlaska.className = 'hlaska chyba';
+    hlaska.textContent = 'Nad 15 lidí řešíme cenu individuálně - napište prosím na tomickova.info@gmail.com.';
+    return;
+  }
+
+  const pasmoDnes = pasmo(dnes);
+  const pasmoPote = pasmo(poNove);
+  if (pasmoPote.cena !== pasmoDnes.cena) {
+    const potvrzeno = confirm(
+      `Tahle pozvánka posune firmu na ${poNove} lidí - nové cenové pásmo ${pasmoPote.nazev} za ${pasmoPote.cena} Kč/měsíc. Pokračovat?`
+    );
+    if (!potvrzeno) return;
+  }
+
+  const { error } = await supabaseClient.from('organization_invites').insert({
+    organization_id: clenstvi.organization_id,
+    email: email,
+    role: rolePole.value,
+    invited_by: session.user.id,
+  });
+
+  if (error) {
+    hlaska.className = 'hlaska chyba';
+    hlaska.textContent = error.message.includes('duplicate')
+      ? 'Tenhle e-mail už má čekající pozvánku do vaší firmy.'
+      : ('Nepodařilo se odeslat pozvánku: ' + error.message);
+    return;
+  }
+
+  hlaska.className = 'hlaska ok';
+  hlaska.textContent = 'Pozvánka odeslána na ' + email + '.';
+  emailPole.value = '';
+  nacistData();
+}
+
+async function zrusitPozvanku(id) {
+  if (!confirm('Zrušit tuhle pozvánku?')) return;
+  const { error } = await supabaseClient.from('organization_invites').update({ status: 'zruseno' }).eq('id', id);
+  if (error) { alert('Nepodařilo se zrušit pozvánku: ' + error.message); return; }
+  nacistData();
+}
+
+async function zmenitRoli(clenskyId, novaRole, jmeno) {
+  const { error } = await supabaseClient.from('organization_members').update({ role: novaRole }).eq('id', clenskyId);
+  if (error) { alert('Nepodařilo se změnit roli u ' + jmeno + ': ' + error.message); nacistData(); return; }
+  nacistData();
+}
+
+async function odebratClena(clenskyId, jmeno) {
+  if (!confirm('Odebrat ' + jmeno + ' z firmy? Ztratí přístup k datům firmy v Tokvě.')) return;
+  const { error } = await supabaseClient.from('organization_members').delete().eq('id', clenskyId);
+  if (error) { alert('Nepodařilo se odebrat: ' + error.message); return; }
+  nacistData();
+}
+
+async function init() {
+  session = await ziskatSession();
+  clenstvi = session ? await ziskatMojiOrganizaci() : null;
+  jePro = maAktivniPro(clenstvi);
+  jsemMajitel = !!clenstvi && clenstvi.role === 'majitel';
+
+  zobrazitOdkazMojeTokva(!!clenstvi);
+  zobrazitOdkazAkcniPlan(jePro);
+  zobrazitOdkazProjekty(jePro);
+
+  const btnUcet = document.getElementById('nav-ucet-btn');
+  const infoUcet = document.getElementById('nav-ucet-info');
+  if (session) {
+    btnUcet.textContent = 'Odhlásit se';
+    infoUcet.style.display = '';
+    infoUcet.textContent = (clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email) + (jePro ? ' · Pro' : '');
+  }
+
+  if (!session) {
+    document.getElementById('prihlaseni').style.display = '';
+    return;
+  }
+  if (!jePro || !jsemAdminFirmy(clenstvi)) {
+    document.getElementById('neni-admin').style.display = '';
+    return;
+  }
+
+  document.getElementById('app').style.display = '';
+  await nacistData();
+}
+
+init();
+</script>
+</body>
+</html>

@@ -122,6 +122,21 @@ function zobrazitOdkazMojeTokva(maFirmu) {
   el.style.display = maFirmu ? '' : 'none';
 }
 
+// Řekne appce, jestli je přihlášený člověk majitel/správce firmy (ne jen
+// běžný člen) - používá appka Nastavení firmy na to, co komu ukázat/dovolit.
+function jsemAdminFirmy(clenstvi) {
+  return !!clenstvi && (clenstvi.role === 'majitel' || clenstvi.role === 'spravce');
+}
+
+// Ukáže/schová trvalý odkaz na Nastavení firmy v horní liště appky - stejný
+// vzorec jako zobrazitOdkazAkcniPlan/Projekty výš, ale navíc jen pro
+// majitele/správce (ne pro běžné členy - ti nemají co spravovat).
+function zobrazitOdkazNastaveniFirmy(jePro, clenstvi) {
+  const el = document.getElementById('nav-nastaveni-firmy');
+  if (!el) return;
+  el.style.display = (jePro && jsemAdminFirmy(clenstvi)) ? '' : 'none';
+}
+
 // Odhlášení, s přesměrováním zpátky na přihlašovací stránku.
 async function odhlasit() {
   await supabaseClient.auth.signOut();

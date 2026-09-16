@@ -137,6 +137,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <a class="topbar-login" href="https://tokva.cz/moje-tokva/" id="nav-moje-tokva" style="display:none;">Přehled</a>
     <a class="topbar-login" href="https://tokva.cz/akcni-plan/" id="nav-akcni-plan" style="display:none;">Akční plán</a>
     <a class="topbar-login" href="https://tokva.cz/projekty/" id="nav-projekty" style="display:none;">Projekty</a>
+    <a class="topbar-login" href="https://tokva.cz/nastaveni-firmy/" id="nav-nastaveni-firmy" style="display:none;">Nastavení firmy</a>
     <a class="topbar-login" href="prihlaseni.html" id="nav-ucet-btn">Moje Tokva</a>
   </div>
 </div>
@@ -254,6 +255,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
     if (typeof zobrazitOdkazAkcniPlan === 'function') zobrazitOdkazAkcniPlan(jePro);
     if (typeof zobrazitOdkazProjekty === 'function') zobrazitOdkazProjekty(jePro);
+    if (typeof zobrazitOdkazNastaveniFirmy === 'function') zobrazitOdkazNastaveniFirmy(jePro, clenstvi);
     if (typeof zobrazitOdkazMojeTokva === 'function') zobrazitOdkazMojeTokva(true);
     const proSekce = document.getElementById('pro-section');
     if (proSekce) proSekce.style.display = jePro ? 'none' : '';
