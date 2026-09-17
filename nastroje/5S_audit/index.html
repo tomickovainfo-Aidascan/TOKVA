@@ -1039,6 +1039,9 @@ nav {
 .dalsi-nastroj-popis{font-size:13px;color:var(--mid);margin-bottom:14px;}
 .dalsi-nastroj-btn{display:inline-block;background:var(--dark);color:var(--white);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;padding:10px 20px;border-radius:4px;text-decoration:none;}
 @media (max-width:600px){.dalsi-nastroje-grid{grid-template-columns:1fr;}}
+#nav-ucet-info{white-space:nowrap;}
+#nav-ucet-email{white-space:nowrap;}
+@media (max-width:600px){#nav-ucet-info{display:none!important;}}
 </style>
 </head>
 <body>
@@ -1048,6 +1051,7 @@ nav {
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/nastroje/?nastroj=5s-audit" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">5S pro každého smrtelníka</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
@@ -1354,6 +1358,8 @@ function renderUcetNav() {
   info.style.display = '';
   const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
   info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
+  const infoEmail = document.getElementById('nav-ucet-email');
+  if (infoEmail) { infoEmail.style.display = ''; infoEmail.textContent = zkratitEmail(session.user.email); }
 }
 
 async function klikNaUcet() {

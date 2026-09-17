@@ -125,6 +125,9 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,38px); font-weig
   .krok-row { flex-direction:column; align-items:flex-start; }
   .krok-row .krok-meta { width:100%; justify-content:space-between; }
 }
+#nav-ucet-info{white-space:nowrap;}
+#nav-ucet-email{white-space:nowrap;}
+@media (max-width:600px){#nav-ucet-info{display:none!important;}}
 </style>
 </head>
 <body>
@@ -133,6 +136,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,38px); font-weig
   <a class="brand" href="https://tokva.cz/">Tokva <span>Gabriela Tomíčková</span></a>
   <div class="topbar-right">
     <span class="topbar-login" id="nav-ucet-info" style="display:none;cursor:default;"></span>
+    <span class="topbar-login" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <a class="topbar-login" href="https://tokva.cz/moje-tokva/" id="nav-moje-tokva" style="display:none;">Přehled</a>
     <a class="topbar-login" href="https://tokva.cz/akcni-plan/" id="nav-akcni-plan" style="display:none;">Akční plán</a>
     <a class="topbar-login" href="https://tokva.cz/projekty/" id="nav-projekty" style="display:none;">Projekty</a>
@@ -212,6 +216,8 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,38px); font-weig
     const jePro = maAktivniPro(clenstvi);
     info.style.display = 'inline-block';
     info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    const infoEmail = document.getElementById('nav-ucet-email');
+    if (infoEmail) { infoEmail.style.display = 'inline-block'; infoEmail.textContent = zkratitEmail(session.user.email); }
     if (typeof zobrazitOdkazAkcniPlan === 'function') zobrazitOdkazAkcniPlan(jePro);
     if (typeof zobrazitOdkazProjekty === 'function') zobrazitOdkazProjekty(jePro);
     if (typeof zobrazitOdkazMojeTokva === 'function') zobrazitOdkazMojeTokva(true);

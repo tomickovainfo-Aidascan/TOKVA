@@ -356,6 +356,9 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   color: var(--mid);
 }
 .notice-btn.secondary:hover { border-color: var(--light); color: var(--dark); }
+#nav-ucet-info{white-space:nowrap;}
+#nav-ucet-email{white-space:nowrap;}
+@media (max-width:600px){#nav-ucet-info{display:none!important;}}
 </style>
 <style id="cookies-css">
 .cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
@@ -381,6 +384,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/nastroje/?nastroj=kviz-komunikace" class="nav-brand">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Kvíz komunikačního chaosu</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
@@ -1022,6 +1026,8 @@ function renderUcetNav() {
   info.style.display = '';
   const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
   info.textContent = jePro ? (nazevFirmy + ' · Pro') : nazevFirmy;
+  const infoEmail = document.getElementById('nav-ucet-email');
+  if (infoEmail) { infoEmail.style.display = ''; infoEmail.textContent = zkratitEmail(session.user.email); }
   historieBtn.style.display = jePro ? '' : 'none';
   tymBtn.style.display = jePro ? '' : 'none';
   if (proPanel) proPanel.style.display = jePro ? 'none' : '';

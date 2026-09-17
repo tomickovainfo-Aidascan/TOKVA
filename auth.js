@@ -63,6 +63,14 @@ function maAktivniPro(clenstvi) {
   return true;
 }
 
+// Zkrátí e-mail na jméno před zavináčem, ať se vejde do malého odznaku
+// v horní liště i na mobilu - appka podle něj ukazuje, kdo je přihlášený.
+function zkratitEmail(email) {
+  if (!email) return '';
+  const jmeno = email.split('@')[0];
+  return jmeno.length > 16 ? jmeno.slice(0, 16) + '…' : jmeno;
+}
+
 // Založí novou firmu a rovnou přihlášeného uživatele udělá jejím majitelem.
 // Používá databázovou funkci create_organization (viz supabase-schema-navrh.md),
 // protože běžný zápis přes .insert() by tady na založení první členské role nestačil.

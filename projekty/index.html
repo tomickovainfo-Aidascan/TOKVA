@@ -253,6 +253,9 @@ body.prezentace footer{display:none;}
   color: var(--mid);
 }
 .notice-btn.secondary:hover { border-color: var(--light); color: var(--dark); }
+#nav-ucet-info{white-space:nowrap;}
+#nav-ucet-email{white-space:nowrap;}
+@media (max-width:600px){#nav-ucet-info{display:none!important;}}
 </style>
 </head>
 <body>
@@ -265,6 +268,7 @@ body.prezentace footer{display:none;}
     <a href="https://tokva.cz/nastaveni-firmy/" class="nav-btn" id="nav-nastaveni-firmy" style="display:none;text-decoration:none;">Nastavení firmy</a>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn">Akční plán</a>
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
 </nav>
@@ -517,6 +521,8 @@ function renderUcetNav() {
   if (session && clenstvi) {
     info.style.display = 'inline-block';
     info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    const infoEmail = document.getElementById('nav-ucet-email');
+    if (infoEmail) { infoEmail.style.display = 'inline-block'; infoEmail.textContent = zkratitEmail(session.user.email); }
     btn.textContent = 'Odhlásit';
   } else {
     info.style.display = 'none';

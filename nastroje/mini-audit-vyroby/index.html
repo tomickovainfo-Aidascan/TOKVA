@@ -467,6 +467,9 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 .co-prvni-dalsi { font-size:12.5px; color:rgba(255,255,255,.45); margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,.12); }
 .co-prvni-dalsi a { color:var(--gold); text-decoration:none; }
 .co-prvni-dalsi a:hover { text-decoration:underline; }
+#nav-ucet-info{white-space:nowrap;}
+#nav-ucet-email{white-space:nowrap;}
+@media (max-width:600px){#nav-ucet-info{display:none!important;}}
 </style>
 
 <style id="cookies-css">
@@ -495,6 +498,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/nastroje/?nastroj=mini-audit-vyroby" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Mini audit výroby</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
@@ -1543,6 +1547,8 @@ function renderUcetNav() {
   if (session && clenstvi) {
     info.style.display = 'inline-block';
     info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    const infoEmail = document.getElementById('nav-ucet-email');
+    if (infoEmail) { infoEmail.style.display = 'inline-block'; infoEmail.textContent = zkratitEmail(session.user.email); }
     btn.textContent = 'Odhlásit';
   } else {
     info.style.display = 'none';

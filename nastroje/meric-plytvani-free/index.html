@@ -362,6 +362,9 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   nav,.main,.mereni,.souhrn{padding-left:16px;padding-right:16px;}
   .hero{padding:36px 16px 32px;}
 }
+#nav-ucet-info{white-space:nowrap;}
+#nav-ucet-email{white-space:nowrap;}
+@media (max-width:600px){#nav-ucet-info{display:none!important;}}
 </style>
 
 <style id="cookies-css">
@@ -390,6 +393,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/nastroje/?nastroj=meric-free" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Měřič plýtvání</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
+    <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
@@ -1062,6 +1066,8 @@ function renderUcetNav() {
   info.style.display = '';
   const nazevFirmy = ucetClenstvi && ucetClenstvi.organizations ? ucetClenstvi.organizations.name : ucetSession.user.email;
   info.textContent = maAktivniPro(ucetClenstvi) ? (nazevFirmy + ' \u00b7 Pro') : nazevFirmy;
+  const infoEmail = document.getElementById('nav-ucet-email');
+  if (infoEmail) { infoEmail.style.display = ''; infoEmail.textContent = zkratitEmail(ucetSession.user.email); }
 }
 
 async function klikNaUcet() {
