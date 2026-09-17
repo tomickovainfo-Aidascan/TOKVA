@@ -14,17 +14,17 @@ alter table public.organizations
   add column if not exists max_uzivatelu integer not null default 1;
 
 comment on column public.organizations.max_uzivatelu is
-  'Strop počtu lidí (členové + čekající pozvánky) pro Tokva Pro. Nastavuje ručně Gábina podle pásma, co firma platí.';
+  'Ruční pole. Varianty podle pásma: 1 / 5 (pásmo 2-5) / 15 (pásmo 6-15) / vlastní číslo u 16+. Strop počtu lidí (členové + čekající pozvánky) v Tokva Pro.';
 
 -- Popisky i u zbylých polí, co se v týhle tabulce vyplňují ručně - ať jsou
 -- vidět rovnou v Table Editoru (ikonka ⓘ vedle názvu sloupce), ne jen v
 -- dokumentaci.
 comment on column public.organizations.plan is
-  'Ruční pole: ''free'' nebo ''pro''. Přepíná Gábina, jakmile potvrdí přijatou platbu.';
+  'Ruční pole. Varianty: free / pro. Přepíná Gábina na pro, jakmile potvrdí přijatou platbu.';
 comment on column public.organizations.plan_expires_at is
   'Ruční pole: datum konce předplatného Tokva Pro. Nastavuje Gábina spolu s plan.';
 comment on column public.organizations.mesicni_cena_kc is
-  'Ruční pole: cena Kč/měsíc podle pásma, co firma platí (699 / 1390 / 2690, u 16+ individuálně).';
+  'Ruční pole. Varianty podle pásma: 699 (1 uživatel, 499 u prvních 10 zakladatelských klientů) / 1390 (2-5) / 2690 (6-15) / individuálně u 16+.';
 
 -- Pojistka na úrovni databáze: pozvánka nad strop se vůbec nezaloží,
 -- appka jen zobrazí hlášku z chyby.
