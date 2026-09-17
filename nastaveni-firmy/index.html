@@ -180,6 +180,15 @@ function pasmo(pocet) {
   return { nazev: '16+ uživatelů', cena: null, max: Infinity };
 }
 
+// Pásmo podle skutečně přiděleného limitu firmy (max_uzivatelu), ne podle
+// toho, kolik lidí je zrovna přihlášeno - limit zadává ručně Gábina.
+function pasmoPodleLimitu(max) {
+  if (max <= 1) return '1 uživatel';
+  if (max <= 5) return '2–5 uživatelů';
+  if (max <= 15) return '6–15 uživatelů';
+  return '16+ uživatelů (individuálně)';
+}
+
 function klikNaPrihlaseni() {
   const zpet = encodeURIComponent(window.location.href);
   window.location.href = '../prihlaseni.html?zpet=' + zpet;
@@ -223,9 +232,9 @@ async function nacistData() {
 }
 
 function vykreslitPasmo(pocet) {
-  const p = pasmo(pocet);
+  const max = (clenstvi.organizations && clenstvi.organizations.max_uzivatelu) || 1;
   const el = document.getElementById('pasmo-pill');
-  el.textContent = `${pocet} ${pocet === 1 ? 'člověk' : 'lidí'} celkem (vč. čekajících pozvánek) · pásmo ${p.nazev}`;
+  el.textContent = `${pocet} / ${max} ${max === 1 ? 'osoba' : 'lidí'} (vč. čekajících pozvánek) · pásmo ${pasmoPodleLimitu(max)}`;
 }
 
 const NAZEV_ROLE = { majitel: 'Majitel', spravce: 'Správce', clen: 'Člen', konzultant: 'Konzultant' };
@@ -326,21 +335,12 @@ async function odeslatPozvanku() {
     .eq('organization_id', clenstvi.organization_id).eq('status', 'cekajici');
 
   const dnes = (pocetClenu || 0) + (pocetPozvanek || 0);
-  const poNove = dnes + 1;
+  const max = (clenstvi.organizations && clenstvi.organizations.max_uzivatelu) || 1;
 
-  if (poNove > 15) {
+  if (dnes >= max) {
     hlaska.className = 'hlaska chyba';
-    hlaska.textContent = 'Nad 15 lidí řešíme cenu individuálně - napište prosím na tomickova.info@gmail.com.';
+    hlaska.textContent = `Firma dosáhla svého limitu ${max} lidí. Pro víc místa se prosím ozvěte na tomickova.info@gmail.com.`;
     return;
-  }
-
-  const pasmoDnes = pasmo(dnes);
-  const pasmoPote = pasmo(poNove);
-  if (pasmoPote.cena !== pasmoDnes.cena) {
-    const potvrzeno = confirm(
-      `Tahle pozvánka posune firmu na ${poNove} lidí - nové cenové pásmo ${pasmoPote.nazev} za ${pasmoPote.cena} Kč/měsíc. Pokračovat?`
-    );
-    if (!potvrzeno) return;
   }
 
   const { error } = await supabaseClient.from('organization_invites').insert({

@@ -440,6 +440,8 @@ function prelozitChybu(msg) {
 // Pokud je uživatel na tuhle stránku přesměrovaný, ale je už přihlášený
 // (např. otevřel si odkaz znovu), rovnou ho pošleme dál.
 (async function () {
+  const paramsInit = new URLSearchParams(window.location.search);
+  if (paramsInit.get('pozvanka')) return; // pozvánku řeší inicializovatPozvanku() níž - nesmí ji přebít tichým přesměrováním podle cizí, už přihlášené session
   const session = await ziskatSession();
   if (session) await poPrihlaseni();
 })();
