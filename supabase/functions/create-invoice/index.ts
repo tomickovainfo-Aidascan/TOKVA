@@ -229,6 +229,35 @@ Deno.serve(async (req) => {
     });
     log("Faktura vytvořena: " + JSON.stringify(faktura));
 
+    // E-mail zákazníkovi, že má Tokva Pro aktivní. Posílá se jen když
+    // se podařilo dohledat e-mail majitele - jinak appka zákazníka
+    // nezná a jen to zaloguje, ať si toho Gábina všimne v e-mailu níž.
+    if (email !== "-") {
+      try {
+        await fetch("https://api.brevo.com/v3/smtp/email", {
+          method: "POST",
+          headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
+            to: [{ email }],
+            subject: "Vaše Tokva Pro je aktivní",
+            htmlContent:
+              "<p>Dobrý den,</p>" +
+              "<p>Tokva Pro je u vás aktivní. Přístup najdete tady: " +
+              "<a href=\"https://tokva.cz/moje-tokva/\">tokva.cz/moje-tokva</a></p>" +
+              "<p>Fakturu na " + cena + " Kč za měsíc dostanete zvlášť.</p>" +
+              "<p>Kdyby něco nesedělo nebo měla otázku, napište na gabriela@tokva.cz.</p>" +
+              "<p>Gabriela</p>",
+          }),
+        });
+        log("E-mail zákazníkovi odeslán na " + email);
+      } catch (e) {
+        log("E-mail zákazníkovi se nepodařilo poslat: " + String(e));
+      }
+    } else {
+      log("E-mail zákazníkovi NEODESLÁN - majitel firmy nedohledán");
+    }
+
     await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
