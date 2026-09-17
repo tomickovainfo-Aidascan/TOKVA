@@ -499,6 +499,7 @@ function zavritUpozorneni() {
 // =============================================
 let session = null;
 let clenstvi = null;
+function jsemAdmin() { return !!(clenstvi && (clenstvi.role === 'majitel' || clenstvi.role === 'spravce')); }
 let jePro = false;
 
 let projekty = [];
@@ -945,7 +946,7 @@ function aktualizovatTabulkuRadky() {
       '<td>' + (a.verification_date ? formatDatum(a.verification_date) : '—') + '</td>' +
       '<td>' + (a.verification_confirmed ? '✓' : '—') + '</td>' +
       '<td>' + (a.tool_runs ? '<span class="akce-duvod" onclick="otevritModalDuvod(\'' + a.id + '\')">' + escapovat(a.tool_runs.nazev || 'Výsledek nástroje') + '</span>' : '—') + '</td>' +
-      '<td class="tabulka-akce-bunka"><button class="ikona-btn" title="Upravit" aria-label="Upravit" onclick="otevritModalUpravitAkce(\'' + a.id + '\')">' + IKONA_UPRAVIT + '</button><button class="ikona-btn smazat" title="Smazat" aria-label="Smazat" onclick="smazatAkci(\'' + a.id + '\')">' + IKONA_SMAZAT + '</button></td>' +
+      '<td class="tabulka-akce-bunka"><button class="ikona-btn" title="Upravit" aria-label="Upravit" onclick="otevritModalUpravitAkce(\'' + a.id + '\')">' + IKONA_UPRAVIT + '</button>' + (jsemAdmin() ? '<button class="ikona-btn smazat" title="Smazat" aria-label="Smazat" onclick="smazatAkci(\'' + a.id + '\')">' + IKONA_SMAZAT + '</button>' : '') + '</td>' +
     '</tr>';
   }).join('');
 }
