@@ -15,6 +15,10 @@ alter table public.organizations
 
 comment on column public.organizations.max_uzivatelu is
   'Ruční pole. Varianty: 1/5/15/x (x = vlastní číslo u 16+, individuálně).';
+comment on column public.organizations.is_founding_member is
+  'Ruční pole. Varianty: true/false. Patří firma mezi prvních 10 zakladatelských Pro klientů?';
+comment on column public.organizations.founding_price_until is
+  'Ruční pole: datum, dokdy platí zvýhodněná zakladatelská cena (499 Kč). Po tomhle datu normální cena, is_founding_member zůstává true napořád.';
 
 -- Popisky i u zbylých polí, co se v týhle tabulce vyplňují ručně - ať jsou
 -- vidět rovnou v Table Editoru (ikonka ⓘ vedle názvu sloupce), ne jen v
