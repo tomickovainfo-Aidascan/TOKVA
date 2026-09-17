@@ -16,6 +16,16 @@ alter table public.organizations
 comment on column public.organizations.max_uzivatelu is
   'Strop počtu lidí (členové + čekající pozvánky) pro Tokva Pro. Nastavuje ručně Gábina podle pásma, co firma platí.';
 
+-- Popisky i u zbylých polí, co se v týhle tabulce vyplňují ručně - ať jsou
+-- vidět rovnou v Table Editoru (ikonka ⓘ vedle názvu sloupce), ne jen v
+-- dokumentaci.
+comment on column public.organizations.plan is
+  'Ruční pole: ''free'' nebo ''pro''. Přepíná Gábina, jakmile potvrdí přijatou platbu.';
+comment on column public.organizations.plan_expires_at is
+  'Ruční pole: datum konce předplatného Tokva Pro. Nastavuje Gábina spolu s plan.';
+comment on column public.organizations.mesicni_cena_kc is
+  'Ruční pole: cena Kč/měsíc podle pásma, co firma platí (699 / 1390 / 2690, u 16+ individuálně).';
+
 -- Pojistka na úrovni databáze: pozvánka nad strop se vůbec nezaloží,
 -- appka jen zobrazí hlášku z chyby.
 create or replace function public.zkontrolovat_limit_pozvanky()
