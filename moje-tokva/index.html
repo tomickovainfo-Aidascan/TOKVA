@@ -101,7 +101,7 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 <nav>
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/" class="nav-brand">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Moje Tokva</span></div>
   <div class="nav-right">
-    <span class="nav-badge">Pro verze</span>
+    <span class="nav-badge" id="nav-badge-pro" style="display:none;">Pro verze</span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;">Akční plán</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;">Projekty</a>
     <a href="https://tokva.cz/nastaveni-firmy/" class="nav-btn" id="nav-nastaveni-firmy" style="display:none;">Nastavení firmy</a>
@@ -215,6 +215,7 @@ async function nacistPrihlaseniStav() {
     session = null; clenstvi = null; jePro = false;
   }
   renderUcetNav();
+  document.getElementById('nav-badge-pro').style.display = jePro ? '' : 'none';
   zobrazitOdkazAkcniPlan(jePro);
   zobrazitOdkazProjekty(jePro);
   zobrazitOdkazNastaveniFirmy(jePro, clenstvi);
