@@ -308,7 +308,7 @@ body.prezentace footer{display:none;}
         <div class="detail-akce skryt-v-prezentaci">
           <button class="btn-secondary" onclick="exportovatProjektCSV()">⬇ Export CSV</button>
           <button class="btn-secondary" onclick="otevritModalHlavicka()">Upravit hlavičku</button>
-          <button class="btn-secondary danger" onclick="smazatProjekt()">Smazat projekt</button>
+          <button class="btn-secondary danger" id="btn-smazat-projekt" onclick="smazatProjekt()">Smazat projekt</button>
           <button class="btn-gold" id="btn-prezentovat" onclick="prepnoutPrezentaci()">▶ Prezentovat</button>
         </div>
         <button class="btn-secondary ukoncit-prezentaci" style="display:none;" id="btn-ukoncit-prezentaci" onclick="prepnoutPrezentaci()">✕ Ukončit prezentaci</button>
@@ -694,6 +694,8 @@ function fazeVysledku(tr) {
 
 function renderDetail() {
   const p = aktualniProjekt;
+  const btnSmazat = document.getElementById('btn-smazat-projekt');
+  if (btnSmazat) btnSmazat.style.display = (clenstvi && clenstvi.role === 'majitel') ? '' : 'none';
   document.getElementById('det-nazev').textContent = p.name;
   document.getElementById('det-stav').textContent = NAZVY_STAVU_PROJEKTU[p.status] || p.status;
   document.getElementById('det-osoba').innerHTML = p.responsible_person ? escapovat(p.responsible_person) : '<span class="prazdna">nepřiřazeno</span>';
