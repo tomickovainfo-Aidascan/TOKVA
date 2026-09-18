@@ -1636,7 +1636,6 @@ async function ulozitVysledekDoSupabase(procenta, skore, maxS) {
       hlavni_hodnota_cislo: procenta,
       hlavni_hodnota_jednotka: '%',
       hlavni_hodnota_typ: 'skore',
-      faze: 'videt',
       data: { odpovedi: Object.assign({}, odpovedi), nevim: Array.from(nevimSet), nejhorsi_oblasti: nejhorsi }
     }).select('id').single();
     if (error) throw error;
