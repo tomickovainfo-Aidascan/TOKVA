@@ -834,6 +834,21 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
     </div>
   </div>
 
+  <!-- HISTORIE A POROVNÁNÍ - vždy viditelné, i před vyplněním nového auditu,
+       ne jen na obrazovce výsledků. Pro uživatel se tak může podívat na
+       starší audity, aniž by musel appku znovu vyplňovat. -->
+  <div class="vysledky-detail" id="historie-panel">
+    <div class="vysledky-detail-header">Historie auditů</div>
+    <div id="historie-zamceno" style="padding:18px 20px;">
+      <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Pro verze uloží tenhle výsledek do vašeho účtu. Audit stačí za čas zopakovat a uvidíte, jestli se stav skladu zlepšuje.</p>
+      <button class="btn-gold" style="width:100%;" onclick="otevritModalPro()">Odemknout Pro</button>
+    </div>
+    <div id="historie-obsah" style="display:none;"></div>
+    <div id="historie-porovnat-bar" style="display:none;padding:12px 20px;border-top:1px solid var(--border);">
+      <button class="btn-gold" style="width:100%;" id="btn-porovnat-vybrane" onclick="otevritModalPorovnani()" disabled>Porovnat vybrané (0/2)</button>
+    </div>
+  </div>
+
   <!-- VYSLEDKY -->
   <div class="vysledky-wrap" id="vysledky">
     <div class="skore-hero" id="skore-hero">
@@ -861,18 +876,6 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
         Nevíte a chcete zjistit - podklad pro zlepšení skladových procesů
       </div>
       <div id="nemereno-rows"></div>
-    </div>
-
-    <div class="vysledky-detail" id="historie-panel">
-      <div class="vysledky-detail-header">Historie auditů</div>
-      <div id="historie-zamceno" style="padding:18px 20px;">
-        <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Pro verze uloží tenhle výsledek do vašeho účtu. Audit stačí za čas zopakovat a uvidíte, jestli se stav skladu zlepšuje.</p>
-        <button class="btn-gold" style="width:100%;" onclick="otevritModalPro()">Odemknout Pro</button>
-      </div>
-      <div id="historie-obsah" style="display:none;"></div>
-      <div id="historie-porovnat-bar" style="display:none;padding:12px 20px;border-top:1px solid var(--border);">
-        <button class="btn-gold" style="width:100%;" id="btn-porovnat-vybrane" onclick="otevritModalPorovnani()" disabled>Porovnat vybrané (0/2)</button>
-      </div>
     </div>
 
     <div class="vysledky-detail" id="projekt-panel" style="display:none;">
@@ -1422,9 +1425,10 @@ async function nacistPrihlaseniStav() {
     session = null; clenstvi = null; jePro = false;
   }
   renderUcetNav();
-  // Přišel odkaz na konkrétní uložený výsledek (třeba z Akčního plánu) - není potřeba
-  // čekat, až uživatel dokončí kvíz, historie (a detail) se natáhne rovnou.
-  if (jePro && new URLSearchParams(window.location.search).get('vysledek')) {
+  // Historie a porovnání jsou teď vidět rovnou na stránce (ne jen po
+  // dokončení nového auditu) - Pro uživatel se tak může podívat na starší
+  // výsledky, aniž by musel appku znovu vyplňovat.
+  if (jePro) {
     renderHistorie();
   }
 }
@@ -1762,9 +1766,15 @@ async function renderHistorie() {
   }
   zamceno.style.display = 'none';
   obsah.style.display = 'block';
-  if (projektPanel) { projektPanel.style.display = 'block'; nacistProjekty(); }
-  if (exportPanel) exportPanel.style.display = 'block';
-  if (akcniPanel) akcniPanel.style.display = 'block';
+  // Zařadit k projektu / export / akční plán dávají smysl, až když appka má
+  // aktuální uložený výsledek (posledniToolRunId) - jinak by se zobrazily
+  // prázdné panely bez čeho by se vlastně týkaly. Historie a porovnání ale
+  // vidět mají být rovnou, i před vyplněním nového auditu.
+  if (posledniToolRunId) {
+    if (projektPanel) { projektPanel.style.display = 'block'; nacistProjekty(); }
+    if (exportPanel) exportPanel.style.display = 'block';
+    if (akcniPanel) akcniPanel.style.display = 'block';
+  }
   obsah.innerHTML = '<div style="padding:14px 20px;font-size:13px;color:var(--light);">Načítám historii…</div>';
   try {
     const { data, error } = await supabaseClient
