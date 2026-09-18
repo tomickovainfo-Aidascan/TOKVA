@@ -2054,6 +2054,7 @@ async function renderUlozene() {
   document.getElementById('s-projekt-panel').style.display = jePro ? 'block' : 'none';
   document.getElementById('s-akce-panel').style.display = jePro ? 'block' : 'none';
   if (!jePro) { box.style.display = 'none'; return; }
+  if (clenstvi) nacistProjektyKalk();
   box.style.display = 'block';
   var wrap = document.getElementById('ulozene-seznam');
   if (!clenstvi) {
