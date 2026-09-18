@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJWW5ZX4J9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJWW5ZX4J9');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jak funguje tým v Tokva Pro | Tokva</title>
+<meta name="description" content="Jak pozvat kolegy do firmy v Tokva Pro a kdo co smí – role Majitel, Správce, Člen a Konzultant a jejich oprávnění.">
+<meta name="author" content="Gabriela Tomíčková">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tokva.cz/pro/tym/">
+<meta property="og:title" content="Jak funguje tým v Tokva Pro | Tokva">
+<meta property="og:description" content="Jak pozvat kolegy do firmy v Tokva Pro a kdo co smí – role Majitel, Správce, Člen a Konzultant a jejich oprávnění.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:image" content="https://tokva.cz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b; --gold-dark: #976e12; --gold-light: #fdf3d9;
+  --black: #000000; --dark: #111111; --mid: #545454; --silver: #a8a6a6;
+  --white: #ffffff; --paper: #fafaf8; --border: #e8e8e8; --border2: #e8e6e0;
+  --green: #2a7a4f; --green-light: #e8f5ee;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--dark); line-height:1.7; font-size:16px; }
+.topbar { background:var(--black); color:var(--white); padding:14px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:200; border-bottom:2px solid var(--gold); }
+.topbar .brand { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; text-decoration:none; color:var(--white); }
+.topbar .brand span { color:var(--gold); }
+.topbar-login { color:var(--gold); text-decoration:none; font-size:13px; font-weight:700; border:1px solid var(--gold); padding:7px 16px; border-radius:6px; }
+
+.main { padding:44px 24px 100px; max-width:760px; margin:0 auto; }
+.back-link { display:inline-block; font-size:13px; font-weight:600; color:var(--mid); text-decoration:none; margin-bottom:22px; }
+.back-link:hover { color:var(--gold-dark); }
+.badge { display:inline-block; background:var(--gold-light); color:var(--gold-dark); font-family:'Poppins',sans-serif; font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; padding:5px 12px; border-radius:100px; margin-bottom:18px; }
+h1 { font-family:'Poppins',sans-serif; font-size:clamp(24px,4vw,34px); font-weight:900; line-height:1.25; letter-spacing:-0.5px; margin-bottom:16px; }
+h2 { font-family:'Poppins',sans-serif; font-size:18px; font-weight:800; margin:38px 0 12px; }
+p.lead { font-size:16px; color:var(--mid); max-width:640px; margin-bottom:8px; }
+p { font-size:14.5px; color:var(--dark); margin-bottom:10px; }
+
+.kroky { list-style:none; counter-reset:krok; margin:18px 0 8px; }
+.kroky li { counter-increment:krok; position:relative; padding:6px 0 6px 38px; font-size:14.5px; color:var(--dark); }
+.kroky li::before { content:counter(krok); position:absolute; left:0; top:4px; width:26px; height:26px; border-radius:50%; background:var(--gold); color:var(--black); font-family:'Poppins',sans-serif; font-weight:800; font-size:13px; display:flex; align-items:center; justify-content:center; }
+.kroky li b { font-weight:700; }
+
+.role-table-wrap { overflow-x:auto; margin:14px 0 8px; border:1px solid var(--border2); border-radius:10px; }
+table.role-table { width:100%; border-collapse:collapse; font-size:13.5px; background:var(--white); }
+table.role-table th, table.role-table td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--border2); white-space:nowrap; }
+table.role-table th { font-family:'Poppins',sans-serif; font-size:11.5px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:var(--mid); background:var(--paper); }
+table.role-table td:first-child, table.role-table th:first-child { white-space:normal; min-width:200px; }
+table.role-table tr:last-child td { border-bottom:none; }
+.ano { color:var(--green); font-weight:800; }
+.ne { color:var(--silver); font-weight:800; }
+.hvezdicka-pozn { font-size:12.5px; color:var(--mid); margin-top:8px; }
+
+.info-box { background:var(--white); border:1px solid var(--border2); border-left:3px solid var(--gold); border-radius:0 10px 10px 0; padding:16px 20px; margin:20px 0; font-size:13.5px; color:var(--mid); }
+.info-box strong { color:var(--dark); }
+
+.cta-final { margin-top:44px; padding-top:28px; border-top:1px solid var(--border2); text-align:center; }
+.btn-gold { display:inline-block; background:var(--gold); color:var(--black); font-family:'Poppins',sans-serif; font-weight:800; font-size:14px; padding:13px 28px; border-radius:8px; text-decoration:none; }
+.btn-gold:hover { background:var(--gold-dark); color:var(--white); }
+
+footer { max-width:760px; margin:30px auto 0; padding:20px 24px; border-top:1px solid var(--border2); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:12px; color:var(--silver); }
+footer a { color:var(--silver); }
+
+@media (max-width:600px) {
+  .main { padding:32px 16px 80px; }
+  table.role-table { font-size:12.5px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="https://tokva.cz/">Tokva <span>Gabriela Tomíčková</span></a>
+  <a class="topbar-login" href="https://tokva.cz/prihlaseni.html">Moje Tokva</a>
+</div>
+
+<main class="main">
+  <a class="back-link" href="https://tokva.cz/pro/">← Zpět na Tokva Pro</a>
+  <div class="badge">Tokva Pro</div>
+  <h1>Jak funguje tým v Tokva Pro</h1>
+  <p class="lead">Do jedné firmy v Tokvě může patřit víc lidí – každý se svým vlastním přihlášením a rolí, která určuje, co smí vidět a upravovat.</p>
+
+  <h2>Jak pozvat kolegu do firmy</h2>
+  <ol class="kroky">
+    <li><b>Přihlaste se</b> jako majitel nebo správce firmy a otevřete <b>Nastavení firmy</b> (odkaz se objeví v horní liště appek po přihlášení).</li>
+    <li>V sekci <b>Lidé ve firmě</b> zadejte e-mail kolegy a vyberte roli (Správce, Člen, nebo Konzultant).</li>
+    <li>Appka pošle pozvánku. Kolega si přes odkaz v ní nastaví heslo a rovnou se dostane k datům firmy – nezakládá si vlastní novou firmu.</li>
+  </ol>
+  <p>Kolik lidí (aktivních členů i čekajících pozvánek dohromady) firma smí mít, se řídí zakoupenou variantou – 1 / 2–5 / 6–15. Když je limit vyčerpaný, appka pozvání dalšího člověka nedovolí, dokud se nezvýší varianta.</p>
+
+  <h2>Kdo co smí</h2>
+  <div class="role-table-wrap">
+    <table class="role-table">
+      <tr><th>Akce</th><th>Majitel</th><th>Správce</th><th>Člen</th><th>Konzultant</th></tr>
+      <tr><td>Vidět výsledky, projekty a akční plán</td><td class="ano">Ano</td><td class="ano">Ano</td><td class="ano">Ano</td><td class="ano">Ano</td></tr>
+      <tr><td>Zakládat a upravovat projekty, úkoly, výsledky nástrojů</td><td class="ano">Ano</td><td class="ano">Ano</td><td class="ano">Ano</td><td class="ano">Ano</td></tr>
+      <tr><td>Mazat úkoly v akčním plánu</td><td class="ano">Ano</td><td class="ano">Ano</td><td class="ne">Ne</td><td class="ne">Ne</td></tr>
+      <tr><td>Mazat celé projekty</td><td class="ano">Ano</td><td class="ne">Ne</td><td class="ne">Ne</td><td class="ne">Ne</td></tr>
+      <tr><td>Zvát a odebírat lidi, měnit role</td><td class="ano">Ano</td><td class="ano">Ano*</td><td class="ne">Ne</td><td class="ne">Ne</td></tr>
+      <tr><td>Vidět Nastavení firmy a fakturační údaje</td><td class="ano">Ano</td><td class="ano">Ano</td><td class="ne">Ne</td><td class="ne">Ne</td></tr>
+    </table>
+  </div>
+  <p class="hvezdicka-pozn">*Správce může měnit role mezi Člen a Konzultant, ale nemůže nikoho povýšit na Správce – to smí jen Majitel.</p>
+
+  <div class="info-box"><strong>Konzultant</strong> má stejná práva jako Člen (vidí a upravuje data firmy). Role se hodí, když si najmete externího poradce – v seznamu lidí je hned vidět, že nejde o interního zaměstnance.</div>
+
+  <div class="cta-final">
+    <a class="btn-gold" href="https://tokva.cz/pro/">← Zpět na objednávku Tokva Pro</a>
+  </div>
+</main>
+
+<footer>
+  <div>Tokva · Gabriela Tomíčková</div>
+  <a href="https://tokva.cz/">Zpět na Tokvu</a>
+</footer>
+
+</body>
+</html>

@@ -103,7 +103,9 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .objednavka-vs { font-weight:700; font-size:15px; margin:10px 0; }
 .obj-field { margin-bottom:12px; }
 .obj-field label { display:block; font-size:12px; font-weight:700; color:rgba(255,255,255,.6); margin-bottom:5px; }
-.obj-field input, .obj-field textarea { width:100%; padding:11px 14px; border-radius:8px; border:1.5px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; box-sizing:border-box; }
+.obj-field input, .obj-field textarea, .obj-field select { width:100%; padding:11px 14px; border-radius:8px; border:1.5px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; box-sizing:border-box; }
+.obj-field select option { background:var(--dark,#111); color:var(--white); }
+.obj-field input[readonly] { color:var(--gold); font-weight:700; }
 .obj-field input::placeholder, .obj-field textarea::placeholder { color:rgba(255,255,255,.35); }
 .obj-field input:focus, .obj-field textarea:focus { outline:none; border-color:var(--gold); }
 .obj-field textarea { resize:vertical; min-height:44px; font-family:'DM Sans',sans-serif; }
@@ -257,9 +259,18 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
   <div class="objednavka-box">
     <h3>Objednat Tokva Pro</h3>
-    <p id="objednavka-cena-popis">Zakladatelská cena <span class="objednavka-cena">499 Kč/měsíc</span> platí pro prvních 10 firem napořád, ne jen první rok. Ostatní firmy platí <span class="objednavka-cena">699 Kč/měsíc</span>. Platí se převodem na fakturu – pošlu vám ji na zadaný e-mail, appku na Pro přepnu po přijetí platby.</p>
+    <p id="objednavka-cena-popis">Vyberte variantu níže, cena se doplní automaticky. Zakladatelská cena <span class="objednavka-cena">499 Kč/měsíc</span> pro jednotlivce platí pro prvních 10 firem napořád, ne jen první rok. Platí se převodem na fakturu – pošlu vám ji na zadaný e-mail, appku na Pro přepnu po přijetí platby.</p>
 
     <form id="objednavka-form" onsubmit="return odeslatObjednavku(event)">
+      <div class="obj-field">
+        <label>Varianta *</label>
+        <select id="obj-varianta" required onchange="prepocitatCenu()">
+          <option value="1">Pro jednotlivce (1 osoba)</option>
+          <option value="5">Tým 2–5 lidí</option>
+          <option value="15">Tým 6–15 lidí</option>
+        </select>
+      </div>
+      <div class="obj-field"><label>Cena</label><input type="text" id="obj-cena" readonly></div>
       <div class="obj-field"><label>Firma *</label><input type="text" id="obj-firma" required></div>
       <div class="obj-row">
         <div class="obj-field"><label>IČO</label><input type="text" id="obj-ico"></div>
@@ -280,6 +291,8 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
       <button type="submit" class="objednavka-submit" id="objednavka-btn">Odeslat objednávku</button>
     </form>
 
+    <a href="https://tokva.cz/pro/tym/" class="btn-secondary-dark" style="display:block;text-align:center;margin-top:14px;">Jak funguje tým a co kdo smí →</a>
+
     <div class="objednavka-ok" id="objednavka-ok">
       <p>Díky! Objednávka je zapsaná. Fakturu vám pošlu do pár dnů na e-mail, appku na Pro přepnu po přijetí platby. Přihlásit se můžete rovnou teď – appky uvidíte ve verzi zdarma, dokud platba nedorazí.</p>
       <p class="objednavka-vs" id="objednavka-vs"></p>
@@ -294,19 +307,32 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 <script src="../supabase-client.js"></script>
 <script>
 let aktualniCenaKc = 699;
+let zbyvaZakladatelskych = 0;
+
+// Zakladatelská cena (499 Kč) platí jen pro variantu "jednotlivec" a jen
+// pro prvních 10 firem. Týmové varianty mají pevnou cenu bez ohledu na to.
+const CENA_TYM = { '5': 1390, '15': 2690 };
+const NAZEV_VARIANTY = { '1': 'Pro jednotlivce (1 osoba)', '5': 'Tým 2–5 lidí', '15': 'Tým 6–15 lidí' };
+
+function prepocitatCenu() {
+  const varianta = document.getElementById('obj-varianta').value;
+  aktualniCenaKc = varianta === '1' ? (zbyvaZakladatelskych > 0 ? 499 : 699) : CENA_TYM[varianta];
+  document.getElementById('obj-cena').value = aktualniCenaKc + ' Kč/měsíc';
+}
+prepocitatCenu();
 
 // Kolik zakladatelských míst zbývá appka nikde neukazuje (při nule
 // zákazníků by to působilo spíš jako "ještě to nikdo nekoupil"), ale
-// cenu na objednávkovém formuláři podle toho pořád nastavuje správně.
+// cenu pro variantu jednotlivec podle toho pořád nastavuje správně.
 async function nacistZbyvajiciMista() {
   try {
     const { data, error } = await supabaseClient.rpc('pocet_zakladajicich_clenu');
     if (error) throw error;
-    const zbyva = Math.max(0, 10 - (data || 0));
-    aktualniCenaKc = zbyva > 0 ? 499 : 699;
+    zbyvaZakladatelskych = Math.max(0, 10 - (data || 0));
   } catch (ex) {
     console.warn('Počet zakladajících členů se nepodařilo zjistit.', ex);
   }
+  prepocitatCenu();
 }
 nacistZbyvajiciMista();
 
@@ -332,7 +358,9 @@ async function odeslatObjednavku(e) {
   const dic = document.getElementById('obj-dic').value.trim();
   const adresa = document.getElementById('obj-adresa').value.trim();
   const telefon = document.getElementById('obj-telefon').value.trim();
-  const poznamka = document.getElementById('obj-poznamka').value.trim();
+  const varianta = document.getElementById('obj-varianta').value;
+  const poznamkaPuvodni = document.getElementById('obj-poznamka').value.trim();
+  const poznamka = 'Varianta: ' + (NAZEV_VARIANTY[varianta] || varianta) + (poznamkaPuvodni ? '\n' + poznamkaPuvodni : '');
 
   if (heslo !== heslo2) {
     err.textContent = 'Hesla se neshodují.';
@@ -370,7 +398,6 @@ async function odeslatObjednavku(e) {
     }
 
     document.getElementById('objednavka-form').style.display = 'none';
-    document.getElementById('zbyva-mist-pill').style.display = 'none';
     document.getElementById('objednavka-cena-popis').style.display = 'none';
     document.getElementById('objednavka-vs').textContent = 'Variabilní symbol k platbě: ' + variabilniSymbol;
     document.getElementById('objednavka-ok').style.display = 'block';
