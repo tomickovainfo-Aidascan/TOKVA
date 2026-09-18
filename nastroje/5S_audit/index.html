@@ -1240,6 +1240,12 @@ nav {
     </div>
     <textarea class="modal-input" id="input-kontrola" rows="2" style="margin-top:12px;"
       placeholder="Poznámka (nepovinné)..."></textarea>
+    <div id="premereni-wrap" style="display:none;margin-top:12px;">
+      <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--light);cursor:pointer;">
+        <input type="checkbox" id="premereni-checkbox" checked style="margin-top:3px;">
+        <span>Tohle je ověření předchozí kontroly tohohle místa.</span>
+      </label>
+    </div>
     <button class="modal-save" onclick="ulozitKontrolu()">Uložit kontrolu</button>
   </div>
 </div>
@@ -1962,7 +1968,7 @@ function renderKontrolySekce(misto) {
         min="${new Date().toISOString().slice(0,10)}">
       <button class="plan-btn" onclick="naplanovatKontrolu()">Naplánovat kontrolu</button>
       <button class="plan-btn" style="border-color:rgba(42,122,79,.4);color:var(--green);"
-        onclick="otevritModal('modal-kontrola')">Přidat kontrolu</button>
+        onclick="otevritModal('modal-kontrola'); zkontrolovatStarsiVysledek5s();">Přidat kontrolu</button>
     </div>`;
 
   return kontrolyDiv;
@@ -2354,6 +2360,36 @@ function naplanovatKontrolu() {
   renderMain();
 }
 
+let premereniStarsiId5s = null;
+
+// Když appka pozná, že tohle místo už má v projektu starší kontrolu,
+// nabídne přepínač "ověření předchozí kontroly" - defaultně zaškrtnutý.
+// Spouští se hned při otevření modálu, aby appka stihla odpověď zjistit
+// dřív, než uživatel klikne na Uložit kontrolu.
+async function zkontrolovatStarsiVysledek5s() {
+  const wrap = document.getElementById('premereni-wrap');
+  if (!wrap) return;
+  premereniStarsiId5s = null;
+  wrap.style.display = 'none';
+  const misto = aktivniMistoData();
+  if (!jePro || !clenstvi || !misto || !misto.projekt_id) return;
+  try {
+    const { data } = await supabaseClient.from('tool_runs')
+      .select('id, created_at')
+      .eq('project_id', misto.projekt_id)
+      .eq('nastroj', '5s')
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (data && data.length) {
+      premereniStarsiId5s = data[0].id;
+      wrap.style.display = 'block';
+      document.getElementById('premereni-checkbox').checked = true;
+    }
+  } catch (e) {
+    console.warn('Kontrola staršího výsledku se nezdařila.', e);
+  }
+}
+
 async function ulozitKontrolu() {
   const misto = aktivniMistoData();
   if (!misto) return;
@@ -2381,6 +2417,9 @@ async function ulozitKontrolu() {
   if (jePro && clenstvi) {
     await zajistitLokaciProMisto(misto);
     try {
+      const premereniCheckbox = document.getElementById('premereni-checkbox');
+      const wrapPremereni = document.getElementById('premereni-wrap');
+      const jePremereni = !!(wrapPremereni && wrapPremereni.style.display !== 'none' && premereniCheckbox && premereniCheckbox.checked);
       const { data: run, error: errRun } = await supabaseClient.from('tool_runs').insert({
         organization_id: clenstvi.organization_id,
         project_id: misto.projekt_id || null,
@@ -2391,6 +2430,7 @@ async function ulozitKontrolu() {
         hlavni_hodnota_cislo: score,
         hlavni_hodnota_jednotka: '%',
         hlavni_hodnota_typ: 'skore',
+        premereni_pro: jePremereni ? premereniStarsiId5s : null,
         data: { checklist, poznamka: text }
       }).select().single();
       if (errRun) throw errRun;
