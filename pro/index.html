@@ -99,8 +99,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .objednavka-box { margin-top:20px; padding:28px 26px; background:var(--dark); border-radius:12px; }
 .objednavka-box h3 { font-family:'Poppins',sans-serif; font-weight:800; font-size:16px; color:var(--white); margin-bottom:10px; }
 .objednavka-box > p { font-size:13.5px; color:rgba(255,255,255,.65); margin-bottom:18px; max-width:560px; }
-.objednavka-cena { font-weight:800; color:var(--gold); }
-.zbyva-mist-pill { display:inline-block; background:rgba(233,169,27,.15); color:var(--gold); font-weight:700; font-size:12.5px; padding:5px 12px; border-radius:100px; margin-bottom:14px; }
+.objednavka-cena { font-weight:800; color:var(--gold); white-space:nowrap; }
 .objednavka-vs { font-weight:700; font-size:15px; margin:10px 0; }
 .obj-field { margin-bottom:12px; }
 .obj-field label { display:block; font-size:12px; font-weight:700; color:rgba(255,255,255,.6); margin-bottom:5px; }
@@ -232,12 +231,12 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <li><b>Appka Projekty</b> – souhrn jednoho projektu ve čtyřech fázích Vidět/Změřit/Změnit/Ověřit, s prezentačním režimem na poradu (černé pozadí, velké písmo, krokování).</li>
     <li><b>Export CSV</b> – u vybraných appek (mini audity, kalkulačka nákladů skladu) a v Akčním plánu.</li>
     <li><b>Objednávka a fakturace</b> – objednáte přímo tady na stránce, platí se převodem na fakturu, appku na Pro přepnu po přijetí platby.</li>
+    <li><b>Týmová spolupráce</b> – pozvěte kolegy do firmy e-mailem, role majitel/správce/člen řídí, kdo co smí upravovat nebo mazat.</li>
   </ul>
 
   <div class="stav-nadpis"><h2>Co je v plánu dál</h2><span class="stav-chip planu">V plánu</span></div>
   <ul class="stav-list">
     <li>Víc firem pod jedním účtem a přepínání mezi nimi.</li>
-    <li>Týmová spolupráce – víc lidí v jedné firmě, role a oprávnění, kdo co smí vidět a upravovat.</li>
     <li>Širší export a tisk (PDF) napříč všemi appkami, ne jen u těch, co ho mají dnes.</li>
   </ul>
 
@@ -258,7 +257,6 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
   <div class="objednavka-box">
     <h3>Objednat Tokva Pro</h3>
-    <div class="zbyva-mist-pill" id="zbyva-mist-pill" style="display:none;"></div>
     <p id="objednavka-cena-popis">Zakladatelská cena <span class="objednavka-cena">499 Kč/měsíc</span> platí pro prvních 10 firem napořád, ne jen první rok. Ostatní firmy platí <span class="objednavka-cena">699 Kč/měsíc</span>. Platí se převodem na fakturu – pošlu vám ji na zadaný e-mail, appku na Pro přepnu po přijetí platby.</p>
 
     <form id="objednavka-form" onsubmit="return odeslatObjednavku(event)">
@@ -297,20 +295,15 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 <script>
 let aktualniCenaKc = 699;
 
+// Kolik zakladatelských míst zbývá appka nikde neukazuje (při nule
+// zákazníků by to působilo spíš jako "ještě to nikdo nekoupil"), ale
+// cenu na objednávkovém formuláři podle toho pořád nastavuje správně.
 async function nacistZbyvajiciMista() {
-  const pill = document.getElementById('zbyva-mist-pill');
   try {
     const { data, error } = await supabaseClient.rpc('pocet_zakladajicich_clenu');
     if (error) throw error;
     const zbyva = Math.max(0, 10 - (data || 0));
-    if (zbyva > 0) {
-      pill.textContent = 'Zbývá ' + zbyva + ' z 10 zakladatelských míst';
-      pill.style.display = 'inline-block';
-      aktualniCenaKc = 499;
-    } else {
-      pill.style.display = 'none';
-      aktualniCenaKc = 699;
-    }
+    aktualniCenaKc = zbyva > 0 ? 499 : 699;
   } catch (ex) {
     console.warn('Počet zakladajících členů se nepodařilo zjistit.', ex);
   }
