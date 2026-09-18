@@ -1311,6 +1311,11 @@ document.addEventListener('change', function (e) {
     const novyInput = e.target.parentElement.querySelector('#ukoly-projekt-novy-nazev');
     if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
   }
+  if (e.target && e.target.id === 'analyza-projekt-select') {
+    const novyInput = document.getElementById('analyza-projekt-novy-nazev');
+    if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+    zkontrolovatStarsiVysledek5x();
+  }
 });
 
 async function projektIdZeSelectu5x(select, novyNazevInput) {
@@ -1324,6 +1329,75 @@ async function projektIdZeSelectu5x(select, novyNazevInput) {
   }).select('id').single();
   if (error) throw error;
   return data.id;
+}
+
+let premereniStarsiId5x = null;
+
+// Když appka pozná, že se 5x Proč analýza ve stejném projektu už jednou
+// ukládala, nabídne přepínač "ověření předchozího výsledku" - defaultně
+// zaškrtnutý. Uloží se pak jako odkaz na ten starší běh (premereni_pro),
+// ne jako obyčejné true/false.
+async function zkontrolovatStarsiVysledek5x() {
+  const select = document.getElementById('analyza-projekt-select');
+  const wrap = document.getElementById('analyza-premereni-wrap');
+  if (!select || !wrap) return;
+  premereniStarsiId5x = null;
+  const projektId = select.value;
+  if (!projektId || projektId === '__novy__') { wrap.style.display = 'none'; return; }
+  try {
+    let query = supabaseClient.from('tool_runs')
+      .select('id, created_at')
+      .eq('project_id', projektId)
+      .eq('nastroj', '5x-proc')
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (aktivniRunId) query = query.neq('id', aktivniRunId);
+    const { data } = await query;
+    if (data && data.length) {
+      premereniStarsiId5x = data[0].id;
+      wrap.style.display = 'block';
+      document.getElementById('analyza-premereni-checkbox').checked = true;
+    } else {
+      wrap.style.display = 'none';
+    }
+  } catch (e) {
+    console.warn('Kontrola staršího výsledku se nezdařila.', e);
+    wrap.style.display = 'none';
+  }
+}
+
+// Zařadí samotnou analýzu k projektu - stejný vzorec jako u ostatních
+// appek, jen tady se řádek v tool_runs zakládá líně (viz ulozitStavAnalyzy),
+// takže ho appka založí, pokud ještě neexistuje.
+async function ulozitZarazeniAnalyzy(raw, btn) {
+  const stav = document.getElementById('analyza-projekt-stav');
+  const select = document.getElementById('analyza-projekt-select');
+  if (!jePro || !clenstvi || !select) return;
+  stav.textContent = 'Ukládám…';
+  try {
+    if (!aktivniRunId) await ulozitStavAnalyzy(true, raw);
+    if (!aktivniRunId) { stav.textContent = 'Analýza se ještě neuložila, zkuste to za chvíli znovu.'; return; }
+    let projektId;
+    try {
+      projektId = await projektIdZeSelectu5x(select, document.getElementById('analyza-projekt-novy-nazev'));
+    } catch (e) {
+      stav.textContent = 'Projekt se nepodařilo založit, zkuste to prosím znovu.';
+      return;
+    }
+    if (projektId === undefined) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+    const premereniCheckbox = document.getElementById('analyza-premereni-checkbox');
+    const wrapPremereni = document.getElementById('analyza-premereni-wrap');
+    const jePremereni = !!(wrapPremereni && wrapPremereni.style.display !== 'none' && premereniCheckbox && premereniCheckbox.checked);
+    const { error } = await supabaseClient.from('tool_runs')
+      .update({ project_id: projektId, premereni_pro: jePremereni ? premereniStarsiId5x : null })
+      .eq('id', aktivniRunId);
+    if (error) throw error;
+    stav.textContent = projektId ? 'Uloženo, analýza patří k projektu.' : 'Uloženo, bez projektu.';
+    nacistProjekty5x();
+  } catch (e) {
+    console.warn('Zařazení k projektu se nepodařilo uložit.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
 }
 
 // ulozit=false při zobrazení staré (už hotové) analýzy z historie - jinak by
@@ -1429,6 +1503,54 @@ function renderOutput(raw, ulozit = true) {
   btnRow.appendChild(novaBtn);
 
   if (jePro) {
+    const projektAnalyzaWrap = document.createElement('div');
+    projektAnalyzaWrap.style.cssText = 'margin-top:16px;width:100%;';
+
+    const projektAnalyzaTitle = document.createElement('div');
+    projektAnalyzaTitle.textContent = 'Zařadit k projektu';
+    projektAnalyzaTitle.style.cssText = 'font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:8px;';
+    projektAnalyzaWrap.appendChild(projektAnalyzaTitle);
+
+    const projektAnalyzaRow = document.createElement('div');
+    projektAnalyzaRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
+
+    const analyzaProjektSelect = document.createElement('select');
+    analyzaProjektSelect.id = 'analyza-projekt-select';
+    analyzaProjektSelect.className = 'projekt-select-5x';
+    analyzaProjektSelect.style.cssText = 'flex:1;min-width:160px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;font-family:"DM Sans",sans-serif;';
+    analyzaProjektSelect.innerHTML = '<option value="">Bez projektu</option><option value="__novy__">+ Nový projekt…</option>';
+
+    const analyzaProjektNovyInput = document.createElement('input');
+    analyzaProjektNovyInput.type = 'text';
+    analyzaProjektNovyInput.id = 'analyza-projekt-novy-nazev';
+    analyzaProjektNovyInput.placeholder = 'Název nového projektu';
+    analyzaProjektNovyInput.style.cssText = 'display:none;flex:1;min-width:160px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;';
+
+    const analyzaUlozitBtn = document.createElement('button');
+    analyzaUlozitBtn.className = 'export-output';
+    analyzaUlozitBtn.style.marginTop = '0';
+    analyzaUlozitBtn.textContent = 'Uložit zařazení';
+    analyzaUlozitBtn.onclick = () => ulozitZarazeniAnalyzy(raw, analyzaUlozitBtn);
+
+    projektAnalyzaRow.appendChild(analyzaProjektSelect);
+    projektAnalyzaRow.appendChild(analyzaProjektNovyInput);
+    projektAnalyzaRow.appendChild(analyzaUlozitBtn);
+    projektAnalyzaWrap.appendChild(projektAnalyzaRow);
+
+    const analyzaPremereniWrap = document.createElement('div');
+    analyzaPremereniWrap.id = 'analyza-premereni-wrap';
+    analyzaPremereniWrap.style.cssText = 'display:none;margin-top:8px;';
+    analyzaPremereniWrap.innerHTML = '<label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;"><input type="checkbox" id="analyza-premereni-checkbox" checked style="margin-top:3px;"><span>Tohle je ověření předchozího výsledku ve stejném projektu.</span></label>';
+    projektAnalyzaWrap.appendChild(analyzaPremereniWrap);
+
+    const analyzaProjektStav = document.createElement('div');
+    analyzaProjektStav.id = 'analyza-projekt-stav';
+    analyzaProjektStav.style.cssText = 'font-size:12px;color:var(--mid);margin-top:6px;';
+    projektAnalyzaWrap.appendChild(analyzaProjektStav);
+
+    card.appendChild(projektAnalyzaWrap);
+    nacistProjekty5x();
+
     const ukolyPole = document.createElement('div');
     ukolyPole.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;width:100%;';
     const projektSelect = document.createElement('select');
