@@ -698,6 +698,20 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
     <div class="otazka-nav"><button class="btn-zpet" onclick="zpet(10)">Zpět</button><button class="btn-dal" id="dal10" disabled onclick="zobrazVysledky()">Zobrazit výsledky <span class="arrow"></span></button></div>
   </div>
 
+  <!-- HISTORIE A POROVNÁNÍ - vždy viditelné, i před vyplněním nového kvízu,
+       ne jen na obrazovce výsledků. -->
+  <div class="detail-panel" id="historie-panel">
+    <div class="detail-header">Historie kvízů</div>
+    <div id="historie-zamceno" style="padding:18px;">
+      <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Pro uloží výsledek do vašeho účtu. Kvíz zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se přehled zlepšuje, nebo je pořád stejný. Samotný kvíz je pořád celý zdarma, Pro jen přidává historii.</p>
+      <button class="btn-gold" style="width:100%;" onclick="otevritModalPro()">Odemknout Pro</button>
+    </div>
+    <div id="historie-obsah" style="display:none;"></div>
+    <div id="historie-porovnat-bar" style="display:none;padding:12px 18px;border-top:1px solid var(--border);">
+      <button class="btn-gold" style="width:100%;" id="btn-porovnat-vybrane" onclick="otevritModalPorovnani()" disabled>Porovnat vybrané (0/2)</button>
+    </div>
+  </div>
+
   <!-- VYSLEDKY -->
   <div class="vysledky-wrap" id="vysledky">
 
@@ -715,18 +729,6 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
     <div class="detail-panel" id="co-dal-panel">
       <div class="detail-header">Co s tím</div>
       <div id="co-dal"></div>
-    </div>
-
-    <div class="detail-panel" id="historie-panel">
-      <div class="detail-header">Historie kvízů</div>
-      <div id="historie-zamceno" style="padding:18px;">
-        <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Pro uloží výsledek do vašeho účtu. Kvíz zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se přehled zlepšuje, nebo je pořád stejný. Samotný kvíz je pořád celý zdarma, Pro jen přidává historii.</p>
-        <button class="btn-gold" style="width:100%;" onclick="otevritModalPro()">Odemknout Pro</button>
-      </div>
-      <div id="historie-obsah" style="display:none;"></div>
-      <div id="historie-porovnat-bar" style="display:none;padding:12px 18px;border-top:1px solid var(--border);">
-        <button class="btn-gold" style="width:100%;" id="btn-porovnat-vybrane" onclick="otevritModalPorovnani()" disabled>Porovnat vybrané (0/2)</button>
-      </div>
     </div>
 
     <div class="vysledky-detail" id="projekt-panel" style="display:none;">
@@ -1018,7 +1020,10 @@ async function nacistPrihlaseniStav() {
     session = null; clenstvi = null; jePro = false;
   }
   renderUcetNav();
-  if (jePro && new URLSearchParams(window.location.search).get('vysledek')) {
+  // Historie a porovnání jsou teď vidět rovnou na stránce (ne jen po
+  // dokončení nového kvízu) - Pro uživatel se tak může podívat na starší
+  // výsledky, aniž by musel kvíz znovu vyplňovat.
+  if (jePro) {
     renderHistorie();
   }
 }
@@ -1312,9 +1317,14 @@ async function renderHistorie() {
   }
   zamceno.style.display = 'none';
   obsah.style.display = 'block';
-  if (projektPanel) { projektPanel.style.display = 'block'; nacistProjekty(); }
-  if (akcniPanel) akcniPanel.style.display = 'block';
-  if (exportPanel) exportPanel.style.display = 'block';
+  // Zařadit k projektu / export / akční plán dávají smysl, až když appka má
+  // aktuální uložený výsledek (posledniToolRunId) - historie a porovnání ale
+  // vidět mají být rovnou, i před vyplněním nového kvízu.
+  if (posledniToolRunId) {
+    if (projektPanel) { projektPanel.style.display = 'block'; nacistProjekty(); }
+    if (akcniPanel) akcniPanel.style.display = 'block';
+    if (exportPanel) exportPanel.style.display = 'block';
+  }
   obsah.innerHTML = '<div style="padding:14px 18px;font-size:13px;color:var(--light);">Načítám historii…</div>';
   try {
     const { data, error } = await supabaseClient
