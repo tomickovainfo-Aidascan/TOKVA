@@ -49,6 +49,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://tokva.cz/pro/tym/</loc>
+    <lastmod>2026-09-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://tokva.cz/akcni-plan/</loc>
     <lastmod>2026-09-15</lastmod>
     <changefreq>monthly</changefreq>
