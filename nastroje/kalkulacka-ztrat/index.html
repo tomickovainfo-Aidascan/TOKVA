@@ -791,6 +791,7 @@ async function nacistPrihlaseniStav() {
   prepnoutOdkazyNaPro(jePro);
   zobrazitOdkazAkcniPlan(jePro);
   zobrazitOdkazProjekty(jePro);
+  if (jePro) nacistProjektyZtrat();
 }
 
 function renderUcetNav() {
