@@ -649,6 +649,12 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
         <option value="__novy__">+ Nový projekt…</option>
       </select>
       <input id="s-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <div id="s-premereni-wrap" style="display:none;margin-bottom:10px;">
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;">
+          <input type="checkbox" id="s-premereni-checkbox" checked style="margin-top:3px;">
+          <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
+        </label>
+      </div>
       <button class="btn-spustit" style="margin-top:0;" onclick="ulozitZarazeniProjektuVysledek()">Uložit zařazení</button>
       <div id="s-projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
     </div>
@@ -1379,6 +1385,8 @@ function ukoncit() {
   document.getElementById('s-projekt-select').value = '';
   document.getElementById('s-projekt-novy-nazev').value = '';
   document.getElementById('s-projekt-novy-nazev').style.display = 'none';
+  document.getElementById('s-premereni-wrap').style.display = 'none';
+  premereniStarsiId = null;
   document.getElementById('s-akce-nazev').value = 'Snížit plýtvání: ' + nazev;
   document.getElementById('s-akce-projekt-select').value = '';
   document.getElementById('s-akce-projekt-novy-nazev').value = '';
@@ -1564,7 +1572,42 @@ document.addEventListener('change', function (e) {
     const novyInput = document.getElementById(paryVyberProNovy[e.target.id]);
     if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
   }
+  if (e.target && e.target.id === 's-projekt-select') zkontrolovatStarsiVysledek();
 });
+
+let premereniStarsiId = null;
+
+// Když appka pozná, že se stejný nástroj ve stejném projektu už jednou
+// ukládal, nabídne přepínač "ověření předchozího výsledku" - defaultně
+// zaškrtnutý. Uloží se pak jako odkaz na ten starší běh (premereni_pro),
+// ne jako obyčejné true/false.
+async function zkontrolovatStarsiVysledek() {
+  const select = document.getElementById('s-projekt-select');
+  const wrap = document.getElementById('s-premereni-wrap');
+  if (!select || !wrap) return;
+  premereniStarsiId = null;
+  const projektId = select.value;
+  if (!projektId || projektId === '__novy__' || !posledniToolRunId) { wrap.style.display = 'none'; return; }
+  try {
+    const { data } = await supabaseClient.from('tool_runs')
+      .select('id, created_at')
+      .eq('project_id', projektId)
+      .eq('nastroj', 'meric-plytvani-pro')
+      .neq('id', posledniToolRunId)
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (data && data.length) {
+      premereniStarsiId = data[0].id;
+      wrap.style.display = 'block';
+      document.getElementById('s-premereni-checkbox').checked = true;
+    } else {
+      wrap.style.display = 'none';
+    }
+  } catch (e) {
+    console.warn('Kontrola staršího výsledku se nezdařila.', e);
+    wrap.style.display = 'none';
+  }
+}
 
 async function pridatDoAkcnihoPlanu() {
   const stav = document.getElementById('ap-stav');
@@ -1639,9 +1682,12 @@ async function ulozitZarazeniProjektuVysledek() {
       if (error) throw error;
       projektId = data.id;
     }
+    const premereniCheckbox = document.getElementById('s-premereni-checkbox');
+    const wrapPremereni = document.getElementById('s-premereni-wrap');
+    const jePremereni = !!(wrapPremereni && wrapPremereni.style.display !== 'none' && premereniCheckbox && premereniCheckbox.checked);
     const { error: chybaUpdate } = await supabaseClient
       .from('tool_runs')
-      .update({ project_id: projektId })
+      .update({ project_id: projektId, premereni_pro: jePremereni ? premereniStarsiId : null })
       .eq('id', posledniToolRunId);
     if (chybaUpdate) throw chybaUpdate;
     stav.textContent = projektId ? 'Uloženo, výsledek patří k projektu.' : 'Uloženo, bez projektu.';

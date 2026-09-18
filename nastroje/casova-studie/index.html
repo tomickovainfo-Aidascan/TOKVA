@@ -1492,6 +1492,12 @@ nav {
       <option value="__novy__">+ Nový projekt…</option>
     </select>
     <input id="projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <div id="premereni-wrap" style="display:none;margin-bottom:10px;">
+      <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;">
+        <input type="checkbox" id="premereni-checkbox" checked style="margin-top:3px;">
+        <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
+      </label>
+    </div>
     <button class="historie-lock button" style="width:100%;" onclick="ulozitZarazeniProjektu()">Uložit zařazení</button>
     <div id="projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
   </div>
@@ -2357,6 +2363,8 @@ function novyDen() {
     zaznamy = [];
     editingId = null;
     denRunId = null;
+    document.getElementById('premereni-wrap').style.display = 'none';
+    premereniStarsiId = null;
     denMereniZapsano = false;
     localStorage.removeItem('cs_den_run_id');
     localStorage.removeItem('cs_den_mereni_zapsano');
@@ -2683,10 +2691,45 @@ async function nacistProjekty() {
   }
 }
 
+let premereniStarsiId = null;
+
+// Když appka pozná, že se stejný nástroj ve stejném projektu už jednou
+// ukládal, nabídne přepínač "ověření předchozího výsledku" - defaultně
+// zaškrtnutý. Uloží se pak jako odkaz na ten starší běh (premereni_pro),
+// ne jako obyčejné true/false.
+async function zkontrolovatStarsiVysledek() {
+  const select = document.getElementById('projekt-select');
+  const wrap = document.getElementById('premereni-wrap');
+  if (!select || !wrap) return;
+  premereniStarsiId = null;
+  const projektId = select.value;
+  if (!projektId || projektId === '__novy__' || !denRunId) { wrap.style.display = 'none'; return; }
+  try {
+    const { data } = await supabaseClient.from('tool_runs')
+      .select('id, created_at')
+      .eq('project_id', projektId)
+      .eq('nastroj', 'casova-studie')
+      .neq('id', denRunId)
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (data && data.length) {
+      premereniStarsiId = data[0].id;
+      wrap.style.display = 'block';
+      document.getElementById('premereni-checkbox').checked = true;
+    } else {
+      wrap.style.display = 'none';
+    }
+  } catch (e) {
+    console.warn('Kontrola staršího výsledku se nezdařila.', e);
+    wrap.style.display = 'none';
+  }
+}
+
 document.addEventListener('change', function (e) {
   if (e.target && e.target.id === 'projekt-select') {
     const novyInput = document.getElementById('projekt-novy-nazev');
     if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
+    zkontrolovatStarsiVysledek();
   }
   if (e.target && e.target.id === 'akce-projekt-select') {
     e.target.dataset.dotceno = '1';
@@ -2712,9 +2755,12 @@ async function ulozitZarazeniProjektu() {
       if (error) throw error;
       projektId = data.id;
     }
+    const premereniCheckbox = document.getElementById('premereni-checkbox');
+    const wrapPremereni = document.getElementById('premereni-wrap');
+    const jePremereni = !!(wrapPremereni && wrapPremereni.style.display !== 'none' && premereniCheckbox && premereniCheckbox.checked);
     const { error: chybaUpdate } = await supabaseClient
       .from('tool_runs')
-      .update({ project_id: projektId })
+      .update({ project_id: projektId, premereni_pro: jePremereni ? premereniStarsiId : null })
       .eq('id', denRunId);
     if (chybaUpdate) throw chybaUpdate;
     stav.textContent = projektId ? 'Uloženo, den patří k projektu.' : 'Uloženo, bez projektu.';

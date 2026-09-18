@@ -535,6 +535,12 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
             <option value="__novy__">+ Nový projekt…</option>
           </select>
           <input id="s-projekt-novy-nazev" type="text" placeholder="Název nového projektu" class="uloz-panel-vstup" style="display:none;">
+          <div id="s-premereni-wrap" style="display:none;margin-bottom:10px;">
+            <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;">
+              <input type="checkbox" id="s-premereni-checkbox" checked style="margin-top:3px;">
+              <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
+            </label>
+          </div>
           <button class="btn-gold" style="width:100%;" onclick="ulozitZarazeniProjektuVysledek()">Uložit zařazení</button>
           <div id="s-projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
         </div>
@@ -848,6 +854,8 @@ function ulozitVypocetZtrat() {
   document.getElementById('s-projekt-select').value = '';
   document.getElementById('s-projekt-novy-nazev').value = '';
   document.getElementById('s-projekt-novy-nazev').style.display = 'none';
+  document.getElementById('s-premereni-wrap').style.display = 'none';
+  premereniStarsiId = null;
   document.getElementById('s-akce-nazev').value = 'Snížit provozní ztráty';
   document.getElementById('s-akce-projekt-select').value = '';
   document.getElementById('s-akce-projekt-novy-nazev').value = '';
@@ -920,7 +928,42 @@ document.addEventListener('change', function (e) {
     var novyInput = document.getElementById(paryVyberProNovy[e.target.id]);
     if (novyInput) novyInput.style.display = e.target.value === '__novy__' ? 'block' : 'none';
   }
+  if (e.target && e.target.id === 's-projekt-select') zkontrolovatStarsiVysledek();
 });
+
+let premereniStarsiId = null;
+
+// Když appka pozná, že se stejný nástroj ve stejném projektu už jednou
+// ukládal, nabídne přepínač "ověření předchozího výsledku" - defaultně
+// zaškrtnutý. Uloží se pak jako odkaz na ten starší běh (premereni_pro),
+// ne jako obyčejné true/false.
+async function zkontrolovatStarsiVysledek() {
+  const select = document.getElementById('s-projekt-select');
+  const wrap = document.getElementById('s-premereni-wrap');
+  if (!select || !wrap) return;
+  premereniStarsiId = null;
+  const projektId = select.value;
+  if (!projektId || projektId === '__novy__' || !posledniToolRunId) { wrap.style.display = 'none'; return; }
+  try {
+    const { data } = await supabaseClient.from('tool_runs')
+      .select('id, created_at')
+      .eq('project_id', projektId)
+      .eq('nastroj', 'kalkulacka-ztrat')
+      .neq('id', posledniToolRunId)
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (data && data.length) {
+      premereniStarsiId = data[0].id;
+      wrap.style.display = 'block';
+      document.getElementById('s-premereni-checkbox').checked = true;
+    } else {
+      wrap.style.display = 'none';
+    }
+  } catch (e) {
+    console.warn('Kontrola staršího výsledku se nezdařila.', e);
+    wrap.style.display = 'none';
+  }
+}
 
 async function ulozitZarazeniProjektuVysledek() {
   var stav = document.getElementById('s-projekt-stav');
@@ -939,9 +982,12 @@ async function ulozitZarazeniProjektuVysledek() {
       if (vysledekProjekt.error) throw vysledekProjekt.error;
       projektId = vysledekProjekt.data.id;
     }
+    var premereniCheckbox = document.getElementById('s-premereni-checkbox');
+    var wrapPremereni = document.getElementById('s-premereni-wrap');
+    var jePremereni = !!(wrapPremereni && wrapPremereni.style.display !== 'none' && premereniCheckbox && premereniCheckbox.checked);
     var vysledekUpdate = await supabaseClient
       .from('tool_runs')
-      .update({ project_id: projektId })
+      .update({ project_id: projektId, premereni_pro: jePremereni ? premereniStarsiId : null })
       .eq('id', posledniToolRunId);
     if (vysledekUpdate.error) throw vysledekUpdate.error;
     stav.textContent = projektId ? 'Uloženo, výpočet patří k projektu.' : 'Uloženo, bez projektu.';
