@@ -139,6 +139,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,38px); font-weig
     <a class="topbar-login" href="https://tokva.cz/moje-tokva/" id="nav-moje-tokva" style="display:none;">Přehled</a>
     <a class="topbar-login" href="https://tokva.cz/akcni-plan/" id="nav-akcni-plan" style="display:none;">Akční plán</a>
     <a class="topbar-login" href="https://tokva.cz/projekty/" id="nav-projekty" style="display:none;">Projekty</a>
+    <a class="topbar-login" href="https://tokva.cz/pro/" id="nav-pro-odkaz">Tokva Pro</a>
     <a class="topbar-login" href="https://tokva.cz/prihlaseni.html" id="nav-ucet-btn">Moje Tokva</a>
   </div>
 </div>
@@ -211,6 +212,8 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,38px); font-weig
   } catch (e) {
     console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
   }
+  const proOdkazEl = document.getElementById('nav-pro-odkaz');
+  if (proOdkazEl) proOdkazEl.style.display = session ? 'none' : '';
   if (session && clenstvi) {
     const jePro = maAktivniPro(clenstvi);
     info.style.display = 'inline-block';

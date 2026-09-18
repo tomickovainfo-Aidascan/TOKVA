@@ -504,6 +504,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
     <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
+    <a class="nav-btn" href="https://tokva.cz/pro/" id="nav-pro-odkaz" style="text-decoration:none;">Tokva Pro</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
 </nav>
@@ -1451,6 +1452,8 @@ function aktualizovatProBtn() {
   }
 }
 function renderUcetNav() {
+  const proOdkazEl = document.getElementById('nav-pro-odkaz');
+  if (proOdkazEl) proOdkazEl.style.display = session ? 'none' : '';
   const info = document.getElementById('nav-ucet-info');
   const btn = document.getElementById('nav-ucet-btn');
   aktualizovatProBtn();
