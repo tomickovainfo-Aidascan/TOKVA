@@ -57,6 +57,14 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .flow-arrow { text-align:center; color:var(--silver); font-size:13px; padding:2px 0; }
 .compare-col.pro .flow-arrow { color:rgba(255,255,255,.35); }
 
+.hero-pains { font-size:14.5px; color:var(--mid); max-width:620px; margin-bottom:26px; }
+.hero-cta { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+.btn-gold { display:inline-block; background:var(--gold); color:var(--black); font-family:'Poppins',sans-serif; font-weight:800; font-size:14px; padding:13px 26px; border-radius:8px; text-decoration:none; }
+.btn-gold:hover { background:var(--gold-dark); color:var(--white); }
+.btn-outline { display:inline-block; background:transparent; color:var(--dark); border:1.5px solid var(--border2); font-family:'Poppins',sans-serif; font-weight:800; font-size:14px; padding:12px 26px; border-radius:8px; text-decoration:none; }
+.btn-outline:hover { border-color:var(--gold-dark); color:var(--gold-dark); }
+.hero-trust { font-size:12.5px; color:var(--mid); margin-bottom:34px; }
+
 .pilire-uvod { font-family:'Poppins',sans-serif; font-size:17px; font-weight:800; margin:44px 0 6px; line-height:1.4; }
 .pilire-uvod-sub { font-size:14px; color:var(--mid); margin-bottom:20px; }
 .pilire { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:40px; }
@@ -154,7 +162,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
       "name": "Kdo vidí moje výsledky?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Jen vy, po přihlášení do vaší firmy. Bez přihlášení se k výsledkům nikdo nedostane."
+        "text": "Výsledky vidí pouze členové dané firmy podle přidělené role a oprávnění. Bez přihlášení se k výsledkům nikdo nedostane."
       }
     }
   ]
@@ -171,8 +179,17 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 <main class="main">
   <a class="back-link" href="https://tokva.cz/">← Zpět na Tokvu</a>
   <div class="badge">Pro se testuje</div>
-  <h1>Tokva Pro si pamatuje, co jste zjistili, propojí to s projekty a úkoly a ukáže, jestli změna doopravdy pomohla.</h1>
-  <p class="lead">Jednotlivé nástroje problém odhalí nebo změří. Tokva Pro k tomu přidá paměť, souvislosti mezi appkami, realizaci opatření a ověření, jestli fakt zabralo. Není to balíček placených kalkulaček – je to systém, co vás provede od zjištění po ověřený přínos.</p>
+  <h1>Najděte, kde firma ztrácí čas. Udělejte změnu. Ověřte, že skutečně pomohla.</h1>
+  <p class="lead" style="margin-bottom:16px;">Tokva Pro propojí měření, výsledky, projekty a úkoly na jednom místě. Pro malé výrobní a skladové firmy, které chtějí zlepšovat provoz, ale nemají vlastního procesního specialistu.</p>
+  <p class="hero-pains">Poznáváte se v tomhle? Chyby při expedici, hledání materiálu, zbytečná chůze, opakované přepisování stejných čísel, čekání mezi kroky, špatné předávání informací mezi směnami.</p>
+
+  <div class="hero-cta">
+    <a href="https://tokva.cz/reseni-problemu/" class="btn-outline">Vyzkoušet nástroje zdarma</a>
+    <a href="#objednavka" class="btn-gold">Chci Tokvu Pro za 499 Kč/měsíc</a>
+  </div>
+  <p class="hero-trust">Zakladatelská cena napořád · Osobní podpora</p>
+
+  <p class="lead">Tokva Pro si navíc pamatuje, co jste zjistili, propojí to s projekty a úkoly a ukáže, jestli změna doopravdy pomohla. Není to balíček placených kalkulaček – je to systém, co vás provede od zjištění po ověřený přínos.</p>
 
   <div class="compare">
     <div class="compare-col free">
@@ -236,12 +253,6 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <li><b>Týmová spolupráce</b> – pozvěte kolegy do firmy e-mailem, role majitel/správce/člen řídí, kdo co smí upravovat nebo mazat.</li>
   </ul>
 
-  <div class="stav-nadpis"><h2>Co je v plánu dál</h2><span class="stav-chip planu">V plánu</span></div>
-  <ul class="stav-list">
-    <li>Víc firem pod jedním účtem a přepínání mezi nimi.</li>
-    <li>Širší export a tisk (PDF) napříč všemi appkami, ne jen u těch, co ho mají dnes.</li>
-  </ul>
-
   <div class="note">Tokva Pro se testuje na prvních zákaznících. Appky zdarma fungují naplno i bez přihlášení – Pro appky si objednáte tady na stránce, platí se převodem na fakturu, appku odemknu po přijetí platby.</div>
 
   <p class="podpora-note">Podporu k appkám dělám vždycky osobně já, Gabriela Tomíčková. Pokud byste kromě appky potřebovali i pomoc přímo ve firmě, najdete mě na <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a>.</p>
@@ -253,11 +264,11 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   </div>
   <div class="faq-item">
     <h3>Kdo vidí moje výsledky?</h3>
-    <p>Jen vy, po přihlášení do vaší firmy. Bez přihlášení se k výsledkům nikdo nedostane.</p>
+    <p>Výsledky vidí pouze členové dané firmy podle přidělené role a oprávnění. Bez přihlášení se k výsledkům nikdo nedostane.</p>
   </div>
 
 
-  <div class="objednavka-box">
+  <div class="objednavka-box" id="objednavka">
     <h3>Objednat Tokva Pro</h3>
     <p id="objednavka-cena-popis">Vyberte variantu níže, cena se doplní automaticky. Zakladatelská cena <span class="objednavka-cena">499 Kč/měsíc</span> pro jednotlivce platí pro prvních 10 firem napořád, ne jen první rok. Platí se převodem na fakturu – pošlu vám ji na zadaný e-mail, appku na Pro přepnu po přijetí platby.</p>
 
@@ -301,6 +312,12 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
     <p class="objednavka-privacy">Fakturační a kontaktní údaje použiju jen k vystavení faktury a domluvě kolem objednávky. Víc v <a href="https://gdpr.gabrielatomickova.cz" target="_blank" rel="noopener">zásadách ochrany osobních údajů</a>.</p>
   </div>
+
+  <div class="stav-nadpis"><h2>Co získají zakladatelští zákazníci jako další</h2><span class="stav-chip planu">V plánu</span></div>
+  <ul class="stav-list">
+    <li>Víc firem pod jedním účtem a přepínání mezi nimi.</li>
+    <li>Širší export a tisk (PDF) napříč všemi appkami, ne jen u těch, co ho mají dnes.</li>
+  </ul>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
