@@ -172,6 +172,16 @@ body.prezentace .ukoncit-prezentaci{position:fixed;top:16px;right:16px;z-index:5
 .modal{background:var(--white);border-radius:12px;padding:26px;max-width:520px;width:100%;margin:auto 0;}
 .modal h3{font-family:"Poppins",sans-serif;font-size:17px;font-weight:800;margin-bottom:4px;}
 .modal .modal-sub{font-size:12.5px;color:var(--mid);margin-bottom:18px;}
+.detail-otazka{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);}
+.detail-otazka:last-child{border-bottom:none;}
+.detail-otazka-text{font-size:13px;color:var(--dark);}
+.detail-otazka-odp{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.detail-otazka-odp.dobre{background:var(--green-light);color:var(--green);}
+.detail-otazka-odp.stredni{background:rgba(233,169,27,.15);color:var(--gold-dark);}
+.detail-otazka-odp.spatne{background:rgba(192,57,43,.12);color:var(--red);}
+.detail-otazka-odp.nevim{background:#eee;color:#777;}
+.detail-raw{font-size:13px;color:var(--dark);line-height:1.7;white-space:pre-wrap;}
+.detail-fallback{font-size:13px;color:var(--mid);line-height:1.7;}
 .field label{font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:5px;}
 .field input,.field select,.field textarea{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
 .field textarea{resize:vertical;min-height:52px;}
@@ -410,6 +420,18 @@ body.prezentace footer{display:none;}
         <button type="submit" class="btn-modal-ok">Uložit</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- MODAL: DETAIL VYSLEDKU -->
+<div class="modal-overlay" id="modal-detail-vysledku-overlay">
+  <div class="modal" style="max-width:480px;">
+    <h3 id="detail-vysledku-nazev"></h3>
+    <p class="modal-sub" id="detail-vysledku-meta"></p>
+    <div id="detail-vysledku-obsah"></div>
+    <div class="modal-btns">
+      <button type="button" class="btn-modal-ok" onclick="zavritDetailVysledku()">Zavřít</button>
+    </div>
   </div>
 </div>
 
@@ -771,18 +793,92 @@ function exportovatProjektCSV() {
   URL.revokeObjectURL(url);
 }
 
+// ---- Detail výsledku v modálu (appka se neotevírá) ----
+const OTAZKY_MINI_SKLADU = ["Víte, kde přesně zboží leží?","Nechodí lidé zbytečně kilometry navíc?","Funguje příjem zboží bez chaosu?","Kolik chyb vzniká při vychystávání?","Nečeká se zbytečně mezi kroky?","Přepisují se stejná data vícekrát?","Máte jasná pravidla pro výjimky?","Víte, kde vznikají reklamace a opravy?","Jsou postupy jasné i bez starých mazáků?","Měříte výkon skladu?"];
+const MOZNOSTI_MINI_SKLADU = ["Máme pod kontrolou", "Občas problém", "Častý problém", "Bolí nás to každý týden"];
+const OTAZKY_MINI_VYROBY = ["Je na první pohled jasné, co se má vyrábět a v jakém množství?","Mají pracovníci materiál, nářadí a informace připravené včas?","Nehledá se běžně materiál, nářadí nebo dokumentace?","Jsou pracoviště uspořádaná bez zbytečného chození?","Nevznikají mezi operacemi fronty rozpracované výroby?","Víte přesně, proč a jak dlouho výroba stála?","Pracují lidé stejnou činnost stejným způsobem?","Nevracejí se stejné vady nebo předělávky?","Je jasné, kdo řeší problém během výroby?","Víte, kde vzniká největší ztráta času nebo výkonu?"];
+const LABELY_MINI_VYROBY = ["Ne", "Částečně", "Ano"];
+const OTAZKY_KVIZ_SKLAD = ['Náklady na metr čtvereční','Sledování reálné práce','Přepisování dat','Náklady fluktuace','Náklady na chybu','Zastaralé postupy','Zastupitelnost lidí','Procházení procesu osobně','Měření výkonu','Hašení místo práce'];
+const LABELY_KVIZ_SKLAD = ["Zvládáte", "Částečně", "Mezera"];
+const CHECKLIST_5S = { c1: 'Nepotřebné věci se nehromadí', c2: 'Věci jsou na svém místě', c3: 'Pracoviště je čisté', c4: 'Označení je stále srozumitelné', c5: 'Standard se dodržuje' };
+
+function radekOtazky(text, znacka, trida) {
+  return '<div class="detail-otazka"><div class="detail-otazka-text">' + escapovat(text) + '</div>' +
+    '<div class="detail-otazka-odp ' + trida + '">' + escapovat(znacka) + '</div></div>';
+}
+
+const RENDER_DETAIL = {
+  'mini-audit-skladu': function (d) {
+    const odp = d.odpovedi || {}, nevim = (d.nevim || []).map(String);
+    return OTAZKY_MINI_SKLADU.map((text, i) => {
+      const q = String(i + 1);
+      if (nevim.includes(q)) return radekOtazky(text, 'Nevím', 'nevim');
+      const h = odp[q];
+      const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
+      return radekOtazky(text, MOZNOSTI_MINI_SKLADU[h] != null ? MOZNOSTI_MINI_SKLADU[h] : '—', trida);
+    }).join('');
+  },
+  'mini-audit-vyroby': function (d) {
+    const odp = d.odpovedi || {}, nevim = (d.nevim || []).map(String);
+    return OTAZKY_MINI_VYROBY.map((text, i) => {
+      const q = String(i + 1);
+      if (nevim.includes(q)) return radekOtazky(text, 'Nevím', 'nevim');
+      const h = odp[q];
+      const trida = h === 2 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
+      return radekOtazky(text, LABELY_MINI_VYROBY[h] != null ? LABELY_MINI_VYROBY[h] : '—', trida);
+    }).join('');
+  },
+  'kviz-sklad': function (d) {
+    const odp = d.odpovedi || {};
+    return OTAZKY_KVIZ_SKLAD.map((text, i) => {
+      const h = odp[String(i + 1)];
+      const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
+      return radekOtazky(text, LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '—', trida);
+    }).join('');
+  },
+  '5s': function (d) {
+    const checklist = d.checklist || {};
+    let html = Object.keys(CHECKLIST_5S).map(k =>
+      radekOtazky(CHECKLIST_5S[k], checklist[k] ? 'Splněno' : 'Nesplněno', checklist[k] ? 'dobre' : 'spatne')
+    ).join('');
+    if (d.poznamka) html += '<div class="detail-fallback" style="margin-top:12px;"><strong>Poznámka:</strong> ' + escapovat(d.poznamka) + '</div>';
+    return html;
+  },
+  '5x-proc': function (d) {
+    if (!d.raw) return '';
+    return '<div class="detail-raw">' + escapovat(d.raw) + '</div>';
+  }
+};
+
+function otevritDetailVysledku(id) {
+  const tr = aktualniToolRuny.find(x => x.id === id);
+  if (!tr) return;
+  document.getElementById('detail-vysledku-nazev').textContent = toolNazev(tr);
+  document.getElementById('detail-vysledku-meta').textContent = new Date(tr.created_at).toLocaleDateString('cs-CZ') + (tr.shrnuti ? ' · ' + tr.shrnuti : '');
+  const renderer = RENDER_DETAIL[tr.nastroj];
+  const d = tr.data || {};
+  let html = renderer ? renderer(d) : '';
+  if (!html) {
+    html = '<div class="detail-fallback">' +
+      (tr.hlavni_hodnota_cislo != null ? '<strong>' + escapovat(tr.hlavni_hodnota_cislo) + ' ' + escapovat(tr.hlavni_hodnota_jednotka || '') + '</strong><br>' : '') +
+      (tr.hlavni_hodnota_text ? escapovat(tr.hlavni_hodnota_text) : '') +
+      '</div>';
+  }
+  document.getElementById('detail-vysledku-obsah').innerHTML = html;
+  document.getElementById('modal-detail-vysledku-overlay').classList.add('visible');
+}
+function zavritDetailVysledku() {
+  document.getElementById('modal-detail-vysledku-overlay').classList.remove('visible');
+}
+
 function fazeKartaHtml(polozka) {
   if (polozka.typ === 'vysledek') {
     const tr = polozka.data;
-    const url = NASTROJ_URL[tr.nastroj];
     const obsah = '<div class="nazev">' + escapovat(toolNazev(tr)) + '</div>' +
       (tr.shrnuti ? '<div class="shrnuti">' + escapovat(zkratit(tr.shrnuti, 100)) + '</div>' : '') +
       '<div class="spodek"><span>' + new Date(tr.created_at).toLocaleDateString('cs-CZ') + '</span>' +
       (tr.hlavni_hodnota_cislo != null ? '<span class="hodnota">' + tr.hlavni_hodnota_cislo + (tr.hlavni_hodnota_jednotka ? ' ' + tr.hlavni_hodnota_jednotka : '') + '</span>' : '') + '</div>';
-    if (url) {
-      return '<a class="faze-karta" href="' + url + '?vysledek=' + tr.id + '" target="_blank" rel="noopener">' + obsah + '</a>';
-    }
-    return '<div class="faze-karta">' + obsah + '</div>';
+    return '<div class="faze-karta" onclick="otevritDetailVysledku(\'' + tr.id + '\')">' + obsah + '</div>';
   }
   if (polozka.typ === 'ukol') {
     const a = polozka.data;
