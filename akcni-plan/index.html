@@ -167,6 +167,16 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .modal-overlay.visible{display:flex;}
 .modal{background:var(--white);border-radius:12px;padding:26px;max-width:520px;width:100%;margin:auto 0;}
 .modal h3{font-family:"Poppins",sans-serif;font-size:17px;font-weight:800;margin-bottom:4px;}
+.detail-otazka{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);}
+.detail-otazka:last-child{border-bottom:none;}
+.detail-otazka-text{font-size:13px;color:var(--dark);}
+.detail-otazka-odp{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.detail-otazka-odp.dobre{background:var(--green-light,#e8f5ee);color:var(--green,#2a7a4f);}
+.detail-otazka-odp.stredni{background:rgba(233,169,27,.15);color:var(--gold-dark);}
+.detail-otazka-odp.spatne{background:rgba(192,57,43,.12);color:var(--red,#c0392b);}
+.detail-otazka-odp.nevim{background:#eee;color:#777;}
+.detail-raw{font-size:13px;color:var(--dark);line-height:1.7;white-space:pre-wrap;margin-top:10px;}
+.detail-fallback{font-size:13px;color:var(--mid);line-height:1.7;margin-top:10px;}
 .modal .modal-sub{font-size:12.5px;color:var(--mid);margin-bottom:18px;}
 .field label{font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:5px;}
 .field input,.field select,.field textarea{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
@@ -448,12 +458,11 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 
 <!-- MODAL: DUVOD -->
 <div class="modal-overlay" id="modal-duvod-overlay">
-  <div class="modal" style="max-width:420px;">
+  <div class="modal" style="max-width:480px;">
     <h3>Proč tahle akce vznikla</h3>
     <p class="modal-sub" id="duvod-text"></p>
-    <p class="modal-sub" id="duvod-odkaz-pozn" style="display:none;font-size:12.5px;"></p>
+    <div id="duvod-detail"></div>
     <div class="modal-btns">
-      <a href="#" id="duvod-odkaz" target="_blank" rel="noopener" class="btn-modal-cancel" style="display:none;text-decoration:none;text-align:center;">Otevřít celý výsledek →</a>
       <button type="button" class="btn-modal-ok" onclick="zavritModalDuvod()">Zavřít</button>
     </div>
   </div>
@@ -605,7 +614,7 @@ async function nacistData() {
 
   const [projektyRes, akceRes, fotoRes] = await Promise.all([
     supabaseClient.from('projects').select('id,name,status').eq('organization_id', orgId).order('created_at', { ascending: true }),
-    supabaseClient.from('actions').select('*, projects(name), tool_runs(id, nastroj, nazev, shrnuti)').eq('organization_id', orgId).order('created_at', { ascending: false }),
+    supabaseClient.from('actions').select('*, projects(name), tool_runs(id, nastroj, nazev, shrnuti, hlavni_hodnota_cislo, hlavni_hodnota_jednotka, hlavni_hodnota_text, created_at, data)').eq('organization_id', orgId).order('created_at', { ascending: false }),
     supabaseClient.from('files').select('action_id').eq('organization_id', orgId).not('action_id', 'is', null)
   ]);
 
@@ -825,6 +834,76 @@ const NASTROJ_URL = {
 // (7.9.2026: uz vsechny appky s historii/ulozenymi vysledky)
 const NASTROJ_PODPORUJE_ODKAZ = ['5s', '5x-proc', 'casova-studie', 'kalkulacka-m2', 'kviz-sklad', 'kviz-komunikacniho-chaosu', 'meric-plytvani-pro', 'mini-audit-skladu', 'mini-audit-vyroby', 'spaghetti-pro'];
 
+// ---- Detail výsledku přímo v modálu (appka se neotevírá) ----
+const OTAZKY_MINI_SKLADU = ["Víte, kde přesně zboží leží?","Nechodí lidé zbytečně kilometry navíc?","Funguje příjem zboží bez chaosu?","Kolik chyb vzniká při vychystávání?","Nečeká se zbytečně mezi kroky?","Přepisují se stejná data vícekrát?","Máte jasná pravidla pro výjimky?","Víte, kde vznikají reklamace a opravy?","Jsou postupy jasné i bez starých mazáků?","Měříte výkon skladu?"];
+const MOZNOSTI_MINI_SKLADU = ["Máme pod kontrolou", "Občas problém", "Častý problém", "Bolí nás to každý týden"];
+const OTAZKY_MINI_VYROBY = ["Je na první pohled jasné, co se má vyrábět a v jakém množství?","Mají pracovníci materiál, nářadí a informace připravené včas?","Nehledá se běžně materiál, nářadí nebo dokumentace?","Jsou pracoviště uspořádaná bez zbytečného chození?","Nevznikají mezi operacemi fronty rozpracované výroby?","Víte přesně, proč a jak dlouho výroba stála?","Pracují lidé stejnou činnost stejným způsobem?","Nevracejí se stejné vady nebo předělávky?","Je jasné, kdo řeší problém během výroby?","Víte, kde vzniká největší ztráta času nebo výkonu?"];
+const LABELY_MINI_VYROBY = ["Ne", "Částečně", "Ano"];
+const OTAZKY_KVIZ_SKLAD = ['Náklady na metr čtvereční','Sledování reálné práce','Přepisování dat','Náklady fluktuace','Náklady na chybu','Zastaralé postupy','Zastupitelnost lidí','Procházení procesu osobně','Měření výkonu','Hašení místo práce'];
+const LABELY_KVIZ_SKLAD = ["Zvládáte", "Částečně", "Mezera"];
+const CHECKLIST_5S = { c1: 'Nepotřebné věci se nehromadí', c2: 'Věci jsou na svém místě', c3: 'Pracoviště je čisté', c4: 'Označení je stále srozumitelné', c5: 'Standard se dodržuje' };
+
+function radekOtazky(text, znacka, trida) {
+  return '<div class="detail-otazka"><div class="detail-otazka-text">' + escapovat(text) + '</div>' +
+    '<div class="detail-otazka-odp ' + trida + '">' + escapovat(znacka) + '</div></div>';
+}
+
+const RENDER_DETAIL = {
+  'mini-audit-skladu': function (d) {
+    const odp = d.odpovedi || {}, nevim = (d.nevim || []).map(String);
+    return OTAZKY_MINI_SKLADU.map((text, i) => {
+      const q = String(i + 1);
+      if (nevim.includes(q)) return radekOtazky(text, 'Nevím', 'nevim');
+      const h = odp[q];
+      const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
+      return radekOtazky(text, MOZNOSTI_MINI_SKLADU[h] != null ? MOZNOSTI_MINI_SKLADU[h] : '—', trida);
+    }).join('');
+  },
+  'mini-audit-vyroby': function (d) {
+    const odp = d.odpovedi || {}, nevim = (d.nevim || []).map(String);
+    return OTAZKY_MINI_VYROBY.map((text, i) => {
+      const q = String(i + 1);
+      if (nevim.includes(q)) return radekOtazky(text, 'Nevím', 'nevim');
+      const h = odp[q];
+      const trida = h === 2 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
+      return radekOtazky(text, LABELY_MINI_VYROBY[h] != null ? LABELY_MINI_VYROBY[h] : '—', trida);
+    }).join('');
+  },
+  'kviz-sklad': function (d) {
+    const odp = d.odpovedi || {};
+    return OTAZKY_KVIZ_SKLAD.map((text, i) => {
+      const h = odp[String(i + 1)];
+      const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
+      return radekOtazky(text, LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '—', trida);
+    }).join('');
+  },
+  '5s': function (d) {
+    const checklist = d.checklist || {};
+    let html = Object.keys(CHECKLIST_5S).map(k =>
+      radekOtazky(CHECKLIST_5S[k], checklist[k] ? 'Splněno' : 'Nesplněno', checklist[k] ? 'dobre' : 'spatne')
+    ).join('');
+    if (d.poznamka) html += '<div class="detail-fallback"><strong>Poznámka:</strong> ' + escapovat(d.poznamka) + '</div>';
+    return html;
+  },
+  '5x-proc': function (d) {
+    if (!d.raw) return '';
+    return '<div class="detail-raw">' + escapovat(d.raw) + '</div>';
+  }
+};
+
+function vykreslitDetailVysledku(tr) {
+  const renderer = RENDER_DETAIL[tr.nastroj];
+  const d = tr.data || {};
+  let html = renderer ? renderer(d) : '';
+  if (!html) {
+    html = '<div class="detail-fallback">' +
+      (tr.hlavni_hodnota_cislo != null ? '<strong>' + escapovat(tr.hlavni_hodnota_cislo) + ' ' + escapovat(tr.hlavni_hodnota_jednotka || '') + '</strong><br>' : '') +
+      (tr.hlavni_hodnota_text ? escapovat(tr.hlavni_hodnota_text) : '') +
+      '</div>';
+  }
+  return html;
+}
+
 const IKONA_UPRAVIT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"/></svg>';
 const IKONA_FOTO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>';
 const IKONA_SMAZAT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
@@ -980,23 +1059,7 @@ function otevritModalDuvod(akceId) {
   const nazev = (tr && tr.nazev) || 'Výsledek nástroje';
   const shrnuti = tr && tr.shrnuti;
   document.getElementById('duvod-text').textContent = 'Vznikla z výsledku „' + nazev + '"' + (shrnuti ? ': ' + shrnuti : '.');
-
-  const odkaz = document.getElementById('duvod-odkaz');
-  const pozn = document.getElementById('duvod-odkaz-pozn');
-  if (tr && tr.nastroj && tr.id && NASTROJ_URL[tr.nastroj]) {
-    odkaz.href = NASTROJ_URL[tr.nastroj] + '?vysledek=' + tr.id;
-    odkaz.style.display = 'block';
-    if (NASTROJ_PODPORUJE_ODKAZ.includes(tr.nastroj)) {
-      pozn.style.display = 'none';
-    } else {
-      pozn.textContent = 'Appka zatím neumí otevřít rovnou tenhle konkrétní výsledek – otevře se appka, konkrétní záznam si najdete v historii sami.';
-      pozn.style.display = 'block';
-    }
-  } else {
-    odkaz.style.display = 'none';
-    pozn.style.display = 'none';
-  }
-
+  document.getElementById('duvod-detail').innerHTML = tr ? vykreslitDetailVysledku(tr) : '';
   document.getElementById('modal-duvod-overlay').classList.add('visible');
 }
 function zavritModalDuvod() {
