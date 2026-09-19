@@ -1442,7 +1442,7 @@ function update() {
     document.getElementById("bd-zakladni-name").textContent = "Nájem";
   } else {
     zakladni = (budova / (odpisBudova * 12)) + ((budova + pozemek) * urok / 100 / 12);
-    document.getElementById("bd-zakladni-name").textContent = "Odpis budovy a pozemku";
+    document.getElementById("bd-zakladni-name").textContent = "Odpis budovy + oportunitní náklad kapitálu";
   }
 
   const energie   = elektrina + vytapeni + voda;
