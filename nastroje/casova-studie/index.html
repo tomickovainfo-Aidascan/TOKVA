@@ -1877,7 +1877,7 @@ function renderZaznamy() {
     return `<div class="zaznam" ondblclick="editZaznam(${z.id})" title="Dvakrát klepněte pro úpravu">
       <div class="zaznam-arr"></div>
       <div class="zaznam-time">${z.cas}</div>
-      <div class="zaznam-text">${z.text} <button class="kat-tag ${k.css}" onclick="event.stopPropagation();togglePicker(${z.id},this)" title="Změnit kategorii">${k.label}</button></div>
+      <div class="zaznam-text">${z.text} <button class="kat-tag ${k.css}" onclick="event.stopPropagation();togglePicker(${z.id},this)" title="Klikněte pro změnu kategorie">${k.label} <span style="opacity:.65;font-size:9px;">▾</span></button></div>
       <div class="zaznam-duration">${duration}</div>
       <button class="zaznam-del" onclick="smazatZaznam(${z.id})" title="Smazat">×</button>
     </div>`;
@@ -1973,7 +1973,7 @@ function renderZaznamy() {
 
     const top3Html = top3.length === 0 ? '' : `
       <div class="top3-card">
-        <div class="top3-card-title">Tři největší rezervy dneška</div>
+        <div class="top3-card-title">${top3.length === 1 ? 'Největší rezerva dneška' : 'Největší rezervy dneška'}</div>
         ${top3.map(x => `
           <div class="top3-item">
             <div class="top3-item-head">
