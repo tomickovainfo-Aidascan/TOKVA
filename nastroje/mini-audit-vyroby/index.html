@@ -872,7 +872,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
       <div class="co-prvni-eyebrow">Co udělat jako první</div>
       <div class="co-prvni-title" id="co-prvni-title"></div>
       <div class="co-prvni-text" id="co-prvni-text"></div>
-      <a class="co-prvni-cta" id="co-prvni-cta" href="#" target="_blank">Spustit doporučený nástroj</a>
+      <a class="co-prvni-cta" id="co-prvni-cta" href="#" target="_blank">Otevřít doporučený nástroj</a>
       <div class="co-prvni-dalsi" id="co-prvni-dalsi"></div>
     </div>
 
@@ -1148,14 +1148,14 @@ const PRVNI_KROK = {
 // Odkaz na appku, která pomůže danou oblast změřit/vyřešit dál - u některých
 // otázek (1, 2, 5, 9) není jasný odpovídající nástroj, tam zůstává jen text bez odkazu.
 const CTA_ODKAZ = {
-  1: { url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání" },
-  3: { url: "../5S_audit/", cta: "Spustit 5S audit" },
-  4: { url: "../spaghetti-free/", cta: "Spustit Spaghetti diagram" },
-  5: { url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání" },
-  6: { url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání" },
-  8: { url: "../5x-proc-ai-kouc/", cta: "Spustit 5x Proč kouče" },
-  9: { url: "../kviz-jak-znate-svuj-sklad/", cta: "Spustit Kvíz: Jak dobře znáte svůj sklad" },
-  10: { url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání" },
+  1: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" },
+  3: { url: "../5S_audit/", cta: "Zavést pořádek pomocí 5S" },
+  4: { url: "../spaghetti-free/", cta: "Nakreslit Spaghetti diagram" },
+  5: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" },
+  6: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" },
+  8: { url: "../5x-proc-ai-kouc/", cta: "Najít příčinu pomocí 5× Proč" },
+  9: { url: "../kviz-jak-znate-svuj-sklad/", cta: "Otestovat, co o skladu nevíte" },
+  10: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" },
 };
 
 // Rozdeleni 10 otazek do 5 oblasti pro rozpis vysledku a pro "Co udelat jako
@@ -1167,19 +1167,19 @@ const CTA_ODKAZ = {
 const OBLASTI = [
   { klic: "tok", nazev: "Tok výroby", otazky: [1, 5],
     text: "Největší neznámá je, jestli je jasné, co a v jakém pořadí se má vyrábět a jestli mezi operacemi neuvízne rozpracovaná výroba. Změřte to Měřičem plýtvání dvakrát - jednou na obsluze (shání informace, materiál, čeká na pokyn) a jednou na výrobku nebo dávce (kolik času čeká mezi operacemi místo aby se na něm pracovalo).",
-    nastroj: { url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání" } },
+    nastroj: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" } },
   { klic: "cekani", nazev: "Čekání a prostoje", otazky: [2, 6],
     text: "Největší neznámá není kvalita ani layout, ale to, kam během směny mizí pracovní čas.",
-    nastroj: { url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání" } },
+    nastroj: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" } },
   { klic: "pohyb", nazev: "Pohyb a pracoviště", otazky: [3, 4],
     text: "Lidé během práce zbytečně chodí nebo přenášejí materiál.",
-    nastroj: { url: "../spaghetti-free/", cta: "Spustit Spaghetti diagram" } },
+    nastroj: { url: "../spaghetti-free/", cta: "Nakreslit Spaghetti diagram" } },
   { klic: "standard", nazev: "Standard a kvalita", otazky: [7, 8],
     text: "Stejné vady nebo komplikace se vracejí.",
-    nastroj: { url: "../5x-proc-ai-kouc/", cta: "Spustit 5x Proč kouče" } },
+    nastroj: { url: "../5x-proc-ai-kouc/", cta: "Najít příčinu pomocí 5× Proč" } },
   { klic: "rizeni", nazev: "Řízení problémů", otazky: [9, 10],
     text: "Není jasné, kde přesně a proč výroba ztrácí čas a kapacitu, ani kdo problém řeší.",
-    nastroj: { url: "../meric-plytvani-free/", cta: "Spustit Měřič plýtvání" } },
+    nastroj: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" } },
 ];
 
 // Stav kvizu - jednotlive odpovedi ukladame primo jako "zdravi" 0-2 (2=Ano,
@@ -1433,7 +1433,7 @@ function zobrazVysledky() {
     document.getElementById('co-prvni-text').textContent = 'Na všechny otázky jste zatím odpověděli "nevím" - to je přesně důvod, proč začít Měřičem plýtvání a zjistit, kam se čas ve výrobě reálně ztrácí.';
     const cta = document.getElementById('co-prvni-cta');
     cta.href = '../meric-plytvani-free/';
-    cta.textContent = 'Spustit Měřič plýtvání';
+    cta.textContent = 'Změřit čas v Měřiči plýtvání';
     document.getElementById('co-prvni-dalsi').innerHTML = '';
   } else {
     znameOblasti.sort((a, b) => b.proc - a.proc);
@@ -1448,12 +1448,13 @@ function zobrazVysledky() {
     if (akceNazevPole && !akceNazevPole.value) akceNazevPole.value = 'Zlepšit: ' + nejhorsi.ob.nazev.toLowerCase();
     const akceTerminPole = document.getElementById('akce-termin');
     if (akceTerminPole && !akceTerminPole.value) { const dTermin = new Date(); dTermin.setDate(dTermin.getDate() + 30); akceTerminPole.value = dTermin.toISOString().slice(0, 10); }
-    const dalsiNastroje = znameOblasti.slice(1, 3)
-      .map(o => o.ob.nastroj.cta.replace('Spustit ', ''))
-      .filter((v, i, arr) => arr.indexOf(v) !== -1 && v !== nejhorsi.ob.nastroj.cta.replace('Spustit ', ''));
-    const unikatni = [...new Set(dalsiNastroje)];
-    document.getElementById('co-prvni-dalsi').innerHTML = unikatni.length
-      ? 'Další vhodné nástroje: ' + unikatni.join(' · ')
+    const videneUrl = new Set([nejhorsi.ob.nastroj.url]);
+    const dalsiNastroje = [];
+    znameOblasti.slice(1, 3).forEach(o => {
+      if (!videneUrl.has(o.ob.nastroj.url)) { videneUrl.add(o.ob.nastroj.url); dalsiNastroje.push(o.ob.nastroj); }
+    });
+    document.getElementById('co-prvni-dalsi').innerHTML = dalsiNastroje.length
+      ? 'Další vhodný krok: ' + dalsiNastroje.map(n => '<a href="' + n.url + '" target="_blank">' + n.cta + '</a>').join(' · ')
       : '';
   }
 

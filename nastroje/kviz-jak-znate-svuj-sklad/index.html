@@ -1566,10 +1566,10 @@ const PROC_ZALEZI = [
 // Jen nastroje s zivou verejnou adresou - 5x Proc, 5S, Casova studie a Kalkulacka m2
 // zatim vlastni domenu nemaji, proto tu zamerne nejsou.
 const CO_DAL_ODKAZY = {
-  2: { nazev: 'Měřič plýtvání', url: '../meric-plytvani-free/' },
-  5: { nazev: 'Kalkulačku ztrát', url: '../kalkulacka-ztrat/' },
-  6: { nazev: '5x Proč AI kouč', url: '../5x-proc-ai-kouc/' },
-  8: { nazev: 'Spaghetti diagram', url: '../spaghetti-free/' }
+  2: { nazev: 'Změřit čas v Měřiči plýtvání', url: '../meric-plytvani-free/' },
+  5: { nazev: 'Spočítat finanční dopad', url: '../kalkulacka-ztrat/' },
+  6: { nazev: 'Najít příčinu pomocí 5× Proč', url: '../5x-proc-ai-kouc/' },
+  8: { nazev: 'Nakreslit Spaghetti diagram', url: '../spaghetti-free/' }
 };
 
 function ukazatEmailFormKviz() {
@@ -1694,7 +1694,7 @@ function zobrazVysledky() {
       const tlacitko = odkaz
         ? `<div style="margin-top:12px;padding-top:12px;border-top:1px dashed rgba(233,169,27,.4);">
             <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:7px;">Doporučený další krok</div>
-            <a href="${odkaz.url}" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-size:13px;font-weight:600;padding:9px 18px;border-radius:6px;text-decoration:none;">Spustit ${odkaz.nazev} →</a>
+            <a href="${odkaz.url}" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-size:13px;font-weight:600;padding:9px 18px;border-radius:6px;text-decoration:none;">${odkaz.nazev} →</a>
           </div>`
         : '';
       return `

@@ -964,7 +964,7 @@ function ukoncit() {
   const ins = document.getElementById('insights');
   const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
   const TIPY = {
-    presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. Zkuste spaghetti diagram - nakreslete pohyb pracovníka do plánku a uvidíte kde se trasy kříží a opakují.`,
+    presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. <a href="../spaghetti-free/" target="_blank" style="color:var(--gold-dark);font-weight:700;">Nakreslit Spaghetti diagram</a> a uvidíte, kde se trasy kříží a opakují.`,
     hledani:`Hledání tvoří ${Math.round(avg.hledani/avgC*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
     cekani:`Čekání tvoří ${Math.round(avg.cekani/avgC*100)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
     papiry:`Administrativa tvoří ${Math.round(avg.papiry/avgC*100)}% času. Kolik z toho je nutné? Tady je prostor pro digitalizaci nebo zjednodušení.`,

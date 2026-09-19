@@ -1460,7 +1460,7 @@ nav {
             <div class="top3-item-val">1h 10m</div>
           </div>
           <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> Opakované hašení stejného typu problému je signál, že se řeší jen důsledek, ne kořenová příčina.</div>
-          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../5x-proc-ai-kouc/" target="_blank" rel="noopener" class="top3-item-link">Spustit 5x Proč AI kouč →</a>
+          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../5x-proc-ai-kouc/" target="_blank" rel="noopener" class="top3-item-link">Najít příčinu pomocí 5× Proč →</a>
         </div>
         <div class="top3-item">
           <div class="top3-item-head">
@@ -1468,7 +1468,7 @@ nav {
             <div class="top3-item-val">55m</div>
           </div>
           <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> Čas v komunikaci jde často zkrátit - kratší porady, jasnější pravidlo kdo koho a kdy kontaktuje.</div>
-          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../kviz-komunikacniho-chaosu/" target="_blank" rel="noopener" class="top3-item-link">Spustit Kvíz komunikačního chaosu →</a>
+          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../kviz-komunikacniho-chaosu/" target="_blank" rel="noopener" class="top3-item-link">Zjistit úroveň komunikačního chaosu →</a>
         </div>
       </div>
     </div>
@@ -1823,7 +1823,7 @@ const PRIKLAD_SOUHRN_HTML = `
             <div class="top3-item-val">1h 10m</div>
           </div>
           <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> Opakované hašení stejného typu problému je signál, že se řeší jen důsledek, ne kořenová příčina.</div>
-          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../5x-proc-ai-kouc/" target="_blank" rel="noopener" class="top3-item-link">Spustit 5x Proč AI kouč →</a>
+          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../5x-proc-ai-kouc/" target="_blank" rel="noopener" class="top3-item-link">Najít příčinu pomocí 5× Proč →</a>
         </div>
         <div class="top3-item">
           <div class="top3-item-head">
@@ -1831,7 +1831,7 @@ const PRIKLAD_SOUHRN_HTML = `
             <div class="top3-item-val">55m</div>
           </div>
           <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> Čas v komunikaci jde často zkrátit - kratší porady, jasnější pravidlo kdo koho a kdy kontaktuje.</div>
-          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../kviz-komunikacniho-chaosu/" target="_blank" rel="noopener" class="top3-item-link">Spustit Kvíz komunikačního chaosu →</a>
+          <div class="top3-item-cta-label">Doporučený další krok</div><a href="../kviz-komunikacniho-chaosu/" target="_blank" rel="noopener" class="top3-item-link">Zjistit úroveň komunikačního chaosu →</a>
         </div>
       </div>`;
 
@@ -1953,10 +1953,10 @@ function renderZaznamy() {
       presun: 'Zbytečné přesuny jde často vyřešit lepším rozmístěním věcí, lidí nebo informací.'
     };
     const ODKAZ_KAT = {
-      haseni: { nazev: '5x Proč AI kouč', url: '../5x-proc-ai-kouc/' },
-      komunikace: { nazev: 'Kvíz komunikačního chaosu', url: '../kviz-komunikacniho-chaosu/' },
-      administrativa: { nazev: 'Kalkulačka ztrát', url: '../kalkulacka-ztrat/' },
-      presun: { nazev: 'Spaghetti diagram', url: '../spaghetti-free/' }
+      haseni: { nazev: 'Najít příčinu pomocí 5× Proč', url: '../5x-proc-ai-kouc/' },
+      komunikace: { nazev: 'Zjistit úroveň komunikačního chaosu', url: '../kviz-komunikacniho-chaosu/' },
+      administrativa: { nazev: 'Spočítat finanční dopad', url: '../kalkulacka-ztrat/' },
+      presun: { nazev: 'Nakreslit Spaghetti diagram', url: '../spaghetti-free/' }
     };
     const top3 = REZERVA_KAT
       .map(id => ({ id, k: katInfo(id), ms: katCas[id] || 0 }))
@@ -1981,7 +1981,7 @@ function renderZaznamy() {
               <div class="top3-item-val">${formatDuration(x.ms)}</div>
             </div>
             <div class="top3-item-proc"><strong>Proč na tom záleží:</strong> ${PROC_ZALEZI_KAT[x.id] || ''}</div>
-            ${ODKAZ_KAT[x.id] ? `<div class="top3-item-cta-label">Doporučený další krok</div><a href="${ODKAZ_KAT[x.id].url}" target="_blank" rel="noopener" class="top3-item-link">Spustit ${ODKAZ_KAT[x.id].nazev} →</a>` : ''}
+            ${ODKAZ_KAT[x.id] ? `<div class="top3-item-cta-label">Doporučený další krok</div><a href="${ODKAZ_KAT[x.id].url}" target="_blank" rel="noopener" class="top3-item-link">${ODKAZ_KAT[x.id].nazev} →</a>` : ''}
           </div>
         `).join('')}
       </div>`;

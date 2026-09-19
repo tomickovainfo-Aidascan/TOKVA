@@ -1354,8 +1354,7 @@ function ukoncit() {
   const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
   const TIPY_URL = '../spaghetti-free/';
   const TIPY_PRO = {
-    // TODO: až bude spaghetti-vyroba.html napojená na stejný kód jako Měřič Pro, přidat zpět odkaz: <a href="../spaghetti-free//vyroba">spaghetti diagram →</a>
-    presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. Nakreslete spaghetti diagram a vizuálně uvidíte kde se trasy kříží a opakují.`,
+    presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. <a href="${TIPY_URL}" target="_blank" style="color:var(--gold-dark);font-weight:700;">Nakreslit Spaghetti diagram</a> a vizuálně uvidíte, kde se trasy kříží a opakují.`,
     hledani:`Hledání tvoří ${Math.round(avg.hledani/avgC*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
     cekani:`Čekání tvoří ${Math.round(avg.cekani/avgC*100)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
     papiry:`Administrativa tvoří ${Math.round(avg.papiry/avgC*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
