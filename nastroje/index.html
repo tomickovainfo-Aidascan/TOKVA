@@ -1145,9 +1145,9 @@ function showIntro(updateUrl) {
   document.getElementById("home-link").style.display = "none";
   document.querySelector(".main").classList.remove("wide");
   closeMobileSidebar();
-  window.scrollTo({top:0, behavior:"smooth"});
+  window.scrollTo({top:0, behavior:"auto"});
   if (updateUrl) {
-    const url = new URL(window.location.origin + "/");
+    const url = new URL(window.location.pathname, window.location.origin);
     history.pushState({}, "", url);
   }
 }
@@ -1370,9 +1370,9 @@ function renderDetail(id, updateUrl) {
   document.querySelector(".main").classList.add("wide");
   document.querySelectorAll(".sb-item").forEach(b => b.classList.toggle("active", b.dataset.id === id));
   closeMobileSidebar();
-  window.scrollTo({top:0, behavior:"smooth"});
+  window.scrollTo({top:0, behavior:"auto"});
   if (updateUrl) {
-    const url = new URL(window.location.origin + "/");
+    const url = new URL(window.location.pathname, window.location.origin);
     url.searchParams.set("nastroj", id);
     history.pushState({nastroj:id}, "", url);
   }
