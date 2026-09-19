@@ -123,6 +123,8 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .input-val { font-family:"DM Mono",monospace; font-size:12px; font-weight:500; color:var(--gold-dark); min-width:56px; text-align:right; background:var(--gold-light); padding:3px 7px; border-radius:3px; white-space:nowrap; }
 .input-val-lg { min-width:80px; }
 .input-val-xl { min-width:96px; }
+.input-val-edit { width:76px; font-family:"DM Mono",monospace; font-size:12px; padding:4px 6px; border:1px solid var(--border); border-radius:3px; text-align:right; background:var(--white); color:var(--dark); }
+.input-val-edit:focus { outline:none; border-color:var(--gold); }
 
 /* ── RESULTS ── */
 .results { display:flex; flex-direction:column; gap:20px; }
@@ -528,7 +530,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div class="input-group">
           <div class="input-label">Celková plocha skladu <span class="input-hint">hrubá podlahová plocha</span></div>
           <div class="input-row">
-            <input type="range" id="plocha" min="100" max="5000" value="600" step="50" oninput="update()">
+            <input type="range" id="plocha" min="50" max="5000" value="600" step="50" oninput="syncFromRange('plocha')">
+            <input type="number" class="input-val-edit" id="plocha-num" min="50" max="5000" step="50" value="600" oninput="syncFromNumber('plocha')">
             <span class="input-val" id="plocha-val">600 m²</span>
           </div>
         </div>
@@ -543,14 +546,16 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div class="input-group">
           <div class="input-label">Měsíční nájemné <span class="input-hint">Kč/měsíc</span></div>
           <div class="input-row">
-            <input type="range" id="najemne" min="20000" max="400000" value="60000" step="5000" oninput="update()">
+            <input type="range" id="najemne" min="0" max="400000" value="60000" step="5000" oninput="syncFromRange('najemne')">
+            <input type="number" class="input-val-edit" id="najemne-num" min="0" max="400000" step="5000" value="60000" oninput="syncFromNumber('najemne')">
             <span class="input-val input-val-xl" id="najemne-val">60 000 Kč</span>
           </div>
         </div>
         <div class="input-group">
           <div class="input-label">Správa / zálohy nad nájemné <span class="input-hint">Kč/měsíc</span></div>
           <div class="input-row">
-            <input type="range" id="sprava" min="0" max="30000" value="3000" step="500" oninput="update()">
+            <input type="range" id="sprava" min="0" max="30000" value="3000" step="500" oninput="syncFromRange('sprava')">
+            <input type="number" class="input-val-edit" id="sprava-num" min="0" max="30000" step="500" value="3000" oninput="syncFromNumber('sprava')">
             <span class="input-val input-val-xl" id="sprava-val">3 000 Kč</span>
           </div>
         </div>
@@ -565,14 +570,16 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div class="input-group">
           <div class="input-label">Pořizovací hodnota budovy <span class="input-hint">bez pozemku</span></div>
           <div class="input-row">
-            <input type="range" id="budova" min="1000000" max="30000000" value="6000000" step="100000" oninput="update()">
+            <input type="range" id="budova" min="1000000" max="30000000" value="6000000" step="100000" oninput="syncFromRange('budova')">
+            <input type="number" class="input-val-edit" id="budova-num" min="1000000" max="30000000" step="100000" value="6000000" oninput="syncFromNumber('budova')">
             <span class="input-val input-val-xl" id="budova-val">6,0 mil. Kč</span>
           </div>
         </div>
         <div class="input-group">
           <div class="input-label">Doba odepisování budovy <span class="input-hint"><a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/1992-586" target="_blank" rel="noopener">zákon 586/1992 Sb.</a></span></div>
           <div class="input-row">
-            <input type="range" id="odpis_budova" min="20" max="50" value="30" step="10" oninput="update()">
+            <input type="range" id="odpis_budova" min="20" max="50" value="30" step="10" oninput="syncFromRange('odpis_budova')">
+            <input type="number" class="input-val-edit" id="odpis_budova-num" min="20" max="50" step="10" value="30" oninput="syncFromNumber('odpis_budova')">
             <span class="input-val" id="odpis_budova-val">30 let</span>
           </div>
           <div class="input-note">Haly a průmyslové budovy zpravidla 30 let (třída 5)</div>
@@ -580,14 +587,16 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div class="input-group">
           <div class="input-label">Hodnota pozemku <span class="input-hint">oportunitní náklad</span></div>
           <div class="input-row">
-            <input type="range" id="pozemek" min="0" max="10000000" value="1500000" step="100000" oninput="update()">
+            <input type="range" id="pozemek" min="0" max="10000000" value="1500000" step="100000" oninput="syncFromRange('pozemek')">
+            <input type="number" class="input-val-edit" id="pozemek-num" min="0" max="10000000" step="100000" value="1500000" oninput="syncFromNumber('pozemek')">
             <span class="input-val input-val-xl" id="pozemek-val">1,5 mil. Kč</span>
           </div>
         </div>
         <div class="input-group">
           <div class="input-label">Oportunitní náklad kapitálu <span class="input-hint">% p.a.</span></div>
           <div class="input-row">
-            <input type="range" id="urok" min="0" max="8" value="4" step="0.5" oninput="update()">
+            <input type="range" id="urok" min="0" max="8" value="4" step="0.5" oninput="syncFromRange('urok')">
+            <input type="number" class="input-val-edit" id="urok-num" min="0" max="8" step="0.5" value="4" oninput="syncFromNumber('urok')">
             <span class="input-val" id="urok-val">4,0 %</span>
           </div>
           <div class="input-note">Kolik by jinak vydělaly peníze vázané v nemovitosti</div>
@@ -607,7 +616,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Elektřina <span class="input-hint">Kč/měsíc průměr</span></div>
             <div class="input-row">
-              <input type="range" id="elektrina" min="3000" max="80000" value="0" step="1000" oninput="update()">
+              <input type="range" id="elektrina" min="0" max="80000" value="0" step="1000" oninput="syncFromRange('elektrina')">
+              <input type="number" class="input-val-edit" id="elektrina-num" min="0" max="80000" step="1000" value="0" oninput="syncFromNumber('elektrina')">
               <span class="input-val input-val-xl" id="elektrina-val">12 000 Kč</span>
             </div>
             <div class="input-note">Osvětlení, nabíjení VZV, vrata, alarm, IT</div>
@@ -615,7 +625,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Vytápění / chlazení <span class="input-hint">Kč/měsíc průměr za rok</span></div>
             <div class="input-row">
-              <input type="range" id="vytapeni" min="0" max="60000" value="0" step="500" oninput="update()">
+              <input type="range" id="vytapeni" min="0" max="60000" value="0" step="500" oninput="syncFromRange('vytapeni')">
+              <input type="number" class="input-val-edit" id="vytapeni-num" min="0" max="60000" step="500" value="0" oninput="syncFromNumber('vytapeni')">
               <span class="input-val input-val-xl" id="vytapeni-val">8 000 Kč</span>
             </div>
             <div class="input-note">Průměr: v létě nižší, v zimě vyšší. Nevytápěný sklad = 0.</div>
@@ -623,7 +634,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Voda a kanalizace <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="voda" min="200" max="8000" value="0" step="100" oninput="update()">
+              <input type="range" id="voda" min="0" max="8000" value="0" step="100" oninput="syncFromRange('voda')">
+              <input type="number" class="input-val-edit" id="voda-num" min="0" max="8000" step="100" value="0" oninput="syncFromNumber('voda')">
               <span class="input-val input-val-xl" id="voda-val">1 200 Kč</span>
             </div>
           </div>
@@ -643,7 +655,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Daň z nemovitosti <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="dan" min="0" max="30000" value="0" step="500" oninput="update()">
+              <input type="range" id="dan" min="0" max="30000" value="0" step="500" oninput="syncFromRange('dan')">
+              <input type="number" class="input-val-edit" id="dan-num" min="0" max="30000" step="500" value="0" oninput="syncFromNumber('dan')">
               <span class="input-val input-val-xl" id="dan-val">0 Kč</span>
             </div>
             <div class="input-note">Nájemci zpravidla 0 – platí majitel budovy. <a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/1992-338" target="_blank" rel="noopener">Zákon 338/1992 Sb.</a></div>
@@ -651,7 +664,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Pojištění budovy <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="poj_budova" min="0" max="80000" value="0" step="1000" oninput="update()">
+              <input type="range" id="poj_budova" min="0" max="80000" value="0" step="1000" oninput="syncFromRange('poj_budova')">
+              <input type="number" class="input-val-edit" id="poj_budova-num" min="0" max="80000" step="1000" value="0" oninput="syncFromNumber('poj_budova')">
               <span class="input-val input-val-xl" id="poj_budova-val">0 Kč</span>
             </div>
             <div class="input-note">Nájemci pojišťují obsah, ne stavbu. Majitelé zadají roční pojistné.</div>
@@ -659,7 +673,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Pojištění odpovědnosti <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="poj_odp" min="0" max="30000" value="0" step="500" oninput="update()">
+              <input type="range" id="poj_odp" min="0" max="30000" value="0" step="500" oninput="syncFromRange('poj_odp')">
+              <input type="number" class="input-val-edit" id="poj_odp-num" min="0" max="30000" step="500" value="0" oninput="syncFromNumber('poj_odp')">
               <span class="input-val input-val-xl" id="poj_odp-val">8 000 Kč</span>
             </div>
           </div>
@@ -679,14 +694,16 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Běžná údržba a opravy <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="udrzba" min="0" max="25000" value="0" step="500" oninput="update()">
+              <input type="range" id="udrzba" min="0" max="25000" value="0" step="500" oninput="syncFromRange('udrzba')">
+              <input type="number" class="input-val-edit" id="udrzba-num" min="0" max="25000" step="500" value="0" oninput="syncFromNumber('udrzba')">
               <span class="input-val input-val-xl" id="udrzba-val">3 000 Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Elektrorevize <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="elektrorevize" min="0" max="15000" value="0" step="500" oninput="update()">
+              <input type="range" id="elektrorevize" min="0" max="15000" value="0" step="500" oninput="syncFromRange('elektrorevize')">
+              <input type="number" class="input-val-edit" id="elektrorevize-num" min="0" max="15000" step="500" value="0" oninput="syncFromNumber('elektrorevize')">
               <span class="input-val input-val-xl" id="elektrorevize-val">5 000 Kč</span>
             </div>
             <div class="input-note"><a class="zdroj-link" href="https://www.technicke-normy-csn.cz/hledani/?search=33+1500" target="_blank" rel="noopener">ČSN 33 1500</a> – každé 3–5 let, zadejte roční průměr</div>
@@ -694,7 +711,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Revize EPS <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="eps" min="0" max="12000" value="0" step="500" oninput="update()">
+              <input type="range" id="eps" min="0" max="12000" value="0" step="500" oninput="syncFromRange('eps')">
+              <input type="number" class="input-val-edit" id="eps-num" min="0" max="12000" step="500" value="0" oninput="syncFromNumber('eps')">
               <span class="input-val input-val-xl" id="eps-val">4 000 Kč</span>
             </div>
             <div class="input-note">Elektrická požární signalizace – <a class="zdroj-link" href="https://seznamcsn.agentura-cas.cz/vyhledavani.aspx" target="_blank" rel="noopener">ČSN EN 54-14</a>, 1× ročně</div>
@@ -702,7 +720,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Revize EZS <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="ezs" min="0" max="10000" value="0" step="500" oninput="update()">
+              <input type="range" id="ezs" min="0" max="10000" value="0" step="500" oninput="syncFromRange('ezs')">
+              <input type="number" class="input-val-edit" id="ezs-num" min="0" max="10000" step="500" value="0" oninput="syncFromNumber('ezs')">
               <span class="input-val input-val-xl" id="ezs-val">3 000 Kč</span>
             </div>
             <div class="input-note">Elektrické zabezpečovací systémy – <a class="zdroj-link" href="https://seznamcsn.agentura-cas.cz/vyhledavani.aspx" target="_blank" rel="noopener">ČSN P CLC/TS 50131-7</a></div>
@@ -710,7 +729,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Revize zdvihacích zařízení <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="zdvihaci" min="0" max="20000" value="0" step="500" oninput="update()">
+              <input type="range" id="zdvihaci" min="0" max="20000" value="0" step="500" oninput="syncFromRange('zdvihaci')">
+              <input type="number" class="input-val-edit" id="zdvihaci-num" min="0" max="20000" step="500" value="0" oninput="syncFromNumber('zdvihaci')">
               <span class="input-val input-val-xl" id="zdvihaci-val">5 000 Kč</span>
             </div>
             <div class="input-note">Nakládací rampy, plošiny, sekční vrata – <a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/2001-378" target="_blank" rel="noopener">NV 378/2001 Sb.</a>, 1× ročně</div>
@@ -718,7 +738,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Revize hasicích přístrojů <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="hasici" min="0" max="8000" value="0" step="500" oninput="update()">
+              <input type="range" id="hasici" min="0" max="8000" value="0" step="500" oninput="syncFromRange('hasici')">
+              <input type="number" class="input-val-edit" id="hasici-num" min="0" max="8000" step="500" value="0" oninput="syncFromNumber('hasici')">
               <span class="input-val input-val-xl" id="hasici-val">3 000 Kč</span>
             </div>
             <div class="input-note"><a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/2001-246" target="_blank" rel="noopener">Vyhl. 246/2001 Sb.</a> – 1× ročně</div>
@@ -726,7 +747,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Revize plynových zařízení <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="plyn" min="0" max="8000" value="0" step="500" oninput="update()">
+              <input type="range" id="plyn" min="0" max="8000" value="0" step="500" oninput="syncFromRange('plyn')">
+              <input type="number" class="input-val-edit" id="plyn-num" min="0" max="8000" step="500" value="0" oninput="syncFromNumber('plyn')">
               <span class="input-val input-val-xl" id="plyn-val">0 Kč</span>
             </div>
             <div class="input-note">Pouze pokud máte plynové topení nebo technologii</div>
@@ -734,7 +756,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Ostatní revize a zkoušky <span class="input-hint">Kč/rok</span></div>
             <div class="input-row">
-              <input type="range" id="ostatni_rev" min="0" max="10000" value="0" step="500" oninput="update()">
+              <input type="range" id="ostatni_rev" min="0" max="10000" value="0" step="500" oninput="syncFromRange('ostatni_rev')">
+              <input type="number" class="input-val-edit" id="ostatni_rev-num" min="0" max="10000" step="500" value="0" oninput="syncFromNumber('ostatni_rev')">
               <span class="input-val input-val-xl" id="ostatni_rev-val">1 500 Kč</span>
             </div>
             <div class="input-note">Hromosvod, regálové inspekce, tlakové nádoby, vzduchotechnika</div>
@@ -755,14 +778,16 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Úklid a čištění <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="uklid" min="0" max="15000" value="0" step="500" oninput="update()">
+              <input type="range" id="uklid" min="0" max="15000" value="0" step="500" oninput="syncFromRange('uklid')">
+              <input type="number" class="input-val-edit" id="uklid-num" min="0" max="15000" step="500" value="0" oninput="syncFromNumber('uklid')">
               <span class="input-val input-val-xl" id="uklid-val">3 500 Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Ostraha / bezpečnostní systém <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="ostraha" min="0" max="20000" value="0" step="500" oninput="update()">
+              <input type="range" id="ostraha" min="0" max="20000" value="0" step="500" oninput="syncFromRange('ostraha')">
+              <input type="number" class="input-val-edit" id="ostraha-num" min="0" max="20000" step="500" value="0" oninput="syncFromNumber('ostraha')">
               <span class="input-val input-val-xl" id="ostraha-val">2 000 Kč</span>
             </div>
             <div class="input-note">Monitoring poplachového systému nebo fyzická ostraha</div>
@@ -770,7 +795,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Odvoz odpadu <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="odpad" min="0" max="8000" value="0" step="200" oninput="update()">
+              <input type="range" id="odpad" min="0" max="8000" value="0" step="200" oninput="syncFromRange('odpad')">
+              <input type="number" class="input-val-edit" id="odpad-num" min="0" max="8000" step="200" value="0" oninput="syncFromNumber('odpad')">
               <span class="input-val input-val-xl" id="odpad-val">1 600 Kč</span>
             </div>
             <div class="input-note">Komunální, karton, průmyslový odpad</div>
@@ -778,7 +804,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Správa budovy / facility management <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="facility" min="0" max="15000" value="0" step="500" oninput="update()">
+              <input type="range" id="facility" min="0" max="15000" value="0" step="500" oninput="syncFromRange('facility')">
+              <input type="number" class="input-val-edit" id="facility-num" min="0" max="15000" step="500" value="0" oninput="syncFromNumber('facility')">
               <span class="input-val input-val-xl" id="facility-val">0 Kč</span>
             </div>
             <div class="input-note">Jen pokud je outsourcováno externě</div>
@@ -786,7 +813,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Deratizace a dezinsekce <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="deratizace" min="0" max="5000" value="0" step="100" oninput="update()">
+              <input type="range" id="deratizace" min="0" max="5000" value="0" step="100" oninput="syncFromRange('deratizace')">
+              <input type="number" class="input-val-edit" id="deratizace-num" min="0" max="5000" step="100" value="0" oninput="syncFromNumber('deratizace')">
               <span class="input-val input-val-xl" id="deratizace-val">500 Kč</span>
             </div>
           </div>
@@ -806,42 +834,48 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Regálový systém – pořizovací cena <span class="input-hint">Kč</span></div>
             <div class="input-row">
-              <input type="range" id="regaly" min="0" max="1500000" value="0" step="10000" oninput="update()">
+              <input type="range" id="regaly" min="0" max="1500000" value="0" step="10000" oninput="syncFromRange('regaly')">
+              <input type="number" class="input-val-edit" id="regaly-num" min="0" max="1500000" step="10000" value="0" oninput="syncFromNumber('regaly')">
               <span class="input-val input-val-xl" id="regaly-val">250 tis. Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Doba odepisování regálů <span class="input-hint">let</span></div>
             <div class="input-row">
-              <input type="range" id="odpis_regaly" min="10" max="20" value="0" step="5" oninput="update()">
+              <input type="range" id="odpis_regaly" min="10" max="20" value="10" step="5" oninput="syncFromRange('odpis_regaly')">
+              <input type="number" class="input-val-edit" id="odpis_regaly-num" min="10" max="20" step="5" value="10" oninput="syncFromNumber('odpis_regaly')">
               <span class="input-val" id="odpis_regaly-val">15 let</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Dokovací technika (rampy, plošiny) <span class="input-hint">Kč</span></div>
             <div class="input-row">
-              <input type="range" id="dok_technika" min="0" max="500000" value="0" step="5000" oninput="update()">
+              <input type="range" id="dok_technika" min="0" max="500000" value="0" step="5000" oninput="syncFromRange('dok_technika')">
+              <input type="number" class="input-val-edit" id="dok_technika-num" min="0" max="500000" step="5000" value="0" oninput="syncFromNumber('dok_technika')">
               <span class="input-val input-val-xl" id="dok_technika-val">60 tis. Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">LED osvětlení – instalace <span class="input-hint">Kč</span></div>
             <div class="input-row">
-              <input type="range" id="led" min="0" max="300000" value="0" step="5000" oninput="update()">
+              <input type="range" id="led" min="0" max="300000" value="0" step="5000" oninput="syncFromRange('led')">
+              <input type="number" class="input-val-edit" id="led-num" min="0" max="300000" step="5000" value="0" oninput="syncFromNumber('led')">
               <span class="input-val input-val-xl" id="led-val">50 tis. Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Průmyslová vrata a sekční dveře <span class="input-hint">Kč</span></div>
             <div class="input-row">
-              <input type="range" id="vrata" min="0" max="300000" value="0" step="5000" oninput="update()">
+              <input type="range" id="vrata" min="0" max="300000" value="0" step="5000" oninput="syncFromRange('vrata')">
+              <input type="number" class="input-val-edit" id="vrata-num" min="0" max="300000" step="5000" value="0" oninput="syncFromNumber('vrata')">
               <span class="input-val input-val-xl" id="vrata-val">40 tis. Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Ostatní fixní vybavení <span class="input-hint">Kč</span></div>
             <div class="input-row">
-              <input type="range" id="ostatni_vyb" min="0" max="300000" value="0" step="5000" oninput="update()">
+              <input type="range" id="ostatni_vyb" min="0" max="300000" value="0" step="5000" oninput="syncFromRange('ostatni_vyb')">
+              <input type="number" class="input-val-edit" id="ostatni_vyb-num" min="0" max="300000" step="5000" value="0" oninput="syncFromNumber('ostatni_vyb')">
               <span class="input-val input-val-xl" id="ostatni_vyb-val">20 tis. Kč</span>
             </div>
             <div class="input-note">Nabíjecí stanice, příčky, vzduchotechnika, ostatní</div>
@@ -849,7 +883,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Doba odepisování vybavení <span class="input-hint">let (mimo regály)</span></div>
             <div class="input-row">
-              <input type="range" id="odpis_vybaveni" min="5" max="20" value="0" step="1" oninput="update()">
+              <input type="range" id="odpis_vybaveni" min="5" max="20" value="5" step="1" oninput="syncFromRange('odpis_vybaveni')">
+              <input type="number" class="input-val-edit" id="odpis_vybaveni-num" min="5" max="20" step="1" value="5" oninput="syncFromNumber('odpis_vybaveni')">
               <span class="input-val" id="odpis_vybaveni-val">12 let</span>
             </div>
           </div>
@@ -869,14 +904,16 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Internet a telekomunikace <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
-              <input type="range" id="internet" min="0" max="5000" value="0" step="100" oninput="update()">
+              <input type="range" id="internet" min="0" max="5000" value="0" step="100" oninput="syncFromRange('internet')">
+              <input type="number" class="input-val-edit" id="internet-num" min="0" max="5000" step="100" value="0" oninput="syncFromNumber('internet')">
               <span class="input-val input-val-xl" id="internet-val">1 200 Kč</span>
             </div>
           </div>
           <div class="input-group">
             <div class="input-label">Certifikace a licence <span class="input-hint">Kč/měsíc průměr</span></div>
             <div class="input-row">
-              <input type="range" id="certifikace" min="0" max="8000" value="0" step="100" oninput="update()">
+              <input type="range" id="certifikace" min="0" max="8000" value="0" step="100" oninput="syncFromRange('certifikace')">
+              <input type="number" class="input-val-edit" id="certifikace-num" min="0" max="8000" step="100" value="0" oninput="syncFromNumber('certifikace')">
               <span class="input-val input-val-xl" id="certifikace-val">500 Kč</span>
             </div>
             <div class="input-note">ISO, ADR, potravinová certifikace – roční poplatek ÷ 12</div>
@@ -884,7 +921,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-group">
             <div class="input-label">Rezerva na nepředvídané náklady <span class="input-hint">% z celku</span></div>
             <div class="input-row">
-              <input type="range" id="rezerva" min="0" max="15" value="0" step="1" oninput="update()">
+              <input type="range" id="rezerva" min="0" max="15" value="0" step="1" oninput="syncFromRange('rezerva')">
+              <input type="number" class="input-val-edit" id="rezerva-num" min="0" max="15" step="1" value="0" oninput="syncFromNumber('rezerva')">
               <span class="input-val" id="rezerva-val">5 %</span>
             </div>
             <div class="input-note">Doporučeno 3–7 %. Zahrnuje neplánované opravy a výpadky.</div>
@@ -1323,7 +1361,12 @@ function oznacitPresnost() {
     : 'Vyplněno ' + vasich + ' z ' + celkem + ' položek. Zbylých ' + (celkem - vasich) + ' je na nule – výsledek proto bude nižší, než reálný náklad na m².';
 }
 
-function getVal(id) { return +document.getElementById(id).value; }
+// Čte z číselného pole, ne z posuvníku - posuvník kvůli kroku zaokrouhlí
+// libovolně zadané číslo na nejbližší platnou pozici, číselné pole ne.
+function getVal(id) {
+  const num = document.getElementById(id + '-num');
+  return +(num ? num.value : document.getElementById(id).value);
+}
 
 function fmt(n) { return Math.round(n).toLocaleString("cs-CZ"); }
 
@@ -1341,6 +1384,27 @@ function fmtTis(n) {
   if (n >= 1000000) return (n / 1000000).toFixed(1).replace('.', ',') + " mil. Kč";
   if (n >= 1000) return Math.round(n / 1000) + " tis. Kč";
   return fmt(n) + " Kč";
+}
+
+// Vedle posuvníku jde hodnotu zadat i přesným číslem - obě pole se drží
+// synchronně, aby uživatel mohl zadat i reálnou smluvní částku mimo krok
+// posuvníku (např. přesný nájem nebo naměřenou spotřebu energie).
+function syncFromRange(id) {
+  const num = document.getElementById(id + '-num');
+  if (num) num.value = document.getElementById(id).value;
+  update();
+}
+function syncFromNumber(id) {
+  const range = document.getElementById(id);
+  const num = document.getElementById(id + '-num');
+  let v = +num.value;
+  if (isNaN(v)) return;
+  const min = +range.min, max = +range.max;
+  if (v < min) v = min;
+  if (v > max) v = max;
+  num.value = v;
+  range.value = v;
+  update();
 }
 
 function update() {
