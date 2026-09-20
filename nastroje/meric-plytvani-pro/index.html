@@ -871,16 +871,31 @@ function otevritModalDetailVysledku(i) {
   if (!z) return;
   otevritModalDetailVysledkuZeZaznamu(z);
 }
+// Vlastní kroky (vlastniOp) se u záznamu uloží jen jako id+název - tahle
+// mapa dovolí zobrazit i skutečný název vlastního kroku, ne jen jeho
+// interní id, stejně jako getNazev() dělá pro živé měření.
+function nazevKategorieZeZaznamu(z, k) {
+  if (STD_NAZVY[k]) return STD_NAZVY[k];
+  const vlastni = (z.vlastniOp || []).find(function (o) { return o.id === k; });
+  return vlastni && vlastni.nazev ? vlastni.nazev : k;
+}
+
 function otevritModalDetailVysledkuZeZaznamu(z) {
   const avg = z.kategorie_avg || {};
   const radky = Object.keys(avg).map(function (k) {
-    const nazevKat = STD_NAZVY[k] || k;
+    const nazevKat = nazevKategorieZeZaznamu(z, k);
     const sec = avg[k];
     return '<tr><td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;">' + nazevKat + '</td>' +
       '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + sec.toFixed(1) + ' s</td></tr>';
   }).join('');
+  const radkyCyklu = (z.cykly || []).map(function (c, idx) {
+    const m = Math.floor(c.celkem / 60), s = Math.floor(c.celkem % 60);
+    return '<tr><td style="padding:6px;border-bottom:1px solid #f0f0f0;">Cyklus ' + (idx + 1) + '</td>' +
+      '<td style="padding:6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + m + ':' + String(s).padStart(2, '0') + '</td></tr>';
+  }).join('');
+  const maNaklady = z.hodinovaSazba != null && z.pocetPracovniku != null;
   document.getElementById('detail-vysledku-obsah').innerHTML =
-    '<div style="font-size:12px;color:var(--light);margin-bottom:4px;">' + (z.datum || '') + ' · ' + (z.cyklu || 0) + ' cyklů</div>' +
+    '<div style="font-size:12px;color:var(--light);margin-bottom:4px;">' + (z.datum || '') + ' · ' + (z.cyklu || 0) + ' cyklů' + (z.smena ? ' · směna ' + z.smena + ' h' : '') + '</div>' +
     '<div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:14px;">' + z.nazev + '</div>' +
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">' +
       '<div><div style="font-size:11px;color:var(--light);text-transform:uppercase;letter-spacing:1px;">Mimo přímou práci</div><div style="font-size:19px;font-weight:800;">' + z.plyPct + ' %</div></div>' +
@@ -890,6 +905,12 @@ function otevritModalDetailVysledkuZeZaznamu(z) {
       '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Kategorie (průměr na cyklus)</th>' +
       '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Čas</th>' +
       '</tr></thead><tbody>' + radky + '</tbody></table></div>' : '') +
+    (radkyCyklu ? '<div style="overflow-x:auto;margin-top:14px;"><table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Jednotlivé cykly</th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Celkem</th>' +
+      '</tr></thead><tbody>' + radkyCyklu + '</tbody></table></div>' : '') +
+    (maNaklady ? '<div style="margin-top:14px;font-size:12.5px;color:var(--light);">Zadaný náklad práce: ' + z.hodinovaSazba + ' Kč/h × ' + z.pocetPracovniku + (z.pocetPracovniku === 1 ? ' pracovník' : ' pracovníků') + (z.pocetKusu ? ' · Objem zakázky: ' + z.pocetKusu + ' ks' : '') + '</div>' :
+      '<p style="font-size:12px;color:var(--light);margin-top:14px;">Tenhle výpočet byl uložený ještě předtím, než appka uměla zapamatovat i zadané náklady a vlastní kroky - k dispozici je jen rozpad kategorií výše.</p>') +
     (z.toolRunId ? '<button class="btn-modal-ok" style="width:100%;margin-top:16px;" onclick="zavritModalDetailVysledku();otevritModalAkcniPlanZId(\'' + z.toolRunId + '\')">+ Přidat do akčního plánu</button>' : '');
   document.getElementById('modal-detail-vysledku').classList.add('visible');
 }
@@ -1256,7 +1277,7 @@ function ukoncit() {
   const minC = Math.min(...cykly.map(c=>c.celkem));
   const maxC = Math.max(...cykly.map(c=>c.celkem));
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = Math.floor(avgC) > 0 ? (Math.floor(plyC)/Math.floor(avgC)*100).toFixed(0) : 0;
+  const plyPct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(plyC*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
 
   document.getElementById('s-nazev').textContent = nazev;
   document.getElementById('s-meta').textContent = n + ' cyklů · ' + new Date().toLocaleDateString('cs-CZ') + ' · směna ' + delkaSmeny + 'h';
@@ -1267,8 +1288,8 @@ function ukoncit() {
   cykly.forEach((c,i) => {
     h += `<tr><td>${i+1}</td>` + vsechnyKat.map(k=>`<td>${fmtC(c.cas[k]||0)}</td>`).join('') + `<td>${fmtC(c.celkem)}</td></tr>`;
   });
-  h += '<tr class="avg"><td>Průměr</td>' + vsechnyKat.map(k=>`<td>${fmtC(avg[k])}</td>`).join('') + `<td>${fmtC(avgC)}</td></tr>`;
-  h += '<tr class="ply"><td>Plý.</td>' + vsechnyKat.map(k=>`<td>${plytvaniIds().includes(k)?fmtC(avg[k]):'-'}</td>`).join('') + `<td>${fmtC(plyC)} (${plyPct}%)</td></tr>`;
+  h += '<tr class="avg"><td>Průměr</td>' + vsechnyKat.map(k=>`<td>${fmtCJemne(avg[k])}</td>`).join('') + `<td>${fmtC(avgC)}</td></tr>`;
+  h += '<tr class="ply"><td>Plý.</td>' + vsechnyKat.map(k=>`<td>${plytvaniIds().includes(k)?fmtCJemne(avg[k]):'-'}</td>`).join('') + `<td>${fmtCJemne(plyC)} (${plyPct}%)</td></tr>`;
   tbl.innerHTML = h;
 
   // Porovnani cyklu
@@ -1289,12 +1310,12 @@ function ukoncit() {
   // Graf
   const graf = document.getElementById('graf');
   graf.innerHTML = vsechnyKat.map(k => {
-    const pct = Math.floor(avgC) > 0 ? Math.round(Math.floor(avg[k])/Math.floor(avgC)*100) : 0;
+    const pct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(avg[k]*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
     const barva = STD_BARVY[k] || (vlastniOp.find(o=>o.id===k)||{}).barva || '#2a7a4f';
     return `<div class="g-row">
       <div class="g-lbl" style="color:${barva};font-size:11px;">${getNazev(k)}</div>
       <div class="g-bg"><div class="g-bar" style="width:${pct}%;background:${barva}"></div></div>
-      <div class="g-val">${fmtC(avg[k])} (${pct}%)</div>
+      <div class="g-val">${fmtCJemne(avg[k])} (${pct}%)</div>
     </div>`;
   }).join('');
 
@@ -1349,7 +1370,7 @@ function ukoncit() {
   plyEl.innerHTML = `
     <div class="insight-box" style="background:${bgBox};border:1px solid ${barvaBox}33;margin-bottom:10px;">
       <div class="insight-title" style="color:${barvaBox}">Čas mimo přímou práci tvoří ${plyPct}%</div>
-      <div class="insight-text">Průměrný cyklus <strong>${fmtC(avgC)}</strong>, z toho ${fmtC(plyC)} mimo přímou práci.<br>
+      <div class="insight-text">Průměrný cyklus <strong>${fmtC(avgC)}</strong>, z toho ${fmtCJemne(plyC)} mimo přímou práci.<br>
       Hodnota času mimo přímou práci ročně (${delkaSmeny}h/den × 250 dní × ${pocetPracovniku} ${pocetPracovniku===1?'pracovník':'pracovníků'}): přibližně <strong>${plyKcRokFmt} Kč</strong>.<br>
       <span style="font-size:11px;color:var(--light);">Výpočet vychází z vámi zadané sazby ${hodinovaSazba} Kč/h. Ne vše lze odstranit — cílem je určit, která část je skutečně zbytečná, ne celé číslo brát jako "ušetřené peníze".</span></div>
       <div style="margin-top:8px;padding-top:8px;border-top:1px solid ${barvaBox}22;font-size:11px;color:var(--mid);line-height:1.65;">Vše mimo kategorii <strong>Práce</strong> a vámi zadanou operaci appka počítá jako čas mimo přímou práci. V praxi nelze hodnoty dostat na nulu — přesun, příprava nebo kontrola budou vždy zčásti nutné. Cílem je razantní snížení té části, která zbytečná skutečně je, ne dokonalost.</div>
@@ -1388,7 +1409,7 @@ function ukoncit() {
   let maNeco = false;
   Object.keys(PRAHY).forEach(k => {
     if (!avg[k]) return;
-    const pct = Math.floor(avgC) > 0 ? Math.round(Math.floor(avg[k])/Math.floor(avgC)*100) : 0;
+    const pct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(avg[k]*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
     if (pct >= PRAHY[k]) {
       maNeco = true;
       insHtml += `<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;">
@@ -1436,7 +1457,7 @@ function ulozitDoHistorie() {
   vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = Math.floor(avgC) > 0 ? (Math.floor(plyC)/Math.floor(avgC)*100).toFixed(0) : 0;
+  const plyPct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(plyC*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
   const plyKcRok = avgC > 0 ? Math.round((plyC/avgC) * hodinovaSazba * delkaSmeny * 250 * pocetPracovniku) : 0;
 
   const zaznam = {
@@ -1449,7 +1470,14 @@ function ulozitDoHistorie() {
     // jen souhrnné číslo (avgC/plyPct), appka tak neuměla ukázat, z čeho se
     // to skládá, jen výsledné procento.
     kategorie_avg: avg,
-    cykly: cykly
+    cykly: cykly,
+    // Vlastní kroky procesu (názvy, barvy, typ) a zadané náklady/objem
+    // zakázky - bez tohohle šly kategorie u znovuotevřeného výpočtu vidět
+    // jen jako neseřazené id, náklady a analýza zakázky nešly obnovit vůbec.
+    vlastniOp: vlastniOp,
+    hodinovaSazba: hodinovaSazba,
+    pocetPracovniku: pocetPracovniku,
+    pocetKusu: pocetKusu
   };
 
   let hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
@@ -1875,6 +1903,33 @@ function porovnatVybrane() {
   const cil = document.getElementById('pred-po-vysledek');
   cil.innerHTML = '';
   cil.appendChild(box);
+
+  // Porovnání dřív ukazovalo jen souhrnné procento, délku cyklu a kapacitu -
+  // ne rozdíly u jednotlivých kategorií a vlastních kroků procesu.
+  const avgPred = pred.kategorie_avg || {}, avgPo = po.kategorie_avg || {};
+  const klice = Array.from(new Set([...Object.keys(avgPred), ...Object.keys(avgPo)]));
+  if (klice.length) {
+    const radkyKat = klice.map(function (k) {
+      const va = avgPred[k], vb = avgPo[k];
+      if (va == null && vb == null) return '';
+      const rozdil = (vb || 0) - (va || 0);
+      const barva = rozdil === 0 ? 'var(--mid)' : (rozdil < 0 ? '#2a7a4f' : '#b91c1c');
+      const nazevKat = nazevKategorieZeZaznamu(vb != null ? po : pred, k);
+      return '<tr><td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;">' + nazevKat + '</td>' +
+        '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + (va != null ? va.toFixed(1) : '—') + ' s</td>' +
+        '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + (vb != null ? vb.toFixed(1) : '—') + ' s</td>' +
+        '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-weight:700;color:' + barva + ';">' + (va != null && vb != null ? (rozdil > 0 ? '+' : '') + rozdil.toFixed(1) + ' s' : '') + '</td></tr>';
+    }).join('');
+    const tabKat = document.createElement('div');
+    tabKat.style.cssText = 'overflow-x:auto;margin-top:14px;';
+    tabKat.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>' +
+      '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Kategorie (průměr/cyklus)</th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Před</th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Po</th>' +
+      '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Rozdíl</th>' +
+      '</tr></thead><tbody>' + radkyKat + '</tbody></table>';
+    cil.appendChild(tabKat);
+  }
   box.scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
@@ -1887,7 +1942,7 @@ function sestavit() {
   vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = Math.floor(avgC) > 0 ? (Math.floor(plyC)/Math.floor(avgC)*100).toFixed(0) : 0;
+  const plyPct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(plyC*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
 
   let body = 'CASOVA STUDIE PRO: ' + nazev.toUpperCase() + '\n';
   body += 'Datum: ' + new Date().toLocaleDateString('cs-CZ') + '  |  Cyklu: ' + n + '  |  Smena: ' + delkaSmeny + 'h\n\n';
@@ -1895,8 +1950,8 @@ function sestavit() {
   cykly.forEach((c,i) => {
     body += (i+1) + '\t' + vsechnyKat.map(k=>fmtC(c.cas[k]||0)).join('\t') + '\t' + fmtC(c.celkem) + '\n';
   });
-  body += 'PRUMER\t' + vsechnyKat.map(k=>fmtC(avg[k])).join('\t') + '\t' + fmtC(avgC) + '\n\n';
-  body += 'PLYTVANI: ' + fmtC(plyC) + ' = ' + plyPct + '% z celkoveho casu\n';
+  body += 'PRUMER\t' + vsechnyKat.map(k=>fmtCJemne(avg[k])).join('\t') + '\t' + fmtC(avgC) + '\n\n';
+  body += 'PLYTVANI: ' + fmtCJemne(plyC) + ' = ' + plyPct + '% z celkoveho casu\n';
   body += '---\nTokva | tokva.cz\n';
   return body;
 }
@@ -1907,7 +1962,7 @@ function stahnoutCSV() {
   vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = Math.floor(avgC) > 0 ? (Math.floor(plyC)/Math.floor(avgC)*100).toFixed(0) : 0;
+  const plyPct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(plyC*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
 
   let csv = 'Casova studie Pro;' + nazev + '\n';
   csv += 'Datum;' + new Date().toLocaleDateString('cs-CZ') + '\n';
@@ -1917,8 +1972,8 @@ function stahnoutCSV() {
   cykly.forEach((c,i) => {
     csv += (i+1) + ';' + vsechnyKat.map(k=>fmtC(c.cas[k]||0)).join(';') + ';' + fmtC(c.celkem) + '\n';
   });
-  csv += 'Prumer;' + vsechnyKat.map(k=>fmtC(avg[k])).join(';') + ';' + fmtC(avgC) + '\n\n';
-  csv += 'Plytvani;;' + fmtC(plyC) + ';;' + plyPct + '%\n';
+  csv += 'Prumer;' + vsechnyKat.map(k=>fmtCJemne(avg[k])).join(';') + ';' + fmtC(avgC) + '\n\n';
+  csv += 'Plytvani;;' + fmtCJemne(plyC) + ';;' + plyPct + '%\n';
 
   const blob = new Blob(['﻿' + csv], {type: 'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
@@ -1937,7 +1992,7 @@ function tiskReport() {
   const minC = Math.min(...cykly.map(c=>c.celkem));
   const maxC = Math.max(...cykly.map(c=>c.celkem));
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = Math.floor(avgC) > 0 ? (Math.floor(plyC)/Math.floor(avgC)*100).toFixed(0) : 0;
+  const plyPct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(plyC*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
   const SMENA_SEK = delkaSmeny * 3600;
   const kusyZaSmenu = avgC > 0 ? Math.floor(SMENA_SEK / avgC) : 0;
   const idealniCyklus = avgC - plyC;
@@ -1952,19 +2007,19 @@ function tiskReport() {
   cykly.forEach((c,i) => {
     tblRows += `<tr>${vsechnyKat.map(k=>`<td>${fmtC(c.cas[k]||0)}</td>`).join('')}<td><strong>${fmtC(c.celkem)}</strong></td></tr>`;
   });
-  const avgRow = vsechnyKat.map(k=>`<td>${fmtC(avg[k])}</td>`).join('') + `<td><strong>${fmtC(avgC)}</strong></td>`;
-  const plyRow = vsechnyKat.map(k=>`<td>${plytvaniIds().includes(k)?fmtC(avg[k]):'-'}</td>`).join('') + `<td><strong>${fmtC(plyC)} (${plyPct}%)</strong></td>`;
+  const avgRow = vsechnyKat.map(k=>`<td>${fmtCJemne(avg[k])}</td>`).join('') + `<td><strong>${fmtC(avgC)}</strong></td>`;
+  const plyRow = vsechnyKat.map(k=>`<td>${plytvaniIds().includes(k)?fmtCJemne(avg[k]):'-'}</td>`).join('') + `<td><strong>${fmtCJemne(plyC)} (${plyPct}%)</strong></td>`;
 
   // Graf rozložení
   let grafRows = '';
   vsechnyKat.forEach(k => {
-    const pct = Math.floor(avgC) > 0 ? Math.round(Math.floor(avg[k])/Math.floor(avgC)*100) : 0;
+    const pct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(avg[k]*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
     const barva = STD_BARVY[k] || '#2a7a4f';
     if (avg[k] > 0) {
       grafRows += `<tr>
         <td style="font-size:11px;font-weight:600;color:${barva};width:90px;">${getNazev(k)}</td>
         <td><div style="background:#eee;border-radius:3px;height:12px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:${barva};border-radius:3px;"></div></div></td>
-        <td style="font-size:11px;color:#545454;text-align:right;white-space:nowrap;padding-left:8px;">${fmtC(avg[k])} (${pct}%)</td>
+        <td style="font-size:11px;color:#545454;text-align:right;white-space:nowrap;padding-left:8px;">${fmtCJemne(avg[k])} (${pct}%)</td>
       </tr>`;
     }
   });
@@ -1982,7 +2037,7 @@ function tiskReport() {
   let doporuceni = '';
   Object.keys(PRAHY).forEach(k => {
     if (!avg[k]) return;
-    const pct = Math.floor(avgC) > 0 ? Math.round(Math.floor(avg[k])/Math.floor(avgC)*100) : 0;
+    const pct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(avg[k]*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
     if (pct >= PRAHY[k]) {
       const barva = STD_BARVY[k] || '#545454';
       doporuceni += `<tr>
@@ -2087,7 +2142,7 @@ ${pocetKusu > 0 ? `
 
 <div class="alert-box" style="background:${plyPct>40?'#fee2e2':plyPct>20?'#fff3e0':'#e8f5ee'};border:1px solid ${plyPct>40?'#c0392b33':plyPct>20?'#b4530933':'#2a7a4f33'};margin-top:16px;">
   <strong style="color:${plyPct>40?'#c0392b':plyPct>20?'#b45309':'#2a7a4f'}">Čas mimo přímou práci tvoří ${plyPct}%</strong><br>
-  <span style="font-size:12px;color:#545454;">Průměrný cyklus ${fmtC(avgC)}, z toho ${fmtC(plyC)} mimo přímou práci. Hodnota času ročně (${delkaSmeny}h/den × 250 dní × ${pocetPracovniku} ${pocetPracovniku===1?'pracovník':'pracovníků'} × ${hodinovaSazba} Kč/h): přibližně <strong>${plyKcRokFmt} Kč</strong>.</span>
+  <span style="font-size:12px;color:#545454;">Průměrný cyklus ${fmtC(avgC)}, z toho ${fmtCJemne(plyC)} mimo přímou práci. Hodnota času ročně (${delkaSmeny}h/den × 250 dní × ${pocetPracovniku} ${pocetPracovniku===1?'pracovník':'pracovníků'} × ${hodinovaSazba} Kč/h): přibližně <strong>${plyKcRokFmt} Kč</strong>.</span>
   <div class="note">Vše mimo kategorii Práce a zadanou operaci appka počítá jako čas mimo přímou práci. V praxi nelze hodnoty dostat na nulu — přesun, příprava nebo kontrola budou vždy zčásti nutné. Ne vše lze odstranit — cílem je určit, která část je skutečně zbytečná, ne dokonalost.</div>
 </div>
 
@@ -2181,6 +2236,10 @@ function zacitZnovu() {
 function getNazev(k) { return STD_NAZVY[k] || (vlastniOp.find(o=>o.id===k)||{nazev:k}).nazev; }
 function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
 function fmtC(s) { return pad(Math.floor(s/60)) + ':' + pad(Math.floor(s%60)); }
+// U krátkých hodnot appka zobrazí desetinu sekundy (např. "3.4 s") místo
+// MM:SS, ať rychlé operace nezmizí jako "00:00" - viz procenta výš, počítaná
+// se stejnou přesností (desetiny sekundy, ne celé sekundy).
+function fmtCJemne(s) { return s < 10 ? s.toFixed(1) + ' s' : fmtC(s); }
 
 renderNavrh();
 nacistPrihlaseniStav();

@@ -773,6 +773,9 @@ function initMereni() {
 document.getElementById('inp-nazev').addEventListener('input', function() {
   nazev = this.value.trim() || 'Proces';
   document.getElementById('m-nazev').textContent = nazev;
+  // I samotné vyplnění názvu procesu je práce, co jde ztratit - dřív appka
+  // varovala před odchodem, až když se klikla první kategorie.
+  hasUnsavedMereni = true;
 });
 
 initMereni();
@@ -903,12 +906,15 @@ function ukoncit() {
   const maxC = Math.max(...cykly.map(c=>c.celkem));
   const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
   // Procenta počítáme ze stejných zaokrouhlených hodnot, jaké appka zobrazuje
-  // (fmtC ořezává na celé sekundy) - jinak by šlo zobrazit třeba "00:00" u
-  // kategorie a přitom nesouhlasící procento, ze kterého by se výsledek
-  // nedal ručně přepočítat.
-  const avgCFloor = Math.floor(avgC);
+  // - dřív appka zaokrouhlovala na celé sekundy, takže u krátkých operací
+  // (v řádu jednotek sekund) mohly VŠECHNY kategorie vyjít jako "00:00" a 0 %,
+  // i když dohromady tvořily desítky procent. Zaokrouhlení na desetiny
+  // sekundy zachová konzistenci (čas i procento u sebe pořád sedí), ale
+  // krátké hodnoty už nezmizí.
+  const avgCZaokr = Math.round(avgC*10)/10;
   function pctZObrazenych(sekundy) {
-    return avgCFloor > 0 ? Math.round(Math.floor(sekundy)/avgCFloor*100) : 0;
+    const z = Math.round(sekundy*10)/10;
+    return avgCZaokr > 0 ? Math.round(z/avgCZaokr*100) : 0;
   }
   const plyPct = pctZObrazenych(plyC);
 
@@ -919,10 +925,10 @@ function ukoncit() {
   const tbl = document.getElementById('tbl');
   let h = '<tr><th>C.</th>' + KAT.map(k=>`<th>${KAT_NAZVY[k]}</th>`).join('') + '<th>Celk.</th></tr>';
   cykly.forEach((c,i) => {
-    h += `<tr><td>${i+1}</td>` + KAT.map(k=>`<td>${fmtC(c.cas[k]||0)}</td>`).join('') + `<td>${fmtC(c.celkem)}</td></tr>`;
+    h += `<tr><td>${i+1}</td>` + KAT.map(k=>`<td>${fmtCJemne(c.cas[k]||0)}</td>`).join('') + `<td>${fmtC(c.celkem)}</td></tr>`;
   });
-  h += '<tr class="avg"><td>Průměr</td>' + KAT.map(k=>`<td>${fmtC(avg[k])}</td>`).join('') + `<td>${fmtC(avgC)}</td></tr>`;
-  const plyVals = '<tr class="ply"><td>Plý.</td>' + KAT.map(k=>`<td>${PLYTVANI.includes(k)?fmtC(avg[k]):'-'}</td>`).join('') + `<td>${fmtC(plyC)} (${plyPct}%)</td></tr>`;
+  h += '<tr class="avg"><td>Průměr</td>' + KAT.map(k=>`<td>${fmtCJemne(avg[k])}</td>`).join('') + `<td>${fmtC(avgC)}</td></tr>`;
+  const plyVals = '<tr class="ply"><td>Plý.</td>' + KAT.map(k=>`<td>${PLYTVANI.includes(k)?fmtCJemne(avg[k]):'-'}</td>`).join('') + `<td>${fmtCJemne(plyC)} (${plyPct}%)</td></tr>`;
   tbl.innerHTML = h + plyVals;
 
   // Graf
@@ -932,7 +938,7 @@ function ukoncit() {
     return `<div class="g-row">
       <div class="g-lbl" style="color:${KAT_BARVY[k]};font-size:11px;">${KAT_NAZVY[k]}</div>
       <div class="g-bg"><div class="g-bar" style="width:${pct}%;background:${KAT_BARVY[k]}"></div></div>
-      <div class="g-val">${fmtC(avg[k])} (${pct}%)</div>
+      <div class="g-val">${fmtCJemne(avg[k])} (${pct}%)</div>
     </div>`;
   }).join('');
 
@@ -975,7 +981,7 @@ function ukoncit() {
     <div class="insight-box" style="background:${bgBox};border:1px solid ${barvaBox}33;margin-bottom:10px;">
       <div class="insight-title" style="color:${barvaBox}">Čas mimo přímou práci tvoří ${plyPct}%</div>
       <div class="insight-text">
-        Průměrný cyklus trvá <strong>${fmtC(avgC)}</strong>. Z toho ${fmtC(plyC)} (${plyPct}%) je plýtvání.<br><br>
+        Průměrný cyklus trvá <strong>${fmtC(avgC)}</strong>. Z toho ${fmtCJemne(plyC)} (${plyPct}%) je plýtvání.<br><br>
         Při 7,5h směně stihnete <strong>${kusyZaSmenu} kusů</strong>. Bez plýtvání by to bylo <strong>${idealniKusy} kusů</strong> — o ${rozdilKusu} kusů více za směnu.<br><br>
         Ročně (250 dní × ${kusyZaSmenu} ks) vyrobíte <strong>${kusyRocne.toLocaleString('cs-CZ')} kusů</strong>. Hodnota času mimo přímou práci: přibližně <strong>${plyKcRok.toLocaleString('cs-CZ')} Kč/rok</strong>.<br>
         <span style="font-size:11px;color:var(--light);">Orientační výpočet: 7,5h směna · 250 dní · 250 Kč/h. Ne vše lze odstranit — cílem je určit, která část je skutečně zbytečná.</span>
@@ -1053,6 +1059,9 @@ function zacitZnovu() {
 
 function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
 function fmtC(s) { return pad(Math.floor(s/60)) + ':' + pad(Math.floor(s%60)); }
+// U krátkých hodnot appka zobrazí desetinu sekundy (např. "3.4 s") místo
+// MM:SS, ať rychlé operace nezmizí jako "00:00" - viz pctZObrazenych výš.
+function fmtCJemne(s) { return s < 10 ? s.toFixed(1) + ' s' : fmtC(s); }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

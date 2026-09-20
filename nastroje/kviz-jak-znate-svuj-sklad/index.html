@@ -157,6 +157,7 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:13px 24
 .skore-hero::after{content:"";position:absolute;bottom:-30px;right:-30px;width:160px;height:160px;border-radius:50%;border:30px solid rgba(255,255,255,.1);}
 .skore-cislo{font-family:"Poppins",sans-serif;font-size:60px;font-weight:900;color:white;line-height:1;margin-bottom:8px;}
 .skore-max{font-size:20px;opacity:.6;}
+.skore-max-caption{font-size:12px;color:white;opacity:.7;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
 .skore-label{font-family:"Poppins",sans-serif;font-size:18px;font-weight:700;color:white;margin-bottom:8px;}
 .skore-popis{font-size:14px;color:rgba(255,255,255,.75);max-width:440px;margin:0 auto;line-height:1.75;}
 
@@ -719,6 +720,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 
     <div class="skore-hero" id="skore-hero">
       <div class="skore-cislo" id="skore-cislo">0<span class="skore-max">/20</span></div>
+      <div class="skore-max-caption">problémových bodů - čím míň, tím líp</div>
       <div class="skore-label" id="skore-label"></div>
       <div class="skore-popis" id="skore-popis"></div>
     </div>
@@ -1109,15 +1111,26 @@ async function ulozitVysledekDoSupabase(skore, oblasti) {
   if (!jePro || !clenstvi || vysledekUlozen) return;
   try {
     const nejvetsiMezery = oblasti.slice(0, 3).map(o => OTAZKY_NAZVY[o.i - 1]);
+    // Přesné znění vybraných odpovědí (ne jen bodovou hodnotu 0/1/2) - dřív šlo
+    // vidět jen bezprostředně po dokončení, uložený výsledek pak ukazoval jen
+    // odvozený stav "Zvládáte/Částečně/Mezera", ne co přesně bylo zaškrtnuté.
+    const odpovediText = {};
+    for (let i = 1; i <= 10; i++) {
+      const b = odpovedi[i];
+      if (b == null) continue;
+      const moznostEl = document.querySelectorAll('#q' + i + ' .moznost')[b];
+      const textEl = moznostEl ? moznostEl.querySelector('.moznost-text') : null;
+      if (textEl) odpovediText[i] = textEl.textContent.trim();
+    }
     const { data, error } = await supabaseClient.from('tool_runs').insert({
       organization_id: clenstvi.organization_id,
       nastroj: 'kviz-sklad',
       nazev: 'Jak dobře znáte svůj sklad?',
-      shrnuti: skore + '/20 bodů' + (nejvetsiMezery.length ? ', největší mezery: ' + nejvetsiMezery.join(', ') : ''),
+      shrnuti: skore + '/20 problémových bodů' + (nejvetsiMezery.length ? ', největší mezery: ' + nejvetsiMezery.join(', ') : ''),
       hlavni_hodnota_cislo: skore,
-      hlavni_hodnota_jednotka: 'z 20 bodů',
+      hlavni_hodnota_jednotka: 'z 20 problémových bodů',
       hlavni_hodnota_typ: 'skore',
-      data: { odpovedi: Object.assign({}, odpovedi), nejvetsi_mezery: nejvetsiMezery }
+      data: { odpovedi: Object.assign({}, odpovedi), odpovedi_text: odpovediText, nejvetsi_mezery: nejvetsiMezery }
     }).select().single();
     if (error) throw error;
     vysledekUlozen = true;
@@ -1156,7 +1169,7 @@ function otevritModalDetailVysledku(i) {
   const odp = (r.data || {}).odpovedi || {};
   const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
   const popisky = ['Máte přehled', 'Částečný přehled', 'Chybí přehled'];
-  document.getElementById('detail-vysledku-datum').textContent = datum + ' · ' + r.hlavni_hodnota_cislo + ' z 20 bodů';
+  document.getElementById('detail-vysledku-datum').textContent = datum + ' · ' + r.hlavni_hodnota_cislo + ' z 20 problémových bodů';
   document.getElementById('detail-vysledku-seznam').innerHTML = OTAZKY_NAZVY.map((nazev, idx) => {
     const q = String(idx + 1);
     const b = odp[q] != null ? odp[q] : 0;
@@ -1250,12 +1263,12 @@ function otevritModalPorovnani() {
 
   let shrnutiText;
   if (deltaBody < 0) {
-    shrnutiText = 'Skóre kleslo z ' + skoreA + ' na ' + skoreB + ' z 20 bodů - zlepšujete se! ' + zlepseno + ' ' + (zlepseno === 1 ? 'oblast se zlepšila' : 'oblastí se zlepšilo') + (zhorseno ? ', ' + zhorseno + ' se zhoršilo' : '') + '.';
+    shrnutiText = 'Skóre kleslo z ' + skoreA + ' na ' + skoreB + ' z 20 problémových bodů - zlepšujete se! ' + zlepseno + ' ' + (zlepseno === 1 ? 'oblast se zlepšila' : 'oblastí se zlepšilo') + (zhorseno ? ', ' + zhorseno + ' se zhoršilo' : '') + '.';
     if (nejlepsiZlepseni) shrnutiText += ' Nejvíc znát to je u: „' + nejlepsiZlepseni.text + '".';
   } else if (deltaBody > 0) {
-    shrnutiText = 'Skóre vzrostlo z ' + skoreA + ' na ' + skoreB + ' z 20 bodů - ' + zhorseno + ' ' + (zhorseno === 1 ? 'oblast se zhoršila' : 'oblastí se zhoršilo') + (zlepseno ? ', ' + zlepseno + ' se naopak zlepšilo' : '') + '. Nic se neděje, teď aspoň víte, kam se podívat nejdřív.';
+    shrnutiText = 'Skóre vzrostlo z ' + skoreA + ' na ' + skoreB + ' z 20 problémových bodů - ' + zhorseno + ' ' + (zhorseno === 1 ? 'oblast se zhoršila' : 'oblastí se zhoršilo') + (zlepseno ? ', ' + zlepseno + ' se naopak zlepšilo' : '') + '. Nic se neděje, teď aspoň víte, kam se podívat nejdřív.';
   } else {
-    shrnutiText = 'Celkové skóre zůstalo stejné (' + skoreB + ' z 20 bodů)' + (zlepseno || zhorseno ? ', i když se v jednotlivých oblastech něco přesunulo - ' + zlepseno + ' zlepšení, ' + zhorseno + ' zhoršení.' : '.');
+    shrnutiText = 'Celkové skóre zůstalo stejné (' + skoreB + ' z 20 problémových bodů)' + (zlepseno || zhorseno ? ', i když se v jednotlivých oblastech něco přesunulo - ' + zlepseno + ' zlepšení, ' + zhorseno + ' zhoršení.' : '.');
   }
 
   document.getElementById('porovnani-obsah').innerHTML =
@@ -1339,7 +1352,12 @@ async function renderHistorie() {
       .limit(10);
     if (error) throw error;
     if (!data || !data.length) {
-      obsah.innerHTML = '<div style="padding:14px 18px;font-size:13px;color:var(--mid);">Zatím žádná historie, tenhle výsledek je první uložený.</div>';
+      // Historie appka ukazuje i před vyplněním nového kvízu (viz komentář výš),
+      // takže věta "tenhle výsledek je první uložený" dřív zněla i ve chvíli,
+      // kdy ještě žádný aktuální výsledek (posledniToolRunId) vůbec neexistoval.
+      obsah.innerHTML = '<div style="padding:14px 18px;font-size:13px;color:var(--mid);">' +
+        (posledniToolRunId ? 'Zatím žádná historie, tenhle výsledek je první uložený.' : 'Zatím tu nemáte žádný uložený výsledek.') +
+        '</div>';
       return;
     }
     posledniHistorie = data;
@@ -1351,7 +1369,7 @@ async function renderHistorie() {
       return '<div class="vysledek-row" onclick="otevritModalDetailVysledku(' + i + ')">' +
         '<input type="checkbox" class="vysledek-checkbox" onclick="event.stopPropagation()" onchange="zaskrtnoutKPorovnani(' + i + ', this.checked)"' + (zaskrtnuto ? ' checked' : '') + ' style="flex-shrink:0;width:16px;height:16px;">' +
         '<div class="detail-arr" style="background:' + barva + '"></div>' +
-        '<div class="detail-text"><strong>' + datum + '</strong><span>' + s + ' z 20 bodů</span></div>' +
+        '<div class="detail-text"><strong>' + datum + '</strong><span>' + s + ' z 20 problémových bodů</span></div>' +
         '</div>';
     }).join('');
     aktualizovatPorovnatBar();
@@ -1592,7 +1610,18 @@ function pripravitEmailKviz() {
 
 const odpovedi = {};
 let toolStartedOdeslano = false;
+// Kvíz zdarma se schválně nedá uložit ani dokončit později - ale odchod
+// (třeba na přihlášení) uprostřed rozjetého kvízu appku bez varování
+// vrátil na první otázku. Varování zmizí, jakmile appka zobrazí výsledek.
+let hasRozpracovanyAudit = false;
+window.addEventListener('beforeunload', function (e) {
+  if (hasRozpracovanyAudit) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 function oznamitZahajeni() {
+  hasRozpracovanyAudit = true;
   if (toolStartedOdeslano) return;
   toolStartedOdeslano = true;
   trackTokvaEvent('tool_started', { tool_name: 'kviz_sklad', tool_version: 'free' });
@@ -1636,6 +1665,7 @@ function updateProgress() {
 
 function zobrazVysledky() {
   oznamitDokonceni();
+  hasRozpracovanyAudit = false;
   document.getElementById('q10').classList.remove('active');
 
   const skore = Object.values(odpovedi).reduce((a,b) => a + b, 0);

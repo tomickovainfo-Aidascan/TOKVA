@@ -182,6 +182,8 @@ body.prezentace .ukoncit-prezentaci{position:fixed;top:16px;right:16px;z-index:5
 .detail-otazka-odp.nevim{background:#eee;color:#777;}
 .detail-raw{font-size:13px;color:var(--dark);line-height:1.7;white-space:pre-wrap;}
 .detail-fallback{font-size:13px;color:var(--mid);line-height:1.7;}
+.detail-odkaz{display:inline-block;margin-top:16px;font-size:12.5px;color:var(--gold-dark);font-weight:700;text-decoration:none;}
+.detail-odkaz:hover{text-decoration:underline;}
 .field label{font-size:12px;font-weight:600;color:var(--mid);display:block;margin-bottom:5px;}
 .field input,.field select,.field textarea{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--paper);transition:border .2s;}
 .field textarea{resize:vertical;min-height:52px;}
@@ -537,6 +539,11 @@ const NASTROJ_URL = {
   'mini-audit-vyroby': 'https://tokva.cz/nastroje/mini-audit-vyroby/',
   'spaghetti-pro': 'https://tokva.cz/nastroje/spaghetti-pro/'
 };
+// Appky, co umí přímo otevřít konkrétní uložený výsledek podle ?vysledek=<id>
+// v adrese (viz otevritVysledekZAdresy() v appce samotné) - bez tohohle appka
+// karta v projektu jen ukázala souhrn (RENDER_DETAIL, nebo obecný fallback),
+// ale nešlo se z ní dostat k celému zdrojovému výsledku v appce.
+const NASTROJ_PODPORUJE_ODKAZ = ['5s', '5x-proc', 'casova-studie', 'kalkulacka-m2', 'kviz-sklad', 'kviz-komunikacniho-chaosu', 'meric-plytvani-pro', 'mini-audit-skladu', 'mini-audit-vyroby', 'spaghetti-pro'];
 
 const NAZVY_STAVU_AKCE = { novy: 'Nový', probiha: 'Probíhá', hotovo: 'Hotovo', overit_vysledek: 'Ověřit výsledek', uzavreno: 'Uzavřeno' };
 const NAZVY_STAVU_PROJEKTU = { aktivni: '🟡 Probíhá', dokonceny: '🟢 Dokončeno', archivovany: '⚪ Archivováno' };
@@ -849,10 +856,15 @@ const RENDER_DETAIL = {
   },
   'kviz-sklad': function (d) {
     const odp = d.odpovedi || {};
+    const odpText = d.odpovedi_text || {};
     return OTAZKY_KVIZ_SKLAD.map((text, i) => {
-      const h = odp[String(i + 1)];
+      const q = String(i + 1);
+      const h = odp[q];
       const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
-      return radekOtazky(text, LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '—', trida);
+      // Přesné znění odpovědi, pokud appka uložila (viz odpovedi_text) - starší
+      // výsledky bez tohohle ukážou aspoň odvozený stav jako dřív.
+      const znaceni = odpText[q] || (LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '—');
+      return radekOtazky(text, znaceni, trida);
     }).join('');
   },
   '5s': function (d) {
@@ -899,6 +911,30 @@ const RENDER_DETAIL = {
         '</div>';
     }
     return html;
+  },
+  'meric-plytvani-pro': function (d) {
+    if (!d.kategorie_avg) return '';
+    const STD_NAZVY_MERIC = { prace: 'Práce', presun: 'Přesun', hledani: 'Hledání', cekani: 'Čekání', papiry: 'Administrativa', priprava: 'Příprava', kontrola: 'Kontrola' };
+    const nazevKat = function (k) {
+      if (STD_NAZVY_MERIC[k]) return STD_NAZVY_MERIC[k];
+      const vlastni = (d.vlastniOp || []).find(function (o) { return o.id === k; });
+      return vlastni && vlastni.nazev ? vlastni.nazev : k;
+    };
+    let html = '<div class="detail-fallback"><strong>' + escapovat(String(d.plyPct)) + ' % mimo přímou práci</strong><br>' +
+      'Cyklů: ' + escapovat(String(d.cyklu)) + ' · Průměrný cyklus: ' + (d.avgC != null ? d.avgC.toFixed(1) : '?') + ' s' +
+      (d.plyKcRok != null ? ' · Potenciál: ' + Math.round(d.plyKcRok).toLocaleString('cs-CZ') + ' Kč/rok' : '') + '</div>';
+    html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Kategorie (průměr/cyklus)</strong><br>' +
+      Object.keys(d.kategorie_avg).map(function (k) { return nazevKat(k) + ': ' + d.kategorie_avg[k].toFixed(1) + ' s'; }).join(' · ') +
+      '</div>';
+    if (d.cykly && d.cykly.length) {
+      html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Jednotlivé cykly</strong><br>' +
+        d.cykly.map(function (c, i) { return 'C' + (i + 1) + ': ' + Math.round(c.celkem) + ' s'; }).join(' · ') +
+        '</div>';
+    }
+    if (d.hodinovaSazba != null) {
+      html += '<div class="detail-fallback" style="margin-top:10px;">Zadaný náklad práce: ' + d.hodinovaSazba + ' Kč/h × ' + d.pocetPracovniku + (d.pocetPracovniku === 1 ? ' pracovník' : ' pracovníků') + (d.pocetKusu ? ' · Objem zakázky: ' + d.pocetKusu + ' ks' : '') + '</div>';
+    }
+    return html;
   }
 };
 
@@ -915,6 +951,13 @@ function otevritDetailVysledku(id) {
       (tr.hlavni_hodnota_cislo != null ? '<strong>' + escapovat(tr.hlavni_hodnota_cislo) + ' ' + escapovat(tr.hlavni_hodnota_jednotka || '') + '</strong><br>' : '') +
       (tr.hlavni_hodnota_text ? escapovat(tr.hlavni_hodnota_text) : '') +
       '</div>';
+  }
+  // Karta v projektu dřív ukázala jen tenhle souhrn a nešlo se z ní dostat
+  // k celému zdrojovému výsledku v appce - stejný odkaz "Otevřít v appce"
+  // už appky Moje Tokva a Akční plán mají.
+  const podporuje = NASTROJ_PODPORUJE_ODKAZ.includes(tr.nastroj) && NASTROJ_URL[tr.nastroj];
+  if (podporuje) {
+    html += '<a class="detail-odkaz" href="' + NASTROJ_URL[tr.nastroj] + '?vysledek=' + tr.id + '">Otevřít v appce →</a>';
   }
   document.getElementById('detail-vysledku-obsah').innerHTML = html;
   document.getElementById('modal-detail-vysledku-overlay').classList.add('visible');

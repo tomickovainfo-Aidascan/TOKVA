@@ -457,10 +457,13 @@ const RENDER_DETAIL = {
   },
   'kviz-sklad': function (d) {
     const odp = d.odpovedi || {};
+    const odpText = d.odpovedi_text || {};
     return OTAZKY_KVIZ_SKLAD.map((text, i) => {
-      const h = odp[String(i + 1)];
+      const q = String(i + 1);
+      const h = odp[q];
       const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
-      return radekOtazky(text, LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '—', trida);
+      const znaceni = odpText[q] || (LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '—');
+      return radekOtazky(text, znaceni, trida);
     }).join('');
   },
   '5s': function (d) {
@@ -505,6 +508,30 @@ const RENDER_DETAIL = {
         'Elektřina: ' + fmtKc(d.vstupy.elektrina) + ' · Vytápění: ' + fmtKc(d.vstupy.vytapeni) + ' · Voda: ' + fmtKc(d.vstupy.voda) + '<br>' +
         'Údržba a revize: ' + fmtKc(d.vstupy.udrzba) + ' · Pojištění budovy: ' + fmtKc(d.vstupy.poj_budova) + ' · Pojištění vybavení: ' + fmtKc(d.vstupy.poj_odp) +
         '</div>';
+    }
+    return html;
+  },
+  'meric-plytvani-pro': function (d) {
+    if (!d.kategorie_avg) return '';
+    const STD_NAZVY_MERIC = { prace: 'Práce', presun: 'Přesun', hledani: 'Hledání', cekani: 'Čekání', papiry: 'Administrativa', priprava: 'Příprava', kontrola: 'Kontrola' };
+    const nazevKat = function (k) {
+      if (STD_NAZVY_MERIC[k]) return STD_NAZVY_MERIC[k];
+      const vlastni = (d.vlastniOp || []).find(function (o) { return o.id === k; });
+      return vlastni && vlastni.nazev ? vlastni.nazev : k;
+    };
+    let html = '<div class="detail-fallback"><strong>' + escapovat(String(d.plyPct)) + ' % mimo přímou práci</strong><br>' +
+      'Cyklů: ' + escapovat(String(d.cyklu)) + ' · Průměrný cyklus: ' + (d.avgC != null ? d.avgC.toFixed(1) : '?') + ' s' +
+      (d.plyKcRok != null ? ' · Potenciál: ' + Math.round(d.plyKcRok).toLocaleString('cs-CZ') + ' Kč/rok' : '') + '</div>';
+    html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Kategorie (průměr/cyklus)</strong><br>' +
+      Object.keys(d.kategorie_avg).map(function (k) { return nazevKat(k) + ': ' + d.kategorie_avg[k].toFixed(1) + ' s'; }).join(' · ') +
+      '</div>';
+    if (d.cykly && d.cykly.length) {
+      html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Jednotlivé cykly</strong><br>' +
+        d.cykly.map(function (c, i) { return 'C' + (i + 1) + ': ' + Math.round(c.celkem) + ' s'; }).join(' · ') +
+        '</div>';
+    }
+    if (d.hodinovaSazba != null) {
+      html += '<div class="detail-fallback" style="margin-top:10px;">Zadaný náklad práce: ' + d.hodinovaSazba + ' Kč/h × ' + d.pocetPracovniku + (d.pocetPracovniku === 1 ? ' pracovník' : ' pracovníků') + (d.pocetKusu ? ' · Objem zakázky: ' + d.pocetKusu + ' ks' : '') + '</div>';
     }
     return html;
   }

@@ -1189,7 +1189,18 @@ const OBLASTI = [
 const odpovedi = {};
 const nevimSet = new Set();
 let toolStartedOdeslano = false;
+// Audit zdarma se schválně nedá uložit ani dokončit později - ale odchod
+// (třeba na přihlášení) uprostřed rozjetého auditu appku bez varování
+// vrátil na první otázku. Varování zmizí, jakmile appka zobrazí výsledek.
+let hasRozpracovanyAudit = false;
+window.addEventListener('beforeunload', function (e) {
+  if (hasRozpracovanyAudit) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 function oznamitZahajeni() {
+  hasRozpracovanyAudit = true;
   if (toolStartedOdeslano) return;
   toolStartedOdeslano = true;
   trackTokvaEvent('tool_started', { tool_name: 'mini_audit_vyroby', tool_version: 'free' });
@@ -1277,6 +1288,7 @@ function zobrazVysledkyFinale() {
 function zobrazVysledky() {
   try {
   oznamitDokonceni();
+  hasRozpracovanyAudit = false;
   const skore = vypocitejSkore();
   const maxS = maxSkore();
   const hero = document.getElementById('skore-hero');
