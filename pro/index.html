@@ -387,6 +387,11 @@ async function nacistZbyvajiciMista() {
 }
 nacistZbyvajiciMista();
 
+// signup_started - jen první interakce s formulářem, ne každé písmenko.
+document.getElementById('objednavka-form').addEventListener('input', function () {
+  trackTokvaEvent('signup_started', { placement: 'pro_page' });
+}, { once: true });
+
 function prelozitChybuObjednavky(msg) {
   if (msg.includes('already registered')) return 'Tenhle e-mail už má u nás účet – přihlaste se prosím a napište mi rovnou na tomickova.info@gmail.com, objednávku vyřídíme ručně.';
   if (msg.includes('Password should be')) return 'Heslo musí mít aspoň 6 znaků.';
@@ -428,6 +433,7 @@ async function odeslatObjednavku(e) {
   try {
     const { error: signUpError } = await supabaseClient.auth.signUp({ email, password: heslo, options: { data: { company_name: firma } } });
     if (signUpError) throw signUpError;
+    trackTokvaEvent('sign_up', { method: 'email' });
 
     const { data: variabilniSymbol, error: orderError } = await supabaseClient.rpc('vytvorit_objednavku', {
       p_email: email,
