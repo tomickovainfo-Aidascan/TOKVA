@@ -22,12 +22,12 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>5× Proč – AI analýza příčiny problému | Tokva</title>
-<meta name="description" content="Metoda 5x Proč odhalí skutečnou příčinu problému, ne jen příznaky. AI kouč vás provede analýzou krok za krokem a dostane se přes výmluvy k tomu co problém opravdu způsobuje.">
-<meta name="keywords" content="kořenová příčina, metoda 5 proč, 5x proč, řešení problémů, analýza příčin">
+<meta name="description" content="Metoda 5× Proč odhalí skutečnou příčinu problému, ne jen příznaky. AI kouč vás provede analýzou krok za krokem a dostane se přes výmluvy k tomu co problém opravdu způsobuje.">
+<meta name="keywords" content="kořenová příčina, metoda 5 proč, 5× proč, řešení problémů, analýza příčin">
 <meta name="author" content="Gabriela Tomíčková">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="5× Proč – AI analýza příčiny problému | Tokva">
-<meta property="og:description" content="Místo hašení příznaků zjistíte, co problém opravdu způsobuje. AI vás provede metodou 5x Proč krok za krokem.">
+<meta property="og:description" content="Místo hašení příznaků zjistíte, co problém opravdu způsobuje. AI vás provede metodou 5× Proč krok za krokem.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:image" content="https://tokva.cz/og-image.png">
@@ -35,15 +35,15 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="5× Proč – AI analýza příčiny problému | Tokva">
-<meta name="twitter:description" content="Místo hašení příznaků zjistíte, co problém opravdu způsobuje. AI vás provede metodou 5x Proč krok za krokem.">
+<meta name="twitter:description" content="Místo hašení příznaků zjistíte, co problém opravdu způsobuje. AI vás provede metodou 5× Proč krok za krokem.">
 <meta name="twitter:image" content="https://tokva.cz/og-image.png">
 <link rel="canonical" href="https://tokva.cz/nastroje/5x-proc-ai-kouc/">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "5x Proč, AI kouč",
-  "description": "AI průvodce metodou 5x Proč pro analýzu kořenových příčin v provozu, skladu a výrobě. Vede uživatele strukturovanými otázkami k odhalení skutečné příčiny opakujících se problémů.",
+  "name": "5× Proč, AI kouč",
+  "description": "AI průvodce metodou 5× Proč pro analýzu kořenových příčin v provozu, skladu a výrobě. Vede uživatele strukturovanými otázkami k odhalení skutečné příčiny opakujících se problémů.",
   "url": "https://tokva.cz/nastroje/5x-proc-ai-kouc/",
   "applicationCategory": "BusinessApplication",
   "author": { "@type": "Person", "name": "Gabriela Tomíčková" },
@@ -677,7 +677,7 @@ nav {
 <body>
 
 <nav>
-  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/nastroje/?nastroj=5x-proc" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">5x Proč AI kouč</span></div>
+  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">5× Proč AI kouč</span></div>
   <div class="nav-right">
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
@@ -693,7 +693,7 @@ nav {
   <div class="hero-inner">
     <div class="tool-badge">Vedoucí skladu nebo výroby, co řeší furt stejný problém dokola</div>
     <h1>Od výmluvy <em>ke skutečné příčině</em></h1>
-    <p>AI kouč vás provede rozhovorem metodou 5x Proč a dovede ke kořenu problému, ne jen k příznaku. Na konci dostanete strukturovaný výstup s příčinou a prvním krokem. Stačí e-mail, 1 kompletní analýza zdarma.</p>
+    <p>AI kouč vás provede rozhovorem metodou 5× Proč a dovede ke kořenu problému, ne jen k příznaku. Na konci dostanete strukturovaný výstup s příčinou a prvním krokem. Stačí e-mail, 1 kompletní analýza zdarma.</p>
     <div class="hero-meta">
       <span>Problém</span>
       <span>Logická analýza</span>
@@ -1212,12 +1212,12 @@ function extrahovatSekci(raw, klic) {
 // řádku (aktivniRunId), nezakládá pokaždé nový.
 async function ulozitStavAnalyzy(hotovo, raw) {
   if (!jePro || !clenstvi) return;
-  const problem = (raw && extrahovatSekci(raw, '2. UPŘESNĚNÝ PROBLÉM')) || posledniProblem || '5x Proč analýza';
+  const problem = (raw && extrahovatSekci(raw, '2. UPŘESNĚNÝ PROBLÉM')) || posledniProblem || '5× Proč analýza';
   const pricina = raw ? extrahovatSekci(raw, '4. KOŘENOVÁ PŘÍČINA') : '';
   const payload = {
     organization_id: clenstvi.organization_id,
     nastroj: '5x-proc',
-    nazev: (hotovo ? '5x Proč — ' : '5x Proč (rozpracováno) — ') + problem.slice(0, 80),
+    nazev: (hotovo ? '5× Proč — ' : '5× Proč (rozpracováno) — ') + problem.slice(0, 80),
     shrnuti: pricina ? ('Kořenová příčina: ' + pricina.slice(0, 300)) : problem.slice(0, 300),
     hlavni_hodnota_typ: (hotovo && pricina) ? 'text' : null,
     hlavni_hodnota_text: (hotovo && pricina) ? pricina.slice(0, 500) : null,
@@ -1258,7 +1258,7 @@ async function vytvoritUkolyZAnalyzy(raw, btn) {
   const prinosStr = (karta.querySelector('#ukoly-prinos') || {}).value || '';
   const investice = investiceStr.trim() ? Number(investiceStr) : null;
   const prinos = prinosStr.trim() ? Number(prinosStr) : null;
-  const reason = 'Výsledek 5x Proč analýzy' + (pricina ? (' — kořenová příčina: ' + pricina.slice(0, 300)) : '');
+  const reason = 'Výsledek 5× Proč analýzy' + (pricina ? (' — kořenová příčina: ' + pricina.slice(0, 300)) : '');
   if (ukoly_prazdna(opatreni, prvniKrok)) {
     // Sekce "Doporučené opatření" / "První krok" se z výstupu nepodařilo
     // vytáhnout (AI se nedrželo formátu) - dřív appka tady jen tiše skončila
@@ -1359,7 +1359,7 @@ async function projektIdZeSelectu5x(select, novyNazevInput) {
 
 let premereniStarsiId5x = null;
 
-// Když appka pozná, že se 5x Proč analýza ve stejném projektu už jednou
+// Když appka pozná, že se 5× Proč analýza ve stejném projektu už jednou
 // ukládala, nabídne přepínač "ověření předchozího výsledku" - defaultně
 // zaškrtnutý. Uloží se pak jako odkaz na ten starší běh (premereni_pro),
 // ne jako obyčejné true/false.
@@ -1979,7 +1979,7 @@ async function otevritHistorii() {
       datum.textContent = new Date(r.created_at).toLocaleString('cs-CZ') + (rozpracovana ? ' · rozpracováno' : '');
       const shrnuti = document.createElement('div');
       shrnuti.className = 'historie-shrnuti';
-      shrnuti.textContent = r.nazev || r.shrnuti || '5x Proč analýza';
+      shrnuti.textContent = r.nazev || r.shrnuti || '5× Proč analýza';
       const btn = document.createElement('button');
       btn.className = 'historie-zobrazit';
       if (rozpracovana) {

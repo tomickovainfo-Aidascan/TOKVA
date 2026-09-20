@@ -334,7 +334,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
       <div class="eyebrow">Katalog</div>
       <h1>Všechny nástroje Tokvy na jednom místě.</h1>
       <p class="intro-sub">Zde najdete všechny dostupné nástroje Tokvy – diagnostiku, měření, kalkulačky i nástroje pro zavedení změny.</p>
-      <p class="intro-proof">První výsledek za pár minut · část nástrojů zdarma · bez znalosti Kaizenu</p>
+      <p class="intro-proof">První výsledek za pár minut · všechny appky mají něco zdarma · bez znalosti Kaizenu</p>
 
       <div id="cesta"></div>
     </section>
@@ -394,7 +394,7 @@ const TOOLS = [
   { id:"meric-free", group:"free", name:"Měřič plýtvání", krok:2, oblasti:["sklad","vyroba"], benefit:"Změříte, kolik času vaši lidé skutečně tráví prací, a kolik chozením a čekáním.",
     popis:"Máte pocit, že vaši zaměstnanci víc nachodí, než vyrobí? Nebo že půlku pracovní doby vyplňují papíry? To jste tady správně.\n\nMěřič plýtvání vám pomůže objevit místa, kde ztrácíte nejvíc.\n\nZvolíte si proces, který chcete změřit, pozorujete pracovníka přímo při práci a klikáte na tlačítka podle toho, co zrovna dělá.\n\nAppka sama spočítá, kolik času padá na práci, přesun, hledání, čekání, administrativu, kontrolu a přípravu. Tři cykly zdarma, bez registrace.",
     proKoho:"Majitel nebo manažer výroby či skladu, co tuší, že se někde ztrácí čas, ale nemá to podložené čísly.",
-    url:"nastroje/meric-plytvani-free/", souvisejici:["meric-pro","kalkulacka","kviz-komunikace"],
+    url:"nastroje/meric-plytvani-free/", souvisejici:["spaghetti-sklad","kalkulacka","kviz-komunikace"],
     metaTitle:"Výpočet produktivity práce zdarma | Gabriela Tomíčková",
     metaDescription:"Zjistěte výpočet produktivity práce ve vaší firmě za 10 minut. Bez stopek a papíru, zdarma online, výsledek na e-mail.",
     ucelMetoda:"Měřič plýtvání je jednoduchá časová studie jednoho konkrétního procesu. Místo stopek a papíru klikáte na tlačítko podle toho, co zrovna pracovník dělá, appka sama měří, jak dlouho která činnost trvá. Na konci uvidíte, kolik času padá na skutečnou práci, a kolik na chození, hledání, čekání, papírování nebo kontrolu.\n\nKdo zná metodu KAIZEN, pozná v těch kategoriích klasické druhy plýtvání, takzvané muda. Znát ji ale vůbec nemusíte, appka funguje stejně dobře i bez toho.",
@@ -720,7 +720,7 @@ const TOOLS = [
   { id:"spaghetti-sklad", group:"free", name:"Spaghetti diagram", krok:2, oblasti:["sklad","vyroba"], benefit:"Uvidíte na plánku skladu nebo výroby, kolik lidé reálně nachodí.",
     popis:"Nahrajete/vyfotíte plánek skladu nebo výroby, naklikáte trasu pohybu, nástroj spočítá počet bodů, délku trasy a celkovou vzdálenost na zakázku.",
     proKoho:"Vedoucí skladu nebo výroby, co chce vidět, kolik lidí reálně nachodí, ne odhadovat.",
-    url:"nastroje/spaghetti-free/", souvisejici:["spaghetti-vyroba","meric-free"],
+    url:"nastroje/spaghetti-free/", souvisejici:["mini-audit","meric-free"],
     kdyPouzit:{
       otazky:[
         "Máte pocit, že lidé ve skladu chodí víc, než by museli, ale nevíte přesně o kolik?",
@@ -743,7 +743,7 @@ const TOOLS = [
       "Podle potřeby si plánek přibližte, oddalte nebo posuňte, zoom nemění naměřené vzdálenosti.",
       "Přidejte další zakázku vlastní barvou, sledujte statistiky a diagram stáhněte nebo vytiskněte."
     ],
-    vstupy:"Fotka nebo obrázek plánku skladu nebo výroby (JPG, PNG), a jedna známá vzdálenost pro měřítko, třeba délka regálu nebo šířka uličky.",
+    vstupy:"Fotka nebo obrázek plánku skladu nebo výroby (JPG, PNG nebo PDF), a jedna známá vzdálenost pro měřítko, třeba délka regálu nebo šířka uličky.",
     vystupy:"Spaghetti diagram ke stažení jako obrázek nebo k vytisknutí, délka trasy v metrech pro každou zakázku i celkem, počet zaznamenaných bodů a zakázek.",
     priklad:"Andula pracovala na výdeji skladu roky, věděla, kde co je. Nikdo si nestěžoval, nikomu nic nechybělo. Jenže nikdo netušil, kolik toho za směnu nachodí, dokud to nezměřili krokoměrem: 7,5 km za směnu, jen na výdeji.\n\nNakreslily spaghetti diagram jejího pohybu a bylo vidět, kde se trasa zbytečně kříží a prodlužuje. Přesunuly šest položek v regálu, nic víc. Nový výsledek: 4,2 km za směnu, o 44 % míň. Žádný projekt, žádná investice, jen krokoměr, spaghetti diagram a selský rozum. Anduliny nohy přestaly bolet, a od té doby věří změnám, které se ve skladu plánují, protože viděla na vlastní kůži, že to není teorie.",
     chyby:[
@@ -778,13 +778,13 @@ const TOOLS = [
   { id:"meric-pro", group:"paid-solo", name:"Měřič plýtvání Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Změříte čas přesněji, s vlastními kroky procesu a exportem dat.",
     popis:"Jde do hloubky víc než free verze. Pro výrobní firmy a sklady, co chtějí přesnější čísla a víc kontextu.",
     proKoho:"Kdo si vyzkoušel Free verzi a chce dál.",
-    prodejniStranka:"nastroje/meric-plytvani-pro/", souvisejici:["meric-free","mini-audit"] },
+    prodejniStranka:"nastroje/meric-plytvani-pro/", souvisejici:["spaghetti-vyroba","mini-audit"] },
 
   { id:"spaghetti-vyroba", group:"paid-solo", name:"Spaghetti diagram Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Zaznamenáte pohyb víc lidí najednou, ve skladu i ve výrobě, včetně zastávek.",
     popis:"Zaznamenáte trasy víc lidí najednou, včetně zastávek, kde se zastaví a něco dělají. Umí i rovnou spočítat, o kolik je návrh lepší než současný stav. Pro sklad i pro výrobu.",
     proKoho:"Vedoucí skladu nebo výroby, co řeší zbytečný pohyb víc lidí najednou.",
     prodejniStranka:"nastroje/spaghetti-pro/",
-    souvisejici:["spaghetti-sklad"],
+    souvisejici:["meric-pro","mini-audit-vyroba"],
     kdyPouzit:{
       otazky:[
         "Máte na lince nebo ve skladu víc lidí, co dělají podobnou práci, a nevíte, kdo z nich chodí zbytečně nejvíc?",
@@ -807,7 +807,7 @@ const TOOLS = [
       "Volitelně: nakreslete druhou variantu trasy a označte ji S (současný stav) / N (návrh), appka spočítá úsporu sama.",
       "Diagram i statistiky stáhněte jako obrázek nebo vytiskněte."
     ],
-    vstupy:"Fotka nebo obrázek půdorysu skladu nebo výroby (JPG, PNG), měřítko (jedna známá vzdálenost) a jména pracovníků, které chcete sledovat.",
+    vstupy:"Fotka nebo obrázek půdorysu skladu nebo výroby (JPG, PNG nebo PDF), měřítko (jedna známá vzdálenost) a jména pracovníků, které chcete sledovat.",
     vystupy:"Spaghetti diagram ke stažení nebo k vytisknutí, délka trasy a počet zastávek pro každého pracovníka i celkem za všechny, a když je označené srovnání, i úspora v metrech a procentech mezi současným stavem a návrhem.",
     priklad:"Na lince sedadlových senzorů v Takatě Dolní Kalná operátorky chodily kvůli špatně rozmístěnému materiálu 45,5 metru na každý cyklus. Materiál byl rozmístěný tak, jak se to hodilo při stavbě linky, ne tak, aby to dávalo smysl pro práci. Tenhle konkrétní případ se tehdy měřil ještě postaru, papírem a tužkou, appka na to v tu dobu ještě nebyla.\n\nPo přestavbě rozmístění materiálu a pracovišť klesla chůze na 23 metrů na cyklus, bez jediného nového stroje nebo investice do technologie, jen jiné rozmístění toho, co tam už bylo. Přesně tenhle typ srovnání, kolik chodíte teď a kolik byste chodili po změně, appka dneska spočítá sama, jakmile obě trasy označíte jako současný stav a návrh.",
     chyby:[
@@ -838,7 +838,7 @@ const TOOLS = [
     } },
 
   { id:"5s-audit", group:"free", name:"5S pro každého smrtelníka", krok:3, oblasti:["sklad","vyroba","administrativa"], benefit:"Uspořádáte pracoviště krok za krokem, s fotkami před a po.",
-    popis:"Krok po kroku uspořádáte jakékoliv pracoviště, s fotkami před a po u všech 5 kroků, zdarma bez omezení.\n\nPřehledný tisk reportu, historie kontrol a úkoly jsou v Tokva Pro.",
+    popis:"Krok po kroku uspořádáte jedno pracoviště, s fotkami před a po u všech 5 kroků, zdarma bez časového omezení.\n\nVíc pracovišť najednou, přehledný tisk reportu, historie kontrol a úkoly jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu, výroby nebo dílny, co chce uklidit konkrétní pracoviště podle metody 5S krok za krokem, s fotkami jako důkazem, ne jen na oko.",
     url:"nastroje/5S_audit/", souvisejici:["meric-free","spaghetti-sklad"], prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
     kdyPouzit:{
@@ -893,7 +893,7 @@ const TOOLS = [
       }
     } },
 
-  { id:"5x-proc", group:"free", name:"5x Proč AI kouč", krok:3, oblasti:["sklad","vyroba","administrativa","lide"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
+  { id:"5x-proc", group:"free", name:"5× Proč AI kouč", krok:3, oblasti:["sklad","vyroba","administrativa","lide"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
     popis:"AI kouč vás provede rozhovorem a dovede ke kořenu problému. Strukturovaný výstup s příčinou a prvním krokem, zdarma.\n\nHistorie analýz a navazující úkoly jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu nebo výroby, co řeší furt stejný problém dokola a chce se dostat k tomu, co ho fakt způsobuje, ne jen hasit znovu a znovu.",
     url:"nastroje/5x-proc-ai-kouc/", souvisejici:["meric-free","casova-studie"], prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
@@ -908,7 +908,7 @@ const TOOLS = [
         "Free verze zahrnuje 1 kompletní analýzu na e-mail, Pro má neomezené analýzy, ukládá historii a z hotové analýzy rovnou založí dva navazující úkoly."
       ]
     },
-    ucelMetoda:"5x Proč AI kouč vede rozhovor podle metody pěti proč, klasické kaizen techniky pro hledání kořenové příčiny problému. Appka se ptá jednu otázku po druhé, navazuje na vaše odpovědi, rozlišuje fakta od domněnek a emocí, a nedovolí, aby analýza sklouzla k hledání viníka mezi lidmi.\n\nNa konci appka sestaví strukturovaný výstup, původní problém, upřesněný problém, celý řetězec pěti proč, kořenovou příčinu, přispívající faktory, fakta versus domněnky, doporučené opatření, první krok do 24 hodin, jak ověřit výsledek a otevřené otázky.",
+    ucelMetoda:"5× Proč AI kouč vede rozhovor podle metody pěti proč, klasické kaizen techniky pro hledání kořenové příčiny problému. Appka se ptá jednu otázku po druhé, navazuje na vaše odpovědi, rozlišuje fakta od domněnek a emocí, a nedovolí, aby analýza sklouzla k hledání viníka mezi lidmi.\n\nNa konci appka sestaví strukturovaný výstup, původní problém, upřesněný problém, celý řetězec pěti proč, kořenovou příčinu, přispívající faktory, fakta versus domněnky, doporučené opatření, první krok do 24 hodin, jak ověřit výsledek a otevřené otázky.",
     princip:"Nejdřív appka pomůže přesně formulovat problém (co, kdy, kde, koho se to týká, jaký je dopad). Pak vede samotnou analýzu pěti proč, vždy jen jedna otázka, navazující na předchozí odpověď, dokud odpověď není dost konkrétní. Když se odpověď stáčí k vině člověka, appka se vrátí k otázce, co v systému umožnilo, že se to stalo.",
     postup:[
       "Zadejte e-mail a spusťte analýzu zdarma (1 kompletní analýza), nebo se přihlaste do Pro pro neomezené analýzy.",
@@ -937,7 +937,7 @@ const TOOLS = [
         {num:"5×", lbl:"proč, dokud nenajdete kořenovou příčinu"},
         {num:"10", lbl:"oddílů strukturovaného výstupu"},
         {num:"1", lbl:"kompletní analýza zdarma"},
-        {num:"24", lbl:"hodin, do kdy navrhne první krok"}
+        {num:"24", lbl:"hodin, do kdy je proveditelný první krok"}
       ],
       recognizeClose:"Cílem není najít viníka, ale místo v procesu, kde problém vzniká.",
       example:{
@@ -1000,7 +1000,7 @@ const TOOLS = [
       }
     } },
 
-  { id:"kalkulacka-naklady-skladu", group:"free", name:"Kalkulačka nákladů provozu na m²", krok:2, oblasti:["sklad"], benefit:"Spočítáte, kolik vás sklad doopravdy stojí na metr čtvereční, ne jen nájem.",
+  { id:"kalkulacka-naklady-skladu", group:"free", name:"Kalkulačka nákladů skladu na m²", krok:2, oblasti:["sklad"], benefit:"Spočítáte, kolik vás sklad doopravdy stojí na metr čtvereční, ne jen nájem.",
     popis:"Spočítá měsíční a roční náklady na m² skladu (nájem nebo odpisy budovy, energie, daně a pojištění, revize, provozní služby, odpisy vybavení) a ukáže, která kategorie nákladů tvoří největší podíl.",
     proKoho:"Vedoucí skladu nebo provozní manažer, co zná nájem, ale netuší, kolik k tomu doopravdy přidávají energie, revize a odpisy vybavení.",
     url:"nastroje/kalkulacka-nakladu-skladu/", souvisejici:["kalkulacka","mini-audit"],
@@ -1015,7 +1015,7 @@ const TOOLS = [
         "Reálné náklady bývají 1,5 až 2× vyšší než samotný nájem. Kalkulačka ukáže, kde přesně se ta druhá polovina schovává."
       ]
     },
-    ucelMetoda:"Kalkulačka nákladů provozu na m² spočítá, kolik vás sklad měsíčně a ročně stojí, když k nájmu nebo odpisu budovy přičtete energie, povinné revize, pojištění, daň z nemovitosti, odpisy vybavení a provozní služby.\n\nPočítá jen náklady na budovu a její provoz. Mzdové náklady a mobilní techniku (VZV) appka nezahrnuje.",
+    ucelMetoda:"Kalkulačka nákladů skladu na m² spočítá, kolik vás sklad měsíčně a ročně stojí, když k nájmu nebo odpisu budovy přičtete energie, povinné revize, pojištění, daň z nemovitosti, odpisy vybavení a provozní služby.\n\nPočítá jen náklady na budovu a její provoz. Mzdové náklady a mobilní techniku (VZV) appka nezahrnuje.",
     princip:"Appka nabízí rychlý odhad: vyplníte jen to, co znáte (plochu, nájem nebo odpisy budovy). Ostatní kategorie appka nechává na nule, žádné typické průměry netvrdí. Dokud čísla nedoplníte, počítejte s tím, že výsledek je nižší, než reálný náklad na m². Kdykoli můžete kliknout na \"Chci zpřesnit výsledek\" a rozepsat všechny kategorie zvlášť.",
     postup:[
       "Zadejte plochu skladu a zvolte, jestli sklad platíte nájmem, nebo vlastníte budovu.",
@@ -1335,7 +1335,7 @@ function renderDetail(id, updateUrl) {
   if (!t) return;
   const d2 = t.design2a || {};
 
-  let html = `<button class="detail-back" data-back="1">← Zpět na Tokvu</button>`;
+  let html = `<button class="detail-back" data-back="1">← Zpět na přehled nástrojů</button>`;
   html += `<div class="detail-card">`;
 
   const heroLines = (d2.heroLines && d2.heroLines.length) ? d2.heroLines : [t.name];
