@@ -194,6 +194,11 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .v-oblast-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
 .v-oblast-bar-fill{height:100%;border-radius:3px;}
 .v-oblast-nevim-note{font-size:11px;color:var(--light);margin-top:4px;}
+.v-odpoved-row{padding:10px 0;border-bottom:1px solid #f0f0f0;}
+.v-odpoved-row:last-child{border-bottom:none;}
+.v-odpoved-otazka{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:4px;}
+.v-odpoved-text{font-size:13px;color:var(--mid);line-height:1.5;}
+.v-odpoved-text strong{font-weight:600;color:var(--dark);}
 .email-card{background:var(--gold-light);border:1px solid rgba(233,169,27,.3);border-radius:12px;padding:18px 20px;margin-bottom:12px;}
 .email-card h3{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;color:var(--dark);margin-bottom:6px;}
 .email-card p{font-size:13px;color:var(--mid);margin-bottom:12px;line-height:1.6;}
@@ -533,6 +538,10 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <h3>Všech 6 oblastí</h3>
     <div id="v-oblasti-rows"></div>
   </div>
+  <div class="v-card" id="v-odpovedi-card">
+    <h3>Vaše odpovědi</h3>
+    <div id="v-odpovedi-rows"></div>
+  </div>
   <div class="v-card" id="v-ulozit-card" style="display:none;">
     <h3>Uložit a sledovat vývoj</h3>
     <p style="margin-bottom:12px;">Uložte si tenhle výsledek a příště uvidíte, jestli se komunikace ve firmě zlepšuje.</p>
@@ -689,13 +698,13 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
         <div class="dalsi-nastroj-card">
           <div class="dalsi-nastroj-tag">Hlavní další krok</div>
           <div class="dalsi-nastroj-nazev">5× Proč AI kouč</div>
-          <div class="dalsi-nastroj-popis">Zeptá se vás postupně, dokud společně nenajdete, proč se informace ve firmě ztrácejí a co s tím.</div>
+          <div class="dalsi-nastroj-popis" id="dalsi-krok-kouc-popis">Zeptá se vás postupně, dokud společně nenajdete, proč se informace ve firmě ztrácejí a co s tím.</div>
           <a href="../5x-proc-ai-kouc/" target="_blank" class="dalsi-nastroj-btn">Otevřít 5× Proč AI kouč</a>
         </div>
         <div class="dalsi-nastroj-card">
           <div class="dalsi-nastroj-tag">Když jde hlavně o čas</div>
           <div class="dalsi-nastroj-nazev">Časová studie mého dne</div>
-          <div class="dalsi-nastroj-popis">Zjistíte, kolik z vašeho dne skutečně padá na komunikaci a dohledávání informací.</div>
+          <div class="dalsi-nastroj-popis" id="dalsi-krok-cas-popis">Zjistíte, kolik z vašeho dne skutečně padá na komunikaci a dohledávání informací.</div>
           <a href="../casova-studie/" target="_blank" class="dalsi-nastroj-btn">Otevřít Časovou studii</a>
         </div>
       </div>
@@ -877,7 +886,11 @@ const OTAZKY = [
     ]
   },
   {
-    id:'q8', typ:'radio',
+    // Informační otázka - kde přesně chaos vzniká, nemá "lepší"/"horší" odpověď
+    // (všechny možnosti kromě "Nevíme přesně" mají stejnou váhu), a nepatří pod
+    // žádnou ze 6 zobrazených oblastí. Proto se nepočítá do celkového skóre ani
+    // maxima, jinak by skóre neodpovídalo součtu viditelných oblastí.
+    id:'q8', typ:'radio', bodovana:false,
     text:'Kde nejčastěji vzniká problém v komunikaci?',
     opts:[
       {t:'Obchod → výroba / sklad', b:2},
@@ -995,6 +1008,35 @@ const RADY_OBLAST = {
   'zavislost': "Pokud stav zakázky ví jen majitel, vedoucí nebo jedna zkušená osoba, firma funguje na lidské paměti místo na systému, a to je křehký stav. Co by se stalo, kdyby ta osoba zítra byla na měsíc pryč? Pojmenujte, co všechno ta klíčová osoba ví a kde ty informace žijí, a zkuste jeden okruh (třeba stav rozpracovaných zakázek) zpřístupnit ostatním bez nutnosti se ptát, klidně jako tabulku aktualizovanou jednou denně.",
   'chaos-zmen': "Pokud se u vás pravidelně řeší to mi nikdo neřekl, nebo změna termínu, ceny nebo požadavku zákazníka automaticky nedojde ke všem, kdo to potřebují vědět, každá změna je potenciální problém. Zmapujte, co se u vás typicky mění, a pro každý typ změny si odpovězte, kdo by o tom měl vědět, většinou zjistíte, že informace jde jen nahoru nebo dopředu, ale ne do stran. Zaveďte jedno pravidlo, každá změna ovlivňující víc než jednoho člověka musí mít písemný záznam, ne jen telefonát.",
   'uloziste': "Jakmile pošlete soubor jako přílohu, vzniknou dvě verze, jedna u vás, jedna u příjemce, a když ho někdo upraví a pošle zpět, jsou tři. Přestaňte posílat soubory jako přílohy a posílejte vždy odkaz na sdílené místo, ať už Google Drive, OneDrive nebo cokoliv jiného, jeden soubor, všichni čtou a editují to samé. Nastavte jedno místo pro každý typ dokumentu, nabídky na jedno místo, smlouvy na jiné, a komentáře pište přímo do dokumentu, ne do e-mailu pod ním."
+};
+
+// Popisky "Navazujících nástrojů" pod výsledkem - přizpůsobené nejslabší
+// oblasti, ať nejsou stejné bez ohledu na výsledek (viz zpětná vazba).
+const DALSI_KROK_TEXT = {
+  'kanalovy-chaos': {
+    kouc: 'Zeptá se vás postupně, dokud společně nenajdete, proč u vás informace tečou tolika kanály najednou, a co s tím.',
+    cas: 'Zjistíte, kolik z vašeho dne padá na přepínání mezi e-mailem, telefonem, WhatsAppem a tabulkami.'
+  },
+  'prepisovani': {
+    kouc: 'Zeptá se vás postupně, dokud společně nenajdete, proč se stejná data zadávají na víc míst, a co s tím.',
+    cas: 'Zjistíte, kolik z vašeho dne padá na přepisování stejných dat do víc systémů nebo tabulek.'
+  },
+  'cekani': {
+    kouc: 'Zeptá se vás postupně, dokud společně nenajdete, proč lidé u vás čekají na informace nebo pokyny, a co s tím.',
+    cas: 'Zjistíte, kolik z vašeho dne skutečně padá na čekání, dohledávání a vysvětlování.'
+  },
+  'zavislost': {
+    kouc: 'Zeptá se vás postupně, dokud společně nenajdete, proč stav zakázek ví jen jeden člověk, a co s tím.',
+    cas: 'Zjistíte, kolik z vašeho dne padá na dotazy směrem k té jedné klíčové osobě.'
+  },
+  'chaos-zmen': {
+    kouc: 'Zeptá se vás postupně, dokud společně nenajdete, proč se informace o změnách ke všem nedostane, a co s tím.',
+    cas: 'Zjistíte, kolik z vašeho dne padá na řešení "to mi nikdo neřekl" a opravy po změnách.'
+  },
+  'uloziste': {
+    kouc: 'Zeptá se vás postupně, dokud společně nenajdete, proč u vás existuje víc verzí stejného souboru, a co s tím.',
+    cas: 'Zjistíte, kolik z vašeho dne padá na hledání správné verze dokumentu.'
+  }
 };
 
 
@@ -1936,9 +1978,10 @@ function spocitatSkore(){
     } else {
       b = odpovedi[q.id]!==undefined ? odpovedi[q.id] : 3;
     }
+    bodyOtazek[q.id] = b;
+    if(q.bodovana === false) return; // q8 - viz poznámka u definice otázky
     skore += b;
     maxSkore += 3;
-    bodyOtazek[q.id] = b;
   });
 
   // Procento z maxima pro kazdou oblast, null = vsechny otazky oblasti byly "nevim"
@@ -1967,13 +2010,57 @@ function spocitatSkore(){
     }
   });
 
-  return { skore, maxSkore, nejslabsiKey, oblastiVysledky, nevimOtazky };
+  // I nejvyssi znama oblast vysla na 0 % - neni komu "nejvic to bolet", vsechno
+  // vyslo dobre. Netvarime se, ze jedna oblast (podle priority) je problem, kdyz
+  // zadna neni.
+  const zadnyProblem = nejslabsiKey !== null && nejslabsiPct <= 0;
+  if(zadnyProblem) nejslabsiKey = null;
+
+  return { skore, maxSkore, nejslabsiKey, oblastiVysledky, nevimOtazky, zadnyProblem };
+}
+
+function escapeHtml(s){
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// Kompletní přehled otázek a vybraných odpovědí (ne jen odvozené skóre), ať je
+// výsledek úplný a jde ho později otázku po otázce porovnat s dalším pokusem.
+// vybranaIndexy drží skutečný index vybrané možnosti (na rozdíl od odpovedi,
+// které u radia drží jen bodovou hodnotu - víc možností může mít stejné body).
+function vykreslitOdpovediRecap(){
+  const container = document.getElementById('v-odpovedi-rows');
+  if(!container) return;
+  container.innerHTML = OTAZKY.map(q=>{
+    const vi = vybranaIndexy[q.id];
+    let text;
+    if(q.typ === 'checkbox'){
+      const set = vi instanceof Set ? vi : new Set();
+      const texty = Array.from(set).map(idx=>{
+        if(idx === 'other') return escapeHtml((odpovedi[q.id+'_text'] || '').trim() || 'Jiné');
+        return q.opts[idx] ? escapeHtml(q.opts[idx].t) : '';
+      }).filter(Boolean);
+      text = texty.length ? texty.join(', ') : 'Nevyplněno';
+    } else if(vi === 'other'){
+      text = escapeHtml((odpovedi[q.id+'_text'] || '').trim() || 'Jinak (bez upřesnění)');
+    } else if(vi !== undefined && q.opts[vi]){
+      text = escapeHtml(q.opts[vi].t);
+    } else {
+      text = 'Nevyplněno';
+    }
+    return `<div class="v-odpoved-row">
+      <div class="v-odpoved-otazka">${escapeHtml(q.text)}</div>
+      <div class="v-odpoved-text">${text}</div>
+    </div>`;
+  }).join('');
 }
 
 // ============ ZOBRAZENÍ VÝSLEDKU ============
 function zobrazitVysledek(){
   oznamitDokonceni();
-  const {skore, maxSkore, nejslabsiKey, oblastiVysledky, nevimOtazky} = spocitatSkore();
+  const {skore, maxSkore, nejslabsiKey, oblastiVysledky, nevimOtazky, zadnyProblem} = spocitatSkore();
+  vykreslitOdpovediRecap();
   posledniVysledek = { skore, maxSkore, nejslabsiKey, oblastiVysledky };
   renderUlozitNeboTym();
 
@@ -1999,7 +2086,7 @@ function zobrazitVysledek(){
     doporuceni='Informace se ztrácí mezi e-maily, telefonáty, tabulkami, WhatsAppem a ústní domluvou. Tady už nejde o drobnosti, ale o kapacitu, chyby, zpoždění a nervy. Dává smysl zmapovat, kudy informace chodí a kde se ztrácí.';
   }
   if(nevimOtazky.length > 0){
-    doporuceni += ' Skóre je orientační: ' + nevimOtazky.length + ' ' + (nevimOtazky.length===1 ? 'otázku jste' : 'otázek jste') + ' označili jako "nevím", to je samo o sobě důležité zjištění.';
+    doporuceni += ' Skóre je orientační: ' + nevimOtazky.length + ' ' + (nevimOtazky.length===1 ? 'otázku jste' : nevimOtazky.length>=2 && nevimOtazky.length<=4 ? 'otázky jste' : 'otázek jste') + ' označili jako "nevím", to je samo o sobě důležité zjištění.';
   }
 
   document.getElementById('v-pasmo').textContent = pasmo;
@@ -2011,7 +2098,20 @@ function zobrazitVysledek(){
     document.getElementById('v-oblast-badge').textContent = oblast.nazev;
     document.getElementById('v-nejslabsi').textContent = oblast.popis;
     document.getElementById('v-nejslabsi-krok').innerHTML = '<strong style="color:var(--gold-dark);">První krok:</strong> ' + PRVNI_KROK_OBLAST[nejslabsiKey];
+  } else if(zadnyProblem){
+    document.getElementById('v-nejslabsi-card').style.display='block';
+    document.getElementById('v-oblast-badge').textContent = 'Bez výrazného problému';
+    document.getElementById('v-nejslabsi').textContent = 'Nebyla zjištěna výrazně problémová oblast - všech šest sledovaných oblastí vyšlo na 0 %.';
+    document.getElementById('v-nejslabsi-krok').innerHTML = '';
   }
+
+  // Doporučení na 5× Proč a Časovou studii se přizpůsobí nejslabší oblasti,
+  // ať nejsou stejná bez ohledu na výsledek.
+  const dalsiKrokKoucEl = document.getElementById('dalsi-krok-kouc-popis');
+  const dalsiKrokCasEl = document.getElementById('dalsi-krok-cas-popis');
+  const dalsiTexty = nejslabsiKey ? DALSI_KROK_TEXT[nejslabsiKey] : null;
+  if(dalsiKrokKoucEl) dalsiKrokKoucEl.textContent = dalsiTexty ? dalsiTexty.kouc : 'Zeptá se vás postupně, dokud společně nenajdete, proč se informace ve firmě ztrácejí a co s tím.';
+  if(dalsiKrokCasEl) dalsiKrokCasEl.textContent = dalsiTexty ? dalsiTexty.cas : 'Zjistíte, kolik z vašeho dne skutečně padá na komunikaci a dohledávání informací.';
 
   // Vsech 6 oblasti jako procento z maxima, ne uz jen nejslabsi
   const oblastiRows = document.getElementById('v-oblasti-rows');

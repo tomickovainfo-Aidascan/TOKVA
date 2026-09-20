@@ -178,6 +178,8 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:13px 24
 .detail-text{flex:1;}
 .detail-text strong{font-size:13px;font-weight:600;color:var(--dark);display:block;margin-bottom:2px;}
 .detail-text span{font-size:11px;color:var(--light);}
+.detail-odpoved{font-size:12px;color:var(--mid);margin-top:4px;line-height:1.5;}
+.detail-odpoved strong{font-size:12px;font-weight:600;color:var(--mid);}
 .detail-body{font-family:"DM Mono",monospace;font-size:11px;font-weight:500;padding:2px 8px;border-radius:3px;white-space:nowrap;}
 
 .vysledky-detail{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 22px;}
@@ -1669,6 +1671,10 @@ function zobrazVysledky() {
     const b = odpovedi[i] || 0;
     const barvy = ['#2a7a4f','#d97706','#b91c1c'];
     const popisky = ['Máte přehled','Částečný přehled','Chybí přehled'];
+    // Doplněna přesná vybraná odpověď (ne jen odvozený stav), ať je výsledek
+    // úplný a jde ho později otázku po otázce porovnat s dalším pokusem.
+    const moznostEl = document.querySelectorAll('#q'+i+' .moznost')[b];
+    const odpovedText = moznostEl ? moznostEl.querySelector('.moznost-text').innerHTML : '';
     const row = document.createElement('div');
     row.className = 'detail-row';
     row.innerHTML = `
@@ -1676,6 +1682,7 @@ function zobrazVysledky() {
       <div class="detail-text">
         <strong>${OTAZKY_NAZVY[i-1]}</strong>
         <span>${popisky[b]}</span>
+        <div class="detail-odpoved">${odpovedText}</div>
       </div>
       <div class="detail-body" style="background:${barvy[b]}22;color:${barvy[b]}">${b === 0 ? '✓' : b === 1 ? '~' : '!'}</div>
     `;

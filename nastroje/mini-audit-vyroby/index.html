@@ -1314,7 +1314,7 @@ function zobrazVysledky() {
   }
 
   if (nevimSet.size > 0 && maxS > 0) {
-    popis.textContent += ' Výsledek je orientační: ' + nevimSet.size + ' ' + (nevimSet.size === 1 ? 'otázku jste' : 'otázek jste') + ' označili jako "nevím", to je samo o sobě důležité zjištění, viz níž.';
+    popis.textContent += ' Výsledek je orientační: ' + nevimSet.size + ' ' + (nevimSet.size === 1 ? 'otázku jste' : nevimSet.size >= 2 && nevimSet.size <= 4 ? 'otázky jste' : 'otázek jste') + ' označili jako "nevím", to je samo o sobě důležité zjištění, viz níž.';
   }
 
   // Rozpis podle oblasti
