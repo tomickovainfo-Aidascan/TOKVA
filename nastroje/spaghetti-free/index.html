@@ -334,6 +334,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .modal p { font-size:14px; color:var(--mid); margin-bottom:18px; line-height:1.7; }
 .modal-input { width:100%; border:1px solid var(--border); border-radius:6px; padding:10px 14px; font-family:"DM Sans",sans-serif; font-size:14px; outline:none; margin-bottom:14px; }
 .modal-input:focus { border-color:var(--gold); }
+.modal-err { color:#c0392b; font-size:12.5px; margin:-8px 0 14px; }
 .modal-btns { display:flex; gap:10px; justify-content:flex-end; }
 .btn-modal-ok { background:var(--gold); color:var(--black); border:none; border-radius:6px; padding:9px 20px; font-family:"DM Sans",sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
 .btn-modal-cancel { background:transparent; color:var(--mid); border:1px solid var(--border); border-radius:6px; padding:9px 16px; font-family:"DM Sans",sans-serif; font-size:13px; cursor:pointer; }
@@ -738,6 +739,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <h3>Kolik je to ve skutečnosti?</h3>
     <p>Zadejte, kolik metrů odpovídá vzdálenosti, kterou jste právě označili na plánku.</p>
     <input type="number" class="modal-input" id="modal-kalibrace-m" min="0.1" step="0.1" placeholder="např. 5">
+    <div class="modal-err" id="modal-kalibrace-err" style="display:none;"></div>
     <div class="modal-btns">
       <button class="btn-modal-cancel" onclick="zavritModalKalibrace()">Zrušit</button>
       <button class="btn-modal-ok" onclick="ulozitKalibraci()">Uložit měřítko</button>
@@ -786,9 +788,17 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 const BARVY = ['#e9a91b','#e03c3c','#2a9d5c','#3b82f6','#8b5cf6','#f97316','#06b6d4','#ec4899'];
 let layout = null;
 let toolStartedOdeslano = false;
+let hasUnsavedPrace = false;
+window.addEventListener('beforeunload', function (e) {
+  if (hasUnsavedPrace) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 function oznamitZahajeni() {
   if (toolStartedOdeslano) return;
   toolStartedOdeslano = true;
+  hasUnsavedPrace = true;
   trackTokvaEvent('tool_started', { tool_name: 'spaghetti', tool_version: 'free' });
 }
 let toolDokoncenoOdeslano = false;
@@ -1027,6 +1037,8 @@ function kalibraceKlik(pos) {
   } else if (kalibraceBody.length === 2) {
     kalibracePxDist = Math.hypot(kalibraceBody[1].x - kalibraceBody[0].x, kalibraceBody[1].y - kalibraceBody[0].y);
     document.getElementById('modal-kalibrace-m').value = '';
+    const kalErrEl = document.getElementById('modal-kalibrace-err');
+    if (kalErrEl) kalErrEl.style.display = 'none';
     document.getElementById('modal-kalibrace').classList.add('visible');
     kreslit();
   }
@@ -1034,6 +1046,8 @@ function kalibraceKlik(pos) {
 
 function zavritModalKalibrace() {
   document.getElementById('modal-kalibrace').classList.remove('visible');
+  const kalErrEl = document.getElementById('modal-kalibrace-err');
+  if (kalErrEl) kalErrEl.style.display = 'none';
   kalibraceBody = [];
   mod = meritkoNastaveno ? 'kreslit' : null;
   if (mod === 'kreslit') setMod('kreslit');
@@ -1041,14 +1055,22 @@ function zavritModalKalibrace() {
 }
 
 function ulozitKalibraci() {
-  const realM = parseFloat(document.getElementById('modal-kalibrace-m').value);
-  document.getElementById('modal-kalibrace').classList.remove('visible');
-  if (!realM || realM <= 0 || kalibracePxDist <= 0) {
-    kalibraceBody = [];
-    mod = meritkoNastaveno ? 'kreslit' : null;
-    kreslit();
+  const vstup = document.getElementById('modal-kalibrace-m').value;
+  const realM = parseFloat(vstup);
+  const errEl = document.getElementById('modal-kalibrace-err');
+  // Validace PŘED zavřením okna - dřív se okno zavřelo vždy, i na neplatnou
+  // hodnotu (0, prázdné, záporné), měřítko se neuložilo a appka bez vysvětlení
+  // spadla zpátky do stavu před kalibrací, i když oba body byly pořád klikací.
+  if (!vstup || isNaN(realM) || realM <= 0) {
+    if (errEl) { errEl.textContent = 'Zadejte kladné číslo v metrech, třeba 5.'; errEl.style.display = 'block'; }
     return;
   }
+  if (kalibracePxDist <= 0) {
+    if (errEl) { errEl.textContent = 'Oba klikací body vyšly na stejném místě, zkuste kalibraci znovu.'; errEl.style.display = 'block'; }
+    return;
+  }
+  if (errEl) errEl.style.display = 'none';
+  document.getElementById('modal-kalibrace').classList.remove('visible');
   meritko = realM / kalibracePxDist;
   meritkoNastaveno = true;
   kalibraceBody = [];
@@ -1556,6 +1578,7 @@ function zavritModalReset() {
 
 function potvrditReset() {
   zavritModalReset();
+  hasUnsavedPrace = false;
   zakazky = [{ nazev: 'Zakázka 1', barva: BARVY[0], body: [] }];
   aktivniZakazka = 0;
   layout = null;

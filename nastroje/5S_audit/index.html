@@ -1075,8 +1075,8 @@ nav {
     <p class="hero-sub">Appka vás provede pěti kroky metody 5S na jednom konkrétním pracovišti - u každého kroku víte, co dělat a proč, a vyfotíte stav před a po. Bez registrace, jedno pracoviště zdarma bez časového omezení.</p>
     <div class="hero-meta">
       <span>Průvodce 5 kroky metody 5S</span>
-      <span>Foto před a po u každého kroku</span>
-      <span>Standard pracoviště na konci</span>
+      <span>Fotka jako důkaz u vybraných kroků</span>
+      <span>Poznámky u každého kroku</span>
     </div>
   </div>
 </div>
@@ -1120,7 +1120,7 @@ nav {
             <div class="steps-list">
               <div class="step-item"><div class="step-num">1</div><div>Založíte nové místo a projdete prvních pět kroků 5S</div></div>
               <div class="step-item"><div class="step-num">2</div><div>U každého kroku si přečtete, co dělat, a vyfotíte stav před a po</div></div>
-              <div class="step-item"><div class="step-num">3</div><div>Máte hotový základní standard pracoviště, který můžete kdykoli znovu zkontrolovat</div></div>
+              <div class="step-item"><div class="step-num">3</div><div>Máte pracoviště uklizené podle metody 5S, s fotkami a poznámkami, ke kterým se kdykoli vrátíte</div></div>
             </div>
           </div>
         </div>
@@ -1806,10 +1806,10 @@ function renderMain() {
           </div>
           <textarea class="poznamky-area" id="tab-udelal-${s.id}"
             placeholder="Co konkrétně jste udělali..."
-            onchange="ulozitPoznamku('${s.id}', this.value)">${poznamka}</textarea>
+            oninput="ulozitPoznamku('${s.id}', this.value)">${poznamka}</textarea>
           <textarea class="poznamky-area" id="tab-zbyva-${s.id}" style="display:none;"
             placeholder="Co ještě zbývá dokončit..."
-            onchange="ulozitZbyvaCo('${s.id}', this.value)">${zbyvaCo}</textarea>
+            oninput="ulozitZbyvaCo('${s.id}', this.value)">${zbyvaCo}</textarea>
           ${jePro ? `<button class="plan-btn" style="margin-top:8px;border-color:rgba(42,122,79,.4);color:var(--green);" onclick="pridatUkolZKroku('${s.id}')">+ Přidat do akčního plánu</button>` : ''}
         </div>
 
@@ -1930,7 +1930,7 @@ function standardBlockHtml(misto) {
       <div class="standard-foto-formats">JPG, JPEG, PNG</div>
     </div>
     <textarea class="poznamky-area" placeholder="Standard, např.: klíče zavěšené vlevo, aku vrtačka v označeném boxu, plocha stolu prázdná, odpadkový koš max. do ¾..."
-      onchange="ulozitStandardPravidla(this.value)">${std.pravidla || ''}</textarea>
+      oninput="ulozitStandardPravidla(this.value)">${std.pravidla || ''}</textarea>
   </div>`;
 }
 
