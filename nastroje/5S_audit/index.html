@@ -1321,6 +1321,19 @@ let session = null;
 let clenstvi = null;
 let jePro = false;
 
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: '5s_audit', tool_version: jePro ? 'pro' : 'free' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: '5s_audit', tool_version: jePro ? 'pro' : 'free' });
+}
+
 async function nacistPrihlaseniStav() {
   // Zabaleno v try/catch schválně: appka je pořád zdarma použitelná i offline,
   // nebo když se z jakéhokoli důvodu nenačte Supabase/auth.js (výpadek, adblock,
@@ -1590,6 +1603,7 @@ async function projektIdZeSelectu(selectId, novyNazevId) {
 async function ulozitMisto() {
   const nazev = document.getElementById('input-misto').value.trim();
   if (!nazev) return;
+  oznamitZahajeni();
   let projektId = null;
   if (clenstvi) {
     try {
@@ -2272,6 +2286,7 @@ function splnitS(sId) {
     misto.splneno[sId] = true;
 
     const splneno = Object.keys(misto.splneno).filter(k => misto.splneno[k]).length;
+    if (splneno === S_DATA.length) oznamitDokonceni();
 
     // Připomínka kontroly po 4S – jen ve Free appce. V Pro appce si kontrolu appka plánuje
     // ručně (sekce Kontroly, naplánovatKontrolu()), aby appka nepřepisovala vlastní zvolené
