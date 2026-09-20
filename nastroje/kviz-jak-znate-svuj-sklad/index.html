@@ -432,7 +432,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
     <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
-    <a class="nav-btn" href="https://tokva.cz/pro/" id="nav-pro-odkaz" style="text-decoration:none;">Víc o Tokva Pro</a>
+    <a class="nav-btn" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'kviz_sklad',placement:'nav'})" id="nav-pro-odkaz" style="text-decoration:none;">Víc o Tokva Pro</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
 </nav>
@@ -446,7 +446,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
     <p>Pro verze uloží tenhle výsledek do vašeho účtu. Kvíz pak stačí za čas zopakovat a hned uvidíte, jestli se přehled zlepšuje, nebo je stejný. Samotný kvíz zůstává navždy zdarma, bez přihlášení.</p>
     <div class="modal-err" id="pro-err" style="color:var(--mid);"></div>
     <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
-    <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://tokva.cz/pro/">Zjistit víc o Tokva Pro</a></div>
+    <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'kviz_sklad',placement:'modal'})">Zjistit víc o Tokva Pro</a></div>
   </div>
 </div>
 

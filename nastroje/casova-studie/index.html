@@ -1222,7 +1222,7 @@ nav {
     <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
-    <a class="nav-btn" href="https://tokva.cz/pro/" id="nav-pro-odkaz" style="text-decoration:none;">Víc o Tokva Pro</a>
+    <a class="nav-btn" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'casova_studie',placement:'nav'})" id="nav-pro-odkaz" style="text-decoration:none;">Víc o Tokva Pro</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
 </nav>
@@ -3064,7 +3064,7 @@ nacistPrihlaseniStav();
     <p style="font-size:13px;color:var(--mid);margin-bottom:14px;line-height:1.7;">Jeden den zůstává navždy zdarma, přesně jako dnes. Pro navíc po přihlášení uloží každý uzavřený den do vašeho účtu a ukáže trend produktivní práce napříč dny.</p>
     <p class="login-err" id="pro-err" style="color:var(--mid);"></p>
     <button class="modal-save" id="pro-btn" onclick="klikVModaluPro()">Přihlásit se</button>
-    <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Tokva Pro? <a href="https://tokva.cz/pro/">Zjistit víc o Tokva Pro</a></div>
+    <div class="login-link" style="margin-top:10px;" id="pro-link-wrap">Ještě nemáte Tokva Pro? <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'casova_studie',placement:'modal'})">Zjistit víc o Tokva Pro</a></div>
   </div>
 </div>
 

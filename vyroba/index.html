@@ -148,7 +148,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,38px); font-weig
 <div class="topbar">
   <a class="brand" href="https://tokva.cz/">Tokva <span>Gabriela Tomíčková</span></a>
   <div class="topbar-right">
-    <a class="topbar-login" href="https://tokva.cz/pro/" id="nav-pro-odkaz">Víc o Tokva Pro</a>
+    <a class="topbar-login" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'vyroba',placement:'nav'})" id="nav-pro-odkaz">Víc o Tokva Pro</a>
     <a class="topbar-login" href="https://tokva.cz/prihlaseni.html">Moje Tokva</a>
   </div>
 </div>
@@ -213,7 +213,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,38px); font-weig
   <div class="overit">
     <h2>Už jste něco změnili?</h2>
     <p>Zopakujte stejné měření a ověřte, jestli změna opravdu zabrala. V Tokva Pro budete mít výsledky a akční kroky uložené na jednom místě.</p>
-    <a href="https://tokva.cz/pro/">Zjistit více o Tokva Pro →</a>
+    <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'vyroba',placement:'section'})">Zjistit více o Tokva Pro →</a>
   </div>
 
   <div class="faq-block">

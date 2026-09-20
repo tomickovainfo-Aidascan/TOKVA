@@ -683,7 +683,7 @@ nav {
     <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
-    <a class="nav-btn" href="https://tokva.cz/pro/" id="nav-pro-odkaz" style="text-decoration:none;">Víc o Tokva Pro</a>
+    <a class="nav-btn" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'5x_proc',placement:'nav'})" id="nav-pro-odkaz" style="text-decoration:none;">Víc o Tokva Pro</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
     <button class="nav-btn" id="nav-historie-btn" onclick="otevritHistorii()" style="display:none;">Historie analýz</button>
   </div>
@@ -779,7 +779,7 @@ nav {
       <p style="font-size:13px;color:var(--mid);margin-bottom:16px;">Pro má neomezené analýzy, ukládá historii a založí navazující úkoly. Přihlaste se účtem Tokvy.</p>
       <div class="login-err" id="login-err"></div>
       <button class="login-btn" id="login-btn" onclick="klikProLogin()">Přihlásit se</button>
-      <div class="login-link">Nemáte Tokva Pro? <a href="https://tokva.cz/pro/">Zjistit víc o Tokva Pro</a> · <a href="javascript:void(0)" onclick="prepnoutKodBlok()">Zpět na analýzu zdarma</a></div>
+      <div class="login-link">Nemáte Tokva Pro? <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'5x_proc',placement:'modal'})">Zjistit víc o Tokva Pro</a> · <a href="javascript:void(0)" onclick="prepnoutKodBlok()">Zpět na analýzu zdarma</a></div>
     </div>
   </div>
 </div>

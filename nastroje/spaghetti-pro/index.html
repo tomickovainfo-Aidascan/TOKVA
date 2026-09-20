@@ -346,7 +346,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
-    <a class="nav-btn" href="https://tokva.cz/pro/" id="nav-pro-odkaz" style="text-decoration:none;">Víc o Tokva Pro</a>
+    <a class="nav-btn" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'spaghetti_pro',placement:'nav'})" id="nav-pro-odkaz" style="text-decoration:none;">Víc o Tokva Pro</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
 </nav>
@@ -402,7 +402,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <div class="prih-err" id="prih-err" style="display:none;">Přihlášení se nepodařilo. Zkuste to znovu nebo napište na tomickova.info@gmail.com</div>
     <button class="prih-btn" id="prih-btn" onclick="klikNaPrihlaseni()">Přihlásit se</button>
     <p style="margin-top:16px;font-size:12px;color:var(--light);">
-      Nemáte přístup? <a href="https://tokva.cz/pro/" style="color:var(--gold);text-decoration:none;font-weight:700;">Zjistit více o Tokva Pro</a>
+      Nemáte přístup? <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'spaghetti_pro',placement:'gate'})" style="color:var(--gold);text-decoration:none;font-weight:700;">Zjistit více o Tokva Pro</a>
     </p>
   </div>
 </div>

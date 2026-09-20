@@ -151,7 +151,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <a class="topbar-login" href="https://tokva.cz/akcni-plan/" id="nav-akcni-plan" style="display:none;">Akční plán</a>
     <a class="topbar-login" href="https://tokva.cz/projekty/" id="nav-projekty" style="display:none;">Projekty</a>
     <a class="topbar-login" href="https://tokva.cz/nastaveni-firmy/" id="nav-nastaveni-firmy" style="display:none;">Nastavení firmy</a>
-    <a class="topbar-login" href="https://tokva.cz/pro/" id="nav-pro-odkaz">Víc o Tokva Pro</a>
+    <a class="topbar-login" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'homepage',placement:'nav'})" id="nav-pro-odkaz">Víc o Tokva Pro</a>
     <a class="topbar-login" href="prihlaseni.html" id="nav-ucet-btn">Moje Tokva</a>
   </div>
 </div>
@@ -230,7 +230,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
       <div class="pro-item"><h4>Převedete zjištění do akčního plánu</h4><p>Co změnit, kdo to udělá a do kdy.</p></div>
       <div class="pro-item"><h4>Porovnáte stav před a po</h4><p>Uvidíte, jestli opatření skutečně pomohlo.</p></div>
     </div>
-    <a class="btn btn-gold" href="https://tokva.cz/pro/">Zjistit více o Tokva Pro</a>
+    <a class="btn btn-gold" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'homepage',placement:'section'})">Zjistit více o Tokva Pro</a>
   </section>
 
   <section class="audience">

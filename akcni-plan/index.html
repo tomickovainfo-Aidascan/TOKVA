@@ -312,7 +312,7 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
     <p id="prih-text">Akční plán je součástí Tokva Pro. Přihlaste se svým účtem Tokva.</p>
     <div class="prih-err" id="prih-err" style="display:none;">Přihlášení se nepodařilo. Zkuste to znovu nebo napište na tomickova.info@gmail.com</div>
     <button class="prih-btn" id="prih-btn" onclick="klikNaPrihlaseni()">Přihlásit se</button>
-    <p style="margin-top:16px;font-size:12px;color:var(--light);">Nemáte přístup? <a href="https://tokva.cz/pro/" style="color:var(--gold);text-decoration:none;font-weight:700;">Zjistit více o Tokva Pro</a></p>
+    <p style="margin-top:16px;font-size:12px;color:var(--light);">Nemáte přístup? <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'akcni_plan',placement:'gate'})" style="color:var(--gold);text-decoration:none;font-weight:700;">Zjistit více o Tokva Pro</a></p>
   </div>
 </div>
 
@@ -366,7 +366,7 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 </div>
 
 <div class="back-to-card">
-  <a href="https://tokva.cz/pro/" class="back-to-card-link">← Zpět na Tokva Pro</a>
+  <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'akcni_plan',placement:'back'})" class="back-to-card-link">← Zpět na Tokva Pro</a>
 </div>
 
 <footer>
