@@ -2109,6 +2109,9 @@ function renderZaznamy() {
     const prikladNote = document.getElementById('priklad-note');
     if (prikladNote) prikladNote.style.display = 'none';
     document.getElementById('summary-stats').innerHTML = `
+      <div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12.5px;color:var(--mid);line-height:1.6;margin-bottom:14px;">
+        Kategorie appka odhaduje automaticky podle textu, takže se občas splete - než se na procenta spolehnete, projděte si záznamy níž a u těch, co appka zařadila špatně, klikněte na štítek kategorie a opravte ho.
+      </div>
       <div class="produktivni-pomer">
         <div class="produktivni-cislo">${produktivniPct}%</div>
         <div>
