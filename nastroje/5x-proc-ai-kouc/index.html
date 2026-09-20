@@ -1000,6 +1000,18 @@ Začni tím, že uživatele přivítáš, stručně vysvětlíš co spolu budete
 
 let history = [];
 let isLoading = false;
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: '5x_proc', tool_version: 'free' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: '5x_proc', tool_version: 'free' });
+}
 
 // Stav přihlášení do Tokvy (Supabase), zjišťuje se při startu appky.
 // Free e-mailová brána zůstává úplně nezávisle na starém Apps Scriptu (viz
@@ -1135,6 +1147,7 @@ function addMsg(role, text) {
       chat.appendChild(div);
     }
 
+    oznamitDokonceni();
     renderOutput(outputRaw);
     return;
   }
@@ -1687,6 +1700,7 @@ async function odeslat() {
   const input = document.getElementById('input');
   const text = input.value.trim();
   if (!text || isLoading) return;
+  oznamitZahajeni();
 
   input.value = '';
   input.style.height = 'auto';
