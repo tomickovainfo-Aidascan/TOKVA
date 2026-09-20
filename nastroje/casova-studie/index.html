@@ -1545,6 +1545,18 @@ nav {
 <script src="../../auth.js"></script>
 <script>
 let zaznamy = JSON.parse(localStorage.getItem('cs_zaznamy') || '[]');
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: 'casova_studie', tool_version: 'free' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: 'casova_studie', tool_version: 'free' });
+}
 let recognition = null;
 let isRecording = false;
 let clockInterval = null;
@@ -1739,6 +1751,7 @@ function toggleMic() {
 
 function pridatZaznam(text) {
   if (!text) return;
+  oznamitZahajeni();
   const t = new Date();
   const zaznam = {
     id: Date.now(),
@@ -2207,6 +2220,7 @@ function toggleTip() {
 
 function konecMereni() {
   if (zaznamy.length === 0) return;
+  oznamitDokonceni();
   const posl = zaznamy[zaznamy.length - 1];
   // Pokud poslední záznam není "Konec", přidáme ho
   if (posl.text !== 'Konec') {
