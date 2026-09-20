@@ -719,8 +719,11 @@ function update() {
 
   // oprava: dřív se sazba násobila ještě jednou 1,34 (odvody), ale pole "Kolik vás stojí hodina
   // pracovníka celkem" už odvody obsahuje — dvojí započtení odstraněno
-  const mesic = celkem * 4.33 * mzda;
-  const rok = mesic * 12;
+  // oprava: roční částka se dřív počítala přes měsíc (celkem*4,33*12 = 51,96 týdne/rok),
+  // km a úvazek ale počítaly s 52 týdny/rok — sjednoceno na 52 týdnů/rok všude, měsíční
+  // částka je teď roční/12
+  const rok = celkem * 52 * mzda;
+  const mesic = rok / 12;
 
   // oprava: km se dřív nenásobily počtem lidí, počítaly se jen za jednoho člověka
   const km = (chuze / 60) * smeny * lide * 4 * 5 * 52;

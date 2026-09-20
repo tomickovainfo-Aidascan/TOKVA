@@ -939,9 +939,17 @@ let pocetPracovniku = 1;
 let nazev = '', pocetKusu = 0;
 let cykly = [], aktCyklus = null, aktivniKat = null;
 let toolStartedOdeslano = false;
+let hasUnsavedMereni = false;
+window.addEventListener('beforeunload', function (e) {
+  if (hasUnsavedMereni) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 function oznamitZahajeni() {
   if (toolStartedOdeslano) return;
   toolStartedOdeslano = true;
+  hasUnsavedMereni = true;
   trackTokvaEvent('tool_started', { tool_name: 'meric_plytvani', tool_version: 'pro' });
 }
 let toolDokoncenoOdeslano = false;
@@ -1248,7 +1256,7 @@ function ukoncit() {
   const minC = Math.min(...cykly.map(c=>c.celkem));
   const maxC = Math.max(...cykly.map(c=>c.celkem));
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+  const plyPct = Math.floor(avgC) > 0 ? (Math.floor(plyC)/Math.floor(avgC)*100).toFixed(0) : 0;
 
   document.getElementById('s-nazev').textContent = nazev;
   document.getElementById('s-meta').textContent = n + ' cyklů · ' + new Date().toLocaleDateString('cs-CZ') + ' · směna ' + delkaSmeny + 'h';
@@ -1268,7 +1276,7 @@ function ukoncit() {
   const maxCelkem = Math.max(...cykly.map(c=>c.celkem));
   porov.innerHTML = cykly.map((c,i) => {
     const pct = maxCelkem > 0 ? (c.celkem/maxCelkem*100).toFixed(1) : 0;
-    const plyPctC = c.celkem > 0 ? (plytvaniIds().reduce((s,k)=>s+(c.cas[k]||0),0)/c.celkem*100).toFixed(0) : 0;
+    const plyPctC = Math.floor(c.celkem) > 0 ? (Math.floor(plytvaniIds().reduce((s,k)=>s+(c.cas[k]||0),0))/Math.floor(c.celkem)*100).toFixed(0) : 0;
     const isMin = c.celkem === minC;
     const isMax = c.celkem === maxC;
     return `<div class="porov-row">
@@ -1281,7 +1289,7 @@ function ukoncit() {
   // Graf
   const graf = document.getElementById('graf');
   graf.innerHTML = vsechnyKat.map(k => {
-    const pct = avgC > 0 ? (avg[k]/avgC*100).toFixed(1) : 0;
+    const pct = Math.floor(avgC) > 0 ? Math.round(Math.floor(avg[k])/Math.floor(avgC)*100) : 0;
     const barva = STD_BARVY[k] || (vlastniOp.find(o=>o.id===k)||{}).barva || '#2a7a4f';
     return `<div class="g-row">
       <div class="g-lbl" style="color:${barva};font-size:11px;">${getNazev(k)}</div>
@@ -1368,19 +1376,19 @@ function ukoncit() {
   const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
   const TIPY_URL = '../spaghetti-free/';
   const TIPY_PRO = {
-    presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. <a href="${TIPY_URL}" target="_blank" style="color:var(--gold-dark);font-weight:700;">Nakreslit Spaghetti diagram</a> a vizuálně uvidíte, kde se trasy kříží a opakují.`,
-    hledani:`Hledání tvoří ${Math.round(avg.hledani/avgC*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
-    cekani:`Čekání tvoří ${Math.round(avg.cekani/avgC*100)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
-    papiry:`Administrativa tvoří ${Math.round(avg.papiry/avgC*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
-    priprava:`Příprava tvoří ${Math.round(avg.priprava/avgC*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
-    kontrola:`Kontrola tvoří ${Math.round(avg.kontrola/avgC*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
+    presun:`Přesuny tvoří ${Math.round(Math.floor(avg.presun)/Math.floor(avgC)*100)}% času. <a href="${TIPY_URL}" target="_blank" style="color:var(--gold-dark);font-weight:700;">Nakreslit Spaghetti diagram</a> a vizuálně uvidíte, kde se trasy kříží a opakují.`,
+    hledani:`Hledání tvoří ${Math.round(Math.floor(avg.hledani)/Math.floor(avgC)*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
+    cekani:`Čekání tvoří ${Math.round(Math.floor(avg.cekani)/Math.floor(avgC)*100)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
+    papiry:`Administrativa tvoří ${Math.round(Math.floor(avg.papiry)/Math.floor(avgC)*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
+    priprava:`Příprava tvoří ${Math.round(Math.floor(avg.priprava)/Math.floor(avgC)*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
+    kontrola:`Kontrola tvoří ${Math.round(Math.floor(avg.kontrola)/Math.floor(avgC)*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
   };
 
   let insHtml = '';
   let maNeco = false;
   Object.keys(PRAHY).forEach(k => {
     if (!avg[k]) return;
-    const pct = avgC > 0 ? Math.round(avg[k]/avgC*100) : 0;
+    const pct = Math.floor(avgC) > 0 ? Math.round(Math.floor(avg[k])/Math.floor(avgC)*100) : 0;
     if (pct >= PRAHY[k]) {
       maNeco = true;
       insHtml += `<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;">
@@ -1428,7 +1436,7 @@ function ulozitDoHistorie() {
   vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+  const plyPct = Math.floor(avgC) > 0 ? (Math.floor(plyC)/Math.floor(avgC)*100).toFixed(0) : 0;
   const plyKcRok = avgC > 0 ? Math.round((plyC/avgC) * hodinovaSazba * delkaSmeny * 250 * pocetPracovniku) : 0;
 
   const zaznam = {
@@ -1879,7 +1887,7 @@ function sestavit() {
   vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+  const plyPct = Math.floor(avgC) > 0 ? (Math.floor(plyC)/Math.floor(avgC)*100).toFixed(0) : 0;
 
   let body = 'CASOVA STUDIE PRO: ' + nazev.toUpperCase() + '\n';
   body += 'Datum: ' + new Date().toLocaleDateString('cs-CZ') + '  |  Cyklu: ' + n + '  |  Smena: ' + delkaSmeny + 'h\n\n';
@@ -1899,7 +1907,7 @@ function stahnoutCSV() {
   vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+  const plyPct = Math.floor(avgC) > 0 ? (Math.floor(plyC)/Math.floor(avgC)*100).toFixed(0) : 0;
 
   let csv = 'Casova studie Pro;' + nazev + '\n';
   csv += 'Datum;' + new Date().toLocaleDateString('cs-CZ') + '\n';
@@ -1929,7 +1937,7 @@ function tiskReport() {
   const minC = Math.min(...cykly.map(c=>c.celkem));
   const maxC = Math.max(...cykly.map(c=>c.celkem));
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+  const plyPct = Math.floor(avgC) > 0 ? (Math.floor(plyC)/Math.floor(avgC)*100).toFixed(0) : 0;
   const SMENA_SEK = delkaSmeny * 3600;
   const kusyZaSmenu = avgC > 0 ? Math.floor(SMENA_SEK / avgC) : 0;
   const idealniCyklus = avgC - plyC;
@@ -1950,7 +1958,7 @@ function tiskReport() {
   // Graf rozložení
   let grafRows = '';
   vsechnyKat.forEach(k => {
-    const pct = avgC > 0 ? (avg[k]/avgC*100).toFixed(1) : 0;
+    const pct = Math.floor(avgC) > 0 ? Math.round(Math.floor(avg[k])/Math.floor(avgC)*100) : 0;
     const barva = STD_BARVY[k] || '#2a7a4f';
     if (avg[k] > 0) {
       grafRows += `<tr>
@@ -1964,17 +1972,17 @@ function tiskReport() {
   // Doporučení
   const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
   const TIPY_TISK = {
-    presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. Nakreslete spaghetti diagram a vizuálně uvidíte kde se trasy kříží a opakují.`,
-    hledani:`Hledání tvoří ${Math.round(avg.hledani/avgC*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
-    cekani:`Čekání tvoří ${Math.round(avg.cekani/avgC*100)}% času. Hledejte příčinu — chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
-    papiry:`Administrativa tvoří ${Math.round(avg.papiry/avgC*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
-    priprava:`Příprava tvoří ${Math.round(avg.priprava/avgC*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
-    kontrola:`Kontrola tvoří ${Math.round(avg.kontrola/avgC*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
+    presun:`Přesuny tvoří ${Math.round(Math.floor(avg.presun)/Math.floor(avgC)*100)}% času. Nakreslete spaghetti diagram a vizuálně uvidíte kde se trasy kříží a opakují.`,
+    hledani:`Hledání tvoří ${Math.round(Math.floor(avg.hledani)/Math.floor(avgC)*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
+    cekani:`Čekání tvoří ${Math.round(Math.floor(avg.cekani)/Math.floor(avgC)*100)}% času. Hledejte příčinu — chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
+    papiry:`Administrativa tvoří ${Math.round(Math.floor(avg.papiry)/Math.floor(avgC)*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
+    priprava:`Příprava tvoří ${Math.round(Math.floor(avg.priprava)/Math.floor(avgC)*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
+    kontrola:`Kontrola tvoří ${Math.round(Math.floor(avg.kontrola)/Math.floor(avgC)*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
   };
   let doporuceni = '';
   Object.keys(PRAHY).forEach(k => {
     if (!avg[k]) return;
-    const pct = avgC > 0 ? Math.round(avg[k]/avgC*100) : 0;
+    const pct = Math.floor(avgC) > 0 ? Math.round(Math.floor(avg[k])/Math.floor(avgC)*100) : 0;
     if (pct >= PRAHY[k]) {
       const barva = STD_BARVY[k] || '#545454';
       doporuceni += `<tr>
@@ -2122,6 +2130,7 @@ function upravitNastaveni() {
   const provest = function () {
     clearInterval(timerInt); clearInterval(katInt);
     cykly = []; aktCyklus = null; aktivniKat = null; cyklusStart = null;
+    hasUnsavedMereni = false;
     document.querySelectorAll('#grid-hodnota .k-vlastni, #grid-plytvani .k-vlastni').forEach(b => b.remove());
     document.getElementById('uloz-list').innerHTML = '';
     document.getElementById('ulozene').style.display = 'none';
@@ -2143,6 +2152,7 @@ function upravitNastaveni() {
 
 function zacitZnovu() {
   cykly = []; aktCyklus = null; aktivniKat = null; cyklusStart = null;
+  hasUnsavedMereni = false;
   vlastniOp = []; vsechnyKat = []; vyrazeneStd = new Set(); pouziteNavrhy = new Set();
   document.getElementById('grid-hodnota').innerHTML = `
     <button class="kat-btn k-prace" onclick="setKat('prace','Práce','#2a7a4f')">

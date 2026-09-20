@@ -1239,7 +1239,10 @@ function zpetOtazka(q) {
 }
 
 function updateProgress() {
-  const count = Object.keys(odpovedi).length;
+  // "Nevím" se ukládá zvlášť do nevimSet, ne do odpovedi (viz vyberNevim) -
+  // pro postup se ale počítá jako zodpovězená otázka, jinak by ukazatel po
+  // dokončení všech otázek zůstal pod 10/10.
+  const count = Object.keys(odpovedi).length + nevimSet.size;
   document.getElementById('progress-fill').style.width = (count / 10 * 100) + '%';
   document.getElementById('progress-count').textContent = count + ' / 10';
 }

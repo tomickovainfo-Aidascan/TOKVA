@@ -737,9 +737,17 @@ let cykly = [], aktCyklus = null, aktivniKat = null;
 let timerInt = null, katInt = null, cyklusStart = null;
 let mereniSpusteno = false;
 let toolStartedOdeslano = false;
+let hasUnsavedMereni = false;
+window.addEventListener('beforeunload', function (e) {
+  if (hasUnsavedMereni) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 function oznamitZahajeni() {
   if (toolStartedOdeslano) return;
   toolStartedOdeslano = true;
+  hasUnsavedMereni = true;
   trackTokvaEvent('tool_started', { tool_name: 'meric_plytvani', tool_version: 'free' });
 }
 let toolDokoncenoOdeslano = false;
@@ -894,7 +902,15 @@ function ukoncit() {
   const minC = Math.min(...cykly.map(c=>c.celkem));
   const maxC = Math.max(...cykly.map(c=>c.celkem));
   const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = avgC > 0 ? (plyC/avgC*100).toFixed(0) : 0;
+  // Procenta počítáme ze stejných zaokrouhlených hodnot, jaké appka zobrazuje
+  // (fmtC ořezává na celé sekundy) - jinak by šlo zobrazit třeba "00:00" u
+  // kategorie a přitom nesouhlasící procento, ze kterého by se výsledek
+  // nedal ručně přepočítat.
+  const avgCFloor = Math.floor(avgC);
+  function pctZObrazenych(sekundy) {
+    return avgCFloor > 0 ? Math.round(Math.floor(sekundy)/avgCFloor*100) : 0;
+  }
+  const plyPct = pctZObrazenych(plyC);
 
   document.getElementById('s-nazev').textContent = nazev;
   document.getElementById('s-meta').textContent = n + ' cyklů · ' + new Date().toLocaleDateString('cs-CZ');
@@ -912,7 +928,7 @@ function ukoncit() {
   // Graf
   const graf = document.getElementById('graf');
   graf.innerHTML = KAT.map(k => {
-    const pct = avgC > 0 ? (avg[k]/avgC*100).toFixed(1) : 0;
+    const pct = pctZObrazenych(avg[k]);
     return `<div class="g-row">
       <div class="g-lbl" style="color:${KAT_BARVY[k]};font-size:11px;">${KAT_NAZVY[k]}</div>
       <div class="g-bg"><div class="g-bar" style="width:${pct}%;background:${KAT_BARVY[k]}"></div></div>
@@ -978,17 +994,17 @@ function ukoncit() {
   const ins = document.getElementById('insights');
   const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
   const TIPY = {
-    presun:`Přesuny tvoří ${Math.round(avg.presun/avgC*100)}% času. <a href="../spaghetti-free/" target="_blank" style="color:var(--gold-dark);font-weight:700;">Nakreslit Spaghetti diagram</a> a uvidíte, kde se trasy kříží a opakují.`,
-    hledani:`Hledání tvoří ${Math.round(avg.hledani/avgC*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
-    cekani:`Čekání tvoří ${Math.round(avg.cekani/avgC*100)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
-    papiry:`Administrativa tvoří ${Math.round(avg.papiry/avgC*100)}% času. Kolik z toho je nutné? Tady je prostor pro digitalizaci nebo zjednodušení.`,
-    priprava:`Příprava tvoří ${Math.round(avg.priprava/avgC*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
-    kontrola:`Kontrola tvoří ${Math.round(avg.kontrola/avgC*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
+    presun:`Přesuny tvoří ${pctZObrazenych(avg.presun)}% času. <a href="../spaghetti-free/" target="_blank" style="color:var(--gold-dark);font-weight:700;">Nakreslit Spaghetti diagram</a> a uvidíte, kde se trasy kříží a opakují.`,
+    hledani:`Hledání tvoří ${pctZObrazenych(avg.hledani)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
+    cekani:`Čekání tvoří ${pctZObrazenych(avg.cekani)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
+    papiry:`Administrativa tvoří ${pctZObrazenych(avg.papiry)}% času. Kolik z toho je nutné? Tady je prostor pro digitalizaci nebo zjednodušení.`,
+    priprava:`Příprava tvoří ${pctZObrazenych(avg.priprava)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
+    kontrola:`Kontrola tvoří ${pctZObrazenych(avg.kontrola)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
   };
   let insHtml = '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;">Kde začít</div>';
   let maNeco = false;
   Object.keys(PRAHY).forEach(k => {
-    const pct = avgC > 0 ? Math.round(avg[k]/avgC*100) : 0;
+    const pct = pctZObrazenych(avg[k]);
     if (pct >= PRAHY[k]) {
       maNeco = true;
       insHtml += `<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;">
