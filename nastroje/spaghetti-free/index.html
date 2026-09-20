@@ -785,6 +785,18 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 // =============================================
 const BARVY = ['#e9a91b','#e03c3c','#2a9d5c','#3b82f6','#8b5cf6','#f97316','#06b6d4','#ec4899'];
 let layout = null;
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: 'spaghetti', tool_version: 'free' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: 'spaghetti', tool_version: 'free' });
+}
 let canvas, ctx;
 let mod = null; // dokud se neklikne na "Zacit kreslit trasu", zadny mod neni aktivni
 let meritko = 1; // px -> metry (metru na 1px canvasu, v raw souradnicich canvasu)
@@ -863,6 +875,7 @@ function nahratLayout(input) {
 }
 
 function nacistSoubor(file) {
+  oznamitZahajeni();
   skrytUploadNotice();
   const jePdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
   if (jePdf) {
@@ -1486,6 +1499,7 @@ function vytvoritExportCanvas() {
 }
 
 function exportovatObrazek() {
+  oznamitDokonceni();
   const expCanvas = vytvoritExportCanvas();
   const link = document.createElement('a');
   link.download = 'spaghetti-diagram.png';
@@ -1494,6 +1508,7 @@ function exportovatObrazek() {
 }
 
 function tisknout() {
+  oznamitDokonceni();
   const expCanvas = vytvoritExportCanvas();
   const printWin = window.open('', '_blank');
   const img = expCanvas.toDataURL('image/png');

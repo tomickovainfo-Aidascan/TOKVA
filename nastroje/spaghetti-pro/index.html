@@ -888,6 +888,18 @@ function pouzivaSeViceTypu() {
   return new Set(zakazky.map(z => z.typ || 'clovek')).size > 1;
 }
 let layout = null;
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: 'spaghetti', tool_version: 'pro' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: 'spaghetti', tool_version: 'pro' });
+}
 let canvas, ctx;
 let mod = null; // dokud se neklikne na "Zacit kreslit trasu", zadny mod neni aktivni
 let meritko = 1; // px -> metry (metru na 1px canvasu, v raw souradnicich canvasu)
@@ -982,6 +994,7 @@ function nahratLayout(input) {
 }
 
 function nacistSoubor(file) {
+  oznamitZahajeni();
   skrytUploadNotice();
   const jePdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
   if (jePdf) {
@@ -2798,6 +2811,7 @@ function kresliPoznamky(ctx, canvasW, y) {
 }
 
 function exportovatObrazek() {
+  oznamitDokonceni();
   const srov = zjistiSrovnani();
   const measureCtx = document.createElement('canvas').getContext('2d');
   const legendH = zakazky.length * 22 + 50 + (srov ? 28 : 0) + vyskaPoznamek(measureCtx, canvas.width);
@@ -2955,6 +2969,7 @@ function kresliSrovnaniProTisk(ctx, srov, canvasW, y) {
 }
 
 function tisknout() {
+  oznamitDokonceni();
   // Vytvorit novy canvas pro tisk - bez CSS transformace
   const printWin = window.open('', '_blank');
   const expCanvas = document.createElement('canvas');
