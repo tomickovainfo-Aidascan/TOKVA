@@ -413,7 +413,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
     <h1>Kolik vás <em>reálně</em> stojí<br>1 m² vašeho skladu?</h1>
     <p>Zadejte čísla ze svého provozu. Kalkulačka zahrne nájem nebo odpisy, energie, povinné revize, pojištění i odpisy vybavení – a ukáže celkový náklad na metr čtvereční za měsíc.</p>
     <div class="hero-meta">
-      <span>3 základní čísla</span>
+      <span>Pár základních čísel</span>
       <span>Do 2 minut</span>
       <span>Výsledek v Kč/m²</span>
     </div>
@@ -1348,7 +1348,11 @@ function oznacitPresnost() {
     const el = document.getElementById(id);
     if (!el) return;
     celkem++;
-    const jeVase = +el.value !== +el.defaultValue;
+    // Nulová hodnota se do "vyplněno" nepočítá, i když se liší od výchozí
+    // hodnoty pole - nula do výsledku nic nepřidá, takže by ukazatel po
+    // ručním zadání dvou nul tvrdil "vyplněno 2 z 31", přestože byl součet
+    // pořád stejný, jako by položky zůstaly nedotčené.
+    const jeVase = +el.value !== +el.defaultValue && +el.value !== 0;
     if (jeVase) vasich++;
     const valEl = document.getElementById(id + '-val');
     if (valEl) valEl.classList.toggle('zadano', jeVase);
@@ -1390,9 +1394,17 @@ function fmtTis(n) {
 // synchronně, aby uživatel mohl zadat i reálnou smluvní částku mimo krok
 // posuvníku (např. přesný nájem nebo naměřenou spotřebu energie).
 let toolStartedOdeslano = false;
+let hasUnsavedVypocet = false;
+window.addEventListener('beforeunload', function (e) {
+  if (hasUnsavedVypocet) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 function oznamitZahajeni() {
   if (toolStartedOdeslano) return;
   toolStartedOdeslano = true;
+  hasUnsavedVypocet = true;
   trackTokvaEvent('tool_started', { tool_name: 'kalkulacka_nakladu_skladu', tool_version: 'free' });
 }
 let toolDokoncenoOdeslano = false;
@@ -1416,9 +1428,14 @@ function syncFromNumber(id) {
   if (isNaN(v)) return;
   const min = +range.min, max = +range.max;
   if (v < min) v = min;
-  if (v > max) v = max;
+  // Posuvník má vlastní horní mez jen kvůli tomu, aby šel prstem/myší
+  // rozumně ovládat - dřív se stejná mez tiše vnutila i číselnému poli, takže
+  // třeba zadaný nájem 999 999 999 Kč appka potichu přepsala na 400 000 Kč
+  // a přitom ho označila jako "✓ vaše". Teď posuvník jen vizuálně dojede na
+  // svoje maximum, ale číselné pole (a tedy i výpočet, viz getVal výš) si
+  // ponechá přesně to, co uživatel zadal.
   num.value = v;
-  range.value = v;
+  range.value = Math.min(v, max);
   oznamitZahajeni();
   update();
   oznamitDokonceni();

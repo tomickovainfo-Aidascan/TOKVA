@@ -667,6 +667,11 @@ nav {
 .dalsi-nastroj-tag{font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:8px;}
 .dalsi-nastroj-nazev{font-family:"Poppins",sans-serif;font-size:14.5px;font-weight:700;color:var(--dark);margin-bottom:6px;}
 .dalsi-nastroj-popis{font-size:12.5px;color:var(--mid);margin-bottom:14px;line-height:1.5;}
+.dalsi-nastroj-card.doporuceno{background:var(--white);border:2px solid var(--gold);box-shadow:0 4px 16px rgba(233,169,27,.18);position:relative;}
+.dalsi-nastroj-card.doporuceno .dalsi-nastroj-tag{color:var(--gold-dark);}
+.dalsi-doporuceno-badge{display:none;background:var(--gold);color:var(--black);font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:4px 10px;border-radius:100px;margin-bottom:10px;}
+.dalsi-nastroj-card.doporuceno .dalsi-doporuceno-badge{display:inline-block;}
+.dalsi-nastroje-vysvetleni{font-size:13.5px;color:var(--mid);margin:-6px 0 20px;display:none;}
 .dalsi-nastroj-btn{display:inline-block;background:var(--dark);color:var(--white);font-family:"DM Sans",sans-serif;font-size:12.5px;font-weight:700;padding:9px 16px;border-radius:4px;text-decoration:none;}
 @media (max-width:860px){.dalsi-nastroje-grid{grid-template-columns:1fr 1fr;}}
 @media (max-width:600px){.dalsi-nastroje-grid{grid-template-columns:1fr;}}
@@ -828,38 +833,39 @@ nav {
 
 <div class="dalsi-nastroje-wrap" id="dalsi-nastroje">
   <h2 class="content-card-title">Podle čeho pokračovat</h2>
+  <p class="dalsi-nastroje-vysvetleni" id="dalsi-nastroje-vysvetleni"></p>
   <div class="dalsi-nastroje-grid">
-    <div class="dalsi-nastroj-card">
+    <div class="dalsi-nastroj-card" id="dalsi-karta-5s">
       <div class="dalsi-nastroj-tag">Uspořádání, hledání, chybí standard</div>
       <div class="dalsi-nastroj-nazev">5S</div>
       <div class="dalsi-nastroj-popis">Zavedete pořádek a standard, který sám drží.</div>
       <a href="../5S_audit/" target="_blank" class="dalsi-nastroj-btn">Otevřít 5S audit</a>
     </div>
-    <div class="dalsi-nastroj-card">
+    <div class="dalsi-nastroj-card" id="dalsi-karta-spaghetti">
       <div class="dalsi-nastroj-tag">Pohyb, špatná dispozice</div>
       <div class="dalsi-nastroj-nazev">Spaghetti diagram</div>
       <div class="dalsi-nastroj-popis">Nakreslíte skutečnou trasu a uvidíte, kde se dá zkrátit.</div>
       <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Spaghetti diagram</a>
     </div>
-    <div class="dalsi-nastroj-card">
+    <div class="dalsi-nastroj-card" id="dalsi-karta-meric">
       <div class="dalsi-nastroj-tag">Čas, čekání</div>
       <div class="dalsi-nastroj-nazev">Měřič plýtvání</div>
       <div class="dalsi-nastroj-popis">Změříte, kolik času kde reálně padá.</div>
       <a href="../meric-plytvani-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Měřič plýtvání</a>
     </div>
-    <div class="dalsi-nastroj-card">
+    <div class="dalsi-nastroj-card" id="dalsi-karta-casova">
       <div class="dalsi-nastroj-tag">Přetížení administrativou</div>
       <div class="dalsi-nastroj-nazev">Časová studie mého dne</div>
       <div class="dalsi-nastroj-popis">Zjistíte, co vám ve dni skutečně bere čas.</div>
       <a href="../casova-studie/" target="_blank" class="dalsi-nastroj-btn">Otevřít Časovou studii</a>
     </div>
-    <div class="dalsi-nastroj-card">
+    <div class="dalsi-nastroj-card" id="dalsi-karta-kalkulacka-sklad">
       <div class="dalsi-nastroj-tag">Prostor, kapacita</div>
       <div class="dalsi-nastroj-nazev">Kalkulačka nákladů provozu</div>
       <div class="dalsi-nastroj-popis">Spočítáte, co vás stojí využití prostoru.</div>
       <a href="../kalkulacka-nakladu-skladu/" target="_blank" class="dalsi-nastroj-btn">Otevřít Kalkulačku nákladů skladu</a>
     </div>
-    <div class="dalsi-nastroj-card">
+    <div class="dalsi-nastroj-card" id="dalsi-karta-kalkulacka-ztrat">
       <div class="dalsi-nastroj-tag">Finanční dopad</div>
       <div class="dalsi-nastroj-nazev">Kalkulačka ztrát</div>
       <div class="dalsi-nastroj-popis">Odhadnete, kolik vás problém stojí v Kč.</div>
@@ -1173,7 +1179,12 @@ function formatText(text) {
 // spoléhá strojově (uložení do historie, založení úkolů), tak radši
 // ošetřit i tuhle odchylku, než aby se celý výstup tiše ztratil.
 function ocistitRadek(line) {
-  return line.replace(/^[\s#*_>\-]+/, '').replace(/\*\*/g, '');
+  return line.replace(/^[\s#*_>\-]+/, '').replace(/\*\*/g, '')
+    // AI občas napíše "5x PROČ" místo instruovaného "5× PROČ" - bez týhle
+    // normalizace by se sekce "3. ŘETĚZEC 5× PROČ" nenašla podle přesného
+    // řetězce a celý nadpis i s markdownem by skončil jako obyčejný text
+    // v předchozí sekci.
+    .replace(/\b5[xX]\b(?=\s*PROČ)/, '5×');
 }
 
 // Vytáhne text jedné očíslované sekce z výstupu (podle stejných klíčů
@@ -1210,8 +1221,40 @@ function extrahovatSekci(raw, klic) {
 // Appka jede dál i bez tohohle - export do TXT funguje vždy, uložení a
 // historie jsou navíc. Dokud konverzace běží, appka dopisuje do stejného
 // řádku (aktivniRunId), nezakládá pokaždé nový.
+// Free appka nemá účet ani Supabase - bez tohohle refresh smazal celý
+// rozjetý rozhovor i hotový výstup, appka o tom navíc nijak nevarovala.
+// Ukládá se do localStorage (ne sessionStorage), ať přežije i zavření
+// a znovuotevření karty, dokud appku uživatel sám nepustí novou analýzou.
+const LS_STAV_KEY = '5x_proc_stav_free';
+
+function ulozitStavLokalne(hotovo, raw) {
+  try {
+    localStorage.setItem(LS_STAV_KEY, JSON.stringify({
+      history, posledniProblem, raw: raw || posledniRawVystup || null, hotovo: !!hotovo, cas: Date.now()
+    }));
+  } catch (e) {
+    console.warn('Rozpracovanou analýzu se nepodařilo uložit lokálně.', e);
+  }
+}
+
+function smazatStavLokalne() {
+  try { localStorage.removeItem(LS_STAV_KEY); } catch (e) {}
+}
+
+function nacistStavLokalne() {
+  try {
+    const raw = localStorage.getItem(LS_STAV_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
 async function ulozitStavAnalyzy(hotovo, raw) {
-  if (!jePro || !clenstvi) return;
+  if (!jePro || !clenstvi) {
+    ulozitStavLokalne(hotovo, raw);
+    return;
+  }
   const problem = (raw && extrahovatSekci(raw, '2. UPŘESNĚNÝ PROBLÉM')) || posledniProblem || '5× Proč analýza';
   const pricina = raw ? extrahovatSekci(raw, '4. KOŘENOVÁ PŘÍČINA') : '';
   const payload = {
@@ -1428,8 +1471,68 @@ async function ulozitZarazeniAnalyzy(raw, btn) {
 
 // ulozit=false při zobrazení staré (už hotové) analýzy z historie - jinak by
 // appka přepsala aktuálně rozjetý řádek (aktivniRunId) obsahem té staré.
+// Klíčová slova z kořenové příčiny, doporučeného opatření a přispívajících
+// faktorů rozhodnou, která z šesti karet "Podle čeho pokračovat" appku
+// nejvíc sedí - dřív appka ukazovala všech šest karet stejně důležitě bez
+// ohledu na výsledek analýzy.
+const DALSI_KEYWORDS = {
+  '5s': ['standard', 'nepořádek', 'neuspořádan', 'chybí pořádek', 'hledá', 'hledání', 'označen', 'vytřídit', 'nepřehledn', '5s'],
+  'spaghetti': ['pohyb', 'chůze', 'chodí', 'trasa', 'vzdálenost', 'dispozice', 'rozmístění', 'přesun', 'layout'],
+  'meric': ['čekání', 'čeká', 'prostoj', 'zpoždění', 'prodlev', 'plýtvání', 'nevyužit'],
+  'casova': ['administrativ', 'papírování', 'přetížen', 'vytížen', 'přesčas'],
+  'kalkulacka-sklad': ['prostor', 'kapacita skladu', 'metr čtvereční', 'm²', 'nájem', 'plocha'],
+  'kalkulacka-ztrat': ['finanč', ' kč', 'koruna', 'náklad', 'ztrát', 'rozpočet']
+};
+const DALSI_VYSVETLENI = {
+  '5s': 'Vaše analýza míří na uspořádání a standard pracoviště - tomu nejlíp sedí 5S.',
+  'spaghetti': 'Vaše analýza míří na pohyb a rozmístění - tomu nejlíp sedí Spaghetti diagram.',
+  'meric': 'Vaše analýza míří na čekání a ztrátu času - tomu nejlíp sedí Měřič plýtvání.',
+  'casova': 'Vaše analýza míří na administrativu a vytížení - tomu nejlíp sedí Časová studie.',
+  'kalkulacka-sklad': 'Vaše analýza míří na využití prostoru - tomu nejlíp sedí Kalkulačka nákladů skladu.',
+  'kalkulacka-ztrat': 'Vaše analýza míří na finanční dopad - tomu nejlíp sedí Kalkulačka ztrát.'
+};
+
+function zvyraznitDoporucenyNastroj(raw) {
+  document.querySelectorAll('.dalsi-nastroj-card.doporuceno').forEach(el => {
+    el.classList.remove('doporuceno');
+    const badge = el.querySelector('.dalsi-doporuceno-badge');
+    if (badge) badge.remove();
+  });
+  const vysvetleniEl = document.getElementById('dalsi-nastroje-vysvetleni');
+  if (vysvetleniEl) { vysvetleniEl.style.display = 'none'; vysvetleniEl.textContent = ''; }
+
+  const text = (
+    (extrahovatSekci(raw, '4. KOŘENOVÁ PŘÍČINA') || '') + ' ' +
+    (extrahovatSekci(raw, '7. DOPORUČENÉ OPATŘENÍ') || '') + ' ' +
+    (extrahovatSekci(raw, '5. PŘISPÍVAJÍCÍ FAKTORY') || '')
+  ).toLowerCase();
+  if (!text.trim()) return;
+
+  let nejlepsiKlic = null, nejlepsiSkore = 0;
+  Object.keys(DALSI_KEYWORDS).forEach(klic => {
+    const skore = DALSI_KEYWORDS[klic].reduce((s, kw) => s + (text.includes(kw) ? 1 : 0), 0);
+    if (skore > nejlepsiSkore) { nejlepsiSkore = skore; nejlepsiKlic = klic; }
+  });
+  if (!nejlepsiKlic) return; // žádná shoda dost jasná, necháme všech 6 karet rovnocenných
+
+  const karta = document.getElementById('dalsi-karta-' + nejlepsiKlic);
+  if (!karta) return;
+  karta.classList.add('doporuceno');
+  const badge = document.createElement('div');
+  badge.className = 'dalsi-doporuceno-badge';
+  badge.textContent = 'Sedí k vaší analýze';
+  karta.insertBefore(badge, karta.firstChild);
+  if (vysvetleniEl) {
+    vysvetleniEl.textContent = DALSI_VYSVETLENI[nejlepsiKlic] || '';
+    vysvetleniEl.style.display = 'block';
+  }
+  const grid = karta.parentElement;
+  if (grid && grid.firstChild !== karta) grid.insertBefore(karta, grid.firstChild);
+}
+
 function renderOutput(raw, ulozit = true) {
   posledniRawVystup = raw;
+  zvyraznitDoporucenyNastroj(raw);
   const chat = document.getElementById('chat');
   const card = document.createElement('div');
   card.className = 'output-card msg ai';
@@ -1488,7 +1591,10 @@ function renderOutput(raw, ulozit = true) {
       const rest = line.slice(matchedKey.length).replace(/^:\s*/, '');
       if (rest) currentText.push(rest);
     } else if (currentKey) {
-      currentText.push(raw_line);
+      // I po normalizaci v ocistitRadek se občas nějaká odchylka od
+      // instruovaného formátu nenajde jako nová sekce a skončí jako obyčejný
+      // text - aspoň se nezobrazí syrové "##" před textem.
+      currentText.push(raw_line.replace(/^\s*#+\s*/, ''));
     }
   });
   flush();
@@ -1646,7 +1752,10 @@ function showTyping() {
   div.className = 'typing';
   div.id = 'typing';
   div.innerHTML = `<div class="msg-avatar" style="width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--dark);display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:900;font-size:11px;flex-shrink:0;">AI</div>
-    <div class="typing-dots"><span></span><span></span><span></span></div>`;
+    <div style="display:flex;flex-direction:column;gap:5px;">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+      <div id="typing-status" style="font-size:11px;color:var(--light);display:none;"></div>
+    </div>`;
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
@@ -1654,6 +1763,16 @@ function showTyping() {
 function hideTyping() {
   const t = document.getElementById('typing');
   if (t) t.remove();
+}
+
+// Zobrazí text pod tečkami "píše" - appka dřív během celého čekání (běžně
+// do 20 s, při opakování i déle) neukazovala vůbec nic navíc, jen animaci
+// bez vysvětlení, jak dlouho to obvykle trvá nebo že appka zkouší znovu.
+function nastavitTypingStatus(text) {
+  const el = document.getElementById('typing-status');
+  if (!el) return;
+  el.textContent = text;
+  el.style.display = text ? 'block' : 'none';
 }
 
 // Volá backend (Google Apps Script). Appka dřív posílala celou historii
@@ -1668,12 +1787,19 @@ function hideTyping() {
 // výpadku, ať appka nespadne hned na první přechodnou chybu sítě.
 async function zavolatAI(messages, pokus) {
   pokus = pokus || 0;
+  // Tvrdý časový limit - dřív appka na odpověď čekala neomezeně dlouho, a
+  // při výpadku backendu zůstaly tečky "píše" viset navždy beze slova
+  // vysvětlení nebo možnosti to zkusit jinak.
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 45000);
   try {
     const res = await fetch(LOGIN_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'ai', messages: messages })
+      body: JSON.stringify({ action: 'ai', messages: messages }),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     const data = await res.json();
     if (data && data.type === 'error' && /at least one message/i.test(data.error?.message || '')) {
       // Backend ještě neumí POST tělo přečíst (stará verze Apps Scriptu) -
@@ -1682,9 +1808,16 @@ async function zavolatAI(messages, pokus) {
     }
     return data;
   } catch (e) {
+    clearTimeout(timeoutId);
     if (pokus < 2) {
+      nastavitTypingStatus('Spojení se nepovedlo, zkouším to znovu...');
       await new Promise(r => setTimeout(r, 1200 * (pokus + 1)));
       return zavolatAI(messages, pokus + 1);
+    }
+    if (e.name === 'AbortError') {
+      const timeoutErr = new Error('Časový limit vypršel, server neodpověděl do 45 sekund.');
+      timeoutErr.isTimeout = true;
+      throw timeoutErr;
     }
     throw e;
   }
@@ -1714,9 +1847,13 @@ async function odeslat() {
   // Uložit hned, ať se otázka neztratí, i kdyby odpověď selhala nebo
   // uživatel stránku mezitím obnovil.
   ulozitStavAnalyzy(false, null);
+  // Odpověď obvykle trvá kolem 20 s - appka to po chvíli řekne nahlas, ať
+  // to nevypadá, že se nic neděje.
+  const dlouheCekaniTimer = setTimeout(() => nastavitTypingStatus('Odpovědi obvykle trvají do 20 sekund...'), 6000);
 
   try {
     const data = await zavolatAI(history);
+    clearTimeout(dlouheCekaniTimer);
     hideTyping();
 
     const reply = data.content?.[0]?.text || 'Omlouvám se, něco se pokazilo.';
@@ -1728,9 +1865,13 @@ async function odeslat() {
     if (!reply.includes('===VÝSTUP===')) ulozitStavAnalyzy(false, null);
 
   } catch (e) {
+    clearTimeout(dlouheCekaniTimer);
     hideTyping();
     console.error('Chyba odeslat:', e);
-    addMsg('ai', 'Nepodařilo se spojit se serverem. Vaše otázka zůstala uložená, zkuste to prosím znovu za chvíli.');
+    const zprava = e.isTimeout
+      ? 'Server neodpověděl do 45 sekund. Vaše otázka zůstala uložená, zkuste to prosím znovu.'
+      : 'Nepodařilo se spojit se serverem. Vaše otázka zůstala uložená, zkuste to prosím znovu za chvíli.';
+    addMsg('ai', zprava);
   }
 
   isLoading = false;
@@ -1858,9 +1999,29 @@ function resetChat() {
   posledniProblem = '';
   posledniRawVystup = null;
   aktivniRunId = null;
+  smazatStavLokalne();
   document.getElementById('chat').innerHTML = '';
   start();
   });
+}
+
+// Přehraje lokálně uloženou konverzaci zpátky do appky přesně tak, jako
+// pokracovatVAnalyze() dělá pro Pro appku z historie v Supabase - jen ze
+// localStorage. Poslední zpráva s ===VÝSTUP=== se přehraje přes addMsg()
+// úplně stejně, takže se sama znovu vykreslí i hotový výsledek.
+function obnovitRozpracovanouLokalne(ulozeno) {
+  const chat = document.getElementById('chat');
+  chat.innerHTML = '';
+  history = (ulozeno.history || []).slice();
+  posledniProblem = ulozeno.posledniProblem || '';
+  posledniRawVystup = null;
+  history.forEach(m => {
+    if (m.role === 'user' && m.content === 'Začni.') return;
+    addMsg(m.role === 'assistant' ? 'ai' : 'user', m.content);
+  });
+  const iw = document.querySelector('.input-wrap');
+  if (iw) iw.style.display = 'block';
+  document.getElementById('input').focus();
 }
 
 async function start() {
@@ -2043,7 +2204,12 @@ async function init() {
   }
   if (sessionStorage.getItem('pristup_ok') === '1') {
     document.getElementById('login-overlay').style.display = 'none';
-    start();
+    const ulozeno = nacistStavLokalne();
+    if (ulozeno && ulozeno.history && ulozeno.history.length > 0) {
+      obnovitRozpracovanouLokalne(ulozeno);
+    } else {
+      start();
+    }
   }
 }
 

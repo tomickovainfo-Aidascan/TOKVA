@@ -542,6 +542,25 @@ nav {
   flex-shrink:0;
   padding-top:3px;
 }
+.zaznam-konec {
+  background:none;
+  border:none;
+  padding:6px 14px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--light);
+  font-size:11.5px;
+  font-weight:700;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+}
+.zaznam-konec::before, .zaznam-konec::after {
+  content:'';
+  flex:1;
+  height:1px;
+  background:var(--border);
+}
 .zaznam-del {
   background:transparent;
   border:none;
@@ -1416,7 +1435,7 @@ nav {
     <div class="hodnota-hodiny-row">
       <label for="hodnota-hodiny">Hodnota vaší hodiny (nepovinné, jen pro přepočet na Kč)</label>
       <div class="hodnota-hodiny-input-wrap">
-        <input type="number" id="hodnota-hodiny" class="hodnota-hodiny-input" placeholder="např. 700" min="0" step="10" onchange="nastavHodnotuHodiny(this.value)">
+        <input type="number" id="hodnota-hodiny" class="hodnota-hodiny-input" placeholder="např. 700" min="0" step="10" oninput="nastavHodnotuHodiny(this.value)">
         <span>Kč/hod</span>
       </div>
     </div>
@@ -1884,6 +1903,13 @@ function renderZaznamy() {
   }
 
   container.innerHTML = zaznamy.map((z, i) => {
+    // "Konec" je jen časová značka konce dne, ne skutečná aktivita - dřív se
+    // ale vykresloval úplně stejně jako běžný záznam (s kategorií "Ostatní"
+    // a délkou "...", editovatelný a smazatelný), což vypadalo jako
+    // nedokončená aktivita, ne jako konec měření.
+    if (z.text === 'Konec') {
+      return `<div class="zaznam-konec">Konec dne v ${z.cas}</div>`;
+    }
     const next = zaznamy[i + 1];
     const duration = next ? formatDuration(next.timestamp - z.timestamp) : '...';
 
@@ -2131,9 +2157,9 @@ function nastavHodnotuHodiny(val) {
 // KATEGORIE
 const KATEGORIE = [
   { id:'haseni',        label:'🔥 Hašení problémů', css:'kat-haseni',       color:'#e05032',
-    kw:['reklamace','reklamaci','reklamaci od','porucha','poruchu','poruše','havárie','havárii','porouchal','porouchala','porouchalo','nefunguje','nefunkční','výpadek','zpoždění','zdržení','stížnost','stížnosti','urgentní','krizov','vadné','vadný','vadná','zásah','nehoda','škoda','rozbil','rozbila','rozbité','závada','problém','problémem','problém s'] },
+    kw:['reklamace','reklamaci','reklamaci od','porucha','poruchu','poruše','havárie','havárii','porouchal','porouchala','porouchalo','nefunguje','nefunkční','výpadek','zpoždění','zdržení','stížnost','stížnosti','urgentní','krizov','vadné','vadný','vadná','zásah','nehoda','škoda','rozbil','rozbila','rozbité','závada','problém','problémem','problém s','hledání chybějícího','hledám chybějící','chybějící materiál','chybějícího materiálu'] },
   { id:'produktivni',   label:'Produktivní práce', css:'kat-produktivni',   color:'#6ee7a8',
-    kw:['práce','pracuji','pracuju','pracovat','pracovní','práci','práci na','nabídka','projekt','tvorba','analýza','píšu','programuji','řeším','připravuji','studuji','učím','kreslím','navrhuji','kalkulace','plánuji','strategie','kóduju','tvořím','dělám','dělat','dokončuji','kontroluji výrobu','vyrábím','montáž','montuju','seřizuji'] },
+    kw:['práce','pracuji','pracuju','pracovat','pracovní','práci','práci na','nabídka','projekt','tvorba','analýza','píšu','programuji','řeším','připravuji','příprava','připraven','studuji','učím','kreslím','navrhuji','kalkulace','plánuji','strategie','kóduju','tvořím','dělám','dělat','dokončuji','kontroluji výrobu','kontrola','zpracování','zpracovávám','vyrábím','výroba','montáž','montuju','seřizuji','balení','balím','expedice','expedič','vychystávání','vychystávám','nakládka','vykládka','skladování'] },
   { id:'komunikace',    label:'Komunikace',         css:'kat-komunikace',    color:'#7ec8f5',
     kw:['email','mail','telefon','volám','volání','volám','telefonuji','schůzka','meeting','zprávy','teams','zoom','konzultace','hovor','whatsapp','píšu zprávu','videohovor','poradu','porada','online hovor'] },
   { id:'administrativa',label:'Administrativa',     css:'kat-administrativa',color:'#c4a8f5',
