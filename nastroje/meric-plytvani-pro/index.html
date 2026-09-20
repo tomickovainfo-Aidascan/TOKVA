@@ -938,6 +938,18 @@ let hodinovaSazba = 250;
 let pocetPracovniku = 1;
 let nazev = '', pocetKusu = 0;
 let cykly = [], aktCyklus = null, aktivniKat = null;
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: 'meric_plytvani', tool_version: 'pro' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: 'meric_plytvani', tool_version: 'pro' });
+}
 let timerInt = null, katInt = null, cyklusStart = null;
 
 function plytvaniIds() {
@@ -1115,6 +1127,7 @@ function zacitNovyCyklus() {
 function setKat(kat, nazevKat, barva) {
   if (!aktCyklus) return;
   if (!cyklusStart) {
+    oznamitZahajeni();
     cyklusStart = Date.now();
     clearInterval(timerInt); timerInt = setInterval(updateTimer, 100);
     clearInterval(katInt); katInt = setInterval(updateKat, 100);
@@ -1223,6 +1236,7 @@ function togglePoznamka(idx) {
 // SOUHRN
 // =============================================
 function ukoncit() {
+  oznamitDokonceni();
   clearInterval(timerInt); clearInterval(katInt);
   document.getElementById('mereni').style.display = 'none';
   document.getElementById('souhrn').style.display = 'block';

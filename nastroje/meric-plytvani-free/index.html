@@ -736,6 +736,18 @@ let posledniPlytvaniKcRok = '';
 let cykly = [], aktCyklus = null, aktivniKat = null;
 let timerInt = null, katInt = null, cyklusStart = null;
 let mereniSpusteno = false;
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: 'meric_plytvani', tool_version: 'free' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: 'meric_plytvani', tool_version: 'free' });
+}
 
 function zobrazProTooltip(id) {
   const el = document.getElementById(id);
@@ -783,6 +795,7 @@ function zacitNovyCyklus() {
 function setKat(kat, nazevKat, barva) {
   if (!aktCyklus || !mereniSpusteno) return;
   if (!cyklusStart) {
+    oznamitZahajeni();
     cyklusStart = Date.now();
     clearInterval(timerInt);
     timerInt = setInterval(updateTimer, 100);
@@ -868,6 +881,7 @@ function pridatRadek(n, c) {
 }
 
 function ukoncit() {
+  oznamitDokonceni();
   clearInterval(timerInt); clearInterval(katInt);
   document.getElementById('setup').style.display = 'none';
   document.getElementById('mereni').style.display = 'none';
