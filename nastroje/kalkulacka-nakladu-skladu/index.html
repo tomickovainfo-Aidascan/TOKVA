@@ -1190,7 +1190,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div><div class="pro-final-item-title">Export do CSV</div><div class="pro-final-item-desc">Porovnání výpočtů appka vyexportuje do CSV k dalšímu zpracování.</div></div>
       </div>
     </div>
-    <button class="pro-final-cta" onclick="otevritModalPro()">Přihlásit se do Pro</button>
+    <button class="pro-final-cta" onclick="otevritModalPro()">Odemknout v Tokva Pro</button>
   </div>
 </div>
 
@@ -1208,7 +1208,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 <div class="modal-overlay" id="modal-pro" style="display:none;">
   <div class="modal-box">
     <div class="modal-box-head">
-      <h3>Odemknout Pro</h3>
+      <h3>Odemknout v Tokva Pro</h3>
       <button class="modal-box-close" onclick="zavritModalPro()">×</button>
     </div>
     <p>Pro verze umí uložit víc výpočtů (různé sklady nebo období), porovnat je vedle sebe a exportovat do CSV. Samotný výpočet zůstává navždy zdarma, bez přihlášení.</p>
@@ -1579,9 +1579,21 @@ function update() {
   });
 
   // ── Pro: zapamatovat poslední výsledek pro uložení (vč. rozpadu kategorií pro trend) ──
+  // "vstupy" navíc drží všech 31 jednotlivých položek (ne jen 7 souhrnných
+  // kategorií) - bez nich nešlo uložený výpočet znovu otevřít zpátky do
+  // formuláře, ani porovnat jednotlivé položky (elektřinu, revize apod.)
+  // mezi dvěma uloženými výpočty, jen souhrnné kategorie.
   posledniVysledek = {
     m2Mesic: m2Mesic, celkem: celkem, celkemRok: celkem * 12, m2Rok: m2Rok, plocha: plocha, mode: mode,
-    kategorie: { zakladni: zakladni, energie: energie, pojisteni: pojisteni, revize: revize, provoz: provoz, odpisy: odpisy, ostatni: ostatniPlusRezervaMesic }
+    kategorie: { zakladni: zakladni, energie: energie, pojisteni: pojisteni, revize: revize, provoz: provoz, odpisy: odpisy, ostatni: ostatniPlusRezervaMesic },
+    vstupy: {
+      plocha: plocha, najemne: najemne, sprava: sprava, budova: budova, odpis_budova: odpisBudova, pozemek: pozemek, urok: urok,
+      elektrina: elektrina, vytapeni: vytapeni, voda: voda, dan: dan, poj_budova: pojBudova, poj_odp: pojOdp,
+      udrzba: udrzba, elektrorevize: elektrorev, eps: eps, ezs: ezs, zdvihaci: zdvihaci, hasici: hasici, plyn: plyn, ostatni_rev: ostatniRev,
+      uklid: uklid, ostraha: ostraha, odpad: odpad, facility: facility, deratizace: deratizace,
+      regaly: regaly, odpis_regaly: odpisRegaly, dok_technika: dokTechnika, led: led, vrata: vrata, ostatni_vyb: ostatniVyb, odpis_vybaveni: odpisVybaveni,
+      internet: internet, certifikace: certifikace, rezerva: rezervaPct
+    }
   };
 
   // ── Přesnost výsledku: kolik hodnot je vašich, kolik jsou orientační odhady ──
@@ -1654,6 +1666,19 @@ let vysledekZAdresyOtevren = false;
 
 const NAZVY_KAT = { zakladni: 'základní náklad', energie: 'energie', pojisteni: 'daně a pojištění', revize: 'údržba a revize', provoz: 'provozní služby', odpisy: 'odpisy vybavení', ostatni: 'ostatní a rezerva' };
 
+// Jen skutečné Kč položky (bez let odepisování a procent, ty se nedají
+// srovnávat jako "nižší je líp") - viz porovnání v otevritModalPorovnani().
+const VSTUPY_NAZVY = {
+  najemne: 'Nájem', sprava: 'Správa budovy', budova: 'Hodnota budovy', pozemek: 'Hodnota pozemku',
+  elektrina: 'Elektřina', vytapeni: 'Vytápění', voda: 'Voda',
+  dan: 'Daň z nemovitosti', poj_budova: 'Pojištění budovy', poj_odp: 'Pojištění odpovědnosti',
+  udrzba: 'Údržba', elektrorevize: 'Revize elektro', eps: 'Revize EPS', ezs: 'Revize EZS',
+  zdvihaci: 'Revize zdvihacích zařízení', hasici: 'Revize hasicích přístrojů', plyn: 'Revize plynu', ostatni_rev: 'Ostatní revize',
+  uklid: 'Úklid', ostraha: 'Ostraha', odpad: 'Odpad', facility: 'Facility management', deratizace: 'Deratizace',
+  regaly: 'Hodnota regálů', dok_technika: 'Dokovací technika', led: 'LED osvětlení', vrata: 'Vrata', ostatni_vyb: 'Ostatní vybavení',
+  internet: 'Internet a IT', certifikace: 'Certifikace'
+};
+
 // Převod řádku ze Supabase (tool_runs) do stejného tvaru, jaký mají položky
 // v lokálním poli `ulozene` - zbytek appky (akční plán, export, porovnání,
 // detail) pak vůbec neřeší, odkud záznam pochází.
@@ -1671,7 +1696,8 @@ function radekZToolRun(r) {
     mesic: d.mesic,
     rok: d.rok,
     m2rok: d.m2rok,
-    kategorie: d.kategorie || {}
+    kategorie: d.kategorie || {},
+    vstupy: d.vstupy || null
   };
 }
 
@@ -1843,7 +1869,8 @@ function ulozitVypocet() {
       mesic: Math.round(posledniVysledek.celkem),
       rok: Math.round(posledniVysledek.celkemRok),
       m2rok: Math.round(posledniVysledek.m2Rok),
-      kategorie: posledniVysledek.kategorie
+      kategorie: posledniVysledek.kategorie,
+      vstupy: posledniVysledek.vstupy
     };
     ulozene.push(polozka);
     localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
@@ -1895,7 +1922,8 @@ async function odeslatVypocetDoSupabase(polozka) {
         mesic: polozka.mesic,
         rok: polozka.rok,
         m2rok: polozka.m2rok,
-        kategorie: polozka.kategorie
+        kategorie: polozka.kategorie,
+        vstupy: polozka.vstupy
       }
     }).select().single();
     if (errRun) throw errRun;
@@ -2301,11 +2329,31 @@ function otevritModalDetailVysledku(i) {
       '<th style="text-align:left;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Kategorie</th>' +
       '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Kč/měsíc</th>' +
       '</tr></thead><tbody>' + radkyKat + '</tbody></table></div>' : '') +
-    (u.toolRunId ? '<button class="btn-gold" style="width:100%;margin-top:16px;" onclick="zavritModalDetailVysledku();otevritModalAkcniPlan(\'' + u.id + '\')">+ Přidat do akčního plánu</button>' : '');
+    (u.vstupy ? '<button class="btn-gold" style="width:100%;margin-top:16px;" onclick="nacistUlozenyDoFormulare(' + i + ')">Načíst do kalkulačky</button>' :
+      '<p style="font-size:12px;color:var(--light);margin-top:14px;">Tenhle výpočet byl uložený ještě předtím, než appka uměla vrátit celý formulář zpátky - jednotlivé položky proto nejde znovu načíst, jen souhrn nahoře.</p>') +
+    (u.toolRunId ? '<button class="btn-gold" style="width:100%;margin-top:10px;" onclick="zavritModalDetailVysledku();otevritModalAkcniPlan(\'' + u.id + '\')">+ Přidat do akčního plánu</button>' : '');
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
 }
 function zavritModalDetailVysledku() {
   document.getElementById('modal-detail-vysledku').style.display = 'none';
+}
+
+// Vrátí uložený výpočet zpátky do editovatelného formuláře - dřív šlo jen
+// nahlédnout do souhrnu (7 kategorií), ale jednotlivých 31 položek se appka
+// znovu nechytila, takže se výpočet nedal navázat a pokračovat v úpravách.
+function nacistUlozenyDoFormulare(i) {
+  const u = posledniHistorie[i];
+  if (!u || !u.vstupy) return;
+  Object.keys(u.vstupy).forEach(function (id) {
+    const range = document.getElementById(id);
+    const num = document.getElementById(id + '-num');
+    const hodnota = u.vstupy[id];
+    if (num) num.value = hodnota;
+    if (range) range.value = Math.min(hodnota, +range.max);
+  });
+  zavritModalDetailVysledku();
+  setMode(u.mode === 'vlastni' ? 'vlastni' : 'najem');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Porovnání dvou vybraných výpočtů - funguje stejně, ať jde o stejný sklad v jiný
@@ -2345,6 +2393,20 @@ function otevritModalPorovnani() {
     const va = (a.kategorie || {})[k], vb = (b.kategorie || {})[k];
     if (va != null || vb != null) radky += radek(NAZVY_KAT[k], va, vb, 'Kč', true);
   });
+
+  // Porovnání dřív ukazovalo jen celkové částky a 7 souhrnných kategorií,
+  // ne jednotlivé původní položky (elektřina, revize, pojištění, konkrétní
+  // vybavení...) - u obou vybraných výpočtů, které mají uložené jednotlivé
+  // vstupy (viz vstupy u update() výš), appka teď ukáže i tohle.
+  if (a.vstupy && b.vstupy) {
+    radky += '<tr><td colspan="4" style="padding:14px 6px 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--light);border-bottom:1px solid var(--border);">Jednotlivé položky (Kč)</td></tr>';
+    Object.keys(VSTUPY_NAZVY).forEach(function (k) {
+      const va = a.vstupy[k], vb = b.vstupy[k];
+      if (va != null && vb != null) radky += radek(VSTUPY_NAZVY[k], va, vb, 'Kč', true);
+    });
+  } else {
+    radky += '<tr><td colspan="4" style="padding:10px 6px;font-size:12px;color:var(--light);">Jeden z vybraných výpočtů byl uložený ještě předtím, než appka uměla porovnat jednotlivé položky - u něj je k dispozici jen souhrn kategorií výše.</td></tr>';
+  }
 
   const tabulka = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;">' +
     '<thead><tr>' +

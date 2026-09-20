@@ -524,6 +524,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
       <div class="uloz-btn-row" style="margin-top:16px;">
         <button class="btn-gold" style="width:100%;" onclick="ulozitVypocetZtrat()">💾 Uložit tento výpočet</button>
+        <div id="s-ulozeno-stav" style="font-size:12.5px;margin-top:8px;display:none;"></div>
       </div>
 
       <!-- ZAŘADIT K PROJEKTU (Pro) -->
@@ -578,7 +579,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 <div class="modal-overlay" id="modal-pro" style="display:none;">
   <div class="modal-box">
     <div class="modal-box-head">
-      <h3>Odemknout Pro</h3>
+      <h3>Odemknout v Tokva Pro</h3>
       <button class="modal-box-close" onclick="zavritModalPro()">×</button>
     </div>
     <p>Pro verze umí uložit výpočet do vašeho účtu, zařadit ho k projektu a rovnou z něj založit úkol v akčním plánu. Samotná kalkulačka zůstává navždy zdarma, bez přihlášení.</p>
@@ -669,10 +670,25 @@ function oznamitDokonceni() {
   trackTokvaEvent('tool_completed', { tool_name: 'kalkulacka_ztrat', tool_version: 'free' });
 }
 
+// Appka schválně nepřidává trvalé ukládání vstupů - refresh je má dál mazat
+// (uložení výsledku je záměrně jen Pro funkce). Ale dřív appka nechala
+// rozpracovaná čísla zmizet i tichým odchodem na přihlášení (celostránkové
+// přesměrování smaže celý JS stav v paměti) úplně beze slova - teď na to
+// před odchodem upozorní, ať uživatel může přihlášení odložit a výpočet
+// nejdřív dokončit nebo si čísla poznamenat.
+let hasRozpracovanyVypocet = false;
+window.addEventListener('beforeunload', function (e) {
+  if (hasRozpracovanyVypocet) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
 // slider <-> ruční číslo, obousměrně, se stejnými mezemi
 function syncFromRange(id) {
   document.getElementById(id + "-num").value = document.getElementById(id).value;
   oznamitZahajeni();
+  hasRozpracovanyVypocet = true;
   update();
   oznamitDokonceni();
 }
@@ -687,6 +703,7 @@ function syncFromNumber(id) {
   num.value = v;
   range.value = v;
   oznamitZahajeni();
+  hasRozpracovanyVypocet = true;
   update();
   oznamitDokonceni();
 }
@@ -748,6 +765,19 @@ function update() {
   document.getElementById("val-kamion").textContent = kamionh.toFixed(1) + " h/týd";
 
   aktualizovatNejvetsiZtratu({ chuze: chuzeh, prostoje: prostojes, admin: adminh, kamion: kamionh }, celkem);
+
+  // Snímek aktuálního výpočtu pro uložení do historie/projektu (Pro) - dřív
+  // se ukládala jen textová roční částka, po otevření uloženého výpočtu
+  // pak nebylo k dispozici ani jedno z devíti vstupů, rozpad ztrát, hodiny,
+  // kilometry ani doporučení.
+  posledniVypocetPlny = {
+    vstupy: { lide, smeny, delkaSmeny, mzda, chuze, admin, kamionu, kamionCas, prostoje },
+    vysledky: { chuzeh, adminh, kamionh, prostojes, celkem, rok, mesic, km, uvazek },
+    doporuceni: {
+      nazev: document.getElementById('top-loss-name').textContent,
+      popis: document.getElementById('top-loss-sub').textContent
+    }
+  };
 }
 
 function aktualizovatNejvetsiZtratu(hodnoty, celkem) {
@@ -790,6 +820,7 @@ let jePro = false;
 // toolRunId naposledy uloženého výpočtu - panely Zařadit k projektu / Přidat
 // do akčního plánu se váží vždy na tenhle výpočet, viz ulozitVypocetZtrat().
 let posledniToolRunId = null;
+let posledniVypocetPlny = null;
 
 update();
 
@@ -874,6 +905,8 @@ document.addEventListener('click', function (e) {
 function ulozitVypocetZtrat() {
   if (!jePro) { otevritModalPro(); return; }
   posledniToolRunId = null;
+  const ulozenoStavEl = document.getElementById('s-ulozeno-stav');
+  if (ulozenoStavEl) ulozenoStavEl.style.display = 'none';
   document.getElementById('s-projekt-stav').textContent = '';
   document.getElementById('s-projekt-select').value = '';
   document.getElementById('s-projekt-novy-nazev').value = '';
@@ -895,6 +928,7 @@ function ulozitVypocetZtrat() {
 
 async function odeslatZtratyDoSupabase() {
   if (!jePro || !clenstvi) return;
+  const stavEl = document.getElementById('s-ulozeno-stav');
   try {
     var rok = document.getElementById('res-rok').textContent;
     var vysledek = await supabaseClient.from('tool_runs').insert({
@@ -905,12 +939,22 @@ async function odeslatZtratyDoSupabase() {
       hlavni_hodnota_jednotka: 'Kč/rok',
       hlavni_hodnota_typ: 'potencial_kc',
       hlavni_hodnota_text: rok,
-      data: { rok: rok }
+      data: Object.assign({ rok: rok }, posledniVypocetPlny || {})
     }).select().single();
     if (vysledek.error) throw vysledek.error;
     if (vysledek.data) posledniToolRunId = vysledek.data.id;
+    if (stavEl) {
+      stavEl.style.color = 'var(--green, #2a7a4f)';
+      stavEl.textContent = '✓ Výpočet uložen.';
+      stavEl.style.display = 'block';
+    }
   } catch (e) {
     console.warn('Výpočet se nepodařilo uložit do Supabase.', e);
+    if (stavEl) {
+      stavEl.style.color = '#c0392b';
+      stavEl.textContent = 'Výpočet se nepodařilo uložit, zkuste to prosím znovu.';
+      stavEl.style.display = 'block';
+    }
   }
 }
 

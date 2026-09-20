@@ -409,8 +409,8 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 <!-- Modal Pro odemčení -->
 <div class="modal-overlay" id="modal-pro" style="display:none;">
   <div class="modal">
-    <div class="modal-title"><span>Odemknout Pro</span><button class="modal-close" onclick="document.getElementById('modal-pro').style.display='none';">×</button></div>
-    <p>Pro uloží váš výsledek do historie a porovná ho s příštím vyplněním, ať vidíte, jestli se komunikace ve firmě zlepšuje nebo zhoršuje.</p>
+    <div class="modal-title"><span>Odemknout v Tokva Pro</span><button class="modal-close" onclick="document.getElementById('modal-pro').style.display='none';">×</button></div>
+    <p>Pro uloží váš výsledek do historie a porovná ho s příštím vyplněním, ať vidíte, jestli se komunikace ve firmě zlepšuje nebo zhoršuje. Samotný kvíz zůstává navždy zdarma, bez přihlášení.</p>
     <p class="login-err" id="pro-err" style="color:rgba(255,255,255,.5);"></p>
     <button class="modal-save" onclick="klikVModaluPro()">Přihlásit se</button>
     <div class="login-link" style="margin-top:10px;">Ještě nemáte Pro? <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'kviz_komunikace',placement:'modal'})">Zjistit víc o Tokva Pro</a></div>
@@ -757,7 +757,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
           </div>
         </div>
       </div>
-      <button class="pro-final-cta" onclick="document.getElementById('modal-pro').style.display='flex';">Odemknout Tokva Pro</button>
+      <button class="pro-final-cta" onclick="document.getElementById('modal-pro').style.display='flex';">Odemknout v Tokva Pro</button>
     </div>
 
   </div>
@@ -1139,6 +1139,10 @@ function renderUlozitNeboTym() {
     // appka umí). Karta teď zůstává vidět vždy, klikUlozitVysledek() sama
     // řeší jak Pro (uloží), tak Free (nabídne Pro) případ.
     card.style.display = '';
+    // Popisek tlačítka odpovídá tomu, co doopravdy udělá - Free appka jím
+    // jen otevře nabídku Pro, teprve přihlášená Pro appka jím opravdu uloží.
+    const btnUlozit = document.getElementById('btn-ulozit-vysledek');
+    if (btnUlozit) btnUlozit.textContent = jePro ? 'Uložit tento výsledek' : 'Odemknout v Tokva Pro';
   }
 }
 

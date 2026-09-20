@@ -898,6 +898,39 @@ const RENDER_DETAIL = {
   '5x-proc': function (d) {
     if (!d.raw) return '';
     return '<div class="detail-raw">' + escapovat(d.raw) + '</div>';
+  },
+  'kalkulacka-ztrat': function (d) {
+    if (!d.vysledky) return '';
+    const v = d.vstupy || {}, r = d.vysledky, dop = d.doporuceni || {};
+    const fmtKc = n => Math.round(n).toLocaleString('cs-CZ') + ' Kč';
+    let html = '<div class="detail-fallback"><strong>Roční potenciál úspory: ' + fmtKc(r.rok) + '</strong><br>' +
+      'Měsíčně: ' + fmtKc(r.mesic) + ' · Hodin/týden: ' + r.celkem.toFixed(1) + ' · Km/rok: ' + Math.round(r.km).toLocaleString('cs-CZ') + ' · Úvazků: ' + r.uvazek.toFixed(1) + '</div>';
+    html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Vstupy</strong><br>' +
+      'Počet lidí: ' + escapovat(String(v.lide)) + ' · Směn: ' + escapovat(String(v.smeny)) + ' · Délka směny: ' + escapovat(String(v.delkaSmeny)) + ' h · Sazba: ' + fmtKc(v.mzda) + '/h<br>' +
+      'Zbytečná chůze: ' + escapovat(String(v.chuze)) + ' min/směnu · Administrativa: ' + escapovat(String(v.admin)) + ' min/den · Čekání: ' + escapovat(String(v.prostoje)) + ' min/směnu · Kamiony: ' + escapovat(String(v.kamionu)) + '× po ' + escapovat(String(v.kamionCas)) + ' min</div>';
+    html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Rozpad ztrát (h/týden)</strong><br>' +
+      'Chůze: ' + r.chuzeh.toFixed(1) + ' · Administrativa: ' + r.adminh.toFixed(1) + ' · Kamiony: ' + r.kamionh.toFixed(1) + ' · Čekání: ' + r.prostojes.toFixed(1) + '</div>';
+    if (dop.nazev) {
+      html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Doporučení</strong><br>' + escapovat(dop.nazev) + (dop.popis ? '<br>' + escapovat(dop.popis) : '') + '</div>';
+    }
+    return html;
+  },
+  'kalkulacka-m2': function (d) {
+    if (!d.kategorie) return '';
+    const NAZVY_KAT_M2 = { zakladni: 'Základní náklad', energie: 'Energie', pojisteni: 'Daně a pojištění', revize: 'Údržba a revize', provoz: 'Provozní služby', odpisy: 'Odpisy vybavení', ostatni: 'Ostatní a rezerva' };
+    const fmtKc = n => Math.round(n).toLocaleString('cs-CZ') + ' Kč';
+    let html = '<div class="detail-fallback"><strong>' + fmtKc(d.mesic) + ' / měsíc</strong> (' + fmtKc(d.rok) + ' / rok)<br>' +
+      'Plocha: ' + escapovat(String(d.plocha)) + ' m² · ' + (d.mode === 'vlastni' ? 'vlastní budova' : 'pronájem') + '</div>';
+    html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Rozpad podle kategorií (Kč/měsíc)</strong><br>' +
+      Object.keys(NAZVY_KAT_M2).map(function (k) { return d.kategorie[k] != null ? NAZVY_KAT_M2[k] + ': ' + fmtKc(d.kategorie[k]) : ''; }).filter(Boolean).join(' · ') +
+      '</div>';
+    if (d.vstupy) {
+      html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Vybrané položky (Kč/rok)</strong><br>' +
+        'Elektřina: ' + fmtKc(d.vstupy.elektrina) + ' · Vytápění: ' + fmtKc(d.vstupy.vytapeni) + ' · Voda: ' + fmtKc(d.vstupy.voda) + '<br>' +
+        'Údržba a revize: ' + fmtKc(d.vstupy.udrzba) + ' · Pojištění budovy: ' + fmtKc(d.vstupy.poj_budova) + ' · Pojištění vybavení: ' + fmtKc(d.vstupy.poj_odp) +
+        '</div>';
+    }
+    return html;
   }
 };
 
