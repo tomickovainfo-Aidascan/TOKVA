@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJWW5ZX4J9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJWW5ZX4J9');
+
+// Sdílené odesílání vlastních událostí do GA4 - no-op, dokud gtag
+// neexistuje (např. návštěvník ještě neodsouhlasil cookies).
+window.trackTokvaEvent = function (eventName, parameters = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", eventName, {
+    ...parameters,
+    page_path: window.location.pathname
+  });
+};
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zásady ochrany osobních údajů | Tokva</title>
+<meta name="description" content="Zásady ochrany osobních údajů pro appky a účet Tokva - jaké údaje zpracovávám, proč, a komu je předávám.">
+<meta name="author" content="Gabriela Tomíčková">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tokva.cz/ochrana-osobnich-udaju/">
+<meta property="og:title" content="Zásady ochrany osobních údajů | Tokva">
+<meta property="og:description" content="Jaké údaje appky a účet Tokva zpracovávají, proč, a komu je předávám.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:image" content="https://tokva.cz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zásady ochrany osobních údajů | Tokva">
+<meta name="twitter:description" content="Jaké údaje appky a účet Tokva zpracovávají, proč, a komu je předávám.">
+<meta name="twitter:image" content="https://tokva.cz/og-image.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b; --gold-dark: #976e12; --gold-light: #fdf3d9;
+  --black: #000000; --dark: #111111; --mid: #545454; --silver: #a8a6a6;
+  --white: #ffffff; --paper: #fafaf8; --border: #e8e8e8;
+  --border2: #e8e6e0; --border-strong: #e2e0da;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--dark); line-height:1.7; font-size:16px; }
+
+.topbar { background:var(--black); color:var(--white); padding:14px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:200; border-bottom:2px solid var(--gold); flex-wrap:wrap; row-gap:8px; }
+.topbar .brand { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; text-decoration:none; color:var(--white); }
+.topbar .brand span { color:var(--gold); }
+.topbar-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; row-gap:8px; }
+.topbar-login { color:var(--gold); text-decoration:none; font-size:13px; font-weight:700; border:1px solid var(--gold); padding:7px 16px; border-radius:6px; }
+
+.main { padding:44px 24px 100px; max-width:760px; margin:0 auto; }
+.back-link { display:inline-block; font-size:13px; font-weight:600; color:var(--mid); text-decoration:none; margin-bottom:22px; }
+.back-link:hover { color:var(--gold-dark); }
+.eyebrow { font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-dark); margin-bottom:14px; }
+h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,34px); font-weight:900; letter-spacing:-0.5px; margin-bottom:10px; line-height:1.2; }
+.updated { font-size:13px; color:var(--silver); margin-bottom:28px; }
+.intro { font-size:15.5px; color:var(--mid); margin-bottom:40px; max-width:680px; }
+
+.legal-section { margin-bottom:34px; }
+.legal-section h2 { font-family:'Poppins',sans-serif; font-size:18px; font-weight:800; margin-bottom:12px; }
+.legal-section p { font-size:14.5px; color:var(--mid); margin-bottom:12px; max-width:700px; }
+.legal-section ul { margin:0 0 12px 20px; }
+.legal-section li { font-size:14.5px; color:var(--mid); margin-bottom:8px; max-width:680px; }
+.legal-section a { color:var(--gold-dark); font-weight:700; text-decoration:none; }
+.legal-section a:hover { text-decoration:underline; }
+.legal-section strong { color:var(--dark); }
+
+@media(max-width:600px){
+  .topbar{padding:14px 16px;}
+  .main{padding:32px 16px 80px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="https://tokva.cz/">Tokva <span>Gabriela Tomíčková</span></a>
+  <div class="topbar-right">
+    <span class="topbar-login" id="nav-ucet-info" style="display:none;cursor:default;"></span>
+    <span class="topbar-login" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
+    <a class="topbar-login" href="https://tokva.cz/moje-tokva/" id="nav-moje-tokva" style="display:none;">Přehled</a>
+    <a class="topbar-login" href="https://tokva.cz/akcni-plan/" id="nav-akcni-plan" style="display:none;">Akční plán</a>
+    <a class="topbar-login" href="https://tokva.cz/projekty/" id="nav-projekty" style="display:none;">Projekty</a>
+    <a class="topbar-login" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'ochrana_osobnich_udaju',placement:'nav'})" id="nav-pro-odkaz">Víc o Tokva Pro</a>
+    <a class="topbar-login" href="https://tokva.cz/prihlaseni.html" id="nav-ucet-btn">Moje Tokva</a>
+  </div>
+</div>
+
+<main class="main">
+  <a class="back-link" href="https://tokva.cz/">← Zpět na Tokvu</a>
+  <div class="eyebrow">Právní dokumenty</div>
+  <h1>Zásady ochrany osobních údajů</h1>
+  <p class="updated">Poslední aktualizace: září 2026</p>
+  <p class="intro">Vaše soukromí beru vážně. Tahle stránka vysvětluje, jaké osobní údaje appky a účet Tokva zpracovávají, proč, a komu je případně předávám. Pokud máte jakékoliv otázky, napište mi na <a href="mailto:tomickova.info@gmail.com">tomickova.info@gmail.com</a>.</p>
+
+  <div class="legal-section">
+    <h2>1. Správce osobních údajů</h2>
+    <p>Správcem vašich osobních údajů je:</p>
+    <p><strong>Gabriela Tomíčková</strong><br>
+    Příčná 49, Vrchlabí<br>
+    IČO: 75905311<br>
+    Email: tomickova.info@gmail.com<br>
+    Telefon: +420 608 221 039</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>2. Jaké osobní údaje zpracovávám</h2>
+    <p>Zpracovávám jen údaje, které mi sami poskytnete používáním appek nebo účtu Tokva:</p>
+    <ul>
+      <li><strong>E-mailová adresa a heslo</strong> - při založení účtu Tokva Pro. Účty a data k appkám ukládám u zpracovatele Supabase.</li>
+      <li><strong>Jméno a název firmy</strong> - pokud je vyplníte při registraci, objednávce nebo pozvánce kolegy do firmy.</li>
+      <li><strong>Fakturační údaje</strong> - firma, IČO, DIČ a adresa, pokud si objednáte Tokva Pro. Slouží jen k vystavení faktury a domluvě kolem objednávky.</li>
+      <li><strong>Data z appek</strong> - odpovědi, naměřené hodnoty, projekty a další obsah, který si v appkách sami uložíte pod svým účtem.</li>
+      <li><strong>Obsah rozhovoru s AI koučem</strong> - appka 5× Proč odesílá popis problému a vaše odpovědi během rozhovoru ke zpracování AI modelu (Anthropic Claude), aby mohla vést analýzu a sestavit výstup.</li>
+      <li><strong>Anonymizovaná data o návštěvnosti</strong> - přes Google Analytics, jen pokud na appce odsouhlasíte cookies.</li>
+    </ul>
+    <p>Nezpracovávám žádné citlivé osobní údaje.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>3. Účel a právní základ zpracování</h2>
+    <ul>
+      <li><strong>Provoz účtu a appek Tokva Pro</strong> - právní základ: plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR).</li>
+      <li><strong>Vystavení faktury a domluva kolem objednávky</strong> - právní základ: plnění smlouvy, případně plnění právní povinnosti u účetních dokladů.</li>
+      <li><strong>Bezplatná zkouška appky 5× Proč na e-mail</strong> - ověření, že jde o vaše první bezplatné použití appky - právní základ: oprávněný zájem (čl. 6 odst. 1 písm. f) GDPR).</li>
+      <li><strong>Zaslání podrobného výsledku appky na e-mail</strong> (u vybraných appek) - právní základ: váš souhlas.</li>
+      <li><strong>Odpovídání na vaše dotazy</strong> - právní základ: oprávněný zájem.</li>
+      <li><strong>Analýza návštěvnosti appek</strong> - právní základ: váš souhlas s cookies.</li>
+    </ul>
+  </div>
+
+  <div class="legal-section">
+    <h2>4. Jak dlouho údaje uchovávám</h2>
+    <ul>
+      <li>Údaje účtu a appek Tokva Pro uchovávám po dobu trvání účtu, dokud si sami nepožádáte o výmaz.</li>
+      <li>Fakturační a účetní údaje uchovávám po dobu stanovenou zákonem (10 let).</li>
+      <li>Kontaktní údaje z e-mailové komunikace uchovávám po dobu 3 let od posledního kontaktu.</li>
+    </ul>
+  </div>
+
+  <div class="legal-section">
+    <h2>5. Komu údaje předávám</h2>
+    <p>Vaše osobní údaje neprodávám ani neposkytuji třetím stranám pro marketingové účely. Pro provoz appek a účtu spolupracuji s těmito zpracovateli:</p>
+    <ul>
+      <li><strong>Supabase Inc.</strong> - hosting účtů a dat appek Tokva, se zpracováním dat v EU, na základě zpracovatelské smlouvy.</li>
+      <li><strong>Anthropic</strong> - poskytovatel AI modelu Claude, který zpracovává obsah rozhovoru u appky 5× Proč, aby appka mohla vést analýzu a sestavit výstup.</li>
+      <li><strong>Google</strong> - Google Analytics pro anonymizovanou analýzu návštěvnosti, a u appky 5× Proč navíc Google Apps Script a Google Sheets pro technické ověření, že jde o vaši první bezplatnou zkoušku appky.</li>
+      <li><strong>Brevo (Sendinblue SAS)</strong>, se sídlem ve Francii - u appek s možností poslat si podrobný výsledek e-mailem (Mini audit skladu, Mini audit výroby, Kvíz: Jak dobře znáte svůj sklad, Kvíz komunikačního chaosu). Brevo vystupuje jako zpracovatel na základě zpracovatelské smlouvy.</li>
+    </ul>
+    <p>Žádné jiné třetí strany vaše údaje nezpracovávají.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>6. Vaše práva</h2>
+    <p>Máte právo kdykoliv:</p>
+    <ul>
+      <li>Odvolat souhlas, který jste dříve udělili.</li>
+      <li>Požádat o přístup k osobním údajům, které o vás zpracovávám.</li>
+      <li>Požádat o opravu nepřesných údajů.</li>
+      <li>Požádat o výmaz vašich údajů (právo být zapomenut).</li>
+      <li>Vznést námitku proti zpracování.</li>
+      <li>Podat stížnost u Úřadu pro ochranu osobních údajů (<a href="https://www.uoou.cz" target="_blank" rel="noopener">uoou.cz</a>).</li>
+    </ul>
+    <p>Pro uplatnění jakéhokoliv práva mě kontaktujte na <a href="mailto:tomickova.info@gmail.com">tomickova.info@gmail.com</a>. Odpovím do 30 dnů.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>7. Cookies</h2>
+    <p>Appky Tokva používají cookies prostřednictvím nástroje Google Analytics. Jde o analytické cookies, které slouží výhradně k měření návštěvnosti a chování na webu, a spustí se až po vašem souhlasu v cookies liště appky. Nepoužíváme reklamní ani sledovací cookies třetích stran.</p>
+    <p>Cookies můžete zakázat i v nastavení svého prohlížeče. Víc informací o cookies Google Analytics najdete na <a href="https://support.google.com/analytics" target="_blank" rel="noopener">support.google.com/analytics</a>.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>8. Zabezpečení údajů</h2>
+    <p>Přijímám přiměřená technická a organizační opatření k ochraně vašich osobních údajů. Přístup k údajům mám pouze já a zpracovatelé uvedení výše v bodě 5, vždy v rozsahu nezbytném k poskytnutí jejich služby a na základě zpracovatelské smlouvy.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>9. Změny těchto zásad</h2>
+    <p>Tyto zásady mohu příležitostně aktualizovat, například když appky Tokva začnou používat nový nástroj nebo zpracovatele. Aktuální verze je vždy dostupná na této stránce, datum poslední aktualizace je uvedené v záhlaví.</p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-client.js"></script>
+<script src="../auth.js"></script>
+<script>
+// Přihlašovací stav v horní liště, stejně jako na ostatních stránkách: ukáže
+// jméno firmy + Odhlásit, když je uživatel přihlášený.
+(async function nacistUcetOchranaUdaju() {
+  const info = document.getElementById('nav-ucet-info');
+  const btn = document.getElementById('nav-ucet-btn');
+  if (!info || !btn) return;
+  let session = null, clenstvi = null;
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+  } catch (e) {
+    console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
+  }
+  const proOdkazEl = document.getElementById('nav-pro-odkaz');
+  if (proOdkazEl) proOdkazEl.style.display = session ? 'none' : '';
+  if (session && clenstvi) {
+    const jePro = maAktivniPro(clenstvi);
+    info.style.display = 'inline-block';
+    info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    const infoEmail = document.getElementById('nav-ucet-email');
+    if (infoEmail) { infoEmail.style.display = 'inline-block'; infoEmail.textContent = zkratitEmail(session.user.email); }
+    if (typeof zobrazitOdkazAkcniPlan === 'function') zobrazitOdkazAkcniPlan(jePro);
+    if (typeof zobrazitOdkazProjekty === 'function') zobrazitOdkazProjekty(jePro);
+    if (typeof zobrazitOdkazMojeTokva === 'function') zobrazitOdkazMojeTokva(true);
+    if (typeof prepnoutOdkazyNaPro === 'function') prepnoutOdkazyNaPro(jePro);
+    btn.textContent = 'Odhlásit';
+    btn.removeAttribute('href');
+    btn.style.cursor = 'pointer';
+    btn.onclick = async function (e) {
+      e.preventDefault();
+      try { await odhlasit(); } catch (err) { console.warn('Odhlášení se nepodařilo.', err); }
+    };
+  }
+})();
+</script>
+
+</body>
+</html>
