@@ -7,6 +7,16 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-NJWW5ZX4J9');
+
+// Sdílené odesílání vlastních událostí do GA4 - no-op, dokud gtag
+// neexistuje (např. návštěvník ještě neodsouhlasil cookies).
+window.trackTokvaEvent = function (eventName, parameters = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", eventName, {
+    ...parameters,
+    page_path: window.location.pathname
+  });
+};
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">

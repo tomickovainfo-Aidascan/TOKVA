@@ -1554,6 +1554,16 @@ function update() {
   oznacitPresnost();
 }
 
+// Sdílené odesílání vlastních událostí do GA4 - no-op, dokud gtag
+// neexistuje (např. návštěvník ještě neodsouhlasil cookies).
+window.trackTokvaEvent = function (eventName, parameters = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", eventName, {
+    ...parameters,
+    page_path: window.location.pathname
+  });
+};
+
 // ── Cookie consent ──
 (function() {
   var s = localStorage.getItem('cookies_souhlas');

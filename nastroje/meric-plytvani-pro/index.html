@@ -2163,6 +2163,16 @@ nacistPrihlaseniStav();
 </script>
 
 <script>
+// Sdílené odesílání vlastních událostí do GA4 - no-op, dokud gtag
+// neexistuje (např. návštěvník ještě neodsouhlasil cookies).
+window.trackTokvaEvent = function (eventName, parameters = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", eventName, {
+    ...parameters,
+    page_path: window.location.pathname
+  });
+};
+
 (function(){
   var s = localStorage.getItem('cookies_souhlas');
   if (s === 'ano') {

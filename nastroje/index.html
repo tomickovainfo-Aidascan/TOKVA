@@ -1437,6 +1437,16 @@ window.addEventListener("popstate", otevritZUrl);
 // TODO: doplnit skutečné GA4 ID pro Tokvu, teď je tam jen placeholder
 var NASTROJOVNA_GA_ID = 'G-NJWW5ZX4J9';
 
+// Sdílené odesílání vlastních událostí do GA4 - no-op, dokud gtag
+// neexistuje (např. návštěvník ještě neodsouhlasil cookies).
+window.trackTokvaEvent = function (eventName, parameters = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", eventName, {
+    ...parameters,
+    page_path: window.location.pathname
+  });
+};
+
 (function(){
   var s = localStorage.getItem('cookies_souhlas');
   if (s === 'ano') {
