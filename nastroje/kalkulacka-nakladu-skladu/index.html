@@ -1389,10 +1389,25 @@ function fmtTis(n) {
 // Vedle posuvníku jde hodnotu zadat i přesným číslem - obě pole se drží
 // synchronně, aby uživatel mohl zadat i reálnou smluvní částku mimo krok
 // posuvníku (např. přesný nájem nebo naměřenou spotřebu energie).
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: 'kalkulacka_nakladu_skladu', tool_version: 'free' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: 'kalkulacka_nakladu_skladu', tool_version: 'free' });
+}
+
 function syncFromRange(id) {
   const num = document.getElementById(id + '-num');
   if (num) num.value = document.getElementById(id).value;
+  oznamitZahajeni();
   update();
+  oznamitDokonceni();
 }
 function syncFromNumber(id) {
   const range = document.getElementById(id);
@@ -1404,7 +1419,9 @@ function syncFromNumber(id) {
   if (v > max) v = max;
   num.value = v;
   range.value = v;
+  oznamitZahajeni();
   update();
+  oznamitDokonceni();
 }
 
 function update() {

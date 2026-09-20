@@ -656,10 +656,25 @@ function fmt(n) { return Math.round(n).toLocaleString("cs-CZ"); }
 
 const PRACOVNICH_DNU_ROK = 250; // stejná konvence jako u Měřiče plýtvání v Tokvě
 
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: 'kalkulacka_ztrat', tool_version: 'free' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: 'kalkulacka_ztrat', tool_version: 'free' });
+}
+
 // slider <-> ruční číslo, obousměrně, se stejnými mezemi
 function syncFromRange(id) {
   document.getElementById(id + "-num").value = document.getElementById(id).value;
+  oznamitZahajeni();
   update();
+  oznamitDokonceni();
 }
 function syncFromNumber(id) {
   const range = document.getElementById(id);
@@ -671,7 +686,9 @@ function syncFromNumber(id) {
   if (v > max) v = max;
   num.value = v;
   range.value = v;
+  oznamitZahajeni();
   update();
+  oznamitDokonceni();
 }
 
 // kam appka pošle uživatele podle toho, kde je největší ztráta
