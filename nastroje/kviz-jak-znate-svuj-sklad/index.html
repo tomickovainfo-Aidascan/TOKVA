@@ -1589,8 +1589,21 @@ function pripravitEmailKviz() {
 }
 
 const odpovedi = {};
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: 'kviz_sklad', tool_version: 'free' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: 'kviz_sklad', tool_version: 'free' });
+}
 
 function vyber(el, q, body) {
+  oznamitZahajeni();
   el.closest('.moznosti').querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
   el.classList.add('selected');
   odpovedi[q] = body;
@@ -1620,6 +1633,7 @@ function updateProgress() {
 }
 
 function zobrazVysledky() {
+  oznamitDokonceni();
   document.getElementById('q10').classList.remove('active');
 
   const skore = Object.values(odpovedi).reduce((a,b) => a + b, 0);

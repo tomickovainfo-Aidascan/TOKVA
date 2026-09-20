@@ -1167,6 +1167,18 @@ const CTA_ODKAZ = {
 // Stav kvízu
 const odpovedi = {};
 const nevimSet = new Set();
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: 'mini_audit_skladu', tool_version: 'free' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: 'mini_audit_skladu', tool_version: 'free' });
+}
 const OTAZKY = [
   "Víte, kde přesně zboží leží?",
   "Nechodí lidé zbytečně kilometry navíc?",
@@ -1191,6 +1203,7 @@ function maxSkore() {
 }
 
 function vyberMoznost(el, q, body) {
+  oznamitZahajeni();
   el.closest('.moznosti').querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
   el.classList.add('selected');
   odpovedi[q] = body;
@@ -1200,6 +1213,7 @@ function vyberMoznost(el, q, body) {
 }
 
 function vyberNevim(el, q) {
+  oznamitZahajeni();
   el.closest('.moznosti').querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
   el.classList.add('selected');
   delete odpovedi[q];
@@ -1242,6 +1256,7 @@ function zobrazVysledkyFinale() {
 
 function zobrazVysledky() {
   try {
+  oznamitDokonceni();
   const skore = vypocitejSkore();
   const maxS = maxSkore();
   const hero = document.getElementById('skore-hero');

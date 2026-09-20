@@ -1188,6 +1188,18 @@ const OBLASTI = [
 // cislo = horsi stav stejne jako u Mini auditu skladu a ostatnich nastroju.
 const odpovedi = {};
 const nevimSet = new Set();
+let toolStartedOdeslano = false;
+function oznamitZahajeni() {
+  if (toolStartedOdeslano) return;
+  toolStartedOdeslano = true;
+  trackTokvaEvent('tool_started', { tool_name: 'mini_audit_vyroby', tool_version: 'free' });
+}
+let toolDokoncenoOdeslano = false;
+function oznamitDokonceni() {
+  if (toolDokoncenoOdeslano) return;
+  toolDokoncenoOdeslano = true;
+  trackTokvaEvent('tool_completed', { tool_name: 'mini_audit_vyroby', tool_version: 'free' });
+}
 const OTAZKY = [
   "Je na první pohled jasné, co se má vyrábět a v jakém množství?",
   "Mají pracovníci materiál, nářadí a informace připravené včas?",
@@ -1212,6 +1224,7 @@ function maxSkore() {
 }
 
 function vyberMoznost(el, q, body) {
+  oznamitZahajeni();
   el.closest('.moznosti').querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
   el.classList.add('selected');
   odpovedi[q] = body;
@@ -1221,6 +1234,7 @@ function vyberMoznost(el, q, body) {
 }
 
 function vyberNevim(el, q) {
+  oznamitZahajeni();
   el.closest('.moznosti').querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
   el.classList.add('selected');
   delete odpovedi[q];
@@ -1262,6 +1276,7 @@ function zobrazVysledkyFinale() {
 
 function zobrazVysledky() {
   try {
+  oznamitDokonceni();
   const skore = vypocitejSkore();
   const maxS = maxSkore();
   const hero = document.getElementById('skore-hero');
