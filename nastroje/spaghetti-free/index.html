@@ -559,7 +559,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <div class="stats-divider"></div>
     <div class="stat-item">
       <div class="stat-val" id="stat-celkem">0 m</div>
-      <div class="stat-lbl">celkem všechny</div>
+      <div class="stat-lbl">celková vzdálenost</div>
     </div>
   </div>
 
@@ -646,6 +646,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <button class="btn-export-outline" onclick="tisknout()">Vytisknout</button>
     <button class="btn-export-outline" onclick="resetovat()">Začít znovu</button>
   </div>
+  <div id="export-status" style="text-align:center;font-size:12px;color:#888;margin-top:6px;min-height:16px;"></div>
 
 </div>
 
@@ -1593,24 +1594,48 @@ function vytvoritExportCanvas() {
   return expCanvas;
 }
 
+// Dřív po kliknutí na Stáhnout/Vytisknout nebylo nikde vidět potvrzení ani
+// chyba - uživatel nepoznal, jestli tlačítko fungovalo (obzvlášť když
+// prohlížeč stažení nebo vyskakovací okno tisku tiše zablokoval).
 function exportovatObrazek() {
   oznamitDokonceni();
-  const expCanvas = vytvoritExportCanvas();
-  const link = document.createElement('a');
-  link.download = 'spaghetti-diagram-' + new Date().toISOString().slice(0, 10) + '.png';
-  link.href = expCanvas.toDataURL('image/png');
-  link.click();
+  const status = document.getElementById('export-status');
+  if (status) status.textContent = 'Soubor se připravuje...';
+  try {
+    const expCanvas = vytvoritExportCanvas();
+    const link = document.createElement('a');
+    link.download = 'spaghetti-diagram-' + new Date().toISOString().slice(0, 10) + '.png';
+    link.href = expCanvas.toDataURL('image/png');
+    link.click();
+    if (status) {
+      status.textContent = 'Soubor byl stažen ✓';
+      setTimeout(() => { if (status.textContent === 'Soubor byl stažen ✓') status.textContent = ''; }, 4000);
+    }
+  } catch (e) {
+    console.error('Export obrázku selhal:', e);
+    if (status) status.textContent = '';
+    upozornit('Stažení obrázku se nepodařilo, zkuste to prosím znovu.', 'Stažení selhalo');
+  }
 }
 
 function tisknout() {
   oznamitDokonceni();
-  const expCanvas = vytvoritExportCanvas();
-  const printWin = window.open('', '_blank');
-  const img = expCanvas.toDataURL('image/png');
-  printWin.document.write('<html><head><title>Spaghetti diagram</title><style>body{margin:0;padding:0;}img{max-width:100%;display:block;}@media print{body{margin:0;}}</style></head><body><img src="' + img + '"></body></html>');
-  printWin.document.close();
-  printWin.focus();
-  setTimeout(() => printWin.print(), 500);
+  try {
+    const expCanvas = vytvoritExportCanvas();
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+      upozornit('Tisk se nepodařilo otevřít - prohlížeč asi zablokoval vyskakovací okno. Povolte ho pro tuhle stránku a zkuste to znovu.', 'Tisk se nepodařilo otevřít');
+      return;
+    }
+    const img = expCanvas.toDataURL('image/png');
+    printWin.document.write('<html><head><title>Spaghetti diagram</title><style>body{margin:0;padding:0;}img{max-width:100%;display:block;}@media print{body{margin:0;}}</style></head><body><img src="' + img + '"></body></html>');
+    printWin.document.close();
+    printWin.focus();
+    setTimeout(() => printWin.print(), 500);
+  } catch (e) {
+    console.error('Příprava tisku selhala:', e);
+    upozornit('Tisk se nepodařilo připravit, zkuste to prosím znovu.', 'Tisk selhal');
+  }
 }
 
 let modalConfirmCallback = null;

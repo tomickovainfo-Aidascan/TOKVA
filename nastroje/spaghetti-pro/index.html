@@ -641,7 +641,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <div class="stats-divider"></div>
     <div class="stat-item">
       <div class="stat-val" id="stat-celkem">0 m</div>
-      <div class="stat-lbl">celkem všechni</div>
+      <div class="stat-lbl">celková vzdálenost</div>
     </div>
   </div>
 
@@ -696,6 +696,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <button class="btn-export-outline" onclick="tisknout()">Vytisknout</button>
     <button class="btn-export-outline" onclick="resetovat()">Začít znovu</button>
   </div>
+  <div id="export-status" style="text-align:center;font-size:12px;color:#888;margin-top:6px;min-height:16px;"></div>
 
 </div>
 
@@ -2462,7 +2463,13 @@ function zjistiSrovnani() {
   const dNavrh = spocitejDelku(navrh.body);
   if (dSoucasny <= 0 || dNavrh <= 0) return null;
   const rozdil = dSoucasny - dNavrh;
-  const procento = (rozdil / dSoucasny) * 100;
+  // Procento se počítá ze stejných zaokrouhlených metrů, které appka
+  // vedle sebe zobrazuje (např. 57 m -> 31 m) - dřív se počítalo z
+  // přesných nezaokrouhlených hodnot, takže si uživatel z čísel na
+  // obrazovce ručně spočítal 45,6 %, a appka místo toho ukázala 45 %.
+  const dSoucasnyZobr = Math.round(dSoucasny);
+  const dNavrhZobr = Math.round(dNavrh);
+  const procento = dSoucasnyZobr > 0 ? ((dSoucasnyZobr - dNavrhZobr) / dSoucasnyZobr) * 100 : 0;
   const dopadSoucasny = spocitejRocniDopad(soucasny);
   const dopadNavrh = spocitejRocniDopad(navrh);
   return { soucasny, navrh, dSoucasny, dNavrh, rozdil, procento, dopadSoucasny, dopadNavrh };
@@ -2950,10 +2957,23 @@ function exportovatObrazek() {
     expCtx.fillText('ROZDÍL TRAS: "' + srov.navrh.nazev + '" je o ' + znamenko + Math.abs(srov.rozdil).toFixed(0) + ' m (' + Math.abs(srov.procento).toFixed(0) + ' %) ' + slovo + ' než "' + srov.soucasny.nazev + '"', 14, yPo);
   }
 
-  const link = document.createElement('a');
-  link.download = 'spaghetti-diagram-pro-' + new Date().toISOString().slice(0, 10) + '.png';
-  link.href = expCanvas.toDataURL('image/png');
-  link.click();
+  const status = document.getElementById('export-status');
+  try {
+    const link = document.createElement('a');
+    link.download = 'spaghetti-diagram-pro-' + new Date().toISOString().slice(0, 10) + '.png';
+    link.href = expCanvas.toDataURL('image/png');
+    link.click();
+    // Drive appka po kliknuti na Stahnout nedavala zadnou zpetnou vazbu -
+    // nebylo poznat, jestli stazeni fakt probehlo.
+    if (status) {
+      status.textContent = 'Soubor byl stažen ✓';
+      setTimeout(() => { if (status.textContent === 'Soubor byl stažen ✓') status.textContent = ''; }, 4000);
+    }
+  } catch (e) {
+    console.error('Export obrázku selhal:', e);
+    if (status) status.textContent = '';
+    upozornit('Stažení obrázku se nepodařilo, zkuste to prosím znovu.', 'Stažení selhalo');
+  }
 }
 
 function vyskaSrovnaniProTisk(srov, ctx, canvasW) {
@@ -3049,6 +3069,13 @@ function tisknout() {
   oznamitDokonceni();
   // Vytvorit novy canvas pro tisk - bez CSS transformace
   const printWin = window.open('', '_blank');
+  if (!printWin) {
+    // Drive appka tady bez hlaseni spadla (dalsi radek volal metodu na
+    // null), kdyz prohlizec zablokoval vyskakovaci okno - uzivatel jen
+    // videl, ze tlacitko "nic neudelalo".
+    upozornit('Tisk se nepodařilo otevřít - prohlížeč asi zablokoval vyskakovací okno. Povolte ho pro tuhle stránku a zkuste to znovu.', 'Tisk se nepodařilo otevřít');
+    return;
+  }
   const expCanvas = document.createElement('canvas');
   const srov = zjistiSrovnani();
   const measureCtx = document.createElement('canvas').getContext('2d');
@@ -3244,6 +3271,12 @@ function vstoupitDoAplikace() {
   document.getElementById('main-app').style.display = 'block';
   aktualizovatMojeProjektyBar();
   synchronizovatProjektySeSupabase();
+  // Předplnit selecty projektů (Zařadit k projektu / Akční plán) hned při
+  // vstupu do appky, ne až po prvním uložení nákresu - dřív appka projekty
+  // z Supabase natáhla, jen když už nákres existoval, takže nabídka
+  // ukazovala jen Bez projektu / + Nový projekt, i když firma projekty
+  // z jiných nástrojů (5S, Časová studie) reálně měla.
+  nacistProjektySpaghetti();
   if (new URLSearchParams(window.location.search).get('vysledek')) {
     otevritVysledekZAdresy();
   } else {

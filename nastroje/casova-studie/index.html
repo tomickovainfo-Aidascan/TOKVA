@@ -1419,6 +1419,7 @@ nav {
       <button class="export-btn" onclick="exportCSV()">Export CSV</button>
       <button class="export-btn" onclick="window.print()">Vytisknout přehled</button>
     </div>
+    <div id="export-status" style="text-align:right;font-size:12px;color:#888;margin-top:4px;min-height:16px;"></div>
   </div>
 
   <div class="zaznamy" id="zaznamy">
@@ -2164,7 +2165,7 @@ const KATEGORIE = [
   { id:'produktivni',   label:'Produktivní práce', css:'kat-produktivni',   color:'#6ee7a8',
     kw:['práce','pracuji','pracuju','pracovat','pracovní','práci','práci na','nabídka','projekt','tvorba','analýza','píšu','programuji','řeším','připravuji','příprava','připraven','studuji','učím','kreslím','navrhuji','kalkulace','plánuji','strategie','kóduju','tvořím','dělám','dělat','dokončuji','kontroluji výrobu','kontrola','zpracování','zpracovávám','vyrábím','výroba','montáž','montuju','seřizuji','balení','balím','expedice','expedič','vychystávání','vychystávám','nakládka','vykládka','skladování'] },
   { id:'komunikace',    label:'Komunikace',         css:'kat-komunikace',    color:'#7ec8f5',
-    kw:['email','mail','telefon','volám','volání','volám','telefonuji','schůzka','meeting','zprávy','teams','zoom','konzultace','hovor','whatsapp','píšu zprávu','videohovor','poradu','porada','online hovor'] },
+    kw:['email','mail','telefon','volám','volání','volám','telefonuji','schůzka','meeting','zprávy','teams','zoom','konzultace','hovor','whatsapp','píšu zprávu','videohovor','poradu','porada','online hovor','předání informací','předání směny','předávám směnu','předávací','briefing','komunikace se směnou','komunikuji se směnou','informuji směnu'] },
   { id:'administrativa',label:'Administrativa',     css:'kat-administrativa',color:'#c4a8f5',
     kw:['faktura','faktury','papíry','evidence','report','výkaz','smlouva','objednávka','účetnictví','administrativa','tisknu','skenuji','archivuji','docházkuji','objednávky','příjemka','výdejka'] },
   { id:'prestavka',     label:'Přestávka',          css:'kat-prestavka',     color:'#e9a91b',
@@ -2875,21 +2876,37 @@ async function pridatDoAkcnihoPlanu() {
   }
 }
 
+// Drive appka po kliknuti na Export CSV nedavala zadnou zpetnou vazbu -
+// ani kdyz se export povedl, ani kdyz nebylo co exportovat (tlacitko jen
+// tise nic neudelalo).
 function exportCSV() {
-  if (zaznamy.length === 0) return;
-  const rows = [['Čas', 'Aktivita', 'Trvání']];
-  zaznamy.forEach((z, i) => {
-    const next = zaznamy[i + 1];
-    const dur = next ? Math.round((next.timestamp - z.timestamp) / 60000) + ' min' : '';
-    rows.push([z.cas, z.text, dur]);
-  });
-  const csv = rows.map(r => r.map(c => '"' + c + '"').join(',')).join('\n');
-  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'casova-studie-' + new Date().toISOString().slice(0, 10) + '.csv';
-  a.click();
+  const status = document.getElementById('export-status');
+  if (zaznamy.length === 0) {
+    if (status) status.textContent = 'Zatím není co exportovat, nemáte žádný záznam.';
+    return;
+  }
+  try {
+    const rows = [['Čas', 'Aktivita', 'Trvání']];
+    zaznamy.forEach((z, i) => {
+      const next = zaznamy[i + 1];
+      const dur = next ? Math.round((next.timestamp - z.timestamp) / 60000) + ' min' : '';
+      rows.push([z.cas, z.text, dur]);
+    });
+    const csv = rows.map(r => r.map(c => '"' + c + '"').join(',')).join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'casova-studie-' + new Date().toISOString().slice(0, 10) + '.csv';
+    a.click();
+    if (status) {
+      status.textContent = 'Soubor byl stažen ✓';
+      setTimeout(() => { if (status.textContent === 'Soubor byl stažen ✓') status.textContent = ''; }, 4000);
+    }
+  } catch (e) {
+    console.error('Export CSV selhal:', e);
+    if (status) status.textContent = 'Export se nepodařil, zkuste to prosím znovu.';
+  }
 }
 
 // NOTIFIKACE
