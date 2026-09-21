@@ -1368,6 +1368,7 @@ async function nacistProjekty5x() {
     if (error) throw error;
     document.querySelectorAll('select.projekt-select-5x').forEach(select => {
       const puvodniHodnota = select.value;
+      select.querySelectorAll('option[data-nacitani]').forEach(o => o.remove());
       select.querySelectorAll('option[data-projekt]').forEach(o => o.remove());
       (projekty || []).forEach(p => {
         const opt = document.createElement('option');
@@ -1380,6 +1381,7 @@ async function nacistProjekty5x() {
     });
   } catch (e) {
     console.warn('Projekty se nepodařilo načíst.', e);
+    document.querySelectorAll('select.projekt-select-5x option[data-nacitani]').forEach(o => o.remove());
   }
 }
 
@@ -1521,7 +1523,7 @@ function zvyraznitDoporucenyNastroj(raw) {
     const skore = DALSI_KEYWORDS[klic].reduce((s, kw) => s + (text.includes(kw) ? 1 : 0), 0);
     if (skore > nejlepsiSkore) { nejlepsiSkore = skore; nejlepsiKlic = klic; }
   });
-  if (!nejlepsiKlic) return; // žádná shoda dost jasná, necháme všech 6 karet rovnocenných
+  if (!nejlepsiKlic || nejlepsiSkore < 2) return; // jediné shodné klíčové slovo je moc slabý signál (mohlo se trefit náhodou) - necháme všech 6 karet rovnocenných, radši žádné doporučení než špatné
 
   const karta = document.getElementById('dalsi-karta-' + nejlepsiKlic);
   if (!karta) return;
@@ -1658,7 +1660,7 @@ function renderOutput(raw, ulozit = true) {
     analyzaProjektSelect.id = 'analyza-projekt-select';
     analyzaProjektSelect.className = 'projekt-select-5x';
     analyzaProjektSelect.style.cssText = 'flex:1;min-width:160px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;font-family:"DM Sans",sans-serif;';
-    analyzaProjektSelect.innerHTML = '<option value="">Bez projektu</option><option value="__novy__">+ Nový projekt…</option>';
+    analyzaProjektSelect.innerHTML = '<option value="" data-nacitani="1" selected>Načítám projekty…</option><option value="">Bez projektu</option><option value="__novy__">+ Nový projekt…</option>';
 
     const analyzaProjektNovyInput = document.createElement('input');
     analyzaProjektNovyInput.type = 'text';
@@ -1697,7 +1699,7 @@ function renderOutput(raw, ulozit = true) {
     projektSelect.id = 'ukoly-projekt-select';
     projektSelect.className = 'projekt-select-5x';
     projektSelect.style.cssText = 'flex:1;min-width:160px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;font-family:"DM Sans",sans-serif;';
-    projektSelect.innerHTML = '<option value="">Bez projektu</option><option value="__novy__">+ Nový projekt…</option>';
+    projektSelect.innerHTML = '<option value="" data-nacitani="1" selected>Načítám projekty…</option><option value="">Bez projektu</option><option value="__novy__">+ Nový projekt…</option>';
     const projektNovyInput = document.createElement('input');
     projektNovyInput.type = 'text';
     projektNovyInput.id = 'ukoly-projekt-novy-nazev';
@@ -1879,10 +1881,18 @@ async function ziskatKompletniOdpoved(zpravy) {
   return reply;
 }
 
+let cekaOdeslani = false;
 async function odeslat() {
   const input = document.getElementById('input');
   const text = input.value.trim();
-  if (!text || isLoading) return;
+  if (!text) return;
+  if (isLoading) {
+    // Appka právě něco dělá (třeba se ještě načítá úvod kouče po startu) -
+    // dřív appka zprávu tiše zahodila a uživatel nevěděl, že musí odeslat
+    // znovu. Teď zpráva počká a odešle se sama, jakmile appka doběhne.
+    cekaOdeslani = true;
+    return;
+  }
   oznamitZahajeni();
 
   input.value = '';
@@ -1926,6 +1936,7 @@ async function odeslat() {
   isLoading = false;
   document.getElementById('send-btn').disabled = false;
   document.getElementById('input').focus();
+  if (cekaOdeslani) { cekaOdeslani = false; odeslat(); }
 }
 
 // HLASOVÉ OVLÁDÁNÍ (Web Speech API)
@@ -2086,7 +2097,10 @@ async function start() {
     history.push({ role: 'user', content: 'Začni.' });
     history.push({ role: 'assistant', content: reply });
     addMsg('ai', reply);
-    ulozitStavAnalyzy(false, null);
+    // Sem dřív appka hned zakládala řádek v historii (i bez jediné otázky od
+    // uživatele) - každé pouhé otevření/obnovení appky tak plnilo historii
+    // prázdnými rozpracovanými záznamy. Ukládá se až první skutečná otázka
+    // (viz odeslat()).
 
   } catch (e) {
     hideTyping();
@@ -2095,6 +2109,7 @@ async function start() {
   }
 
   isLoading = false;
+  if (cekaOdeslani) { cekaOdeslani = false; odeslat(); }
 }
 
 
@@ -2251,11 +2266,42 @@ function pokracovatVAnalyze(radek) {
 // Pokud je firma přihlášená a má aktivní Pro, appka jede rovnou bez e-mailové
 // brány (to je jeden z benefitů Pro - žádné omezení na 1 analýzu). Jinak
 // zůstává beze změny stará Free e-mailová brána / rozjeté sezení.
+// Zkontroluje, jestli poslední uložený běh je rozpracovaná (nedokončená)
+// analýza se skutečným obsahem (ne jen úvod bez jediné otázky) - pokud ano,
+// appka ji po refreshi/přihlášení sama obnoví místo toho, aby tiše začala
+// novou a uživatel musel jít ručně do historie a kliknout Pokračovat.
+async function nacistPosledniRozpracovanou5x() {
+  if (!clenstvi) return null;
+  try {
+    const { data, error } = await supabaseClient
+      .from('tool_runs')
+      .select('id, created_at, data')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', '5x-proc')
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (error) throw error;
+    const posledni = data && data[0];
+    if (posledni && posledni.data && posledni.data.hotovo === false && (posledni.data.history || []).length > 2) {
+      return posledni;
+    }
+    return null;
+  } catch (e) {
+    console.warn('Rozpracovanou analýzu se nepodařilo zkontrolovat.', e);
+    return null;
+  }
+}
+
 async function init() {
   await nacistPrihlaseniStav();
   if (jePro) {
     document.getElementById('login-overlay').style.display = 'none';
-    start();
+    const rozpracovana = await nacistPosledniRozpracovanou5x();
+    if (rozpracovana) {
+      pokracovatVAnalyze(rozpracovana);
+    } else {
+      start();
+    }
     return;
   }
   if (sessionStorage.getItem('pristup_ok') === '1') {
