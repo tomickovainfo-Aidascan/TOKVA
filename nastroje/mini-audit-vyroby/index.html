@@ -1472,7 +1472,10 @@ function zobrazVysledky() {
     cta.href = nejhorsi.ob.nastroj.url;
     cta.textContent = nejhorsi.ob.nastroj.cta;
     const akceNazevPole = document.getElementById('akce-nazev');
-    if (akceNazevPole && !akceNazevPole.value) akceNazevPole.value = 'Zlepšit: ' + nejhorsi.ob.nazev.toLowerCase();
+    // Dřív appka pole nepřepsala, když už v něm něco bylo - při opakování
+    // kvízu tak zůstal návrh z předchozího běhu, i když nový výsledek
+    // ukazoval úplně jinou nejhorší oblast.
+    if (akceNazevPole) akceNazevPole.value = 'Zlepšit: ' + nejhorsi.ob.nazev.toLowerCase();
     const akceTerminPole = document.getElementById('akce-termin');
     if (akceTerminPole && !akceTerminPole.value) { const dTermin = new Date(); dTermin.setDate(dTermin.getDate() + 30); akceTerminPole.value = dTermin.toISOString().slice(0, 10); }
     const videneUrl = new Set([nejhorsi.ob.nastroj.url]);
@@ -1518,6 +1521,10 @@ function pripravitEmailAudit() {
 function zacitZnovu() {
   Object.keys(odpovedi).forEach(k => delete odpovedi[k]);
   nevimSet.clear();
+  ['akce-nazev', 'akce-osoba', 'akce-investice', 'akce-prinos', 'akce-termin'].forEach(id => {
+    const pole = document.getElementById(id);
+    if (pole) pole.value = '';
+  });
   document.querySelectorAll('.otazka-wrap, .vysledky-wrap').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.moznost').forEach(m => m.classList.remove('selected'));
   document.querySelectorAll('.btn-dal').forEach(b => b.disabled = true);
@@ -1816,13 +1823,26 @@ async function exportovatData() {
       .order('created_at', { ascending: false });
     if (error) throw error;
     if (!data || !data.length) { upozornit('Zatím nemáte žádná uložená data k exportu.'); return; }
-    const hlavicky = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
-    const radky = data.map(r => hlavicky.map(h => {
-      const v = r[h] == null ? '' : String(r[h]).replace(/"/g, '""');
-      return '"' + v + '"';
-    }).join(','));
-    const csv = hlavicky.join(',') + '\n' + radky.join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    // CSV dřív obsahovalo jen souhrn (datum, skóre) - jednotlivé otázky a
+    // zvolené odpovědi chyběly úplně, takže z exportu nešlo poznat, co
+    // konkrétně firma odpověděla.
+    const hlavickyZakladni = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
+    const hlavickyOtazky = OTAZKY.map((t, i) => 'Otázka ' + (i + 1) + ': ' + t);
+    const hlavicky = hlavickyZakladni.concat(hlavickyOtazky);
+    const radky = data.map(r => {
+      const d = r.data || {};
+      const nevimPole = (d.nevim || []).map(String);
+      const zakladBunky = hlavickyZakladni.map(h => r[h] == null ? '' : String(r[h]));
+      const otazkyBunky = OTAZKY.map((_, i) => {
+        const q = i + 1;
+        if (nevimPole.includes(String(q))) return 'Nevím';
+        const hodnota = d.odpovedi ? d.odpovedi[q] : undefined;
+        return popisOdpovediPorovnani(hodnota, false);
+      });
+      return zakladBunky.concat(otazkyBunky).map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',');
+    });
+    const csv = hlavicky.map(h => '"' + String(h).replace(/"/g, '""') + '"').join(',') + '\n' + radky.join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -1876,7 +1896,7 @@ async function renderHistorie() {
     }
     posledniHistorie = data;
     obsah.innerHTML = data.map((r, i) => {
-      const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
+      const datum = new Date(r.created_at).toLocaleString('cs-CZ');
       const proc = r.hlavni_hodnota_cislo;
       const barva = proc <= 20 ? '#2a7a4f' : proc <= 45 ? '#d97706' : proc <= 70 ? '#b45309' : '#b91c1c';
       const zaskrtnuto = vybraneKPorovnani.includes(i);
@@ -1953,8 +1973,8 @@ function otevritModalPorovnani() {
   // starší vlevo, novější vpravo, bez ohledu na pořadí zaškrtnutí
   zaznamy.sort((x, y) => new Date(x.created_at) - new Date(y.created_at));
   const [a, b] = zaznamy;
-  const datumA = new Date(a.created_at).toLocaleDateString('cs-CZ');
-  const datumB = new Date(b.created_at).toLocaleDateString('cs-CZ');
+  const datumA = new Date(a.created_at).toLocaleString('cs-CZ');
+  const datumB = new Date(b.created_at).toLocaleString('cs-CZ');
   // Procenta appka ukládá už jako podíl z vlastního maxima (které se mění
   // podle počtu otázek "nevím"), takže jdou porovnat přímo, i když se počet
   // "nevím" mezi audity liší - na rozdíl od holých bodů.
@@ -2047,7 +2067,7 @@ function otevritModalDetailVysledku(i) {
   const d = r.data || {};
   const odp = d.odpovedi || {};
   const nevim = (d.nevim || []).map(String);
-  const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
+  const datum = new Date(r.created_at).toLocaleString('cs-CZ');
   document.getElementById('detail-vysledku-datum').textContent = datum + ' · ' + (r.shrnuti || (r.hlavni_hodnota_cislo + ' %'));
   document.getElementById('detail-vysledku-seznam').innerHTML = OTAZKY.map((text, idx) => {
     const q = String(idx + 1);

@@ -375,6 +375,15 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 .cookies-no{background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:8px 14px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;}
 .cookies-no:hover{color:rgba(255,255,255,.7);}
 </style>
+<style id="print-css">
+@media print {
+  nav, .hero, #otazky, .cookies-bar, .no-print { display:none !important; }
+  body { background:white; }
+  .vysledek { display:block !important; }
+  .v-card { break-inside:avoid; }
+  @page { margin:20mm; }
+}
+</style>
 </head>
 <body>
 <div class="cookies-bar" id="cookies-bar" style="display:none;">
@@ -686,7 +695,10 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
       </div>
     </div>
   </div>
-  <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);" onclick="zacitZnovu()">Spustit kvíz znovu</button>
+  <div class="no-print" style="display:flex;flex-direction:column;gap:0;">
+    <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);" onclick="window.print()">Vytisknout výsledky</button>
+    <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);margin-top:8px;" onclick="zacitZnovu()">Spustit kvíz znovu</button>
+  </div>
 </div>
 
 <div class="post-kviz">
@@ -1453,6 +1465,44 @@ function popisOdpovedRadioChaos(otazka, index) {
   return opt ? opt.t : null;
 }
 
+// Popis odpovědi na jednu otázku pro CSV export - u víc-výběrových otázek
+// vyjmenuje všechny zaškrtnuté možnosti, u výběrových vezme přesné znění
+// z vybranaIndexy (u starších záznamů bez něj aspoň bodovou hodnotu).
+function vypocitejMaxOblastDeltuChaos(ovN, ovS) {
+  if (!ovN || !ovS) return 0;
+  let max = 0;
+  Object.keys(ovN).forEach(k => {
+    const a = ovN[k], b = ovS[k];
+    if (a && b && typeof a.pct === 'number' && typeof b.pct === 'number') {
+      max = Math.max(max, Math.abs(a.pct - b.pct));
+    }
+  });
+  return max;
+}
+
+function popisOdpovedZaznamChaos(o, d) {
+  const odp = (d.odpovedi || {})[o.id];
+  if (o.typ === 'checkbox') {
+    const pole = Array.isArray(odp) ? odp : [];
+    if (pole.length === 0) return '';
+    const texty = pole.map(x => {
+      if (x === 'other') {
+        const jine = (d.jine_texty || {})[o.id];
+        return jine ? ('Jiné: ' + jine) : 'Jiné';
+      }
+      return o.opts[x] ? o.opts[x].t : '';
+    }).filter(Boolean);
+    return texty.join(' | ');
+  }
+  const idx = (d.vybranaIndexy || {})[o.id];
+  if (idx !== undefined) {
+    const t = popisOdpovedRadioChaos(o, idx);
+    if (t !== null) return t;
+  }
+  if (odp !== undefined) return '(body: ' + odp + ')';
+  return '';
+}
+
 function otevritPorovnaniChaos(i) {
   const novy = posledniHistorieChaos[i];
   const stary = posledniHistorieChaos[i + 1];
@@ -1558,12 +1608,20 @@ async function exportovatDataChaos() {
       .order('created_at', { ascending: false });
     if (error) throw error;
     if (!data || !data.length) { ukazatUpozorneni('Zatím nemáte žádná uložená data k exportu.'); return; }
-    const hlavicky = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
-    const radky = data.map(r => hlavicky.map(h => {
-      const v = r[h] == null ? '' : String(r[h]).replace(/"/g, '""');
-      return '"' + v + '"';
-    }).join(','));
-    const csv = hlavicky.join(',') + '\n' + radky.join('\n');
+    // CSV dřív obsahovalo jen souhrn (datum, skóre) - jednotlivé otázky a
+    // zvolené odpovědi chyběly úplně. U otázek s jednou odpovědí appka bere
+    // přesné znění z vybranaIndexy (u starších záznamů bez něj aspoň body),
+    // u víc-výběrových otázek vyjmenuje všechny zaškrtnuté možnosti.
+    const hlavickyZakladni = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
+    const hlavickyOtazky = OTAZKY.map((o, i) => 'Otázka ' + (i + 1) + ': ' + o.text);
+    const hlavicky = hlavickyZakladni.concat(hlavickyOtazky);
+    const radky = data.map(r => {
+      const d = r.data || {};
+      const zakladBunky = hlavickyZakladni.map(h => r[h] == null ? '' : String(r[h]));
+      const otazkyBunky = OTAZKY.map(o => popisOdpovedZaznamChaos(o, d));
+      return zakladBunky.concat(otazkyBunky).map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',');
+    });
+    const csv = hlavicky.map(h => '"' + String(h).replace(/"/g, '""') + '"').join(',') + '\n' + radky.join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1630,7 +1688,17 @@ async function otevritHistorii() {
           const trend = document.createElement('div');
           trend.className = 'historie-trend';
           if (rozdilPb === 0) {
-            trend.textContent = 'Beze změny oproti minulému vyplnění.';
+            // Celkové skóre může vyjít stejně, i když se všechny odpovědi
+            // změnily (např. jedna oblast se zlepšila přesně o tolik, o
+            // kolik se jiná zhoršila) - dřív appka v tom případě napsala
+            // zavádějící "beze změny", i když detailní porovnání ukazovalo
+            // velké rozdíly v jednotlivých oblastech.
+            const maxOblastDelta = vypocitejMaxOblastDeltuChaos(posledni.oblastiVysledky, predchozi.oblastiVysledky);
+            if (maxOblastDelta >= 10) {
+              trend.textContent = 'Celkové skóre zůstalo stejné (' + posledni.skore + '/' + posledni.maxSkore + '), ale v jednotlivých oblastech se toho změnilo víc - až ' + maxOblastDelta + ' p. b. Podrobnosti v „Porovnat s předchozím".';
+            } else {
+              trend.textContent = 'Beze změny oproti minulému vyplnění.';
+            }
           } else if (rozdilPb > 0) {
             trend.textContent = 'Skóre se zhoršilo o ' + rozdilPb + ' p. b. oproti minulému vyplnění (vyšší skóre = víc chaosu).';
           } else {
