@@ -1001,6 +1001,40 @@ function oznamitDokonceni() {
 }
 let aktualniOtazka = 0;
 const vybranaIndexy = {};
+
+// Rozpracovaný kvíz se ukládá do localStorage po každé odpovědi, ať appka
+// po přechodu na přihlášení (a návratu zpátky) nezačínala zase od otázky 1.
+// Sety (u zaškrtávacích otázek) se serializují s vlastní značkou, ať je jde
+// zpátky rozeznat od obyčejného pole.
+const KVIZ_DRAFT_KEY = 'kviz_chaos_rozpracovano';
+
+function ulozitRozpracovanyKviz(){
+  try {
+    const data = JSON.stringify(
+      { otazka: aktualniOtazka, odpovedi, vybranaIndexy },
+      (k, v) => v instanceof Set ? { __set: Array.from(v) } : v
+    );
+    localStorage.setItem(KVIZ_DRAFT_KEY, data);
+  } catch(e) { console.warn('Rozpracovaný kvíz se nepodařilo uložit.', e); }
+}
+
+function nacistRozpracovanyKviz(){
+  try {
+    const raw = localStorage.getItem(KVIZ_DRAFT_KEY);
+    if(!raw) return;
+    const obnoveno = JSON.parse(raw, (k, v) =>
+      (v && typeof v === 'object' && Array.isArray(v.__set)) ? new Set(v.__set) : v
+    );
+    if(!obnoveno || typeof obnoveno.otazka !== 'number') return;
+    Object.assign(odpovedi, obnoveno.odpovedi || {});
+    Object.assign(vybranaIndexy, obnoveno.vybranaIndexy || {});
+    aktualniOtazka = Math.min(Math.max(0, obnoveno.otazka), OTAZKY.length - 1);
+  } catch(e) { console.warn('Rozpracovaný kvíz se nepodařilo obnovit.', e); }
+}
+
+function smazatRozpracovanyKviz(){
+  try { localStorage.removeItem(KVIZ_DRAFT_KEY); } catch(e) {}
+}
 const RADY_OBLAST = {
   'kanalovy-chaos': "Ve vaší firmě teče komunikace k jedné zakázce hned několika kanály najednou, e-mail, WhatsApp, telefon, Excel. To neznamená, že lidé nekomunikují, znamená to, že nikdo neví, kde hledat, až to bude potřeba. Vyberte jeden kanál pro jeden typ informace, třeba telefon pro urgentní věci a systém nebo tabulku pro stav zakázky, a napište to jako jednoduché pravidlo pro celý tým. Pokud používáte WhatsApp skupinu pro zakázky, stanovte aspoň, co tam nepatří, úkoly s termíny se v konverzaci ztrácejí a nikdo za ně pak nenese odpovědnost.",
   'prepisovani': "Pokud zadáváte zákazníka, termín nebo stav zakázky do víc systémů nebo tabulek, není problém v lidech, je v systému. Přepisování stojí čas a hlavně vytváří verze, takže nikdy nevíte jistě, která tabulka je ta aktuální. Určete jedno místo pravdy pro každý typ dat, zákazníka jen na jednom místě, stav zakázky jen na jednom místě, termíny jen v jednom kalendáři. I 10 minut denně přepisování je přes 40 hodin ročně, jen na přepisování.",
@@ -1168,6 +1202,15 @@ async function ulozitVysledek() {
   Object.keys(odpovedi).forEach(k => {
     odpovediNaUlozeni[k] = odpovedi[k] instanceof Set ? Array.from(odpovedi[k]) : odpovedi[k];
   });
+  // Uložit i vybranaIndexy (přesný index vybrané možnosti, ne jen body) -
+  // u otázek typu radio z toho appka časem umí ukázat přesné znění staré
+  // odpovědi v porovnání PŘED/PO (odpovedi samotné u radia drží jen body,
+  // a víc možností může mít stejné body, takže z nich přesné znění nejde
+  // spolehlivě zrekonstruovat).
+  const vybranaIndexyNaUlozeni = {};
+  Object.keys(vybranaIndexy).forEach(k => {
+    vybranaIndexyNaUlozeni[k] = vybranaIndexy[k] instanceof Set ? Array.from(vybranaIndexy[k]) : vybranaIndexy[k];
+  });
   const jineTextyNaUlozeni = {};
   OTAZKY.forEach(o => {
     const inp = document.getElementById('other-' + o.id);
@@ -1182,7 +1225,7 @@ async function ulozitVysledek() {
       hlavni_hodnota_cislo: skore,
       hlavni_hodnota_jednotka: 'z ' + maxSkore + ' bodů',
       hlavni_hodnota_typ: 'skore',
-      data: { skore, maxSkore, nejslabsiKey, oblastiVysledky, odpovedi: odpovediNaUlozeni, jine_texty: jineTextyNaUlozeni }
+      data: { skore, maxSkore, nejslabsiKey, oblastiVysledky, odpovedi: odpovediNaUlozeni, vybranaIndexy: vybranaIndexyNaUlozeni, jine_texty: jineTextyNaUlozeni }
     }).select().single();
     if (error) throw error;
     posledniToolRunId = data ? data.id : null;
@@ -1398,6 +1441,93 @@ function vykreslitDetailVysledkuChaos(zaznam) {
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
 }
 
+// Detailní porovnání dvou výsledků (šest oblastí + jednotlivé odpovědi, ne
+// jen souhrnné skóre) - otevírá se z historie tlačítkem "Porovnat s
+// předchozím". U starších záznamů (bez uložených vybranaIndexy) appka u
+// otázek typu radio pozná jen že se odpověď změnila, ne přesně na co -
+// to jde spolehlivě jen u nových záznamů a u otázek s víc možnostmi.
+function popisOdpovedRadioChaos(otazka, index) {
+  if (index === undefined || index === null || index === 'other') return null;
+  if (index === 'NEVIM') return 'Nevím';
+  const opt = otazka.opts[index];
+  return opt ? opt.t : null;
+}
+
+function otevritPorovnaniChaos(i) {
+  const novy = posledniHistorieChaos[i];
+  const stary = posledniHistorieChaos[i + 1];
+  if (!novy || !stary) return;
+  vykreslitPorovnaniChaos(
+    { datum: new Date(novy.created_at).toLocaleDateString('cs-CZ'), data: novy.data || {} },
+    { datum: new Date(stary.created_at).toLocaleDateString('cs-CZ'), data: stary.data || {} }
+  );
+}
+
+function vykreslitPorovnaniChaos(nz, st) {
+  const dn = nz.data || {}, ds = st.data || {};
+  const ovN = dn.oblastiVysledky || {}, ovS = ds.oblastiVysledky || {};
+  const poradi = ['chaos-zmen','zavislost','cekani','uloziste','kanalovy-chaos','prepisovani'];
+  const radkyOblasti = poradi.filter(k => OBLASTI[k] && ovN[k]).map(k => {
+    const oblast = OBLASTI[k];
+    const vN = ovN[k], vS = ovS[k];
+    if (vN.pct === null) {
+      return '<div style="margin-bottom:12px;"><div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.85);"><span>' + oblast.nazev + '</span><span style="color:rgba(255,255,255,.4);">nezjištěno</span></div></div>';
+    }
+    const barvaN = vN.pct >= 67 ? '#b91c1c' : vN.pct >= 34 ? '#d97706' : '#2a7a4f';
+    let deltaTxt = '';
+    if (vS && typeof vS.pct === 'number') {
+      const delta = vN.pct - vS.pct;
+      if (delta === 0) deltaTxt = '<span style="color:rgba(255,255,255,.4);font-size:12px;margin-left:8px;">beze změny</span>';
+      else if (delta > 0) deltaTxt = '<span style="color:#b91c1c;font-size:12px;margin-left:8px;">+' + delta + ' p. b.</span>';
+      else deltaTxt = '<span style="color:#2a7a4f;font-size:12px;margin-left:8px;">' + delta + ' p. b.</span>';
+    }
+    return '<div style="margin-bottom:14px;">' +
+      '<div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.85);margin-bottom:4px;"><span>' + oblast.nazev + '</span><span>' +
+      (vS && typeof vS.pct === 'number' ? '<span style="color:rgba(255,255,255,.4);">' + vS.pct + ' % → </span>' : '') +
+      '<span style="color:' + barvaN + ';font-weight:700;">' + vN.pct + ' %</span>' + deltaTxt + '</span></div>' +
+      '<div style="height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;"><div style="height:100%;width:' + vN.pct + '%;background:' + barvaN + ';"></div></div>' +
+      '</div>';
+  }).join('');
+
+  const odpN = dn.odpovedi || {}, odpS = ds.odpovedi || {};
+  const idxN = dn.vybranaIndexy || null, idxS = ds.vybranaIndexy || null;
+  const radkyOtazek = OTAZKY.map(o => {
+    if (o.typ === 'checkbox') {
+      const polN = Array.isArray(odpN[o.id]) ? odpN[o.id] : [];
+      const polS = Array.isArray(odpS[o.id]) ? odpS[o.id] : [];
+      const setN = new Set(polN), setS = new Set(polS);
+      const pridano = [...setN].filter(x => !setS.has(x)).map(x => (x === 'other' ? 'jiné' : (o.opts[x] && o.opts[x].t))).filter(Boolean);
+      const ubrano = [...setS].filter(x => !setN.has(x)).map(x => (x === 'other' ? 'jiné' : (o.opts[x] && o.opts[x].t))).filter(Boolean);
+      if (pridano.length === 0 && ubrano.length === 0) return '';
+      let zmena = '';
+      if (pridano.length) zmena += '<div style="color:#b91c1c;">+ ' + pridano.join(', ') + '</div>';
+      if (ubrano.length) zmena += '<div style="color:#2a7a4f;">− ' + ubrano.join(', ') + '</div>';
+      return '<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08);"><div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:4px;">' + o.text + '</div>' + zmena + '</div>';
+    }
+    if (idxN && idxS && idxN[o.id] !== undefined && idxS[o.id] !== undefined) {
+      const tN = popisOdpovedRadioChaos(o, idxN[o.id]);
+      const tS = popisOdpovedRadioChaos(o, idxS[o.id]);
+      if (tN === null || tS === null || tN === tS) return '';
+      return '<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08);"><div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:4px;">' + o.text + '</div><div style="font-size:13px;"><span style="color:rgba(255,255,255,.4);">' + tS + '</span> → <span style="color:#fff;">' + tN + '</span></div></div>';
+    }
+    if (odpN[o.id] !== undefined && odpS[o.id] !== undefined && odpN[o.id] !== odpS[o.id]) {
+      return '<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08);"><div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:4px;">' + o.text + '</div><div style="font-size:12px;color:rgba(255,255,255,.4);">odpověď se změnila (přesné znění staršího záznamu appka nemá uložené)</div></div>';
+    }
+    return '';
+  }).join('');
+
+  const otazkyBlok = radkyOtazek.trim()
+    ? '<div style="margin-top:18px;"><div style="font-size:13px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:10px;">Co se změnilo v odpovědích</div>' + radkyOtazek + '</div>'
+    : '<div style="margin-top:18px;font-size:13px;color:rgba(255,255,255,.4);">V jednotlivých odpovědích beze změny.</div>';
+
+  document.getElementById('detail-vysledku-obsah').innerHTML =
+    '<div class="historie-datum" style="margin-bottom:10px;">' + st.datum + ' → ' + nz.datum + '</div>' +
+    '<div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:16px;">' + dn.skore + ' / ' + dn.maxSkore +
+    (typeof ds.skore === 'number' ? ' <span style="font-size:13px;font-weight:400;color:rgba(255,255,255,.4);">(dřív ' + ds.skore + ' / ' + ds.maxSkore + ')</span>' : '') +
+    '</div>' + radkyOblasti + otazkyBlok;
+  document.getElementById('modal-detail-vysledku').style.display = 'flex';
+}
+
 // Appka umí otevřít rovnou konkrétní uložený výsledek podle ?vysledek=<id> v
 // adrese (odkaz "Otevřít celý výsledek" ze Zdroje úkolu v Akčním plánu).
 let vysledekZAdresyOtevren = false;
@@ -1482,6 +1612,14 @@ async function otevritHistorii() {
       shrnuti.textContent = r.nazev || r.shrnuti || 'Kvíz komunikačního chaosu';
       item.appendChild(datum);
       item.appendChild(shrnuti);
+      if (i < radky.length - 1) {
+        const porovnatBtn = document.createElement('button');
+        porovnatBtn.type = 'button';
+        porovnatBtn.textContent = 'Porovnat s předchozím →';
+        porovnatBtn.style.cssText = 'display:block;margin-top:6px;background:none;border:none;color:#8ab4ff;font-size:12px;cursor:pointer;padding:0;';
+        porovnatBtn.onclick = function (e) { e.stopPropagation(); otevritPorovnaniChaos(i); };
+        item.appendChild(porovnatBtn);
+      }
       // Trend jen u nejnovějšího záznamu, porovnaný s tím hned pod ním
       if (i === 0 && radky.length > 1) {
         const posledni = r.data, predchozi = radky[1].data;
@@ -1864,6 +2002,7 @@ function dalOtazka(){
   if(!jeOtazkaZodpovezena(OTAZKY[aktualniOtazka])) return;
   if(aktualniOtazka < OTAZKY.length - 1){
     aktualniOtazka++;
+    ulozitRozpracovanyKviz();
     vykreslitOtazky();
     rolovatNaKviz();
   }
@@ -1872,6 +2011,7 @@ function dalOtazka(){
 function zpetOtazka(){
   if(aktualniOtazka > 0){
     aktualniOtazka--;
+    ulozitRozpracovanyKviz();
     vykreslitOtazky();
     rolovatNaKviz();
   }
@@ -1911,6 +2051,7 @@ function vybrat(qid, typ, oi, el){
     }
   }
   aktualizovatDalTlacitko();
+  ulozitRozpracovanyKviz();
 }
 
 function vybratJine(qid, el){
@@ -1938,10 +2079,12 @@ function vybratJine(qid, el){
     odpovedi[qid] = odpovedi[qid] || 2;
   }
   aktualizovatDalTlacitko();
+  ulozitRozpracovanyKviz();
 }
 
 function zapsatJine(qid, val){
   odpovedi[qid+'_text'] = val;
+  ulozitRozpracovanyKviz();
 }
 
 function aktualizovatDalTlacitko(){
@@ -2063,6 +2206,7 @@ function vykreslitOdpovediRecap(){
 // ============ ZOBRAZENÍ VÝSLEDKU ============
 function zobrazitVysledek(){
   oznamitDokonceni();
+  smazatRozpracovanyKviz();
   const {skore, maxSkore, nejslabsiKey, oblastiVysledky, nevimOtazky, zadnyProblem} = spocitatSkore();
   vykreslitOdpovediRecap();
   posledniVysledek = { skore, maxSkore, nejslabsiKey, oblastiVysledky };
@@ -2165,6 +2309,7 @@ function pripravitEmailChaos(){
 }
 
 function zacitZnovu(){
+  smazatRozpracovanyKviz();
   Object.keys(odpovedi).forEach(k=>delete odpovedi[k]);
   posledniVysledek = null;
   posledniToolRunId = null;
@@ -2186,6 +2331,7 @@ function zacitZnovu(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+nacistRozpracovanyKviz();
 vykreslitOtazky();
 nacistPrihlaseniStav();
 </script>
