@@ -1329,7 +1329,7 @@ async function exportovatData() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'kviz-jak-znate-svuj-sklad-data.csv';
+    a.download = 'kviz-jak-znate-svuj-sklad-data-' + new Date().toISOString().slice(0, 10) + '.csv';
     document.body.appendChild(a);
     a.click();
     a.remove();

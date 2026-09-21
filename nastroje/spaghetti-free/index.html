@@ -1595,7 +1595,7 @@ function exportovatObrazek() {
   oznamitDokonceni();
   const expCanvas = vytvoritExportCanvas();
   const link = document.createElement('a');
-  link.download = 'spaghetti-diagram.png';
+  link.download = 'spaghetti-diagram-' + new Date().toISOString().slice(0, 10) + '.png';
   link.href = expCanvas.toDataURL('image/png');
   link.click();
 }

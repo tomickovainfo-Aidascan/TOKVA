@@ -2009,7 +2009,11 @@ function stahnoutCSV() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'meric-pro-' + nazev.toLowerCase().replace(/\s+/g,'-') + '.csv';
+  // Nazev procesu si pise uzivatel sam - muze obsahovat znaky, ktere
+  // v nazvu souboru delaji problem (lomitko, dvojtecka apod.), takze se
+  // pred pouzitim v nazvu souboru ocisti.
+  const bezpecnyNazev = nazev.toLowerCase().replace(/[\\/:*?"<>|]/g, '-').replace(/\s+/g,'-');
+  a.download = 'meric-pro-' + bezpecnyNazev + '.csv';
   a.click();
   URL.revokeObjectURL(url);
 }

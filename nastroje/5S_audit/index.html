@@ -1720,7 +1720,7 @@ async function exportovatData() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = '5s-audit-data.csv';
+    a.download = '5s-audit-data-' + new Date().toISOString().slice(0, 10) + '.csv';
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -2495,6 +2495,35 @@ function pripravitReport() {
     </tr>`;
   }).join('');
 
+  // Fotodokumentace pred/po u kazdeho kroku - drive se do tisknuteho/stazeneho
+  // reportu vubec nedostala, i kdyz je to hlavni dukaz odvedene prace.
+  const fotoKrokyHtml = S_DATA.map(s => {
+    const fPred = misto.fotky[s.id + '_pred'] || null;
+    const fPo = misto.fotky[s.id + '_po'] || null;
+    if (!fPred && !fPo) return '';
+    const tsPred = misto.fotky[s.id + '_pred_ts'] || '';
+    const tsPo = misto.fotky[s.id + '_po_ts'] || '';
+    return `<div style="margin-bottom:16px;break-inside:avoid;">
+        <div style="font-weight:700;font-size:13px;margin-bottom:8px;">${s.num} ${s.name}</div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;">
+          ${fPred ? `<div>
+            <img src="${fPred}" style="max-width:240px;max-height:240px;border:1px solid #ddd;border-radius:6px;display:block;">
+            <div style="font-size:11px;color:#999;margin-top:4px;">Před${tsPred ? ' · ' + tsPred : ''}</div>
+          </div>` : ''}
+          ${fPo ? `<div>
+            <img src="${fPo}" style="max-width:240px;max-height:240px;border:1px solid #ddd;border-radius:6px;display:block;">
+            <div style="font-size:11px;color:#999;margin-top:4px;">Po${tsPo ? ' · ' + tsPo : ''}</div>
+          </div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+  const fotoSekceHtml = fotoKrokyHtml
+    ? `<div style="margin-top:22px;">
+        <h3 style="font-size:14px;margin-bottom:10px;">Fotodokumentace — před a po</h3>
+        ${fotoKrokyHtml}
+      </div>`
+    : '';
+
   const std = misto.standard;
   const standardHtml = (std && (std.foto || std.pravidla))
     ? `<div style="margin-top:22px;">
@@ -2525,6 +2554,7 @@ function pripravitReport() {
         </tr></thead>
         <tbody>${krokyHtml}</tbody>
       </table>
+      ${fotoSekceHtml}
       ${standardHtml}
       ${kontrolaHtml}
       ${planHtml}

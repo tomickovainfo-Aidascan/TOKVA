@@ -1626,7 +1626,7 @@ async function exportovatDataChaos() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'kviz-komunikacniho-chaosu-data.csv';
+    a.download = 'kviz-komunikacniho-chaosu-data-' + new Date().toISOString().slice(0, 10) + '.csv';
     document.body.appendChild(a);
     a.click();
     a.remove();

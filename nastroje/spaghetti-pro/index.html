@@ -2949,7 +2949,7 @@ function exportovatObrazek() {
   }
 
   const link = document.createElement('a');
-  link.download = 'spaghetti-diagram-pro.png';
+  link.download = 'spaghetti-diagram-pro-' + new Date().toISOString().slice(0, 10) + '.png';
   link.href = expCanvas.toDataURL('image/png');
   link.click();
 }
