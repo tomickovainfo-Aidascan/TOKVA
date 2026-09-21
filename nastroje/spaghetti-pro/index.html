@@ -129,6 +129,8 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
   background:var(--white); border:1px solid var(--border); border-radius:10px;
   padding:10px 14px; margin-bottom:12px;
   display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  position:sticky; top:var(--nav-h, 60px); z-index:90;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
 }
 .toolbar-group { display:flex; align-items:center; gap:8px; }
 .toolbar-divider { width:1px; height:24px; background:var(--border); }
@@ -949,15 +951,24 @@ window.addEventListener('DOMContentLoaded', () => {
   canvas = document.getElementById('main-canvas');
   ctx = canvas.getContext('2d');
 
+  // Toolbar je pod hlavni navigaci prilepeny (position:sticky) - nav muze mit
+  // ruznou vysku (na mobilu se zabaluje na dva radky), takze se odsazeni
+  // dopocitava podle skutecne vysky navu, ne napevno.
+  function nastavitVyskuNavu() {
+    const nav = document.querySelector('nav');
+    if (nav) document.documentElement.style.setProperty('--nav-h', nav.offsetHeight + 'px');
+  }
+  nastavitVyskuNavu();
+
   // Mapa se automaticky prizpusobi, kdyz se zmensi/zvetsi okno nebo displej
   let resizeTimeout = null;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(prepocitatFitZoom, 120);
+    resizeTimeout = setTimeout(() => { prepocitatFitZoom(); nastavitVyskuNavu(); }, 120);
   });
   window.addEventListener('orientationchange', () => {
     clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(prepocitatFitZoom, 120);
+    resizeTimeout = setTimeout(() => { prepocitatFitZoom(); nastavitVyskuNavu(); }, 120);
   });
 
   // Drag & drop
@@ -1193,6 +1204,7 @@ function ulozitKalibraci() {
   if (mod === 'kreslit') setMod('kreslit');
   updateStats();
   kreslit();
+  naplanovatUlozeniRozpracovanehoNakresu();
 }
 
 
@@ -1241,6 +1253,42 @@ function ulozitSeznamProjektu(seznam) {
     return false;
   }
 }
+
+// =============================================
+// PRŮBĚŽNÉ UKLÁDÁNÍ ROZPRACOVANÉHO NÁKRESU
+// Dřív appka nakreslenou trasu ukládala do localStorage až po výslovném
+// kliknutí na "Uložit nákres" a zadání názvu. Při obcházení provozu s
+// telefonem v ruce ale mobilní prohlížeč umí kartu při uzamčení obrazovky
+// odložit z paměti - a celá rozkreslená trasa (i desítky bodů) se pak ztratí
+// beze stopy. Appka teď rozpracovaný nákres průběžně ukládá pod vlastním
+// klíčem (odděleně od pojmenovaných uložených nákresů) a po znovuotevření
+// nabídne obnovení.
+const DRAFT_KEY_SPAGHETTI = 'spaghetti_pro_rozpracovano';
+let draftUlozeniTimeout = null;
+function naplanovatUlozeniRozpracovanehoNakresu() {
+  clearTimeout(draftUlozeniTimeout);
+  draftUlozeniTimeout = setTimeout(ulozitRozpracovanyNakresIhned, 1500);
+}
+function ulozitRozpracovanyNakresIhned() {
+  if (!layout || zakazky.every(z => z.body.length < 2)) { smazatRozpracovanyNakres(); return; }
+  try {
+    localStorage.setItem(DRAFT_KEY_SPAGHETTI, JSON.stringify({
+      nazevProjektu, aktualniProjektId,
+      layoutSrc: layout.src,
+      zakazky, zastavky, poznamky, meritko, meritkoNastaveno, nakladyHod, rychlostChuze,
+      cas: Date.now()
+    }));
+  } catch (e) {
+    console.warn('Rozpracovaný nákres se nepodařilo průběžně uložit lokálně (asi došlo místo v prohlížeči).', e);
+  }
+}
+function smazatRozpracovanyNakres() {
+  try { localStorage.removeItem(DRAFT_KEY_SPAGHETTI); } catch (e) {}
+}
+// Záložní pravidelné uložení (kdyby uživatel kreslil bez tříapůlvteřinové
+// pauzy, na kterou čeká plánovač výš) - i tak appka o víc než 5 s starý stav
+// nikdy nemá.
+setInterval(ulozitRozpracovanyNakresIhned, 5000);
 
 function aktualizovatMojeProjektyBar() {
   const bar = document.getElementById('moje-projekty-bar');
@@ -1426,6 +1474,7 @@ function potvrditUlozeniProjektu() {
   if (!ulozitSeznamProjektu(seznam)) return;
   aktualniProjektId = id;
   nazevProjektu = nazev;
+  smazatRozpracovanyNakres();
   zavritModalUlozitProjekt();
   aktualizovatMojeProjektyBar();
   ulozitProjektDoSupabase(zaznam);
@@ -2136,6 +2185,7 @@ function onCanvasClick(e) {
   zakazky[aktivniZakazka].body.push(pos);
   kreslit();
   updateStats();
+  naplanovatUlozeniRozpracovanehoNakresu();
 }
 
 function onMouseDown(e) {
@@ -2230,6 +2280,7 @@ function onTouchEnd(e) {
       zakazky[aktivniZakazka].body.push(pendingTouch.pos);
       kreslit();
       updateStats();
+      naplanovatUlozeniRozpracovanehoNakresu();
     }
   }
   pendingTouch = null;
@@ -2566,6 +2617,7 @@ function pridatZastavku() {
   zastavky.push({pracovnikIdx: aktivniZakazka, x: posledni.x, y: posledni.y, cas: new Date().toLocaleTimeString('cs-CZ')});
   kreslit();
   updateStats();
+  naplanovatUlozeniRozpracovanehoNakresu();
 }
 
 // =============================================
@@ -2629,6 +2681,7 @@ function ulozitPoznamku() {
   kreslit();
   aktualizovatSeznamPoznamek();
   aktualizovatSrovnaniKartu();
+  naplanovatUlozeniRozpracovanehoNakresu();
 }
 
 function smazatPoznamku() {
@@ -3058,6 +3111,7 @@ function tisknout() {
 function resetovat() {
   potvrdit('Začít úplně znovu? Všechny trasy budou smazány.', 'Smazat a začít znovu', function() {
     hasUnsavedPrace = false;
+    smazatRozpracovanyNakres();
     zakazky = [{ nazev: 'Pracovník 1', barva: BARVY[0], body: [], role: null, frek: { opakovani: 0, smeny: 0, dny: 0 }, typ: 'clovek', viditelna: true }];
     aktivniZakazka = 0;
     zastavky = [];
@@ -3188,7 +3242,76 @@ function vstoupitDoAplikace() {
   document.getElementById('main-app').style.display = 'block';
   aktualizovatMojeProjektyBar();
   synchronizovatProjektySeSupabase();
-  otevritVysledekZAdresy();
+  if (new URLSearchParams(window.location.search).get('vysledek')) {
+    otevritVysledekZAdresy();
+  } else {
+    zkusitObnovitRozpracovanyNakres();
+  }
+}
+
+// Obnoví rozpracovaný nákres uložený průběžně do localStorage (viz
+// DRAFT_KEY_SPAGHETTI výš) - stejný postup jako nacistProjektZeZaznamu()
+// pro pojmenovaný uložený nákres, jen s vlastním klíčem a bez id existujícího
+// záznamu (draft ještě nemusí mít ani nastavené měřítko, natož jméno).
+function zkusitObnovitRozpracovanyNakres() {
+  let draft;
+  try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY_SPAGHETTI) || 'null'); } catch (e) { draft = null; }
+  if (!draft || !draft.layoutSrc) return;
+
+  aktualniProjektId = draft.aktualniProjektId || null;
+  nazevProjektu = draft.nazevProjektu || '';
+  zakazky = draft.zakazky && draft.zakazky.length ? draft.zakazky : zakazky;
+  zastavky = draft.zastavky || [];
+  poznamky = draft.poznamky || [];
+  meritko = draft.meritko || 1;
+  meritkoNastaveno = !!draft.meritkoNastaveno;
+  nakladyHod = draft.nakladyHod || 350;
+  rychlostChuze = draft.rychlostChuze || 4.5;
+  aktivniZakazka = 0;
+  hasUnsavedPrace = true;
+
+  document.getElementById('naklady-hod').value = nakladyHod;
+  document.getElementById('rychlost-chuze').value = rychlostChuze;
+  const kalStatus = document.getElementById('kalibrace-status');
+  if (kalStatus && meritkoNastaveno) kalStatus.textContent = 'Měřítko nastavené. Klidně zkalibrujte znovu, pokud se spletete.';
+  const kalBtn = document.getElementById('btn-zacit-kreslit');
+  if (kalBtn) kalBtn.disabled = !meritkoNastaveno;
+
+  const img = new Image();
+  img.onload = () => {
+    layout = img;
+    document.getElementById('upload-zone').style.display = 'none';
+    document.getElementById('setup-panel').style.display = 'none';
+    document.getElementById('canvas-placeholder').style.display = 'none';
+    canvas.style.display = 'block';
+
+    const maxW = canvas.parentElement.clientWidth;
+    const scale = Math.min(maxW / layout.naturalWidth, 800 / layout.naturalHeight, 1);
+    canvas.width = layout.naturalWidth * scale;
+    canvas.height = layout.naturalHeight * scale;
+    canvas._layoutW = canvas.width;
+    canvas._layoutH = canvas.height;
+    zoom = 1; offsetX = 0; offsetY = 0;
+    prepocitatFitZoom();
+
+    document.getElementById('stats-bar').style.display = 'flex';
+    document.getElementById('toolbar').style.display = 'flex';
+    document.getElementById('s-projekt-panel').style.display = 'block';
+    document.getElementById('s-akce-panel').style.display = 'block';
+    document.getElementById('vysvetlivky').style.display = 'block';
+    document.getElementById('zakazky-panel').style.display = 'block';
+    document.getElementById('dopad-panel').style.display = 'block';
+    document.getElementById('tip-krokomery').style.display = 'block';
+    document.getElementById('export-bar').style.display = 'flex';
+    if (meritkoNastaveno) setMod('kreslit');
+    obnovitZakazkyList();
+    aktualizovatSeznamPoznamek();
+    updateStats();
+    kreslit();
+    upozornit('Obnovili jsme rozpracovaný nákres' + (nazevProjektu ? ' „' + nazevProjektu + '"' : '') + '. Pokračujte v kreslení tam, kde jste přestali.', 'Nákres obnoven');
+  };
+  img.onerror = () => { console.warn('Obnovení rozpracovaného nákresu se nepodařilo (poškozený obrázek v localStorage).'); };
+  img.src = draft.layoutSrc;
 }
 
 // Appka umí otevřít rovnou konkrétní uložený projekt podle ?vysledek=<id> v

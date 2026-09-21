@@ -734,7 +734,24 @@ let posledniPlytvaniPct = '';
 let posledniPrumerCyklus = '';
 let posledniPlytvaniKcRok = '';
 let cykly = [], aktCyklus = null, aktivniKat = null;
-let timerInt = null, katInt = null, cyklusStart = null;
+let timerInt = null, katInt = null, cyklusStart = null, draftInt = null;
+
+// Stejná oprava jako v Tokva Pro verzi: rozpracované měření se dřív ukládalo
+// do localStorage až na úplném konci (souhrn), takže odložení karty
+// prohlížečem při uzamčení telefonu uprostřed měření celé kolo smazalo.
+// Appka teď průběžně ukládá i tady.
+const DRAFT_KEY_MERIC_FREE = 'meric_free_rozpracovano';
+function ulozitRozpracovaneMereni() {
+  if (cykly.length === 0 && !cyklusStart) { smazatRozpracovaneMereni(); return; }
+  try {
+    localStorage.setItem(DRAFT_KEY_MERIC_FREE, JSON.stringify({
+      nazev, cykly, aktCyklusCas: aktCyklus ? aktCyklus.cas : null, cas: Date.now()
+    }));
+  } catch (e) { console.warn('Rozpracované měření se nepodařilo uložit lokálně.', e); }
+}
+function smazatRozpracovaneMereni() {
+  try { localStorage.removeItem(DRAFT_KEY_MERIC_FREE); } catch (e) {}
+}
 let mereniSpusteno = false;
 let toolStartedOdeslano = false;
 let hasUnsavedMereni = false;
@@ -778,7 +795,43 @@ document.getElementById('inp-nazev').addEventListener('input', function() {
   hasUnsavedMereni = true;
 });
 
-initMereni();
+function zkusitObnovitRozpracovaneMereni() {
+  let draft;
+  try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY_MERIC_FREE) || 'null'); } catch (e) { draft = null; }
+  if (!draft || (!(draft.cykly && draft.cykly.length) && !draft.aktCyklusCas)) return false;
+
+  nazev = draft.nazev || 'Proces';
+  document.getElementById('inp-nazev').value = nazev;
+  document.getElementById('m-nazev').textContent = nazev;
+  document.getElementById('m-cykly').textContent = 'Cyklus 1 / ' + MAX_CYKLY;
+  mereniSpusteno = true;
+  zacitNovyCyklus();
+
+  const dokoncene = draft.cykly || [];
+  cykly = [];
+  dokoncene.forEach(c => { cykly.push(c); pridatRadek(cykly.length, c); });
+  if (cykly.length > 0) {
+    document.getElementById('ulozene').style.display = 'block';
+    if (cykly.length < MAX_CYKLY) document.getElementById('btn-novy').style.display = 'block';
+    document.getElementById('btn-konec').style.display = 'block';
+  }
+  document.getElementById('m-cykly').textContent = 'Cyklus ' + (cykly.length + 1) + ' / ' + MAX_CYKLY;
+
+  if (draft.aktCyklusCas && aktCyklus) {
+    aktCyklus.cas = draft.aktCyklusCas;
+    Object.keys(draft.aktCyklusCas).forEach(k => {
+      const sek = Math.floor(draft.aktCyklusCas[k]);
+      const el = document.getElementById('k-' + k);
+      if (el) el.textContent = pad(Math.floor(sek/60)) + ':' + pad(sek%60);
+    });
+  }
+
+  hasUnsavedMereni = true;
+  upozornit('Obnovili jsme rozpracované měření „' + nazev + '" (' + cykly.length + ' dokončených cyklů). Rozjetý cyklus pokračuje tam, kde jste přestali - klikněte znovu na činnost a měřte dál.', 'Měření obnoveno');
+  return true;
+}
+
+if (!zkusitObnovitRozpracovaneMereni()) initMereni();
 
 function zacitNovyCyklus() {
   const cas = {};
@@ -812,7 +865,10 @@ function setKat(kat, nazevKat, barva) {
     timerInt = setInterval(updateTimer, 100);
     clearInterval(katInt);
     katInt = setInterval(updateKat, 100);
+    clearInterval(draftInt);
+    draftInt = setInterval(ulozitRozpracovaneMereni, 3000);
   }
+  ulozitRozpracovaneMereni();
   document.querySelectorAll('.kat-btn').forEach(b => b.classList.remove('on'));
   const btn = document.querySelector('.k-'+kat);
   if (btn) btn.classList.add('on');
@@ -860,12 +916,14 @@ function stopCyklus() {
     upozornit('Nejdřív klikněte na některou činnost, pak můžete cyklus ukončit.');
     return;
   }
-  clearInterval(timerInt); clearInterval(katInt);
+  clearInterval(timerInt); clearInterval(katInt); clearInterval(draftInt);
   document.querySelectorAll('.kat-btn').forEach(b => b.classList.remove('on'));
   aktivniKat = null;
   aktCyklus.celkem = (Date.now() - cyklusStart) / 1000;
   cykly.push({...aktCyklus, cas: {...aktCyklus.cas}});
   pridatRadek(cykly.length, aktCyklus);
+  cyklusStart = null;
+  ulozitRozpracovaneMereni();
   document.getElementById('ulozene').style.display = 'block';
   document.getElementById('btn-stop').style.display = 'none';
   if (cykly.length < MAX_CYKLY) {
@@ -893,7 +951,8 @@ function pridatRadek(n, c) {
 
 function ukoncit() {
   oznamitDokonceni();
-  clearInterval(timerInt); clearInterval(katInt);
+  clearInterval(timerInt); clearInterval(katInt); clearInterval(draftInt);
+  smazatRozpracovaneMereni();
   document.getElementById('setup').style.display = 'none';
   document.getElementById('mereni').style.display = 'none';
   document.getElementById('souhrn').style.display = 'block';
@@ -1039,6 +1098,8 @@ function odeslatEmail(e) {
 }
 
 function zacitZnovu() {
+  clearInterval(draftInt);
+  smazatRozpracovaneMereni();
   document.getElementById('uloz-list').innerHTML = '';
   document.getElementById('ulozene').style.display = 'none';
   document.getElementById('souhrn').style.display = 'none';

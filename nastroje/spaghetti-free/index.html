@@ -245,6 +245,8 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
   background:var(--white); border:1px solid var(--border); border-radius:10px;
   padding:8px 10px; margin-bottom:8px;
   display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  position:sticky; top:0; z-index:90;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
 }
 .toolbar-group { display:flex; align-items:center; gap:8px; }
 .toolbar-divider { width:1px; height:24px; background:var(--border); }
@@ -826,6 +828,66 @@ let panStart = {x:0, y:0};
 let offsetStart = {x:0, y:0};
 
 // =============================================
+// PRUBEZNE UKLADANI ROZPRACOVANEHO NAKRESU (aby se neztratil pri uzamceni telefonu)
+// =============================================
+const DRAFT_KEY_SPAGHETTI_FREE = 'spaghetti_free_rozpracovano';
+let draftUlozeniTimeout = null;
+function naplanovatUlozeniRozpracovanehoNakresu() {
+  clearTimeout(draftUlozeniTimeout);
+  draftUlozeniTimeout = setTimeout(ulozitRozpracovanyNakresIhned, 1500);
+}
+function ulozitRozpracovanyNakresIhned() {
+  if (!layout || zakazky.every(z => z.body.length < 2)) { smazatRozpracovanyNakres(); return; }
+  try {
+    localStorage.setItem(DRAFT_KEY_SPAGHETTI_FREE, JSON.stringify({
+      layoutSrc: layout.src,
+      zakazky, aktivniZakazka, meritko, meritkoNastaveno,
+      cas: Date.now()
+    }));
+  } catch (e) {
+    console.warn('Rozpracovaný nákres se nepodařilo průběžně uložit lokálně (asi došlo místo v prohlížeči).', e);
+  }
+}
+function smazatRozpracovanyNakres() {
+  try { localStorage.removeItem(DRAFT_KEY_SPAGHETTI_FREE); } catch (e) {}
+}
+setInterval(ulozitRozpracovanyNakresIhned, 5000);
+
+function zkusitObnovitRozpracovanyNakres() {
+  let draft;
+  try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY_SPAGHETTI_FREE) || 'null'); } catch (e) { draft = null; }
+  if (!draft || !draft.layoutSrc) return;
+  const img = new Image();
+  img.onload = () => {
+    layout = img;
+    zakazky = draft.zakazky && draft.zakazky.length ? draft.zakazky : zakazky;
+    aktivniZakazka = Math.min(draft.aktivniZakazka || 0, zakazky.length - 1);
+    meritko = draft.meritko || 1;
+    meritkoNastaveno = !!draft.meritkoNastaveno;
+    inicializovat();
+    const status = document.getElementById('kalibrace-status');
+    if (status && meritkoNastaveno) status.textContent = 'Měřítko nastavené. Klidně zkalibrujte znovu, pokud se spletete.';
+    const btn = document.getElementById('btn-zacit-kreslit');
+    if (btn) btn.disabled = !meritkoNastaveno;
+    if (meritkoNastaveno) {
+      document.getElementById('setup-panel').style.display = 'none';
+      document.getElementById('stats-bar').style.display = 'flex';
+      document.getElementById('toolbar').style.display = 'flex';
+      document.getElementById('zakazky-panel').style.display = 'block';
+      document.getElementById('tip-krokomery').style.display = 'block';
+      document.getElementById('export-bar').style.display = 'flex';
+      setMod('kreslit');
+      obnovitZakazkyList();
+      updateStats();
+    }
+    hasUnsavedPrace = true;
+    upozornit('Obnovili jsme rozpracovaný nákres. Pokračujte v kreslení tam, kde jste přestali.', 'Nákres obnoven');
+  };
+  img.onerror = () => { console.warn('Obnovení rozpracovaného nákresu se nepodařilo (poškozený obrázek v localStorage).'); };
+  img.src = draft.layoutSrc;
+}
+
+// =============================================
 // INIT
 // =============================================
 window.addEventListener('DOMContentLoaded', () => {
@@ -875,6 +937,8 @@ window.addEventListener('DOMContentLoaded', () => {
     };
     picker.appendChild(dot);
   });
+
+  zkusitObnovitRozpracovanyNakres();
 });
 
 // =============================================
@@ -1083,6 +1147,7 @@ function ulozitKalibraci() {
   if (jizBezi) setMod('kreslit');
   updateStats();
   kreslit();
+  naplanovatUlozeniRozpracovanehoNakresu();
 }
 
 
@@ -1243,6 +1308,7 @@ function onCanvasClick(e) {
   zakazky[aktivniZakazka].body.push(pos);
   kreslit();
   updateStats();
+  naplanovatUlozeniRozpracovanehoNakresu();
 }
 
 function onMouseDown(e) {
@@ -1337,6 +1403,7 @@ function onTouchEnd(e) {
       zakazky[aktivniZakazka].body.push(pendingTouch.pos);
       kreslit();
       updateStats();
+      naplanovatUlozeniRozpracovanehoNakresu();
     }
   }
   pendingTouch = null;
@@ -1353,6 +1420,7 @@ function zpetKrok() {
     z.body.pop();
     kreslit();
     updateStats();
+    naplanovatUlozeniRozpracovanehoNakresu();
   }
 }
 
@@ -1361,6 +1429,7 @@ function smazatAktualniTrasu() {
     zakazky[aktivniZakazka].body = [];
     kreslit();
     updateStats();
+    naplanovatUlozeniRozpracovanehoNakresu();
   });
 }
 
@@ -1386,6 +1455,7 @@ function potvrditNovuZakazku() {
   obnovitZakazkyList();
   updateStats();
   kreslit();
+  naplanovatUlozeniRozpracovanehoNakresu();
 }
 
 function prepnoutZakazku(i) {
@@ -1397,13 +1467,14 @@ function prepnoutZakazku(i) {
 
 function smazatZakazku(i, e) {
   e.stopPropagation();
-  if (zakazky.length === 1) { zakazky[0].body = []; kreslit(); updateStats(); return; }
+  if (zakazky.length === 1) { zakazky[0].body = []; kreslit(); updateStats(); naplanovatUlozeniRozpracovanehoNakresu(); return; }
   otevritModalConfirm('Smazat zakázku?', 'Smazat zakázku "' + zakazky[i].nazev + '"?', 'Smazat zakázku', function() {
     zakazky.splice(i, 1);
     aktivniZakazka = Math.min(aktivniZakazka, zakazky.length - 1);
     obnovitZakazkyList();
     updateStats();
     kreslit();
+    naplanovatUlozeniRozpracovanehoNakresu();
   });
 }
 
@@ -1579,6 +1650,7 @@ function zavritModalReset() {
 function potvrditReset() {
   zavritModalReset();
   hasUnsavedPrace = false;
+  smazatRozpracovanyNakres();
   zakazky = [{ nazev: 'Zakázka 1', barva: BARVY[0], body: [] }];
   aktivniZakazka = 0;
   layout = null;

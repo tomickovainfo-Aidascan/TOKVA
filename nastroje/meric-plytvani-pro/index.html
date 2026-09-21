@@ -979,7 +979,32 @@ function oznamitDokonceni() {
   toolDokoncenoOdeslano = true;
   trackTokvaEvent('tool_completed', { tool_name: 'meric_plytvani', tool_version: 'pro' });
 }
-let timerInt = null, katInt = null, cyklusStart = null;
+let timerInt = null, katInt = null, cyklusStart = null, draftInt = null;
+
+// Rozpracované měření (dokončené cykly + rozjetý cyklus) dřív žilo jen v
+// paměti prohlížeče a do localStorage se zapsalo až po kliknutí na
+// "Ukončit" na konci. Když se telefon během obcházení provozu na chvíli
+// uzamkl a mobilní prohlížeč mezitím kartu odložil z paměti (běžné u iOS
+// Safari i Android Chrome), celé rozměřené kolo zmizelo beze stopy. Appka
+// teď stav průběžně ukládá (po každém přepnutí činnosti, po každém
+// dokončeném cyklu a jinak co 3 vteřiny, dokud cyklus běží) a při
+// znovuotevření nabídne obnovení.
+const DRAFT_KEY_MERIC = 'meric_pro_rozpracovano';
+function ulozitRozpracovaneMereni() {
+  if (cykly.length === 0 && !cyklusStart) { smazatRozpracovaneMereni(); return; }
+  try {
+    localStorage.setItem(DRAFT_KEY_MERIC, JSON.stringify({
+      nazev, pocetKusu, delkaSmeny, hodinovaSazba, pocetPracovniku,
+      vlastniOp, vyrazeneStd: Array.from(vyrazeneStd),
+      cykly,
+      aktCyklusCas: aktCyklus ? aktCyklus.cas : null,
+      cas: Date.now()
+    }));
+  } catch (e) { console.warn('Rozpracované měření se nepodařilo uložit lokálně.', e); }
+}
+function smazatRozpracovaneMereni() {
+  try { localStorage.removeItem(DRAFT_KEY_MERIC); } catch (e) {}
+}
 
 function plytvaniIds() {
   return [...PLYTVANI, ...vlastniOp.filter(o => o.typ === 'plytvani').map(o => o.id)];
@@ -1160,7 +1185,9 @@ function setKat(kat, nazevKat, barva) {
     cyklusStart = Date.now();
     clearInterval(timerInt); timerInt = setInterval(updateTimer, 100);
     clearInterval(katInt); katInt = setInterval(updateKat, 100);
+    clearInterval(draftInt); draftInt = setInterval(ulozitRozpracovaneMereni, 3000);
   }
+  ulozitRozpracovaneMereni();
   document.querySelectorAll('.kat-btn').forEach(b => { b.classList.remove('on'); if(b.classList.contains('k-vlastni')){b.style.background='';b.style.color='';} });
   const btn = document.getElementById('btn-'+kat) || document.querySelector('.k-'+kat);
   if (btn) { btn.classList.add('on'); if(btn.classList.contains('k-vlastni')){btn.style.background=barva;btn.style.color='white';} }
@@ -1205,12 +1232,14 @@ function potvrdModalNotice() {
 
 function stopCyklus() {
   if (!cyklusStart) { upozornit('Nejdřív klikněte na některou činnost, pak můžete cyklus ukončit.'); return; }
-  clearInterval(timerInt); clearInterval(katInt);
+  clearInterval(timerInt); clearInterval(katInt); clearInterval(draftInt);
   document.querySelectorAll('.kat-btn').forEach(b => { b.classList.remove('on'); if(b.classList.contains('k-vlastni')){b.style.background='';b.style.color='';} });
   aktivniKat = null;
   aktCyklus.celkem = (Date.now() - cyklusStart) / 1000;
   cykly.push({...aktCyklus, cas: {...aktCyklus.cas}});
   pridatRadek(cykly.length, aktCyklus);
+  cyklusStart = null;
+  ulozitRozpracovaneMereni();
   document.getElementById('ulozene').style.display = 'block';
   document.getElementById('btn-stop').style.display = 'none';
   document.getElementById('btn-novy').style.display = 'block';
@@ -1444,6 +1473,7 @@ function ukoncit() {
 
   // Uložit do localStorage (historie)
   ulozitDoHistorie();
+  smazatRozpracovaneMereni();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -2183,9 +2213,10 @@ function kopirovat() {
 // by stejně neseděly na nové kategorie.
 function upravitNastaveni() {
   const provest = function () {
-    clearInterval(timerInt); clearInterval(katInt);
+    clearInterval(timerInt); clearInterval(katInt); clearInterval(draftInt);
     cykly = []; aktCyklus = null; aktivniKat = null; cyklusStart = null;
     hasUnsavedMereni = false;
+    smazatRozpracovaneMereni();
     document.querySelectorAll('#grid-hodnota .k-vlastni, #grid-plytvani .k-vlastni').forEach(b => b.remove());
     document.getElementById('uloz-list').innerHTML = '';
     document.getElementById('ulozene').style.display = 'none';
@@ -2206,8 +2237,10 @@ function upravitNastaveni() {
 }
 
 function zacitZnovu() {
+  clearInterval(draftInt);
   cykly = []; aktCyklus = null; aktivniKat = null; cyklusStart = null;
   hasUnsavedMereni = false;
+  smazatRozpracovaneMereni();
   vlastniOp = []; vsechnyKat = []; vyrazeneStd = new Set(); pouziteNavrhy = new Set();
   document.getElementById('grid-hodnota').innerHTML = `
     <button class="kat-btn k-prace" onclick="setKat('prace','Práce','#2a7a4f')">
@@ -2241,7 +2274,59 @@ function fmtC(s) { return pad(Math.floor(s/60)) + ':' + pad(Math.floor(s%60)); }
 // se stejnou přesností (desetiny sekundy, ne celé sekundy).
 function fmtCJemne(s) { return s < 10 ? s.toFixed(1) + ' s' : fmtC(s); }
 
+// Obnoví rozpracované měření uložené v localStorage (viz DRAFT_KEY_MERIC
+// výš) - přeskočí Krok 1-4 a appku rovnou nastaví do stavu, ve kterém
+// zůstala: stejný název procesu, stejná vlastní tlačítka, dokončené cykly
+// znovu vykreslené, a pokud běžel rozjetý cyklus, jeho dosavadní časy
+// (poslední 3 vteřiny se ztratit můžou, přesněji to bez nepřetržitého
+// zápisu do localStorage nejde).
+function zkusitObnovitRozpracovaneMereni() {
+  let draft;
+  try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY_MERIC) || 'null'); } catch (e) { draft = null; }
+  if (!draft || (!(draft.cykly && draft.cykly.length) && !draft.aktCyklusCas)) return;
+
+  nazev = draft.nazev || 'Proces';
+  pocetKusu = draft.pocetKusu || 0;
+  delkaSmeny = draft.delkaSmeny || 7.5;
+  hodinovaSazba = draft.hodinovaSazba || 250;
+  pocetPracovniku = draft.pocetPracovniku || 1;
+  vlastniOp = draft.vlastniOp || [];
+  vyrazeneStd = new Set(draft.vyrazeneStd || []);
+
+  document.getElementById('inp-nazev').value = nazev;
+  document.getElementById('inp-zakazka').value = pocetKusu || '';
+  document.getElementById('inp-sazba').value = hodinovaSazba;
+  document.getElementById('inp-pocet-pracovniku').value = pocetPracovniku;
+  document.querySelectorAll('.std-kat-grid input[type=checkbox]').forEach(cb => {
+    const vyrazeno = vyrazeneStd.has(cb.dataset.kat);
+    cb.checked = !vyrazeno;
+    cb.closest('.std-kat-row').classList.toggle('vyrazeno', vyrazeno);
+  });
+  renderOperace();
+
+  spustit();
+
+  const dokoncene = draft.cykly || [];
+  cykly = [];
+  dokoncene.forEach(c => { cykly.push(c); pridatRadek(cykly.length, c); });
+  if (cykly.length > 0) document.getElementById('ulozene').style.display = 'block';
+  document.getElementById('m-cykly').textContent = 'Cyklus ' + (cykly.length + 1);
+
+  if (draft.aktCyklusCas && aktCyklus) {
+    aktCyklus.cas = draft.aktCyklusCas;
+    Object.keys(draft.aktCyklusCas).forEach(k => {
+      const sek = Math.floor(draft.aktCyklusCas[k]);
+      const el = document.getElementById('k-' + k);
+      if (el) el.textContent = pad(Math.floor(sek/60)) + ':' + pad(sek%60);
+    });
+  }
+
+  hasUnsavedMereni = true;
+  upozornit('Obnovili jsme rozpracované měření „' + nazev + '" (' + cykly.length + ' dokončených cyklů). Rozjetý cyklus pokračuje tam, kde jste přestali - klikněte znovu na činnost a měřte dál.', 'Měření obnoveno');
+}
+
 renderNavrh();
+zkusitObnovitRozpracovaneMereni();
 nacistPrihlaseniStav();
 </script>
 
