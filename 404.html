@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJWW5ZX4J9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJWW5ZX4J9');
+
+// Sdílené odesílání vlastních událostí do GA4 - no-op, dokud gtag
+// neexistuje (např. návštěvník ještě neodsouhlasil cookies).
+window.trackTokvaEvent = function (eventName, parameters = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", eventName, {
+    ...parameters,
+    page_path: window.location.pathname
+  });
+};
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stránka nenalezena | Tokva</title>
+<meta name="description" content="Tahle stránka na Tokvě neexistuje nebo se přesunula. Pokračujte na homepage nebo přímo k appkám.">
+<meta name="robots" content="noindex, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b; --gold-dark: #976e12; --gold-light: #fdf3d9;
+  --black: #000000; --dark: #111111; --mid: #545454; --silver: #a8a6a6;
+  --white: #ffffff; --paper: #fafaf8; --border: #e8e8e8;
+  --border2: #e8e6e0; --border-strong: #e2e0da;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--dark); line-height:1.7; font-size:16px; }
+
+.topbar { background:var(--black); color:var(--white); padding:14px 32px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); flex-wrap:wrap; row-gap:8px; }
+.topbar .brand { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; text-decoration:none; color:var(--white); }
+.topbar .brand span { color:var(--gold); }
+
+.main { padding:80px 24px 100px; max-width:640px; margin:0 auto; text-align:center; }
+.kod { font-family:'Poppins',sans-serif; font-size:15px; font-weight:800; letter-spacing:3px; color:var(--gold-dark); margin-bottom:18px; }
+h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.5vw,34px); font-weight:900; letter-spacing:-0.5px; margin-bottom:16px; line-height:1.25; }
+.popis { font-size:15.5px; color:var(--mid); margin-bottom:36px; max-width:480px; margin-left:auto; margin-right:auto; }
+
+.akce { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:56px; }
+.btn { display:inline-block; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; padding:13px 26px; border-radius:8px; text-decoration:none; }
+.btn-gold { background:var(--gold); color:var(--black); }
+.btn-gold:hover { background:var(--gold-dark); color:var(--white); }
+.btn-outline { border:1px solid var(--border-strong); color:var(--dark); }
+.btn-outline:hover { border-color:var(--gold-dark); color:var(--gold-dark); }
+
+.rychle { text-align:left; border-top:1px solid var(--border); padding-top:32px; }
+.rychle-nadpis { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--silver); margin-bottom:16px; text-align:center; }
+.rychle-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.rychle-link { display:block; background:var(--white); border:1px solid var(--border); border-radius:10px; padding:14px 16px; text-decoration:none; color:var(--dark); font-size:14px; font-weight:600; }
+.rychle-link:hover { border-color:var(--gold); color:var(--gold-dark); }
+
+@media(max-width:600px){
+  .topbar{padding:14px 16px;}
+  .main{padding:56px 16px 80px;}
+  .rychle-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="https://tokva.cz/">Tokva <span>Gabriela Tomíčková</span></a>
+</div>
+
+<main class="main">
+  <div class="kod">404</div>
+  <h1>Tahle stránka tu není</h1>
+  <p class="popis">Odkaz je asi starý, nebo jste se překlepli v adrese. Appky i obsah Tokvy najdete odsud dál.</p>
+
+  <div class="akce">
+    <a class="btn btn-gold" href="https://tokva.cz/">Zpět na Tokvu</a>
+    <a class="btn btn-outline" href="https://tokva.cz/nastroje/">Všechny appky</a>
+  </div>
+
+  <div class="rychle">
+    <div class="rychle-nadpis">Nejčastěji hledané</div>
+    <div class="rychle-grid">
+      <a class="rychle-link" href="https://tokva.cz/sklad/">Sklad</a>
+      <a class="rychle-link" href="https://tokva.cz/vyroba/">Výroba</a>
+      <a class="rychle-link" href="https://tokva.cz/administrativa/">Administrativa</a>
+      <a class="rychle-link" href="https://tokva.cz/lide-a-komunikace/">Lidé a komunikace</a>
+      <a class="rychle-link" href="https://tokva.cz/pro/">Tokva Pro</a>
+      <a class="rychle-link" href="https://tokva.cz/prihlaseni.html">Přihlásit se</a>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
