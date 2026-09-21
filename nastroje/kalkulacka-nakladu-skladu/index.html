@@ -1372,6 +1372,46 @@ function getVal(id) {
   return +(num ? num.value : document.getElementById(id).value);
 }
 
+// Rozpracovaný výpočet se ukládá do localStorage při každé změně pole, ať
+// se neztratí, když appka odnavigruje na přihlášení (Uložit výpočet →
+// Free uživatel dostane výzvu k přihlášení/Pro a dřív se tím ztratilo
+// všechno, co měl rozvařené - appka se po návratu vrátila na výchozí
+// hodnoty 600 m² / 60 000 Kč / 3 000 Kč). Neukládá se posudek, jen
+// samotná zadaná čísla, ne uložené výpočty (ty jsou v kalk_ulozene).
+const DRAFT_KEY = 'kalk_rozpracovany_vstup';
+
+function ulozitRozpracovanyVstup() {
+  try {
+    const vstup = {};
+    document.querySelectorAll('input.input-val-edit').forEach(function (num) {
+      const id = num.id.replace(/-num$/, '');
+      vstup[id] = num.value;
+    });
+    vstup.mode = mode;
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(vstup));
+  } catch (e) {
+    console.warn('Rozpracovaný výpočet se nepodařilo uložit do localStorage.', e);
+  }
+}
+
+function nacistRozpracovanyVstup() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    const vstup = JSON.parse(raw);
+    Object.keys(vstup).forEach(function (id) {
+      if (id === 'mode') return;
+      const num = document.getElementById(id + '-num');
+      const range = document.getElementById(id);
+      if (num) num.value = vstup[id];
+      if (range) range.value = Math.min(+vstup[id], +range.max);
+    });
+    if (vstup.mode) setMode(vstup.mode);
+  } catch (e) {
+    console.warn('Rozpracovaný výpočet se nepodařilo obnovit.', e);
+  }
+}
+
 function fmt(n) { return Math.round(n).toLocaleString("cs-CZ"); }
 
 function fmtKc(n) { return fmt(n) + " Kč"; }
@@ -1420,6 +1460,7 @@ function syncFromRange(id) {
   oznamitZahajeni();
   update();
   oznamitDokonceni();
+  ulozitRozpracovanyVstup();
 }
 function syncFromNumber(id) {
   const range = document.getElementById(id);
@@ -1439,6 +1480,7 @@ function syncFromNumber(id) {
   oznamitZahajeni();
   update();
   oznamitDokonceni();
+  ulozitRozpracovanyVstup();
 }
 
 function update() {
@@ -1874,6 +1916,7 @@ function ulozitVypocet() {
     };
     ulozene.push(polozka);
     localStorage.setItem('kalk_ulozene', JSON.stringify(ulozene));
+    localStorage.removeItem(DRAFT_KEY);
     renderUlozene();
 
     // Panely Zařadit k projektu / Přidat do akčního plánu - připravit na
@@ -2459,6 +2502,7 @@ function exportCSV() {
 }
 
 // Init
+nacistRozpracovanyVstup();
 update();
 renderUlozene();
 nacistPrihlaseniStav();

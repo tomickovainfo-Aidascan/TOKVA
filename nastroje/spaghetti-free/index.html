@@ -1677,7 +1677,7 @@ async function nacistPrihlaseniStav() {
 
 function renderUcetNav() {
   const proOdkazEl = document.getElementById('nav-pro-odkaz');
-  if (proOdkazEl) proOdkazEl.style.display = session ? 'none' : '';
+  if (proOdkazEl) proOdkazEl.style.display = ucetSession ? 'none' : '';
   const btn = document.getElementById('nav-ucet-btn');
   const info = document.getElementById('nav-ucet-info');
   const proPanel = document.getElementById('pro-final-panel');

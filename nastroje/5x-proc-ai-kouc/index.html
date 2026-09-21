@@ -1031,6 +1031,14 @@ let posledniProblem = '';
 // do stejného řádku průběžně dopisuje, nezakládá pokaždé nový. Null = ještě
 // se nikam neukládalo (buď to není Pro, nebo teprve začínáme).
 let aktivniRunId = null;
+// Když appka otevře hotovou analýzu z historie (nebo z ?vysledek= v adrese),
+// tady si na chvíli poznamená, ke kterému projektu ta analýza doopravdy
+// patří - výběr projektu se totiž vytváří dřív, než appka stihne projekty
+// načíst, takže se hodnota nastaví až dodatečně, jakmile v selectu ta
+// možnost existuje (viz konec renderOutput). Bez tohohle appka u otevřené
+// historické analýzy vždycky ukázala "Bez projektu", i když projekt reálně
+// měla - a hrozilo nechtěné odpojení od projektu při dalším uložení.
+let zobrazovanaAnalyzaProjektId = null;
 
 async function nacistPrihlaseniStav() {
   // Zabaleno v try/catch schválně: appka musí přežít i výpadek Supabase/CDN
@@ -1062,11 +1070,11 @@ async function otevritVysledekZAdresy() {
   if (!id) return;
   vysledekZAdresyOtevren = true;
   try {
-    const { data, error } = await supabaseClient.from('tool_runs').select('id, created_at, nazev, shrnuti, data').eq('id', id).eq('nastroj', '5x-proc').maybeSingle();
+    const { data, error } = await supabaseClient.from('tool_runs').select('id, created_at, nazev, shrnuti, data, project_id').eq('id', id).eq('nastroj', '5x-proc').maybeSingle();
     if (error || !data) return;
     const rozpracovana = !!(data.data && data.data.hotovo === false);
     if (rozpracovana) pokracovatVAnalyze(data);
-    else zobrazitZHistorie(data.data && data.data.raw);
+    else zobrazitZHistorie(data);
   } catch (e) {
     console.warn('Nepodařilo se najít konkrétní analýzu podle adresy.', e);
   }
@@ -1734,6 +1742,18 @@ function renderOutput(raw, ulozit = true) {
   chat.appendChild(card);
   chat.scrollTop = chat.scrollHeight;
 
+  if (jePro && zobrazovanaAnalyzaProjektId !== null) {
+    const cilovyProjektId = zobrazovanaAnalyzaProjektId;
+    zobrazovanaAnalyzaProjektId = null; // spotřebováno, ať neovlivní příští otevřenou analýzu
+    nacistProjekty5x().then(() => {
+      const sel = document.getElementById('analyza-projekt-select');
+      if (sel && cilovyProjektId && [...sel.options].some(o => o.value === cilovyProjektId)) {
+        sel.value = cilovyProjektId;
+        zkontrolovatStarsiVysledek5x();
+      }
+    });
+  }
+
   if (ulozit) ulozitStavAnalyzy(true, raw);
 }
 
@@ -1829,6 +1849,36 @@ async function zavolatAI_GET(messages) {
   return await res.json();
 }
 
+// Když AI dokončí ===VÝSTUP=== strukturovaným shrnutím, ale odpověď se
+// uřízne dřív, než stihne dopsat ===KONEC=== (typicky limit délky odpovědi
+// na straně serveru - u dlouhé desetisekční analýzy se to stávalo kolem
+// sekce 6-7), appka si sama vyžádá pokračování přesně odtud, kde AI
+// přestala. Bez tohohle appka ukázala větu uprostřed a chyběly sekce
+// 7 (Doporučené opatření) a 8 (První krok) - kvůli tomu nešlo z výstupu
+// ani založit navazující úkol.
+async function ziskatKompletniOdpoved(zpravy) {
+  let data = await zavolatAI(zpravy);
+  let reply = data.content?.[0]?.text || 'Omlouvám se, něco se pokazilo.';
+  let pokusy = 0;
+  while (reply.includes('===VÝSTUP===') && !reply.includes('===KONEC===') && pokusy < 3) {
+    pokusy++;
+    const pokracovaciZpravy = zpravy.concat([
+      { role: 'assistant', content: reply },
+      { role: 'user', content: 'Pokračuj přesně tam, kde jsi přestal/a, žádný nový úvod ani opakování už napsaného. Dokonči zbylé očíslované sekce výstupu přesně podle zadané struktury, až po ===KONEC===.' }
+    ]);
+    let pokracData;
+    try {
+      pokracData = await zavolatAI(pokracovaciZpravy);
+    } catch (e) {
+      break; // Neúplný výstup je pořád lepší než žádný - necháme, co appka má.
+    }
+    const pokracText = pokracData.content?.[0]?.text || '';
+    if (!pokracText) break;
+    reply += (reply.endsWith('\n') ? '' : '\n') + pokracText;
+  }
+  return reply;
+}
+
 async function odeslat() {
   const input = document.getElementById('input');
   const text = input.value.trim();
@@ -1852,11 +1902,10 @@ async function odeslat() {
   const dlouheCekaniTimer = setTimeout(() => nastavitTypingStatus('Odpovědi obvykle trvají do 20 sekund...'), 6000);
 
   try {
-    const data = await zavolatAI(history);
+    const reply = await ziskatKompletniOdpoved(history);
     clearTimeout(dlouheCekaniTimer);
     hideTyping();
 
-    const reply = data.content?.[0]?.text || 'Omlouvám se, něco se pokazilo.';
     history.push({ role: 'assistant', content: reply });
     addMsg('ai', reply);
     // Pokud tenhle krok analýzu nedokončil (===VÝSTUP=== zpracovává a ukládá
@@ -2120,7 +2169,7 @@ async function otevritHistorii() {
   try {
     const { data: radky, error } = await supabaseClient
       .from('tool_runs')
-      .select('id, created_at, nazev, shrnuti, data')
+      .select('id, created_at, nazev, shrnuti, data, project_id')
       .eq('organization_id', clenstvi.organization_id)
       .eq('nastroj', '5x-proc')
       .order('created_at', { ascending: false })
@@ -2148,7 +2197,7 @@ async function otevritHistorii() {
         btn.onclick = () => pokracovatVAnalyze(r);
       } else {
         btn.textContent = 'Zobrazit';
-        btn.onclick = () => zobrazitZHistorie(r.data && r.data.raw);
+        btn.onclick = () => zobrazitZHistorie(r);
       }
       item.appendChild(datum);
       item.appendChild(shrnuti);
@@ -2161,11 +2210,18 @@ async function otevritHistorii() {
   }
 }
 
-function zobrazitZHistorie(raw) {
+function zobrazitZHistorie(radek) {
+  const raw = radek && radek.data && radek.data.raw;
   if (!raw) return;
   document.getElementById('modal-historie').style.display = 'none';
   const chat = document.getElementById('chat');
   chat.innerHTML = '';
+  // Otevřená analýza z historie se dál ukládá do stejného záznamu, ne do
+  // nového (viz ulozitZarazeniAnalyzy) - a appka si rovnou poznamená, ke
+  // kterému projektu doopravdy patří, ať se to ukáže správně ve výběru
+  // (viz konec renderOutput).
+  aktivniRunId = radek.id;
+  zobrazovanaAnalyzaProjektId = radek.project_id || '';
   addMsg('ai', 'Zobrazuji uloženou analýzu z historie:');
   renderOutput(raw, false);
 }
