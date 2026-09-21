@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NJWW5ZX4J9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NJWW5ZX4J9');
+
+// Sdílené odesílání vlastních událostí do GA4 - no-op, dokud gtag
+// neexistuje (např. návštěvník ještě neodsouhlasil cookies).
+window.trackTokvaEvent = function (eventName, parameters = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", eventName, {
+    ...parameters,
+    page_path: window.location.pathname
+  });
+};
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obchodní podmínky | Tokva</title>
+<meta name="description" content="Obchodní podmínky pro objednávku a používání Tokva Pro - jak vzniká objednávka, cena a platba, trvání služby a odpovědnost.">
+<meta name="author" content="Gabriela Tomíčková">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://tokva.cz/obchodni-podminky/">
+<meta property="og:title" content="Obchodní podmínky | Tokva">
+<meta property="og:description" content="Obchodní podmínky pro objednávku a používání Tokva Pro.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:image" content="https://tokva.cz/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Obchodní podmínky | Tokva">
+<meta name="twitter:description" content="Obchodní podmínky pro objednávku a používání Tokva Pro.">
+<meta name="twitter:image" content="https://tokva.cz/og-image.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #e9a91b; --gold-dark: #976e12; --gold-light: #fdf3d9;
+  --black: #000000; --dark: #111111; --mid: #545454; --silver: #a8a6a6;
+  --white: #ffffff; --paper: #fafaf8; --border: #e8e8e8;
+  --border2: #e8e6e0; --border-strong: #e2e0da;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--dark); line-height:1.7; font-size:16px; }
+
+.topbar { background:var(--black); color:var(--white); padding:14px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:200; border-bottom:2px solid var(--gold); flex-wrap:wrap; row-gap:8px; }
+.topbar .brand { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; text-decoration:none; color:var(--white); }
+.topbar .brand span { color:var(--gold); }
+.topbar-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; row-gap:8px; }
+.topbar-login { color:var(--gold); text-decoration:none; font-size:13px; font-weight:700; border:1px solid var(--gold); padding:7px 16px; border-radius:6px; }
+
+.main { padding:44px 24px 100px; max-width:760px; margin:0 auto; }
+.back-link { display:inline-block; font-size:13px; font-weight:600; color:var(--mid); text-decoration:none; margin-bottom:22px; }
+.back-link:hover { color:var(--gold-dark); }
+.eyebrow { font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-dark); margin-bottom:14px; }
+h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,34px); font-weight:900; letter-spacing:-0.5px; margin-bottom:10px; line-height:1.2; }
+.updated { font-size:13px; color:var(--silver); margin-bottom:28px; }
+.intro { font-size:15.5px; color:var(--mid); margin-bottom:40px; max-width:680px; }
+
+.draft-note { background:var(--gold-light); border:1px solid rgba(233,169,27,.35); border-radius:10px; padding:16px 18px; margin-bottom:36px; font-size:13.5px; color:var(--dark); line-height:1.65; }
+.draft-note strong { color:var(--gold-dark); }
+
+.legal-section { margin-bottom:34px; }
+.legal-section h2 { font-family:'Poppins',sans-serif; font-size:18px; font-weight:800; margin-bottom:12px; }
+.legal-section p { font-size:14.5px; color:var(--mid); margin-bottom:12px; max-width:700px; }
+.legal-section ul { margin:0 0 12px 20px; }
+.legal-section li { font-size:14.5px; color:var(--mid); margin-bottom:8px; max-width:680px; }
+.legal-section a { color:var(--gold-dark); font-weight:700; text-decoration:none; }
+.legal-section a:hover { text-decoration:underline; }
+.legal-section strong { color:var(--dark); }
+
+@media(max-width:600px){
+  .topbar{padding:14px 16px;}
+  .main{padding:32px 16px 80px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="https://tokva.cz/">Tokva <span>Gabriela Tomíčková</span></a>
+  <div class="topbar-right">
+    <span class="topbar-login" id="nav-ucet-info" style="display:none;cursor:default;"></span>
+    <span class="topbar-login" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
+    <a class="topbar-login" href="https://tokva.cz/moje-tokva/" id="nav-moje-tokva" style="display:none;">Přehled</a>
+    <a class="topbar-login" href="https://tokva.cz/akcni-plan/" id="nav-akcni-plan" style="display:none;">Akční plán</a>
+    <a class="topbar-login" href="https://tokva.cz/projekty/" id="nav-projekty" style="display:none;">Projekty</a>
+    <a class="topbar-login" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'obchodni_podminky',placement:'nav'})" id="nav-pro-odkaz">Víc o Tokva Pro</a>
+    <a class="topbar-login" href="https://tokva.cz/prihlaseni.html" id="nav-ucet-btn">Moje Tokva</a>
+  </div>
+</div>
+
+<main class="main">
+  <a class="back-link" href="https://tokva.cz/">← Zpět na Tokvu</a>
+  <div class="eyebrow">Právní dokumenty</div>
+  <h1>Obchodní podmínky</h1>
+  <p class="updated">Poslední aktualizace: září 2026</p>
+
+  <div class="draft-note"><strong>Pracovní verze.</strong> Tahle stránka je návrh k doplnění a kontrole, ne finální právní dokument - obsah zatím nekonzultovala s právníkem. Než ji nasadím naostro, projdu si ji ještě jednou.</div>
+
+  <p class="intro">Tyhle podmínky se týkají objednávky a používání appky Tokva Pro. Appky Tokva zdarma může kdokoliv používat bez registrace a bez objednávky - tahle stránka se jich netýká. Pokud máte otázky, napište mi na <a href="mailto:tomickova.info@gmail.com">tomickova.info@gmail.com</a>.</p>
+
+  <div class="legal-section">
+    <h2>1. Kdo appku poskytuje</h2>
+    <p>Poskytovatelem Tokva Pro je:</p>
+    <p><strong>Gabriela Tomíčková</strong><br>
+    Příčná 49, Vrchlabí<br>
+    IČO: 75905311<br>
+    Email: tomickova.info@gmail.com<br>
+    Telefon: +420 608 221 039</p>
+    <p>Tyto podmínky platí mezi mnou jako poskytovatelem a firmou nebo osobou, která si Tokva Pro objedná (dál jen "zákazník").</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>2. Co je Tokva Pro</h2>
+    <p>Tokva Pro je placené rozšíření appek Tokva. Appky zdarma zůstávají appkami zdarma - Tokva Pro navíc přidává přihlášení a firemní účet, uložení kompletní historie výsledků, zařazování výsledků k projektům, centrální Akční plán, porovnání opakovaných měření (před × po), appku Projekty a týmovou spolupráci s rolemi majitel/správce/člen. Aktuální seznam toho, co appka umí, je vždy na stránce <a href="https://tokva.cz/pro/">tokva.cz/pro/</a>.</p>
+    <p><strong>Tokva Pro se momentálně testuje na prvních zákaznících.</strong> Appka se dál vyvíjí a funkce mohou přibývat nebo se měnit na základě toho, co se z testovacího provozu ukáže.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>3. Jak vzniká objednávka</h2>
+    <p>Objednávka vzniká odesláním objednávkového formuláře na stránce <a href="https://tokva.cz/pro/">tokva.cz/pro/</a>, kde zákazník zvolí variantu (podle počtu lidí v týmu), vyplní fakturační a kontaktní údaje a založí si přihlašovací účet.</p>
+    <p>Odesláním formuláře objednávka vzniká, ale appka se na Tokva Pro nepřepne automaticky - do přijetí platby appky fungují ve verzi zdarma. Přepnutí na Pro provádím ručně po přijetí platby na fakturu.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>4. Cena a platba</h2>
+    <p>Aktuální ceny jednotlivých variant jsou uvedené na stránce <a href="https://tokva.cz/pro/">tokva.cz/pro/</a> v okamžiku objednávky. Platí se převodem na fakturu, kterou pošlu na e-mail uvedený v objednávce, obvykle do několika dnů od odeslání objednávky. Splatnost faktury je 14 dní od vystavení, pokud na faktuře není uvedeno jinak.</p>
+    <p>Appku přepnu na Tokva Pro po přijetí platby na účet. Pokud platba nedorazí, objednávka propadá a appky zůstávají ve verzi zdarma.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>5. Zakladatelská cena</h2>
+    <p>Prvních 20 firem má nárok na zakladatelskou cenu, která platí napořád, ne jen první rok. Podmínkou zakladatelské ceny je vyplnění tří krátkých dotazníků (před začátkem používání appky, po prvním použití a po měsíci provozu) a souhlas s tím, že uvidím, jak appku firma zákazníka využívá - anonymně na úrovni firmy jako celku, ne konkrétních lidí. Tyhle údaje slouží jen k tomu, abych appku podle reálného používání mohla doladit.</p>
+    <p>Pokud zákazník podmínku zakladatelské ceny nesplní (například nevyplní dotazníky), vyhrazuji si právo přejít u dalšího fakturačního období na běžnou cenu dané varianty.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>6. Trvání a zrušení</h2>
+    <p>Tokva Pro běží jako měsíční předplatné. Zákazník může předplatné kdykoliv zrušit napsáním na <a href="mailto:tomickova.info@gmail.com">tomickova.info@gmail.com</a>, appka se přepne zpátky na verzi zdarma k datu konce zaplaceného období.</p>
+    <p>Data uložená přes appky (výsledky, projekty, akční plán) zůstávají zákazníkovi přístupná i po přepnutí zpátky na verzi zdarma, v rozsahu, který appka zdarma umožňuje. Pokud zákazník bude chtít data úplně smazat, udělám to na vyžádání.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>7. Odpovědnost</h2>
+    <p>Appky Tokva pomáhají najít, změřit a popsat problémy v provozu a navrhnout, co s nimi dělat dál. Appka poskytuje podklady a doporučení, ale konkrétní rozhodnutí a jejich realizace jsou vždy na zákazníkovi. Neručím za konkrétní obchodní výsledek, kterého zákazník použitím appky dosáhne.</p>
+    <p>Appky se snažím udržovat v provozu bez výpadků, ale nejde technicky zaručit nepřetržitou dostupnost. Případný delší výpadek řeším přednostně a informuji o něm zákazníky Tokva Pro.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>8. Duševní vlastnictví</h2>
+    <p>Appky Tokva, jejich kód a vzhled jsou moje duševní vlastnictví. Objednávkou Tokva Pro získává zákazník právo appky používat pro vlastní potřebu firmy, ne appky dál prodávat, kopírovat nebo z appek vytvářet vlastní produkt.</p>
+    <p>Data, která zákazník do appek zadá - naměřené hodnoty, odpovědi, fotky, poznámky, projekty - zůstávají zákazníkovi. Slouží mi jen k tomu, abych appku mohla poskytovat a (u zakladatelské ceny, viz bod 5) k jejímu vylepšování.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>9. Ochrana osobních údajů</h2>
+    <p>Jak zpracovávám osobní a fakturační údaje zákazníků, popisuju v <a href="https://tokva.cz/ochrana-osobnich-udaju/">zásadách ochrany osobních údajů</a>.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>10. Změny těchto podmínek</h2>
+    <p>Tyto podmínky mohu příležitostně aktualizovat, hlavně v souvislosti s tím, jak se Tokva Pro v testovacím provozu vyvíjí. Aktuální verze je vždy dostupná na této stránce, datum poslední aktualizace je uvedené v záhlaví. O zásadní změně (třeba změně ceny) budu zákazníky Tokva Pro informovat i e-mailem.</p>
+  </div>
+
+  <div class="legal-section">
+    <h2>11. Rozhodné právo</h2>
+    <p>Tyto podmínky i vztah mezi mnou a zákazníkem se řídí právem České republiky. Případné spory přednostně řeším osobní domluvou - napište mi na <a href="mailto:tomickova.info@gmail.com">tomickova.info@gmail.com</a>.</p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-client.js"></script>
+<script src="../auth.js"></script>
+<script>
+// Přihlašovací stav v horní liště, stejně jako na ostatních stránkách: ukáže
+// jméno firmy + Odhlásit, když je uživatel přihlášený.
+(async function nacistUcetObchodniPodminky() {
+  const info = document.getElementById('nav-ucet-info');
+  const btn = document.getElementById('nav-ucet-btn');
+  if (!info || !btn) return;
+  let session = null, clenstvi = null;
+  try {
+    session = await ziskatSession();
+    clenstvi = session ? await ziskatMojiOrganizaci() : null;
+  } catch (e) {
+    console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
+  }
+  const proOdkazEl = document.getElementById('nav-pro-odkaz');
+  if (proOdkazEl) proOdkazEl.style.display = session ? 'none' : '';
+  if (session && clenstvi) {
+    const jePro = maAktivniPro(clenstvi);
+    info.style.display = 'inline-block';
+    info.textContent = clenstvi.organizations.name + (jePro ? ' · Pro' : '');
+    const infoEmail = document.getElementById('nav-ucet-email');
+    if (infoEmail) { infoEmail.style.display = 'inline-block'; infoEmail.textContent = zkratitEmail(session.user.email); }
+    if (typeof zobrazitOdkazAkcniPlan === 'function') zobrazitOdkazAkcniPlan(jePro);
+    if (typeof zobrazitOdkazProjekty === 'function') zobrazitOdkazProjekty(jePro);
+    if (typeof zobrazitOdkazMojeTokva === 'function') zobrazitOdkazMojeTokva(true);
+    if (typeof prepnoutOdkazyNaPro === 'function') prepnoutOdkazyNaPro(jePro);
+    btn.textContent = 'Odhlásit';
+    btn.removeAttribute('href');
+    btn.style.cursor = 'pointer';
+    btn.onclick = async function (e) {
+      e.preventDefault();
+      try { await odhlasit(); } catch (err) { console.warn('Odhlášení se nepodařilo.', err); }
+    };
+  }
+})();
+</script>
+
+</body>
+</html>
