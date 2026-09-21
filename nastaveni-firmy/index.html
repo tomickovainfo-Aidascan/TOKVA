@@ -160,8 +160,8 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
     <div class="form-pozvat">
       <input type="email" id="pozvat-email" placeholder="e-mail kolegy">
       <select id="pozvat-role">
-        <option value="clen">Člen</option>
-        <option value="spravce">Správce</option>
+        <option value="clen" id="opt-role-clen">Člen</option>
+        <option value="spravce" id="opt-role-spravce">Správce</option>
         <option value="konzultant">Konzultant</option>
       </select>
       <button class="btn-gold" onclick="odeslatPozvanku()">Pozvat</button>
@@ -242,12 +242,28 @@ async function nacistData() {
   vykreslitPasmo(clenove.length + pozvankyCekajici.length);
   vykreslitCleny(clenove);
   vykreslitPozvanky(pozvankyRaw || []);
+  omezitNaKonzultanta();
 }
 
 function vykreslitPasmo(pocet) {
   const max = (clenstvi.organizations && clenstvi.organizations.max_uzivatelu) || 1;
   const el = document.getElementById('pasmo-pill');
-  el.textContent = `${pocet} / ${max} ${max === 1 ? 'osoba' : 'lidí'} (vč. čekajících pozvánek) · pásmo ${pasmoPodleLimitu(max)}`;
+  const pouzeKonzultant = !!(clenstvi.organizations && clenstvi.organizations.pouze_konzultant);
+  el.textContent = `${pocet} / ${max} ${max === 1 ? 'osoba' : 'lidí'} (vč. čekajících pozvánek) · pásmo ${pasmoPodleLimitu(max)}` +
+    (pouzeKonzultant ? ' · navíc smíte pozvat jen konzultanta' : '');
+}
+
+// Firma na variantě jednotlivec s pouze_konzultant = true smí pozvat jen
+// konzultanta, ne plnohodnotného člena/správce zdarma - schová se to
+// v obou nabídkách role (pozvání i změna role u stávajícího člověka).
+function omezitNaKonzultanta() {
+  if (!clenstvi.organizations || !clenstvi.organizations.pouze_konzultant) return;
+  const optClen = document.getElementById('opt-role-clen');
+  const optSpravce = document.getElementById('opt-role-spravce');
+  if (optClen) optClen.remove();
+  if (optSpravce) optSpravce.remove();
+  const rolePole = document.getElementById('pozvat-role');
+  if (rolePole) rolePole.value = 'konzultant';
 }
 
 const NAZEV_ROLE = { majitel: 'Majitel', spravce: 'Správce', clen: 'Člen', konzultant: 'Konzultant' };
@@ -274,7 +290,8 @@ function vykreslitCleny(clenove) {
     } else if (jsemMajitel || (jsemAdminFirmy(clenstvi) && c.role !== 'spravce')) {
       const sel = document.createElement('select');
       sel.className = 'role-select';
-      const moznosti = jsemMajitel ? ['spravce', 'clen', 'konzultant'] : ['clen', 'konzultant'];
+      const pouzeKonzultant = !!(clenstvi.organizations && clenstvi.organizations.pouze_konzultant);
+      const moznosti = pouzeKonzultant ? ['konzultant'] : (jsemMajitel ? ['spravce', 'clen', 'konzultant'] : ['clen', 'konzultant']);
       moznosti.forEach(r => {
         const opt = document.createElement('option');
         opt.value = r; opt.textContent = NAZEV_ROLE[r];

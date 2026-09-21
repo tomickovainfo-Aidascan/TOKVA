@@ -43,7 +43,7 @@ async function ziskatMojiOrganizaci() {
 
   const { data, error } = await supabaseClient
     .from('organization_members')
-    .select('organization_id, role, organizations(name, plan, plan_expires_at, max_uzivatelu)')
+    .select('organization_id, role, organizations(name, plan, plan_expires_at, max_uzivatelu, pouze_konzultant)')
     .eq('user_id', session.user.id)
     .limit(1)
     .maybeSingle();
