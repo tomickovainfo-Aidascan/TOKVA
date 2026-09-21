@@ -304,7 +304,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
   <div class="objednavka-box" id="objednavka">
     <h3>Objednat Tokva Pro</h3>
-    <p id="objednavka-cena-popis">Vyberte variantu níže, cena se doplní automaticky. Zakladatelská cena <span class="objednavka-cena">499 Kč / 1 390 Kč / 2 690 Kč měsíčně</span> (podle varianty) platí pro prvních 20 firem napořád, ne jen první rok. Pro další zájemce potom 690 Kč / 2 490 Kč / 4 490 Kč měsíčně.</p>
+    <p id="objednavka-cena-popis">Vyberte variantu níže, cena se doplní automaticky. Zakladatelská cena <span class="objednavka-cena">499 Kč / 1 390 Kč / 2 690 Kč měsíčně</span> (podle varianty) platí pro prvních 20 firem napořád, ne jen první rok. Pro další zájemce potom 690 Kč / 1 990 Kč / 4 490 Kč měsíčně.</p>
     <p id="objednavka-podminka-popis">Podmínka zakladatelské ceny: vyplníte tři krátké dotazníky (před začátkem používání appky, po prvním použití a po měsíci provozu) a souhlasíte, že uvidím, jak appku vaše firma využívá (ne kdo konkrétně, jen firma jako celek), abych appku podle toho mohla doladit.</p>
     <p id="objednavka-platba-popis">Platí se převodem na fakturu – pošlu vám ji na zadaný e-mail, appku na Pro přepnu po přijetí platby.</p>
 
@@ -365,7 +365,7 @@ let zbyvaZakladatelskych = 0;
 // Zakladatelská cena platí pro prvních 20 firem napořád, u všech tří
 // variant (jednotlivec i oba týmy) - ne jen u jednotlivce jako dřív.
 const CENA_ZAKLADATELSKA = { '1': 499, '5': 1390, '15': 2690 };
-const CENA_BEZNA = { '1': 690, '5': 2490, '15': 4490 };
+const CENA_BEZNA = { '1': 690, '5': 1990, '15': 4490 };
 const NAZEV_VARIANTY = { '1': 'Pro jednotlivce (1 osoba)', '5': 'Tým 2–5 lidí', '15': 'Tým 6–15 lidí' };
 
 function prepocitatCenu() {
