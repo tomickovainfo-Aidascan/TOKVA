@@ -1413,6 +1413,11 @@ function nacistRozpracovanyVstup() {
 }
 
 function fmt(n) { return Math.round(n).toLocaleString("cs-CZ"); }
+// U levných venkovních skladů (velká plocha, nízký měsíční náklad) zaokrouhlení
+// na celé koruny umělo ukázat "0 Kč/m²", i když náklad nulový nebyl (např.
+// 1 000 Kč / 5 000 m² = 0,20 Kč/m²) - u hlavního výsledku proto necháváme
+// jedno desetinné místo, dokud je hodnota menší než 10 Kč/m².
+function fmtM2(n) { return n > 0 && n < 10 ? n.toFixed(1).replace(".", ",") : fmt(n); }
 
 function fmtKc(n) { return fmt(n) + " Kč"; }
 
@@ -1603,11 +1608,11 @@ function update() {
   const podil    = celkem > 0 ? Math.round(zakladni / celkem * 100) : 0;
 
   // ── Výstupy ──
-  document.getElementById("res-m2-mesic").textContent  = fmt(m2Mesic);
+  document.getElementById("res-m2-mesic").textContent  = fmtM2(m2Mesic);
   document.getElementById("res-hero-sub").textContent  = "celkové roční náklady budovy: " + fmt(celkem * 12) + " Kč";
   document.getElementById("res-mesic").textContent     = fmt(celkem);
   document.getElementById("res-rok").textContent       = fmt(celkem * 12);
-  document.getElementById("res-m2-rok").textContent    = fmt(m2Rok);
+  document.getElementById("res-m2-rok").textContent    = fmtM2(m2Rok);
   document.getElementById("res-podil").textContent     = podil + " %";
 
   // ── Breakdown ──

@@ -389,7 +389,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           Váš provoz
         </div>
         <div class="input-group">
-          <div class="input-label">Počet pracovníků <span class="input-hint">fyzická práce</span></div>
+          <div class="input-label">Počet pracovníků na jedné směně <span class="input-hint">fyzická práce</span></div>
           <div class="input-row"><input type="range" id="lide" min="1" max="150" value="8" oninput="syncFromRange('lide')"><input type="number" class="input-val-edit" id="lide-num" min="1" max="150" value="8" oninput="syncFromNumber('lide')"></div>
         </div>
         <div class="input-group">
@@ -418,7 +418,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-row"><input type="range" id="chuze" min="0" max="120" value="60" step="5" oninput="syncFromRange('chuze')"><input type="number" class="input-val-edit" id="chuze-num" min="0" max="120" step="5" value="60" oninput="syncFromNumber('chuze')"></div>
         </div>
         <div class="input-group">
-          <div class="input-label">Ruční administrativa <span class="input-hint">min / den / člověk</span></div>
+          <div class="input-label">Ruční administrativa <span class="input-hint">min / směna / člověk</span></div>
           <div class="input-row"><input type="range" id="admin" min="0" max="120" value="30" step="5" oninput="syncFromRange('admin')"><input type="number" class="input-val-edit" id="admin-num" min="0" max="120" step="5" value="30" oninput="syncFromNumber('admin')"></div>
         </div>
         <div class="input-group">
@@ -729,24 +729,27 @@ function update() {
   const prostoje = +document.getElementById("prostoje").value;
 
   const chuzeh = (chuze / 60) * smeny * lide * 5;
-  const adminh = (admin / 60) * lide * 5;
+  const adminh = (admin / 60) * smeny * lide * 5;
   const kamionh = (kamionCas / 60) * kamionu;
   const prostojes = (prostoje / 60) * smeny * lide * 5;
   const celkem = chuzeh + adminh + kamionh + prostojes;
 
   // oprava: dřív se sazba násobila ještě jednou 1,34 (odvody), ale pole "Kolik vás stojí hodina
   // pracovníka celkem" už odvody obsahuje — dvojí započtení odstraněno
-  // oprava: roční částka se dřív počítala přes měsíc (celkem*4,33*12 = 51,96 týdne/rok),
-  // km a úvazek ale počítaly s 52 týdny/rok — sjednoceno na 52 týdnů/rok všude, měsíční
-  // částka je teď roční/12
-  const rok = celkem * 52 * mzda;
+  // oprava: roční částka se dřív počítala z 52 týdnů (=260 pracovních dnů), zatímco
+  // "1 úvazek na ztrátách" počítal s 250 dny (PRACOVNICH_DNU_ROK) - appka tak měla dva
+  // různé roční základy vedle sebe. Sjednoceno na 250 dnů všude: celkem je týdenní
+  // součet (5 dnů), takže celkem/5 = denní součet, ten *250 = roční.
+  const rocniHodiny = (celkem / 5) * PRACOVNICH_DNU_ROK;
+  const rok = rocniHodiny * mzda;
   const mesic = rok / 12;
 
-  // oprava: km se dřív nenásobily počtem lidí, počítaly se jen za jednoho člověka
-  const km = (chuze / 60) * smeny * lide * 4 * 5 * 52;
+  // oprava: km se dřív nenásobily počtem lidí, počítaly se jen za jednoho člověka;
+  // teď navíc počítané ze stejných 250 dnů, ne z 52 týdnů
+  const km = (chuze / 60) * smeny * lide * 4 * PRACOVNICH_DNU_ROK;
 
   // oprava: 1 úvazek teď vychází ze skutečně zadané délky směny, ne z pevného čísla 1800h/rok
-  const uvazek = (celkem * 52) / (delkaSmeny * PRACOVNICH_DNU_ROK);
+  const uvazek = rocniHodiny / (delkaSmeny * PRACOVNICH_DNU_ROK);
 
   const total = celkem || 1;
 
