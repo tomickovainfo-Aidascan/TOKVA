@@ -204,7 +204,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <a href="https://tokva.cz/reseni-problemu/" class="btn-outline">Vyzkoušet nástroje zdarma</a>
     <a href="#objednavka" class="btn-gold">Prohlédnout varianty a ceny</a>
   </div>
-  <p class="hero-trust">Pro jednotlivce od 499 Kč · Týmové varianty od 1 390 Kč</p>
+  <p class="hero-trust">Pro jednotlivce od 499 Kč · Týmové varianty od 1 390 Kč (zakladatelská cena pro prvních 20 firem)</p>
 
   <p class="lead">Tokva Pro si navíc pamatuje, co jste zjistili, propojí to s projekty a úkoly a ukáže, jestli změna doopravdy pomohla. Není to balíček placených kalkulaček – je to systém, co vás provede od zjištění po ověřený přínos.</p>
 
@@ -304,7 +304,9 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
   <div class="objednavka-box" id="objednavka">
     <h3>Objednat Tokva Pro</h3>
-    <p id="objednavka-cena-popis">Vyberte variantu níže, cena se doplní automaticky. Zakladatelská cena <span class="objednavka-cena">499 Kč/měsíc</span> pro jednotlivce platí pro prvních 10 firem napořád, ne jen první rok. Platí se převodem na fakturu – pošlu vám ji na zadaný e-mail, appku na Pro přepnu po přijetí platby.</p>
+    <p id="objednavka-cena-popis">Vyberte variantu níže, cena se doplní automaticky. Zakladatelská cena <span class="objednavka-cena">499 Kč / 1 390 Kč / 2 690 Kč měsíčně</span> (podle varianty) platí pro prvních 20 firem napořád, ne jen první rok. Pro další zájemce potom 690 Kč / 2 490 Kč / 4 490 Kč měsíčně.</p>
+    <p id="objednavka-podminka-popis">Podmínka zakladatelské ceny: vyplníte tři krátké dotazníky (před začátkem používání appky, po prvním použití a po měsíci provozu) a souhlasíte, že uvidím, jak appku vaše firma využívá (ne kdo konkrétně, jen firma jako celek), abych appku podle toho mohla doladit.</p>
+    <p id="objednavka-platba-popis">Platí se převodem na fakturu – pošlu vám ji na zadaný e-mail, appku na Pro přepnu po přijetí platby.</p>
 
     <form id="objednavka-form" onsubmit="return odeslatObjednavku(event)">
       <div class="obj-field">
@@ -357,29 +359,30 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-client.js"></script>
 <script>
-let aktualniCenaKc = 699;
+let aktualniCenaKc = 690;
 let zbyvaZakladatelskych = 0;
 
-// Zakladatelská cena (499 Kč) platí jen pro variantu "jednotlivec" a jen
-// pro prvních 10 firem. Týmové varianty mají pevnou cenu bez ohledu na to.
-const CENA_TYM = { '5': 1390, '15': 2690 };
+// Zakladatelská cena platí pro prvních 20 firem napořád, u všech tří
+// variant (jednotlivec i oba týmy) - ne jen u jednotlivce jako dřív.
+const CENA_ZAKLADATELSKA = { '1': 499, '5': 1390, '15': 2690 };
+const CENA_BEZNA = { '1': 690, '5': 2490, '15': 4490 };
 const NAZEV_VARIANTY = { '1': 'Pro jednotlivce (1 osoba)', '5': 'Tým 2–5 lidí', '15': 'Tým 6–15 lidí' };
 
 function prepocitatCenu() {
   const varianta = document.getElementById('obj-varianta').value;
-  aktualniCenaKc = varianta === '1' ? (zbyvaZakladatelskych > 0 ? 499 : 699) : CENA_TYM[varianta];
+  aktualniCenaKc = zbyvaZakladatelskych > 0 ? CENA_ZAKLADATELSKA[varianta] : CENA_BEZNA[varianta];
   document.getElementById('obj-cena').value = aktualniCenaKc + ' Kč/měsíc';
 }
 prepocitatCenu();
 
 // Kolik zakladatelských míst zbývá appka nikde neukazuje (při nule
 // zákazníků by to působilo spíš jako "ještě to nikdo nekoupil"), ale
-// cenu pro variantu jednotlivec podle toho pořád nastavuje správně.
+// cenu podle toho pořád nastavuje správně, u všech variant.
 async function nacistZbyvajiciMista() {
   try {
     const { data, error } = await supabaseClient.rpc('pocet_zakladajicich_clenu');
     if (error) throw error;
-    zbyvaZakladatelskych = Math.max(0, 10 - (data || 0));
+    zbyvaZakladatelskych = Math.max(0, 20 - (data || 0));
   } catch (ex) {
     console.warn('Počet zakladajících členů se nepodařilo zjistit.', ex);
   }
