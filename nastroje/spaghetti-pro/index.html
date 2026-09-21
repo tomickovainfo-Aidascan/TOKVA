@@ -6,12 +6,12 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Spaghetti diagram Pro – porovnání tras ve skladu a výrobě | Tokva</title>
-  <meta name="description" content="Spaghetti diagram Pro pro sklad i výrobu. Nahrajte půdorys skladu nebo výroby, kreslete trasy a porovnejte je mezi sebou. Vizuálně uvidíte, kde se pohyb kříží nebo zbytečně opakuje.">
+<title>Spaghetti diagram Pro: porovnání tras ve firmě | Tokva</title>
+  <meta name="description" content="Nahrajte půdorys, nakreslete trasy víc lidí a porovnejte je. Uvidíte, kde se pohyb kříží a zbytečně opakuje. Pro sklad i výrobu.">
   <meta name="keywords" content="spaghetti diagram pro, měření tras sklad výroba, optimalizace pohybu pracovníků, plýtvání pohybem, KAIZEN nástroj">
   <meta name="author" content="Gabriela Tomíčková">
   <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Spaghetti diagram Pro – porovnání tras ve skladu a výrobě | Tokva">
+  <meta property="og:title" content="Spaghetti diagram Pro: porovnání tras ve firmě | Tokva">
   <meta property="og:description" content="Nahrajte půdorys skladu nebo výroby, kreslete trasy a porovnejte je mezi sebou. Vizuálně uvidíte, kde se pohyb kříží nebo zbytečně opakuje.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="cs_CZ">
@@ -19,7 +19,7 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Spaghetti diagram Pro – porovnání tras ve skladu a výrobě | Tokva">
+  <meta name="twitter:title" content="Spaghetti diagram Pro: porovnání tras ve firmě | Tokva">
   <meta name="twitter:description" content="Nahrajte půdorys skladu nebo výroby, kreslete trasy a porovnejte je mezi sebou. Vizuálně uvidíte, kde se pohyb kříží nebo zbytečně opakuje.">
   <meta name="twitter:image" content="https://tokva.cz/og-image.png">
   <link rel="canonical" href="https://tokva.cz/nastroje/spaghetti-pro/">
@@ -2754,6 +2754,8 @@ function updateStats() {
   document.getElementById('stat-delka').textContent = delkaAkt.toFixed(0) + ' m';
   const celkem = zakazky.reduce((sum, z) => sum + spocitejDelku(z.body), 0);
   document.getElementById('stat-celkem').textContent = celkem.toFixed(0) + ' m';
+  // Hotovo = nakreslena aspon jedna trasa o 2+ bodech v teto navsteve (stazeni ani tisk neni potreba)
+  if (toolStartedOdeslano && zakazky.some(z => z.body.length >= 2)) oznamitDokonceni();
   // Počet zastávek aktivního pracovníka
   const zastAkt = zastavky.filter(z => z.pracovnikIdx === aktivniZakazka).length;
   document.getElementById('stat-zastavky').textContent = zastAkt;

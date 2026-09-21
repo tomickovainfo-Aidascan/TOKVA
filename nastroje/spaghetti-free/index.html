@@ -6,12 +6,12 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Spaghetti diagram zdarma – měření tras ve skladu a výrobě | Tokva</title>
+<title>Spaghetti diagram zdarma: trasy ve skladu a výrobě | Tokva</title>
   <meta name="description" content="Spaghetti diagram pro měření tras ve skladu i výrobě. Nahrajte plánek, klikejte body trasy, měřte zbytečnou chůzi. Výsledek ke stažení jako PNG.">
   <meta name="keywords" content="spaghetti diagram, měření tras sklad výroba, optimalizace tras, zbytečná chůze">
   <meta name="author" content="Gabriela Tomíčková">
   <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Spaghetti diagram zdarma – měření tras ve skladu a výrobě | Tokva">
+  <meta property="og:title" content="Spaghetti diagram zdarma: trasy ve skladu a výrobě | Tokva">
   <meta property="og:description" content="Nahrajte plánek skladu nebo výroby, klikejte body trasy a aplikace automaticky zakreslí spaghetti diagram. Měřte zbytečnou chůzi. Zdarma.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="cs_CZ">
@@ -19,7 +19,7 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Spaghetti diagram zdarma – měření tras ve skladu a výrobě | Tokva">
+  <meta name="twitter:title" content="Spaghetti diagram zdarma: trasy ve skladu a výrobě | Tokva">
   <meta name="twitter:description" content="Nahrajte plánek skladu nebo výroby, klikejte body trasy a aplikace automaticky zakreslí spaghetti diagram. Měřte zbytečnou chůzi. Zdarma.">
   <meta name="twitter:image" content="https://tokva.cz/og-image.png">
   <link rel="canonical" href="https://tokva.cz/nastroje/spaghetti-free/">
@@ -1513,6 +1513,8 @@ function updateStats() {
   document.getElementById('stat-delka').textContent = delkaAkt.toFixed(0) + ' m';
   const celkem = zakazky.reduce((sum, z) => sum + spocitejDelku(z.body), 0);
   document.getElementById('stat-celkem').textContent = celkem.toFixed(0) + ' m';
+  // Hotovo = nakreslena aspon jedna trasa o 2+ bodech v teto navsteve (stazeni ani tisk neni potreba)
+  if (toolStartedOdeslano && zakazky.some(z => z.body.length >= 2)) oznamitDokonceni();
   obnovitZakazkyList();
 }
 

@@ -1441,7 +1441,7 @@ const S_DATA = [
   },
   {
     id: 's5', num: '5S', name: 'Udržovat disciplínu', jp: 'Shitsuke / Sustain',
-    popis: `<span class="arr"></span>Nejtěžší ze všech pěti. <strong>5S není projekt, je to návyk.</strong><br><br>A pokud to drhne, hledejte příčinu. Jestli je to lenost, nebo fakt neví kam co patří.<br><br>Zamyslete se co s tím a jak to usnadnit.<br><br><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--mid);line-height:1.7;margin-bottom:8px;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Kdy krok doopravdy odškrtnout</strong><br>Nespěchejte s tím. Návyk se pozná až v čase, ne hned po prvním úklidu. Počkejte aspoň 3 měsíce od zavedení standardu (krok 4S) a v té době udělejte minimálně 3 kontroly, ideálně jednu měsíčně, v prvních týdnech klidně i častěji. Teprve když standard vydrží opakovaně, ne jen napoprvé, má smysl 5S označit jako splněné.</div><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--mid);line-height:1.7;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Tip</strong><br>Appka umí připomenout datum další kontroly, jakmile appku v tomhle prohlížeči příště otevřete a povolíte oznámení (ve Free verzi appka naplánuje kontrolu automaticky 3 dny po dokončení 4S, v Pro verzi si datum naplánujete sami v sekci Kontroly). Nefunguje to jako push zpráva do mobilu bez otevřené appky, proto si na den D hoďte i vlastní upomínku do kalendáře nebo mobilu.<br><br>Pokud něco není jak má, hledejte příčiny a vymyslete praktičtější standard.</div><br><span class="arr"></span>Ne vždy napoprvé všechno vyhovuje. To je normální.`,
+    popis: `<span class="arr"></span>Nejtěžší ze všech pěti. <strong>5S není projekt, je to návyk.</strong><br><br>A pokud to drhne, hledejte příčinu. Jestli je to lenost, nebo fakt neví kam co patří.<br><br>Zamyslete se co s tím a jak to usnadnit.<br><br><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--mid);line-height:1.7;margin-bottom:8px;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Co tenhle krok znamená</strong><br>Tlačítko níž odškrtává jen to, že jste standard z kroku 4S zavedli a lidi se ho začali reálně držet - ne že už drží napořád. To se pozná až v čase, ne hned po prvním úklidu. Naplánujte si první kontrolu aspoň za měsíc (sekce Kontroly níž) a opakujte ji pravidelně - teprve když standard vydrží opakovaně, víte, že drží doopravdy.</div><div style="background:rgba(233,169,27,.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 14px;font-size:12px;color:var(--mid);line-height:1.7;"><strong style="color:var(--gold);font-size:11px;letter-spacing:.5px;text-transform:uppercase;">Tip</strong><br>Appka umí připomenout datum další kontroly, jakmile appku v tomhle prohlížeči příště otevřete a povolíte oznámení (ve Free verzi appka naplánuje kontrolu automaticky 3 dny po dokončení 4S, v Pro verzi si datum naplánujete sami v sekci Kontroly). Nefunguje to jako push zpráva do mobilu bez otevřené appky, proto si na den D hoďte i vlastní upomínku do kalendáře nebo mobilu.<br><br>Pokud něco není jak má, hledejte příčiny a vymyslete praktičtější standard.</div><br><span class="arr"></span>Ne vždy napoprvé všechno vyhovuje. To je normální.`,
     pochvala: 'Hotovo. Všech 5S splněno. Tohle je teď váš standard.'
   }
 ];
@@ -1816,7 +1816,7 @@ function renderMain() {
         ${s.id === 's4' && jePro ? standardBlockHtml(misto) : ''}
 
         <button class="splnit-btn ${done ? 'done' : ''}${locked ? ' locked' : ''}" onclick="splnitS('${s.id}')" ${locked ? 'disabled' : ''}>
-          ${done ? '✓ Splněno' : (locked ? 'Nejdřív dokončete ' + S_DATA[idx - 1].num : s.num + ' Označit jako splněné')}
+          ${done ? '✓ Splněno' : (locked ? 'Nejdřív dokončete ' + S_DATA[idx - 1].num : (s.id === 's5' ? 'Zavedení 5S dokončeno' : s.num + ' Označit jako splněné'))}
         </button>
       </div>`;
 
@@ -1929,6 +1929,7 @@ function standardBlockHtml(misto) {
       <div class="standard-foto-label">Fotografie standardu</div>
       <div class="standard-foto-formats">JPG, JPEG, PNG</div>
     </div>
+    ${std.foto ? `<div class="foto-timestamp">Uloženo${std.foto_ts ? ' · ' + std.foto_ts : ''}</div>` : ''}
     <textarea class="poznamky-area" placeholder="Standard, např.: klíče zavěšené vlevo, aku vrtačka v označeném boxu, plocha stolu prázdná, odpadkový koš max. do ¾..."
       oninput="ulozitStandardPravidla(this.value)">${std.pravidla || ''}</textarea>
   </div>`;
@@ -2240,6 +2241,12 @@ function vybratFotoStandard() {
       const misto = aktivniMistoData();
       if (!misto.standard) misto.standard = { foto: null, pravidla: '' };
       misto.standard.foto = compressed;
+      // Datum a čas nahrání - dřív appka po nahrání ukázala jen náhled fotky,
+      // nebylo z rozhraní poznat, jestli se to fakt uložilo a kdy - stejně
+      // jako u fotek před/po u jednotlivých kroků.
+      const now = new Date();
+      misto.standard.foto_ts =
+        now.toLocaleDateString('cs-CZ') + ' ' + now.toLocaleTimeString('cs-CZ', {hour:'2-digit',minute:'2-digit'});
       ulozit();
       renderMain();
       setTimeout(() => {

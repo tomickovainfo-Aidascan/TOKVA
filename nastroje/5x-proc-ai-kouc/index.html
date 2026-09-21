@@ -22,7 +22,7 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>5× Proč – AI analýza příčiny problému | Tokva</title>
-<meta name="description" content="Metoda 5× Proč odhalí skutečnou příčinu problému, ne jen příznaky. AI kouč vás provede analýzou krok za krokem a dostane se přes výmluvy k tomu co problém opravdu způsobuje.">
+<meta name="description" content="Metoda 5× Proč najde skutečnou příčinu problému, ne jen příznak. AI kouč vás provede krok za krokem a nenechá vás skončit u výmluvy.">
 <meta name="keywords" content="kořenová příčina, metoda 5 proč, 5× proč, řešení problémů, analýza příčin">
 <meta name="author" content="Gabriela Tomíčková">
 <meta name="robots" content="index, follow">
@@ -1137,7 +1137,7 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
-function addMsg(role, text) {
+function addMsg(role, text, neuplne) {
   const chat = document.getElementById('chat');
   const div = document.createElement('div');
   div.className = 'msg ' + role;
@@ -1153,6 +1153,7 @@ function addMsg(role, text) {
   if (role === 'ai' && text.includes('===VÝSTUP===')) {
     const before = text.split('===VÝSTUP===')[0].trim();
     const outputRaw = text.split('===VÝSTUP===')[1].split('===KONEC===')[0].trim();
+    const vystupNeuplny = !!neuplne || !text.includes('===KONEC===');
 
     if (before) {
       bubble.innerHTML = formatText(before);
@@ -1162,7 +1163,7 @@ function addMsg(role, text) {
     }
 
     oznamitDokonceni();
-    renderOutput(outputRaw);
+    renderOutput(outputRaw, true, vystupNeuplny);
     return;
   }
 
@@ -1170,7 +1171,55 @@ function addMsg(role, text) {
   div.appendChild(avatar);
   div.appendChild(bubble);
   chat.appendChild(div);
+
+  // Odpověď se useknula (server odpověď oříznul, nebo se to nepodařilo
+  // dokončit ani po automatických opakováních v ziskatKompletniOdpoved) -
+  // dřív appka jen tiše ukázala větu uprostřed, bez možnosti to doplnit
+  // jinak než napsáním nové zprávy.
+  if (role === 'ai' && neuplne) {
+    const varovani = document.createElement('div');
+    varovani.style.cssText = 'margin:6px 0 4px 40px;';
+    const btn = document.createElement('button');
+    btn.className = 'export-output';
+    btn.style.cssText = 'margin-top:0;font-size:12px;padding:6px 12px;';
+    btn.textContent = 'Odpověď vypadá useknutě - dokončit';
+    btn.onclick = () => dokoncitOdpoved(btn);
+    varovani.appendChild(btn);
+    chat.appendChild(varovani);
+  }
+
   chat.scrollTop = chat.scrollHeight;
+}
+
+// Ručně vyžádá zbytek poslední AI zprávy, když appka sama pozná, že se
+// odpověď useknula (viz addMsg výš). Doplní text přímo do historie, ať
+// appka pak navazuje na kompletní odpověď, ne na useknutou.
+async function dokoncitOdpoved(btn) {
+  btn.disabled = true;
+  btn.textContent = 'Dokončuji...';
+  try {
+    const posledni = history[history.length - 1];
+    const pokracovaciZpravy = history.concat([
+      { role: 'user', content: 'Pokračuj přesně tam, kde jsi přestal/a, žádný nový úvod ani opakování už napsaného.' }
+    ]);
+    const data = await zavolatAI(pokracovaciZpravy);
+    const pokracText = data.content?.[0]?.text || '';
+    if (!pokracText) throw new Error('Prázdná odpověď od AI.');
+    const spojka = /[\s]$/.test(posledni.content) ? '' : ' ';
+    posledni.content += spojka + pokracText;
+    // Smazat useknutou bublinu i varovani pod ni, ať appka nepridava novou
+    // zpravu vedle stare useknute.
+    const bublinaWrap = btn.closest('div');
+    const predchoziMsg = bublinaWrap ? bublinaWrap.previousElementSibling : null;
+    if (bublinaWrap) bublinaWrap.remove();
+    if (predchoziMsg && predchoziMsg.classList && predchoziMsg.classList.contains('msg')) predchoziMsg.remove();
+    addMsg('ai', posledni.content, data.stop_reason === 'max_tokens');
+  } catch (e) {
+    console.error('Nepodařilo se dokončit odpověď:', e);
+    btn.disabled = false;
+    btn.textContent = 'Odpověď vypadá useknutě - dokončit';
+    upozornit('Nepodařilo se dokončit odpověď, zkuste to prosím znovu.');
+  }
 }
 
 function formatText(text) {
@@ -1187,7 +1236,7 @@ function formatText(text) {
 // spoléhá strojově (uložení do historie, založení úkolů), tak radši
 // ošetřit i tuhle odchylku, než aby se celý výstup tiše ztratil.
 function ocistitRadek(line) {
-  return line.replace(/^[\s#*_>\-]+/, '').replace(/\*\*/g, '')
+  return line.replace(/^[\s#*_>\-=]+/, '').replace(/\*\*/g, '')
     // AI občas napíše "5x PROČ" místo instruovaného "5× PROČ" - bez týhle
     // normalizace by se sekce "3. ŘETĚZEC 5× PROČ" nenašla podle přesného
     // řetězce a celý nadpis i s markdownem by skončil jako obyčejný text
@@ -1540,7 +1589,7 @@ function zvyraznitDoporucenyNastroj(raw) {
   if (grid && grid.firstChild !== karta) grid.insertBefore(karta, grid.firstChild);
 }
 
-function renderOutput(raw, ulozit = true) {
+function renderOutput(raw, ulozit = true, neuplne = false) {
   posledniRawVystup = raw;
   zvyraznitDoporucenyNastroj(raw);
   const chat = document.getElementById('chat');
@@ -1603,8 +1652,10 @@ function renderOutput(raw, ulozit = true) {
     } else if (currentKey) {
       // I po normalizaci v ocistitRadek se občas nějaká odchylka od
       // instruovaného formátu nenajde jako nová sekce a skončí jako obyčejný
-      // text - aspoň se nezobrazí syrové "##" před textem.
-      currentText.push(raw_line.replace(/^\s*#+\s*/, ''));
+      // text. Dřív se tu použil skoro syrový raw_line (jen bez úvodního #),
+      // takže "###", "===" i "**" zůstávaly ve výsledku doslova vidět -
+      // teď se použije stejně vyčištěný `line` jako všude jinde.
+      currentText.push(line);
     }
   });
   flush();
@@ -1627,8 +1678,28 @@ function renderOutput(raw, ulozit = true) {
     card.appendChild(upozorneni);
   }
 
+  // Výstup se useknul dřív, než AI dopsala všechny sekce (ať už poprvé,
+  // nebo i po automatickém pokusu o navázání v ziskatKompletniOdpoved) -
+  // dřív appka v tomhle stavu ukázala jen to, co stihla, bez upozornění a
+  // bez možnosti to doplnit jinak než spuštěním celé analýzy znovu.
+  if (neuplne) {
+    const varovani = document.createElement('p');
+    varovani.style.cssText = 'font-size:12px;color:var(--gold-dark);margin:-6px 0 12px;';
+    varovani.textContent = 'Výstup vypadá useknutě - AI nestihla dopsat všechny sekce. Klikněte na Dokončit výstup, ať appka doplní zbytek.';
+    card.appendChild(varovani);
+  }
+
   const btnRow = document.createElement('div');
   btnRow.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;';
+
+  if (neuplne) {
+    const dokoncitBtn = document.createElement('button');
+    dokoncitBtn.className = 'export-output';
+    dokoncitBtn.style.marginTop = '0';
+    dokoncitBtn.textContent = 'Dokončit výstup';
+    dokoncitBtn.onclick = () => dokoncitVystup(dokoncitBtn, raw);
+    btnRow.appendChild(dokoncitBtn);
+  }
 
   const exportBtn = document.createElement('button');
   exportBtn.className = 'export-output';
@@ -1756,7 +1827,7 @@ function renderOutput(raw, ulozit = true) {
     });
   }
 
-  if (ulozit) ulozitStavAnalyzy(true, raw);
+  if (ulozit) ulozitStavAnalyzy(!neuplne, raw);
 }
 
 function exportTxt(raw) {
@@ -1858,15 +1929,22 @@ async function zavolatAI_GET(messages) {
 // přestala. Bez tohohle appka ukázala větu uprostřed a chyběly sekce
 // 7 (Doporučené opatření) a 8 (První krok) - kvůli tomu nešlo z výstupu
 // ani založit navazující úkol.
+let posledniOdpovedNeuplna = false;
+
 async function ziskatKompletniOdpoved(zpravy) {
   let data = await zavolatAI(zpravy);
   let reply = data.content?.[0]?.text || 'Omlouvám se, něco se pokazilo.';
   let pokusy = 0;
-  while (reply.includes('===VÝSTUP===') && !reply.includes('===KONEC===') && pokusy < 3) {
+  while (
+    (data.stop_reason === 'max_tokens' || (reply.includes('===VÝSTUP===') && !reply.includes('===KONEC===')))
+    && pokusy < 3
+  ) {
     pokusy++;
+    const jeStrukturovanyVystup = reply.includes('===VÝSTUP===');
     const pokracovaciZpravy = zpravy.concat([
       { role: 'assistant', content: reply },
-      { role: 'user', content: 'Pokračuj přesně tam, kde jsi přestal/a, žádný nový úvod ani opakování už napsaného. Dokonči zbylé očíslované sekce výstupu přesně podle zadané struktury, až po ===KONEC===.' }
+      { role: 'user', content: 'Pokračuj přesně tam, kde jsi přestal/a, žádný nový úvod ani opakování už napsaného.'
+        + (jeStrukturovanyVystup ? ' Dokonči zbylé očíslované sekce výstupu přesně podle zadané struktury, až po ===KONEC===.' : '') }
     ]);
     let pokracData;
     try {
@@ -1876,9 +1954,41 @@ async function ziskatKompletniOdpoved(zpravy) {
     }
     const pokracText = pokracData.content?.[0]?.text || '';
     if (!pokracText) break;
-    reply += (reply.endsWith('\n') ? '' : '\n') + pokracText;
+    const spojka = jeStrukturovanyVystup ? (reply.endsWith('\n') ? '' : '\n') : (/\s$/.test(reply) ? '' : ' ');
+    reply += spojka + pokracText;
+    data = pokracData;
   }
+  posledniOdpovedNeuplna = data.stop_reason === 'max_tokens'
+    || (reply.includes('===VÝSTUP===') && !reply.includes('===KONEC==='));
   return reply;
+}
+
+// Ručně vyžádá dopsání výsledné analýzy, když se useknula i po automatickém
+// pokusu o navázání výš (vyčerpané 3 pokusy, nebo výpadek sítě uprostřed).
+async function dokoncitVystup(btn, raw) {
+  btn.disabled = true;
+  btn.textContent = 'Dokončuji...';
+  try {
+    const pokracovaciZpravy = history.concat([
+      { role: 'assistant', content: '===VÝSTUP===\n' + raw },
+      { role: 'user', content: 'Pokračuj přesně tam, kde jsi přestal/a, žádný nový úvod ani opakování už napsaného. Dokonči zbylé očíslované sekce výstupu přesně podle zadané struktury, až po ===KONEC===.' }
+    ]);
+    const data = await zavolatAI(pokracovaciZpravy);
+    const pokracText = data.content?.[0]?.text || '';
+    if (!pokracText) throw new Error('Prázdná odpověď od AI.');
+    const noveRaw = raw + (raw.endsWith('\n') ? '' : '\n') + pokracText;
+    const jeHotovo = data.stop_reason !== 'max_tokens' && noveRaw.includes('===KONEC===');
+    if (history.length && history[history.length - 1].role === 'assistant') {
+      history[history.length - 1].content = '===VÝSTUP===\n' + noveRaw + (jeHotovo ? '' : '');
+    }
+    btn.closest('.output-card').remove();
+    renderOutput(noveRaw, true, !jeHotovo);
+  } catch (e) {
+    console.error('Nepodařilo se dokončit výstup:', e);
+    btn.disabled = false;
+    btn.textContent = 'Dokončit výstup';
+    upozornit('Nepodařilo se dokončit výstup, zkuste to prosím znovu.');
+  }
 }
 
 let cekaOdeslani = false;
@@ -1908,16 +2018,19 @@ async function odeslat() {
   // uživatel stránku mezitím obnovil.
   ulozitStavAnalyzy(false, null);
   // Odpověď obvykle trvá kolem 20 s - appka to po chvíli řekne nahlas, ať
-  // to nevypadá, že se nic neděje.
+  // to nevypadá, že se nic neděje. Druhá zpráva navíc upozorní, když to
+  // trvá fakt déle, než appka sama slibuje (dřív mlčela až do 45s timeoutu).
   const dlouheCekaniTimer = setTimeout(() => nastavitTypingStatus('Odpovědi obvykle trvají do 20 sekund...'), 6000);
+  const delsiCekaniTimer = setTimeout(() => nastavitTypingStatus('Odpověď trvá déle, než obvykle. Ještě chvíli počkejte...'), 20000);
 
   try {
     const reply = await ziskatKompletniOdpoved(history);
     clearTimeout(dlouheCekaniTimer);
+    clearTimeout(delsiCekaniTimer);
     hideTyping();
 
     history.push({ role: 'assistant', content: reply });
-    addMsg('ai', reply);
+    addMsg('ai', reply, posledniOdpovedNeuplna);
     // Pokud tenhle krok analýzu nedokončil (===VÝSTUP=== zpracovává a ukládá
     // renderOutput sám), průběžně uložíme rozpracovaný stav, ať se k němu jde
     // vrátit i po zavření appky.
@@ -1925,17 +2038,67 @@ async function odeslat() {
 
   } catch (e) {
     clearTimeout(dlouheCekaniTimer);
+    clearTimeout(delsiCekaniTimer);
     hideTyping();
     console.error('Chyba odeslat:', e);
     const zprava = e.isTimeout
-      ? 'Server neodpověděl do 45 sekund. Vaše otázka zůstala uložená, zkuste to prosím znovu.'
-      : 'Nepodařilo se spojit se serverem. Vaše otázka zůstala uložená, zkuste to prosím znovu za chvíli.';
+      ? 'Server neodpověděl do 45 sekund. Vaše otázka zůstala uložená.'
+      : 'Nepodařilo se spojit se serverem. Vaše otázka zůstala uložená.';
     addMsg('ai', zprava);
+    // Tlačítko Zkusit znovu, ať se otázka nemusí přepisovat ručně - je už
+    // uložená v historii konverzace z řádku výš.
+    pridatTlacitkoZkusitZnovu();
   }
 
   isLoading = false;
   document.getElementById('send-btn').disabled = false;
   document.getElementById('input').focus();
+  if (cekaOdeslani) { cekaOdeslani = false; odeslat(); }
+}
+
+function pridatTlacitkoZkusitZnovu() {
+  const chat = document.getElementById('chat');
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'margin:6px 0 4px 40px;';
+  const btn = document.createElement('button');
+  btn.className = 'export-output';
+  btn.style.cssText = 'margin-top:0;font-size:12px;padding:6px 12px;';
+  btn.textContent = 'Zkusit znovu';
+  btn.onclick = () => { wrap.remove(); odeslatZnovu(); };
+  wrap.appendChild(btn);
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// Zopakuje poslední neúspěšný požadavek bez nutnosti znovu psát otázku -
+// ta je už v historii (pushnutá před prvním pokusem v odeslat() výš).
+async function odeslatZnovu() {
+  if (isLoading) return;
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  showTyping();
+  const dlouheCekaniTimer = setTimeout(() => nastavitTypingStatus('Odpovědi obvykle trvají do 20 sekund...'), 6000);
+  const delsiCekaniTimer = setTimeout(() => nastavitTypingStatus('Odpověď trvá déle, než obvykle. Ještě chvíli počkejte...'), 20000);
+  try {
+    const reply = await ziskatKompletniOdpoved(history);
+    clearTimeout(dlouheCekaniTimer);
+    clearTimeout(delsiCekaniTimer);
+    hideTyping();
+    history.push({ role: 'assistant', content: reply });
+    addMsg('ai', reply, posledniOdpovedNeuplna);
+    if (!reply.includes('===VÝSTUP===')) ulozitStavAnalyzy(false, null);
+  } catch (e) {
+    clearTimeout(dlouheCekaniTimer);
+    clearTimeout(delsiCekaniTimer);
+    hideTyping();
+    console.error('Chyba při opakování:', e);
+    addMsg('ai', e.isTimeout
+      ? 'Server neodpověděl do 45 sekund. Vaše otázka zůstala uložená.'
+      : 'Nepodařilo se spojit se serverem. Vaše otázka zůstala uložená.');
+    pridatTlacitkoZkusitZnovu();
+  }
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
   if (cekaOdeslani) { cekaOdeslani = false; odeslat(); }
 }
 
