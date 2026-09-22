@@ -938,8 +938,9 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
       <!-- Pro: uložit / export -->
       <div class="ulozit-row">
-        <button class="btn-gold" onclick="ulozitVypocet()">💾 Uložit tento výpočet</button>
-        <button class="btn-outline" onclick="exportCSV()">⬇ Export CSV</button>
+        <button class="btn-gold" onclick="ulozitVypocet()">💾 Uložit tento výpočet <span class="pro-lock-badge">Pro</span></button>
+        <button class="btn-outline" onclick="exportCSV()">⬇ Export CSV <span class="pro-lock-badge">Pro</span></button>
+        <button class="btn-outline" onclick="novyVypocet()">🔄 Nový výpočet</button>
       </div>
 
       <!-- ZAŘADIT K PROJEKTU (Pro) -->
@@ -1340,6 +1341,14 @@ const SLEDOVANE_VSTUPY = [
   'internet', 'certifikace', 'rezerva'
 ];
 
+// Pole, kterých se uživatel fakt dotkl (syncFromRange/syncFromNumber) -
+// dřív appka "vyplněno" poznávala jen podle toho, že se hodnota liší od
+// výchozí. U pár polí (odpis budovy, úrok, odpis regálů, odpis vybavení)
+// je ale výchozí hodnota zároveň rozumné, běžné číslo - pokud ho uživatel
+// zkontroloval a nechal beze změny, appka to bez tohohle tvrdila, že pole
+// zůstalo nevyplněné, i po projití úplně všech viditelných polí.
+const dotcenaPole = new Set();
+
 function oznacitPresnost() {
   let vasich = 0, celkem = 0;
   SLEDOVANE_VSTUPY.forEach(function (id) {
@@ -1352,7 +1361,7 @@ function oznacitPresnost() {
     // hodnoty pole - nula do výsledku nic nepřidá, takže by ukazatel po
     // ručním zadání dvou nul tvrdil "vyplněno 2 z 31", přestože byl součet
     // pořád stejný, jako by položky zůstaly nedotčené.
-    const jeVase = +el.value !== +el.defaultValue && +el.value !== 0;
+    const jeVase = (dotcenaPole.has(id) || +el.value !== +el.defaultValue) && +el.value !== 0;
     if (jeVase) vasich++;
     const valEl = document.getElementById(id + '-val');
     if (valEl) valEl.classList.toggle('zadano', jeVase);
@@ -1388,6 +1397,10 @@ function ulozitRozpracovanyVstup() {
       vstup[id] = num.value;
     });
     vstup.mode = mode;
+    // Ukládá se i to, kterých polí se uživatel fakt dotkl (viz oznacitPresnost
+    // níž) - jinak by se po obnovení stránky ukazatel úplnosti vrátil zpátky
+    // na "nevyplněno", i když je pole rozpracovaného výpočtu vidět vyplněné.
+    vstup._dotcena = Array.from(dotcenaPole);
     localStorage.setItem(DRAFT_KEY, JSON.stringify(vstup));
   } catch (e) {
     console.warn('Rozpracovaný výpočet se nepodařilo uložit do localStorage.', e);
@@ -1400,16 +1413,32 @@ function nacistRozpracovanyVstup() {
     if (!raw) return;
     const vstup = JSON.parse(raw);
     Object.keys(vstup).forEach(function (id) {
-      if (id === 'mode') return;
+      if (id === 'mode' || id === '_dotcena') return;
       const num = document.getElementById(id + '-num');
       const range = document.getElementById(id);
       if (num) num.value = vstup[id];
       if (range) range.value = Math.min(+vstup[id], +range.max);
     });
+    if (Array.isArray(vstup._dotcena)) vstup._dotcena.forEach(function (id) { dotcenaPole.add(id); });
     if (vstup.mode) setMode(vstup.mode);
   } catch (e) {
     console.warn('Rozpracovaný výpočet se nepodařilo obnovit.', e);
   }
+}
+
+// Appka rozpracovaný výpočet po refreshi schválně zachovává (viz výš), ale
+// chyběl způsob, jak začít úplně od nuly bez ručního mazání desítek polí.
+function novyVypocet() {
+  if (!confirm('Vymazat všechny zadané údaje a začít nový výpočet od začátku?')) return;
+  document.querySelectorAll('input.input-val-edit').forEach(function (num) {
+    num.value = num.defaultValue;
+    const id = num.id.replace(/-num$/, '');
+    const range = document.getElementById(id);
+    if (range) range.value = num.defaultValue;
+  });
+  dotcenaPole.clear();
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+  setMode('najem');
 }
 
 function fmt(n) { return Math.round(n).toLocaleString("cs-CZ"); }
@@ -1462,6 +1491,7 @@ function oznamitDokonceni() {
 function syncFromRange(id) {
   const num = document.getElementById(id + '-num');
   if (num) num.value = document.getElementById(id).value;
+  dotcenaPole.add(id);
   oznamitZahajeni();
   update();
   oznamitDokonceni();
@@ -1472,6 +1502,7 @@ function syncFromNumber(id) {
   const num = document.getElementById(id + '-num');
   let v = +num.value;
   if (isNaN(v)) return;
+  dotcenaPole.add(id);
   const min = +range.min, max = +range.max;
   if (v < min) v = min;
   // Posuvník má vlastní horní mez jen kvůli tomu, aby šel prstem/myší

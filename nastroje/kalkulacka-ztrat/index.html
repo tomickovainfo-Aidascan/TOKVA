@@ -684,11 +684,46 @@ window.addEventListener('beforeunload', function (e) {
   }
 });
 
+// Appka dřív po refreshi zahodila všech 9 zadaných hodnot a vrátila se na
+// výchozí čísla - Kalkulačka nákladů skladu rozpracovaný výpočet stejným
+// způsobem ukládá do localStorage, tak sjednoceno na stejný vzor i tady.
+const DRAFT_KEY_ZTRAT = 'kalk_ztrat_rozpracovany_vstup';
+
+function ulozitRozpracovanyVstup() {
+  try {
+    const vstup = {};
+    document.querySelectorAll('input.input-val-edit').forEach(function (num) {
+      const id = num.id.replace(/-num$/, '');
+      vstup[id] = num.value;
+    });
+    localStorage.setItem(DRAFT_KEY_ZTRAT, JSON.stringify(vstup));
+  } catch (e) {
+    console.warn('Rozpracovaný výpočet se nepodařilo uložit do localStorage.', e);
+  }
+}
+
+function nacistRozpracovanyVstup() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY_ZTRAT);
+    if (!raw) return;
+    const vstup = JSON.parse(raw);
+    Object.keys(vstup).forEach(function (id) {
+      const num = document.getElementById(id + '-num');
+      const range = document.getElementById(id);
+      if (num) num.value = vstup[id];
+      if (range) range.value = vstup[id];
+    });
+  } catch (e) {
+    console.warn('Rozpracovaný výpočet se nepodařilo obnovit.', e);
+  }
+}
+
 // slider <-> ruční číslo, obousměrně, se stejnými mezemi
 function syncFromRange(id) {
   document.getElementById(id + "-num").value = document.getElementById(id).value;
   oznamitZahajeni();
   hasRozpracovanyVypocet = true;
+  ulozitRozpracovanyVstup();
   update();
   oznamitDokonceni();
 }
@@ -704,6 +739,7 @@ function syncFromNumber(id) {
   range.value = v;
   oznamitZahajeni();
   hasRozpracovanyVypocet = true;
+  ulozitRozpracovanyVstup();
   update();
   oznamitDokonceni();
 }
@@ -825,6 +861,7 @@ let jePro = false;
 let posledniToolRunId = null;
 let posledniVypocetPlny = null;
 
+nacistRozpracovanyVstup();
 update();
 
 // Sdílený účet Tokva Pro (Supabase, viz auth.js/supabase-client.js) - appka
