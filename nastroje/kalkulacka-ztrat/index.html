@@ -240,6 +240,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 }
 
 .btn-gold { background:var(--gold); border:none; color:var(--black); font-size:13px; font-weight:700; padding:10px 16px; border-radius:6px; cursor:pointer; transition:background .15s; }
+.pro-lock-badge { display:inline-flex; align-items:center; font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--gold-dark); background:var(--gold-light); padding:2px 8px; border-radius:10px; margin-left:8px; }
 .btn-gold:hover { background:var(--gold-dark); color:white; }
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
 .modal-box { background:var(--white); border-radius:14px; padding:28px; max-width:420px; width:100%; }
@@ -523,7 +524,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       </div>
 
       <div class="uloz-btn-row" style="margin-top:16px;">
-        <button class="btn-gold" style="width:100%;" onclick="ulozitVypocetZtrat()">💾 Uložit tento výpočet</button>
+        <button class="btn-gold" style="width:100%;" onclick="ulozitVypocetZtrat()">💾 Uložit tento výpočet <span class="pro-lock-badge">Pro</span></button>
         <div id="s-ulozeno-stav" style="font-size:12.5px;margin-top:8px;display:none;"></div>
       </div>
 
