@@ -1769,8 +1769,29 @@ function toggleMic() {
   }
 }
 
+function denUkoncen() {
+  return zaznamy.length > 0 && zaznamy[zaznamy.length - 1].text === 'Konec';
+}
+
 function pridatZaznam(text) {
   if (!text) return;
+  if (denUkoncen()) {
+    potvrdit(
+      'Dnešní den jste už ukončili záznamem "Konec dne". Chcete v něm přece jen pokračovat a přidat tuhle aktivitu? Značka konce se posune až za ni - klidně den ukončete znovu, až doopravdy skončíte. Pokud jste chtěli začít úplně nový den, použijte tlačítko "Nový den" dole.',
+      'Pokračovat v ukončeném dni',
+      function () {
+        const posl = zaznamy[zaznamy.length - 1];
+        if (posl && posl.text === 'Konec') zaznamy.pop();
+        pridatZaznamSkutecne(text);
+      },
+      'Den je už ukončený'
+    );
+    return;
+  }
+  pridatZaznamSkutecne(text);
+}
+
+function pridatZaznamSkutecne(text) {
   oznamitZahajeni();
   const t = new Date();
   const zaznam = {
@@ -1893,6 +1914,21 @@ function renderZaznamy() {
   const dot = document.getElementById('status-dot');
   const bezi = zaznamy.length > 0 && zaznamy[zaznamy.length - 1].text !== 'Konec';
   dot.classList.toggle('bezi', bezi);
+
+  // Appka dřív po refreshi zapomněla, že byl den už ukončený - tlačítko Konec
+  // se tiše zase aktivovalo a šlo přidat další aktivitu za značku "Konec dne",
+  // beze slova. Stav tlačítka teď appka odvozuje z posledního záznamu při
+  // každém vykreslení, ne jen jednou v okamžiku kliknutí.
+  const btnKonecSync = document.getElementById('btn-konec');
+  if (btnKonecSync) {
+    if (denUkoncen()) {
+      btnKonecSync.textContent = 'Konec zaznamenán';
+      btnKonecSync.disabled = true;
+    } else {
+      btnKonecSync.textContent = 'Konec';
+      btnKonecSync.disabled = false;
+    }
+  }
 
   if (zaznamy.length === 0) {
     container.innerHTML = `<div class="empty-state">
@@ -2161,7 +2197,7 @@ function nastavHodnotuHodiny(val) {
 // KATEGORIE
 const KATEGORIE = [
   { id:'haseni',        label:'🔥 Hašení problémů', css:'kat-haseni',       color:'#e05032',
-    kw:['reklamace','reklamaci','reklamaci od','porucha','poruchu','poruše','havárie','havárii','porouchal','porouchala','porouchalo','nefunguje','nefunkční','výpadek','zpoždění','zdržení','stížnost','stížnosti','urgentní','krizov','vadné','vadný','vadná','zásah','nehoda','škoda','rozbil','rozbila','rozbité','závada','problém','problémem','problém s','hledání chybějícího','hledám chybějící','chybějící materiál','chybějícího materiálu'] },
+    kw:['reklamace','reklamaci','reklamaci od','porucha','poruchu','poruše','havárie','havárii','porouchal','porouchala','porouchalo','nefunguje','nefunkční','výpadek','zpoždění','zdržení','stížnost','stížnosti','urgentní','krizov','vadné','vadný','vadná','zásah','nehoda','škoda','rozbil','rozbila','rozbité','závada','problém','problémem','problém s','hledání','hledám','hledáme','dohledávání','dohledávám','dohledat','chyba','chybu','chyby','chybou','chybami','chybějící','chybějícího'] },
   { id:'produktivni',   label:'Produktivní práce', css:'kat-produktivni',   color:'#6ee7a8',
     kw:['práce','pracuji','pracuju','pracovat','pracovní','práci','práci na','nabídka','projekt','tvorba','analýza','píšu','programuji','řeším','připravuji','příprava','připraven','studuji','učím','kreslím','navrhuji','kalkulace','plánuji','strategie','kóduju','tvořím','dělám','dělat','dokončuji','kontroluji výrobu','kontrola','zpracování','zpracovávám','vyrábím','výroba','montáž','montuju','seřizuji','balení','balím','expedice','expedič','vychystávání','vychystávám','nakládka','vykládka','skladování'] },
   { id:'komunikace',    label:'Komunikace',         css:'kat-komunikace',    color:'#7ec8f5',
@@ -2886,13 +2922,58 @@ function exportCSV() {
     return;
   }
   try {
-    const rows = [['Čas', 'Aktivita', 'Trvání']];
+    // Export dřív obsahoval jen čas/aktivitu/trvání - chyběla v něm oprava
+    // kategorie (appka ji odhaduje automaticky a uživatel ji může ručně
+    // opravit), rozhodnutí Já/Delegovat/Automatizovat/Zrušit u opakujících
+    // se činností, značka konce dne a souhrny podle kategorií a produktivity,
+    // co appka jinak ukazuje jen na obrazovce. Export teď obsahuje totéž.
+    const klasifikace = JSON.parse(localStorage.getItem('cs_klasifikace') || '{}');
+    const KLAS_LABELY_EXPORT = { ja: 'Já', delegovat: 'Delegovat', automatizovat: 'Automatizovat', zrusit: 'Zrušit' };
+
+    const rows = [['Čas', 'Aktivita', 'Trvání', 'Kategorie', 'Rozhodnutí']];
     zaznamy.forEach((z, i) => {
+      if (z.text === 'Konec') {
+        rows.push([z.cas, 'Konec dne', '', '', '']);
+        return;
+      }
       const next = zaznamy[i + 1];
       const dur = next ? Math.round((next.timestamp - z.timestamp) / 60000) + ' min' : '';
-      rows.push([z.cas, z.text, dur]);
+      const k = katInfo(z.kat || rozpoznatKat(z.text));
+      const klasKey = z.text.trim().toLowerCase();
+      const rozhodnuti = klasifikace[klasKey] ? (KLAS_LABELY_EXPORT[klasifikace[klasKey]] || '') : '';
+      rows.push([z.cas, z.text, dur, k.label, rozhodnuti]);
     });
-    const csv = rows.map(r => r.map(c => '"' + c + '"').join(',')).join('\n');
+
+    // Souhrny - jen když je z čeho počítat (appka na obrazovce potřebuje
+    // aspoň 2 záznamy, jinak trvání nejde spočítat vůbec)
+    if (zaznamy.length > 1) {
+      const total = zaznamy[zaznamy.length - 1].timestamp - zaznamy[0].timestamp;
+      const katCas = {};
+      KATEGORIE.forEach(k => katCas[k.id] = 0);
+      zaznamy.forEach((z, i) => {
+        const next = zaznamy[i + 1];
+        if (!next) return;
+        const dur = next.timestamp - z.timestamp;
+        const kid = z.kat || rozpoznatKat(z.text);
+        katCas[kid] = (katCas[kid] || 0) + dur;
+      });
+      const produktivniMs = katCas['produktivni'] || 0;
+      const produktivniPct = total > 0 ? Math.round(produktivniMs / total * 100) : 0;
+
+      rows.push([]);
+      rows.push(['Souhrn kategorií', 'Čas', 'Podíl', '', '']);
+      KATEGORIE
+        .filter(k => katCas[k.id] > 0)
+        .sort((a, b) => katCas[b.id] - katCas[a.id])
+        .forEach(k => {
+          const pct = total > 0 ? Math.round(katCas[k.id] / total * 100) : 0;
+          rows.push([k.label, formatDuration(katCas[k.id]), pct + ' %', '', '']);
+        });
+      rows.push([]);
+      rows.push(['Produktivní práce', produktivniPct + ' %', formatDuration(produktivniMs) + ' z ' + formatDuration(total), '', '']);
+    }
+
+    const csv = rows.map(r => r.map(c => '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"').join(',')).join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
