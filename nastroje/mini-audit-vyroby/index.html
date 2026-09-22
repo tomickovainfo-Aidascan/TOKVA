@@ -1033,6 +1033,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 
     <div>
       <h2 class="content-card-title">Navazující nástroje</h2>
+      <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Obecný přehled dalších nástrojů - nemusí sedět na to, co konkrétně ukázal váš výsledek výše.</p>
       <div class="dalsi-nastroje-col">
         <div class="dalsi-nastroj-card">
           <div class="dalsi-nastroj-tag">Hlavní další krok</div>
@@ -1519,6 +1520,10 @@ function pripravitEmailAudit() {
 }
 
 function zacitZnovu() {
+  potvrdit('Smazat vyplněné odpovědi a začít audit znovu?', 'Smazat a začít znovu', zacitZnovuSkutecne, 'Opravdu začít znovu?');
+}
+
+function zacitZnovuSkutecne() {
   Object.keys(odpovedi).forEach(k => delete odpovedi[k]);
   nevimSet.clear();
   ['akce-nazev', 'akce-osoba', 'akce-investice', 'akce-prinos', 'akce-termin'].forEach(id => {
@@ -1642,6 +1647,14 @@ function upozornit(text, title) {
   document.getElementById('modal-notice-cancel').style.display = 'none';
   document.getElementById('modal-notice-ok').textContent = 'Rozumím';
   _modalNoticeCb = null;
+  document.getElementById('modal-notice').style.display = 'flex';
+}
+function potvrdit(text, oklabel, callback, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Potvrdit akci';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'inline-block';
+  document.getElementById('modal-notice-ok').textContent = oklabel || 'Potvrdit';
+  _modalNoticeCb = callback;
   document.getElementById('modal-notice').style.display = 'flex';
 }
 function zavritModalNotice() {

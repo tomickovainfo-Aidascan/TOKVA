@@ -697,7 +697,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   </div>
   <div class="no-print" style="display:flex;flex-direction:column;gap:0;">
     <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);" onclick="window.print()">Vytisknout výsledky</button>
-    <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);margin-top:8px;" onclick="zacitZnovu()">Spustit kvíz znovu</button>
+    <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);margin-top:8px;" onclick="zacitZnovu()">Vyplnit znovu</button>
   </div>
 </div>
 
@@ -706,6 +706,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 
     <div>
       <h2 class="content-card-title">Navazující nástroje</h2>
+      <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Obecný přehled dalších nástrojů - nemusí sedět na to, co konkrétně ukázal váš výsledek výše.</p>
       <div class="dalsi-nastroje-grid">
         <div class="dalsi-nastroj-card">
           <div class="dalsi-nastroj-tag">Hlavní další krok</div>
@@ -2378,6 +2379,10 @@ function pripravitEmailChaos(){
 }
 
 function zacitZnovu(){
+  potvrdit('Smazat výsledek a vyplnit kvíz znovu?', 'Smazat a vyplnit znovu', zacitZnovuSkutecne, 'Opravdu vyplnit znovu?');
+}
+
+function zacitZnovuSkutecne(){
   smazatRozpracovanyKviz();
   Object.keys(odpovedi).forEach(k=>delete odpovedi[k]);
   posledniVysledek = null;

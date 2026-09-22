@@ -903,6 +903,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 
     <div>
       <h2 class="content-card-title">Navazující nástroje</h2>
+      <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Obecný přehled dalších nástrojů - nemusí sedět na to, co konkrétně ukázal váš výsledek výše.</p>
       <div class="dalsi-nastroje-col">
         <div class="dalsi-nastroj-card">
           <div class="dalsi-nastroj-tag">Hlavní další krok</div>
@@ -1796,6 +1797,9 @@ function zobrazVysledky() {
 }
 
 function zacitZnovu() {
+  // Appka dřív vyplněný test smazala bez upozornění - u dokončeného auditu to
+  // uměl být kus práce (10 otázek + poznámky k akčnímu plánu).
+  if (!confirm('Smazat vyplněné odpovědi a začít test znovu?')) return;
   Object.keys(odpovedi).forEach(k => delete odpovedi[k]);
   ['akce-nazev', 'akce-osoba', 'akce-investice', 'akce-prinos', 'akce-termin'].forEach(id => {
     const pole = document.getElementById(id);

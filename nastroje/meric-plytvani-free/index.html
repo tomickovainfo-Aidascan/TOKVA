@@ -652,6 +652,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 
 <div class="dalsi-nastroje-wrap" id="dalsi-nastroje">
   <h2 class="content-card-title">Navazující nástroje</h2>
+  <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Obecný přehled dalších nástrojů - nemusí sedět na to, co konkrétně ukázal váš výsledek výše.</p>
   <div class="dalsi-nastroje-grid">
     <div class="dalsi-nastroj-card">
       <div class="dalsi-nastroj-tag">Hodně chůze a přesunů</div>
@@ -801,6 +802,21 @@ function zkusitObnovitRozpracovaneMereni() {
   if (!draft || (!(draft.cykly && draft.cykly.length) && !draft.aktCyklusCas)) return false;
 
   nazev = draft.nazev || 'Proces';
+
+  // Dokončené měření (viz ulozitDokonceneMereni) - obnovit rovnou hotový
+  // výsledek, ne rozjetý cyklus. Analytiku (tool_completed) neposíláme znovu,
+  // ta odešla už při prvním dokončení před refreshem.
+  if (draft.hotovo) {
+    document.getElementById('inp-nazev').value = nazev;
+    cykly = draft.cykly || [];
+    document.getElementById('setup').style.display = 'none';
+    document.getElementById('mereni').style.display = 'none';
+    document.getElementById('souhrn').style.display = 'block';
+    vykreslitSouhrn();
+    upozornit('Obnovili jsme dokončené měření „' + nazev + '" z předchozí návštěvy.', 'Měření obnoveno');
+    return true;
+  }
+
   document.getElementById('inp-nazev').value = nazev;
   document.getElementById('m-nazev').textContent = nazev;
   document.getElementById('m-cykly').textContent = 'Cyklus 1 / ' + MAX_CYKLY;
@@ -901,6 +917,14 @@ function upozornit(text, title) {
   _modalNoticeCb = null;
   document.getElementById('modal-notice').classList.add('visible');
 }
+function potvrdit(text, oklabel, callback, title) {
+  document.getElementById('modal-notice-title').textContent = title || 'Potvrdit akci';
+  document.getElementById('modal-notice-text').textContent = text;
+  document.getElementById('modal-notice-cancel').style.display = 'inline-block';
+  document.getElementById('modal-notice-ok').textContent = oklabel || 'Potvrdit';
+  _modalNoticeCb = callback;
+  document.getElementById('modal-notice').classList.add('visible');
+}
 function zavritModalNotice() {
   document.getElementById('modal-notice').classList.remove('visible');
   _modalNoticeCb = null;
@@ -949,14 +973,32 @@ function pridatRadek(n, c) {
   list.appendChild(row);
 }
 
+// Appka dřív po dokončení měření (tlačítko "Ukončit měření") hned smazala
+// rozpracovaný záznam z prohlížeče, protože ho už "nepotřebovala" - jenže
+// hotový výsledek appka jinak nikam neukládala (na rozdíl od Tokva Pro, co
+// má vlastní historii měření), takže obyčejný refresh stránky s hotovým
+// výsledkem před očima ho celý smazal - cykly, název i výpočet. Appka teď
+// dokončené měření uloží stejným klíčem, jen s příznakem hotovo:true, a
+// smaže ho až při Nový měření (zacitZnovu).
+function ulozitDokonceneMereni() {
+  try {
+    localStorage.setItem(DRAFT_KEY_MERIC_FREE, JSON.stringify({
+      nazev, cykly, hotovo: true, cas: Date.now()
+    }));
+  } catch (e) { console.warn('Dokončené měření se nepodařilo uložit lokálně.', e); }
+}
+
 function ukoncit() {
   oznamitDokonceni();
   clearInterval(timerInt); clearInterval(katInt); clearInterval(draftInt);
-  smazatRozpracovaneMereni();
+  ulozitDokonceneMereni();
   document.getElementById('setup').style.display = 'none';
   document.getElementById('mereni').style.display = 'none';
   document.getElementById('souhrn').style.display = 'block';
+  vykreslitSouhrn();
+}
 
+function vykreslitSouhrn() {
   const n = cykly.length;
   const avg = {};
   KAT.forEach(k => avg[k] = cykly.reduce((s,c) => s+(c.cas[k]||0),0)/n);
@@ -1098,6 +1140,10 @@ function odeslatEmail(e) {
 }
 
 function zacitZnovu() {
+  potvrdit('Smazat tenhle výsledek a začít nové měření? Dokončené cykly i výpočet se ztratí.', 'Smazat a začít znovu', zacitZnovuSkutecne, 'Opravdu začít znovu?');
+}
+
+function zacitZnovuSkutecne() {
   clearInterval(draftInt);
   smazatRozpracovaneMereni();
   document.getElementById('uloz-list').innerHTML = '';
