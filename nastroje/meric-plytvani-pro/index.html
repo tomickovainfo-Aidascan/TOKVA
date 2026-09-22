@@ -889,9 +889,8 @@ function otevritModalDetailVysledkuZeZaznamu(z) {
       '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + sec.toFixed(1) + ' s</td></tr>';
   }).join('');
   const radkyCyklu = (z.cykly || []).map(function (c, idx) {
-    const m = Math.floor(c.celkem / 60), s = Math.floor(c.celkem % 60);
     return '<tr><td style="padding:6px;border-bottom:1px solid #f0f0f0;">Cyklus ' + (idx + 1) + '</td>' +
-      '<td style="padding:6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + m + ':' + String(s).padStart(2, '0') + '</td></tr>';
+      '<td style="padding:6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + fmtC(c.celkem) + '</td></tr>';
   }).join('');
   const maNaklady = z.hodinovaSazba != null && z.pocetPracovniku != null;
   document.getElementById('detail-vysledku-obsah').innerHTML =
@@ -1254,7 +1253,7 @@ function pridatRadek(n, c) {
   const list = document.getElementById('uloz-list');
   const row = document.createElement('div');
   row.className = 'c-row-wrap';
-  const m = Math.floor(c.celkem/60), s = Math.floor(c.celkem%60);
+  const cas = fmtC(c.celkem);
   const barHTML = vsechnyKat.map(k => {
     const w = c.celkem > 0 ? (c.cas[k]||0)/c.celkem*100 : 0;
     const barva = STD_BARVY[k] || (vlastniOp.find(o=>o.id===k)||{}).barva || '#2a7a4f';
@@ -1274,7 +1273,7 @@ function pridatRadek(n, c) {
   const idx = n - 1;
 
   row.innerHTML = `
-    <div class="c-row"><div class="c-num">${n}</div><div class="c-cas">${pad(m)}:${pad(s)}</div><div class="c-bar">${barHTML}</div>
+    <div class="c-row"><div class="c-num">${n}</div><div class="c-cas">${cas}</div><div class="c-bar">${barHTML}</div>
       <button class="c-pozn-btn" onclick="togglePoznamka(${idx})" title="Přidat poznámku">✎</button></div>
     ${anomalie ? `<div class="c-anomalie">Cyklus ${n} je o ${anomProc}% delší než průměr předchozích. Co se stalo?</div>` : ''}
     <div class="c-pozn-wrap" id="pozn-wrap-${idx}" style="display:${anomalie ? 'block' : 'none'};">
@@ -1326,7 +1325,9 @@ function ukoncit() {
   const maxCelkem = Math.max(...cykly.map(c=>c.celkem));
   porov.innerHTML = cykly.map((c,i) => {
     const pct = maxCelkem > 0 ? (c.celkem/maxCelkem*100).toFixed(1) : 0;
-    const plyPctC = Math.floor(c.celkem) > 0 ? (Math.floor(plytvaniIds().reduce((s,k)=>s+(c.cas[k]||0),0))/Math.floor(c.celkem)*100).toFixed(0) : 0;
+    const cCelkemZaokr = Math.round(c.celkem*10)/10;
+    const cPlytvaniZaokr = Math.round(plytvaniIds().reduce((s,k)=>s+(c.cas[k]||0),0)*10)/10;
+    const plyPctC = cCelkemZaokr > 0 ? Math.round(cPlytvaniZaokr/cCelkemZaokr*100) : 0;
     const isMin = c.celkem === minC;
     const isMax = c.celkem === maxC;
     return `<div class="porov-row">
@@ -1426,12 +1427,12 @@ function ukoncit() {
   const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
   const TIPY_URL = '../spaghetti-free/';
   const TIPY_PRO = {
-    presun:`Přesuny tvoří ${Math.round(Math.floor(avg.presun)/Math.floor(avgC)*100)}% času. <a href="${TIPY_URL}" target="_blank" style="color:var(--gold-dark);font-weight:700;">Nakreslit Spaghetti diagram</a> a vizuálně uvidíte, kde se trasy kříží a opakují.`,
-    hledani:`Hledání tvoří ${Math.round(Math.floor(avg.hledani)/Math.floor(avgC)*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
-    cekani:`Čekání tvoří ${Math.round(Math.floor(avg.cekani)/Math.floor(avgC)*100)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
-    papiry:`Administrativa tvoří ${Math.round(Math.floor(avg.papiry)/Math.floor(avgC)*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
-    priprava:`Příprava tvoří ${Math.round(Math.floor(avg.priprava)/Math.floor(avgC)*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
-    kontrola:`Kontrola tvoří ${Math.round(Math.floor(avg.kontrola)/Math.floor(avgC)*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
+    presun:`Přesuny tvoří ${Math.round((Math.round(avg.presun*10)/10)/(Math.round(avgC*10)/10)*100)}% času. <a href="${TIPY_URL}" target="_blank" style="color:var(--gold-dark);font-weight:700;">Nakreslit Spaghetti diagram</a> a vizuálně uvidíte, kde se trasy kříží a opakují.`,
+    hledani:`Hledání tvoří ${Math.round((Math.round(avg.hledani*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
+    cekani:`Čekání tvoří ${Math.round((Math.round(avg.cekani*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
+    papiry:`Administrativa tvoří ${Math.round((Math.round(avg.papiry*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
+    priprava:`Příprava tvoří ${Math.round((Math.round(avg.priprava*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
+    kontrola:`Kontrola tvoří ${Math.round((Math.round(avg.kontrola*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
   };
 
   let insHtml = '';
@@ -2061,12 +2062,12 @@ function tiskReport() {
   // Doporučení
   const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
   const TIPY_TISK = {
-    presun:`Přesuny tvoří ${Math.round(Math.floor(avg.presun)/Math.floor(avgC)*100)}% času. Nakreslete spaghetti diagram a vizuálně uvidíte kde se trasy kříží a opakují.`,
-    hledani:`Hledání tvoří ${Math.round(Math.floor(avg.hledani)/Math.floor(avgC)*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
-    cekani:`Čekání tvoří ${Math.round(Math.floor(avg.cekani)/Math.floor(avgC)*100)}% času. Hledejte příčinu — chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
-    papiry:`Administrativa tvoří ${Math.round(Math.floor(avg.papiry)/Math.floor(avgC)*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
-    priprava:`Příprava tvoří ${Math.round(Math.floor(avg.priprava)/Math.floor(avgC)*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
-    kontrola:`Kontrola tvoří ${Math.round(Math.floor(avg.kontrola)/Math.floor(avgC)*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
+    presun:`Přesuny tvoří ${Math.round((Math.round(avg.presun*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Nakreslete spaghetti diagram a vizuálně uvidíte kde se trasy kříží a opakují.`,
+    hledani:`Hledání tvoří ${Math.round((Math.round(avg.hledani*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
+    cekani:`Čekání tvoří ${Math.round((Math.round(avg.cekani*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Hledejte příčinu — chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
+    papiry:`Administrativa tvoří ${Math.round((Math.round(avg.papiry*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Kolik z toho je nutné? Zde je prostor pro digitalizaci nebo zjednodušení.`,
+    priprava:`Příprava tvoří ${Math.round((Math.round(avg.priprava*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
+    kontrola:`Kontrola tvoří ${Math.round((Math.round(avg.kontrola*10)/10)/(Math.round(avgC*10)/10)*100)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
   };
   let doporuceni = '';
   Object.keys(PRAHY).forEach(k => {
@@ -2272,7 +2273,7 @@ function zacitZnovu() {
 
 function getNazev(k) { return STD_NAZVY[k] || (vlastniOp.find(o=>o.id===k)||{nazev:k}).nazev; }
 function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
-function fmtC(s) { return pad(Math.floor(s/60)) + ':' + pad(Math.floor(s%60)); }
+function fmtC(s) { const r = Math.round(s); return pad(Math.floor(r/60)) + ':' + pad(r%60); }
 // U krátkých hodnot appka zobrazí desetinu sekundy (např. "3.4 s") místo
 // MM:SS, ať rychlé operace nezmizí jako "00:00" - viz procenta výš, počítaná
 // se stejnou přesností (desetiny sekundy, ne celé sekundy).

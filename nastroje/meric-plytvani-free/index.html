@@ -940,12 +940,12 @@ function pridatRadek(n, c) {
   const list = document.getElementById('uloz-list');
   const row = document.createElement('div');
   row.className = 'c-row';
-  const m = Math.floor(c.celkem/60), s = Math.floor(c.celkem%60);
+  const cas = fmtC(c.celkem);
   const barHTML = KAT.map(k => {
     const w = c.celkem > 0 ? (c.cas[k]||0) / c.celkem * 100 : 0;
     return `<div style="width:${w.toFixed(1)}%;background:${KAT_BARVY[k]};height:100%"></div>`;
   }).join('');
-  row.innerHTML = `<div class="c-num">${n}</div><div class="c-cas">${pad(m)}:${pad(s)}</div><div class="c-bar">${barHTML}</div>`;
+  row.innerHTML = `<div class="c-num">${n}</div><div class="c-cas">${cas}</div><div class="c-bar">${barHTML}</div>`;
   list.appendChild(row);
 }
 
@@ -1119,7 +1119,7 @@ function zacitZnovu() {
 }
 
 function pad(n) { return String(Math.floor(n)).padStart(2,'0'); }
-function fmtC(s) { return pad(Math.floor(s/60)) + ':' + pad(Math.floor(s%60)); }
+function fmtC(s) { const r = Math.round(s); return pad(Math.floor(r/60)) + ':' + pad(r%60); }
 // U krátkých hodnot appka zobrazí desetinu sekundy (např. "3.4 s") místo
 // MM:SS, ať rychlé operace nezmizí jako "00:00" - viz pctZObrazenych výš.
 function fmtCJemne(s) { return s < 10 ? s.toFixed(1) + ' s' : fmtC(s); }

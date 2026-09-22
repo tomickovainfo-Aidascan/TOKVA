@@ -240,6 +240,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 }
 
 .btn-gold { background:var(--gold); border:none; color:var(--black); font-size:13px; font-weight:700; padding:10px 16px; border-radius:6px; cursor:pointer; transition:background .15s; }
+.btn-outline { background:var(--white); border:1px solid var(--border); color:var(--dark); font-size:13px; font-weight:600; padding:10px 16px; border-radius:6px; cursor:pointer; transition:all .15s; }
+.btn-outline:hover { border-color:var(--gold); color:var(--gold-dark); }
 .pro-lock-badge { display:inline-flex; align-items:center; font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--gold-dark); background:var(--gold-light); padding:2px 8px; border-radius:10px; margin-left:8px; }
 .btn-gold:hover { background:var(--gold-dark); color:white; }
 .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:300; display:flex; align-items:center; justify-content:center; padding:20px; }
@@ -525,6 +527,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
       <div class="uloz-btn-row" style="margin-top:16px;">
         <button class="btn-gold" style="width:100%;" onclick="ulozitVypocetZtrat()">💾 Uložit tento výpočet <span class="pro-lock-badge">Pro</span></button>
+        <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="novyVypocetZtrat()">🔄 Nový výpočet</button>
         <div id="s-ulozeno-stav" style="font-size:12.5px;margin-top:8px;display:none;"></div>
       </div>
 
@@ -671,12 +674,12 @@ function oznamitDokonceni() {
   trackTokvaEvent('tool_completed', { tool_name: 'kalkulacka_ztrat', tool_version: 'free' });
 }
 
-// Appka schválně nepřidává trvalé ukládání vstupů - refresh je má dál mazat
-// (uložení výsledku je záměrně jen Pro funkce). Ale dřív appka nechala
-// rozpracovaná čísla zmizet i tichým odchodem na přihlášení (celostránkové
-// přesměrování smaže celý JS stav v paměti) úplně beze slova - teď na to
-// před odchodem upozorní, ať uživatel může přihlášení odložit a výpočet
-// nejdřív dokončit nebo si čísla poznamenat.
+// Appka dřív nechala rozpracovaná čísla zmizet i tichým odchodem na přihlášení
+// (celostránkové přesměrování smaže celý JS stav v paměti) úplně beze slova -
+// teď na to před odchodem upozorní, ať uživatel může přihlášení odložit a
+// výpočet nejdřív dokončit nebo si čísla poznamenat. Uložení výsledku
+// (tlačítko níž) zůstává Pro funkce, ale rozpracovaný vstup appka ukládá
+// do prohlížeče i ve Free verzi, viz DRAFT_KEY_ZTRAT níž.
 let hasRozpracovanyVypocet = false;
 window.addEventListener('beforeunload', function (e) {
   if (hasRozpracovanyVypocet) {
@@ -717,6 +720,19 @@ function nacistRozpracovanyVstup() {
   } catch (e) {
     console.warn('Rozpracovaný výpočet se nepodařilo obnovit.', e);
   }
+}
+
+function novyVypocetZtrat() {
+  if (!confirm('Vymazat všechny zadané údaje a začít nový výpočet od začátku?')) return;
+  document.querySelectorAll('input.input-val-edit').forEach(function (num) {
+    num.value = num.defaultValue;
+    const id = num.id.replace(/-num$/, '');
+    const range = document.getElementById(id);
+    if (range) range.value = num.defaultValue;
+    if (typeof syncFromNumber === 'function') syncFromNumber(id);
+  });
+  try { localStorage.removeItem(DRAFT_KEY_ZTRAT); } catch (e) {}
+  hasRozpracovanyVypocet = false;
 }
 
 // slider <-> ruční číslo, obousměrně, se stejnými mezemi
