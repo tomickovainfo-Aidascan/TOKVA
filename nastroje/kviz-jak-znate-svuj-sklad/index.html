@@ -1629,10 +1629,21 @@ function ukazatEmailFormKviz() {
 // Vyplní skryté SKORE/SKORE_POPIS těsně před odesláním. Samotné odeslání a
 // zobrazení error/success panelu obstarává oficiální Brevo main.js (viz
 // script tagy před </body>) - appka sama formulář neposílá.
+// Zkrátí text pro e-mail na celé věty (pole v Brevo formuláři má max. 200 znaků),
+// aby e-mail nekončil uprostřed slova.
+function zkratitNaVety(t, max) {
+  t = String(t).replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  var cut = t.slice(0, max);
+  var i = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('! '), cut.lastIndexOf('? '));
+  if (i > 40) return cut.slice(0, i + 1);
+  return cut.replace(/\s+\S*$/, '') + '…';
+}
 function pripravitEmailKviz() {
   document.getElementById('SKORE').value = document.getElementById('skore-cislo').textContent.trim();
-  var popisText = document.getElementById('skore-label').textContent + '. ' + document.getElementById('skore-popis').textContent;
-  if (popisText.length > 195) { popisText = popisText.slice(0, 195) + '...'; }
+  // Poznámka „Skóre je orientační… viz níž“ odkazuje na stránku, do e-mailu nepatří.
+  var popisWeb = document.getElementById('skore-popis').textContent.split(' Skóre je orientační:')[0];
+  var popisText = zkratitNaVety(document.getElementById('skore-label').textContent + '. ' + popisWeb, 195);
   document.getElementById('SKORE_POPIS').value = popisText;
   if (typeof gtag === 'function') { gtag('event', 'lead_email_submit', { source: 'kviz_jak_znate_svuj_sklad' }); }
 }

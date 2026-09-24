@@ -2369,6 +2369,16 @@ function ukazatEmailFormChaos(){
 // Vyplní skryté SKORE/SKORE_POPIS těsně před odesláním. Samotné odeslání a
 // zobrazení error/success panelu obstarává oficiální Brevo main.js (viz
 // script tagy před </body>) - appka sama formulář neposílá.
+// Zkrátí text pro e-mail na celé věty (pole v Brevo formuláři má max. 200 znaků),
+// aby e-mail nekončil uprostřed slova.
+function zkratitNaVety(t, max) {
+  t = String(t).replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  var cut = t.slice(0, max);
+  var i = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('! '), cut.lastIndexOf('? '));
+  if (i > 40) return cut.slice(0, i + 1);
+  return cut.replace(/\s+\S*$/, '') + '…';
+}
 function pripravitEmailChaos(){
   document.getElementById('SKORE').value = document.getElementById('v-skore').textContent.trim();
   const pasmo = document.getElementById('v-pasmo').textContent.trim();
@@ -2378,7 +2388,7 @@ function pripravitEmailChaos(){
   if(klic && OBLASTI[klic]){
     popis += ' Nejslabší oblast: ' + OBLASTI[klic].nazev + '. ' + (RADY_OBLAST[klic] || OBLASTI[klic].popis);
   }
-  if (popis.length > 195) { popis = popis.slice(0, 195) + '...'; }
+  popis = zkratitNaVety(popis, 195);
   document.getElementById('SKORE_POPIS').value = popis;
   if(typeof fbq === 'function') fbq('track', 'Lead');
   if(typeof gtag === 'function') { gtag('event', 'lead_email_submit', { source: 'kviz_komunikacniho_chaosu' }); }
