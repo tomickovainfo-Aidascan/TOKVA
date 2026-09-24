@@ -1116,6 +1116,14 @@ function zmenitBarvu(i, el) {
   el.style.background = vlastniOp[i].barva;
 }
 
+// Kolečko myši nad aktivním číselným polem tiše mění hodnotu (600 -> 597
+// při rolování stránky dolů). Pole se proto při rolování odznačí a hodnota
+// zůstane, jak ji člověk napsal.
+document.addEventListener('wheel', function (e) {
+  const el = document.activeElement;
+  if (el && el.type === 'number' && e.target === el) el.blur();
+}, { passive: true });
+
 function spustit() {
   nazev = document.getElementById('inp-nazev').value.trim() || 'Proces';
   pocetKusu = parseInt(document.getElementById('inp-zakazka').value) || 0;
@@ -1385,9 +1393,10 @@ function ukoncit(obnoveni) {
 
   let zakItems = `
     <div class="zak-item"><div class="zak-val">${fmtC(avgC)}</div><div class="zak-lbl">Průměrný cyklus</div></div>
+    <div class="zak-item zak-highlight"><div class="zak-val">${fmtCJemne(Math.max(idealniCyklus,0))}</div><div class="zak-lbl">Cyklus bez plýtvání</div></div>
     <div class="zak-item"><div class="zak-val">${kusyZaSmenu}</div><div class="zak-lbl">Kusů za směnu (${delkaSmeny}h)</div></div>
     <div class="zak-item"><div class="zak-val">${idealniKusy}</div><div class="zak-lbl">Kusů bez plýtvání</div></div>
-    <div class="zak-item zak-highlight"><div class="zak-val">+${rozdilKusu}</div><div class="zak-lbl">Kusů navíc bez plýtvání</div></div>
+    <div class="zak-item zak-highlight" style="grid-column:span 2;"><div class="zak-val">+${rozdilKusu}</div><div class="zak-lbl">Kusů navíc za směnu bez plýtvání</div></div>
     <div class="zak-item" style="grid-column:span 2;"><div class="zak-val">${hodinovaSazba} Kč/h × ${pocetPracovniku} ${pocetPracovniku===1?'pracovník':'pracovníků'}</div><div class="zak-lbl">Zadaný náklad práce</div></div>`;
 
   if (pocetKusu > 0) {
@@ -1489,7 +1498,7 @@ function ukoncit(obnoveni) {
   document.getElementById('s-akce-osoba').value = '';
   document.getElementById('s-akce-investice').value = '';
   document.getElementById('s-akce-prinos').value = '';
-  document.getElementById('s-akce-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+90);return d.toISOString().slice(0,10);})();
+  document.getElementById('s-akce-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+14);return d.toISOString().slice(0,10);})();
   document.getElementById('s-akce-stav').textContent = '';
   nacistProjektyMeric();
 
@@ -1632,7 +1641,7 @@ function otevritModalAkcniPlan(i, e) {
   document.getElementById('ap-osoba').value = '';
   document.getElementById('ap-investice').value = '';
   document.getElementById('ap-prinos').value = '';
-  document.getElementById('ap-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+90);return d.toISOString().slice(0,10);})();
+  document.getElementById('ap-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+14);return d.toISOString().slice(0,10);})();
   document.getElementById('ap-stav').textContent = '';
   document.getElementById('ap-projekt-novy-nazev').value = '';
   document.getElementById('ap-projekt-novy-nazev').style.display = 'none';
@@ -1995,44 +2004,51 @@ function porovnatVybrane() {
 // =============================================
 // EXPORT
 // =============================================
-function sestavit() {
+function sestavitData() {
   const n = cykly.length;
   const avg = {};
   vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
   const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
   const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
   const plyPct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(plyC*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
+  // Časy v sekundách jako čisté číslo s desetinnou čárkou - tabulka je pak
+  // vezme jako čísla (MM:SS by Excel přečetl jako hodiny:minuty).
+  const sek = v => (Math.round((v||0)*10)/10).toString().replace('.', ',');
+  const radky = [];
+  radky.push(['Měřič plýtvání Pro', nazev]);
+  radky.push(['Datum', new Date().toLocaleDateString('cs-CZ')]);
+  radky.push(['Počet cyklů', String(n)]);
+  radky.push(['Délka směny (h)', String(delkaSmeny).replace('.', ',')]);
+  radky.push([]);
+  radky.push(['Cyklus'].concat(vsechnyKat.map(k => getNazev(k) + ' (s)'), ['Celkem (s)']));
+  cykly.forEach((c,i) => radky.push([String(i+1)].concat(vsechnyKat.map(k => sek(c.cas[k])), [sek(c.celkem)])));
+  radky.push(['Průměr'].concat(vsechnyKat.map(k => sek(avg[k])), [sek(avgC)]));
+  radky.push([]);
+  radky.push(['Plýtvání na cyklus (s)', sek(plyC)]);
+  radky.push(['Plýtvání (% času)', plyPct + ' %']);
+  radky.push(['Cyklus bez plýtvání (s)', sek(Math.max(avgC - plyC, 0))]);
+  radky.push([]);
+  radky.push(['tokva.cz']);
+  return radky;
+}
 
-  let body = 'CASOVA STUDIE PRO: ' + nazev.toUpperCase() + '\n';
-  body += 'Datum: ' + new Date().toLocaleDateString('cs-CZ') + '  |  Cyklu: ' + n + '  |  Smena: ' + delkaSmeny + 'h\n\n';
-  body += 'Cyklus\t' + vsechnyKat.map(k=>getNazev(k)).join('\t') + '\tCelkem\n';
-  cykly.forEach((c,i) => {
-    body += (i+1) + '\t' + vsechnyKat.map(k=>fmtC(c.cas[k]||0)).join('\t') + '\t' + fmtC(c.celkem) + '\n';
-  });
-  body += 'PRUMER\t' + vsechnyKat.map(k=>fmtCJemne(avg[k])).join('\t') + '\t' + fmtC(avgC) + '\n\n';
-  body += 'PLYTVANI: ' + fmtCJemne(plyC) + ' = ' + plyPct + '% z celkoveho casu\n';
-  body += '---\nTokva | tokva.cz\n';
-  return body;
+function sestavit() {
+  return sestavitData().map(r => r.join('\t')).join('\r\n') + '\r\n';
+}
+
+function sestavitHtml() {
+  const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const radky = sestavitData();
+  return '<table>' + radky.map(r => '<tr>' + (r.length ? r.map(b => '<td>' + esc(b) + '</td>').join('') : '<td></td>') + '</tr>').join('') + '</table>';
 }
 
 function stahnoutCSV() {
-  const n = cykly.length;
-  const avg = {};
-  vsechnyKat.forEach(k => avg[k] = cykly.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
-  const avgC = cykly.reduce((s,c)=>s+c.celkem,0)/n;
-  const plyC = plytvaniIds().reduce((s,k)=>s+(avg[k]||0),0);
-  const plyPct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(plyC*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
-
-  let csv = 'Casova studie Pro;' + nazev + '\n';
-  csv += 'Datum;' + new Date().toLocaleDateString('cs-CZ') + '\n';
-  csv += 'Pocet cyklu;' + n + '\n';
-  csv += 'Delka smeny;' + delkaSmeny + 'h\n\n';
-  csv += 'Cyklus;' + vsechnyKat.map(k=>getNazev(k)).join(';') + ';Celkem\n';
-  cykly.forEach((c,i) => {
-    csv += (i+1) + ';' + vsechnyKat.map(k=>fmtC(c.cas[k]||0)).join(';') + ';' + fmtC(c.celkem) + '\n';
-  });
-  csv += 'Prumer;' + vsechnyKat.map(k=>fmtCJemne(avg[k])).join(';') + ';' + fmtC(avgC) + '\n\n';
-  csv += 'Plytvani;;' + fmtCJemne(plyC) + ';;' + plyPct + '%\n';
+  // Stejná data jako Kopírovat - časy v sekundách jako čísla, oddělovač ;
+  // (český Excel), ať se každý údaj otevře ve vlastní buňce.
+  const csv = sestavitData().map(r => r.map(b => {
+    const t = String(b);
+    return /[;"\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t;
+  }).join(';')).join('\r\n') + '\r\n';
 
   const blob = new Blob(['﻿' + csv], {type: 'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
@@ -2136,13 +2152,13 @@ tr.ply td{background:#fee2e2;}
 .stat-lbl{font-size:10px;color:#999;margin-top:2px;}
 .stat-gold{background:#fdf3d9;}
 .stat-gold .stat-val{color:#c48e10;}
-.zak-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+.zak-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
 .zak-item{background:#f5f4f0;border-radius:6px;padding:8px 10px;text-align:center;}
 .zak-val{font-size:16px;font-weight:700;color:#111;font-family:monospace;}
 .zak-lbl{font-size:10px;color:#999;margin-top:2px;}
 .zak-highlight{background:#fdf3d9;}
 .zak-highlight .zak-val{color:#c48e10;}
-.zak-uspora{grid-column:span 4;background:#e8f5ee;border:1px solid rgba(42,122,79,.2);text-align:center;padding:10px;}
+.zak-uspora{grid-column:span 3;background:#e8f5ee;border:1px solid rgba(42,122,79,.2);text-align:center;padding:10px;}
 .zak-uspora .zak-val{color:#2a7a4f;}
 .alert-box{border-radius:6px;padding:12px 14px;margin-bottom:16px;}
 .note{font-size:11px;color:#666;line-height:1.65;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,.08);}
@@ -2154,11 +2170,10 @@ footer{margin-top:32px;padding-top:12px;border-top:1px solid #eee;font-size:10px
 </head>
 <body>
 <div class="header">
-  <div class="brand">Gabriela <span>Tomíčková</span></div>
+  <div class="brand">Měřič plýtvání <span>Pro</span></div>
   <div class="report-info">
-    <h1>Měřič plýtvání Pro</h1>
-    <p>${nazev}</p>
-    <p>${n} cyklů · ${datum} · směna ${delkaSmeny}h</p>
+    <h1>${nazev}</h1>
+    <p>${n} cyklů · ${datum} · směna ${String(delkaSmeny).replace('.', ',')} h</p>
   </div>
 </div>
 
@@ -2186,11 +2201,12 @@ ${pocetKusu > 0 ? `
 <h2>Analýza zakázky</h2>
 <div class="zak-grid">
   <div class="zak-item"><div class="zak-val">${fmtC(avgC)}</div><div class="zak-lbl">Průměrný cyklus</div></div>
+  <div class="zak-item zak-highlight"><div class="zak-val">${fmtCJemne(Math.max(idealniCyklus,0))}</div><div class="zak-lbl">Cyklus bez plýtvání</div></div>
+  <div class="zak-item"><div class="zak-val">${fmtCJemne(plyC)}</div><div class="zak-lbl">Plýtvání na 1 cyklus</div></div>
   <div class="zak-item"><div class="zak-val">${kusyZaSmenu}</div><div class="zak-lbl">Kusů za směnu (${delkaSmeny}h)</div></div>
   <div class="zak-item"><div class="zak-val">${idealniKusy}</div><div class="zak-lbl">Kusů bez plýtvání</div></div>
-  <div class="zak-item zak-highlight"><div class="zak-val">+${rozdilKusu}</div><div class="zak-lbl">Kusů navíc bez plýtvání</div></div>
+  <div class="zak-item zak-highlight"><div class="zak-val">+${rozdilKusu}</div><div class="zak-lbl">Kusů navíc za směnu</div></div>
   <div class="zak-item"><div class="zak-val">${pocetKusu}</div><div class="zak-lbl">Kusů v zakázce</div></div>
-  <div class="zak-item"><div class="zak-val">${(avgC).toFixed(1)}s</div><div class="zak-lbl">Takt zakázky</div></div>
   <div class="zak-item"><div class="zak-val">${fmtC(pocetKusu * avgC)}</div><div class="zak-lbl">Zakázka aktuálně</div></div>
   <div class="zak-item zak-highlight"><div class="zak-val">${fmtC(pocetKusu * idealniCyklus)}</div><div class="zak-lbl">Zakázka bez plýtvání</div></div>
   <div class="zak-item zak-uspora"><div class="zak-val">Úspora ${Math.round((pocetKusu * avgC - pocetKusu * idealniCyklus) / 60)} minut na zakázce</div><div class="zak-lbl">Při eliminaci plýtvání</div></div>
@@ -2198,9 +2214,11 @@ ${pocetKusu > 0 ? `
 <h2>Analýza zakázky</h2>
 <div class="zak-grid">
   <div class="zak-item"><div class="zak-val">${fmtC(avgC)}</div><div class="zak-lbl">Průměrný cyklus</div></div>
+  <div class="zak-item zak-highlight"><div class="zak-val">${fmtCJemne(Math.max(idealniCyklus,0))}</div><div class="zak-lbl">Cyklus bez plýtvání</div></div>
+  <div class="zak-item"><div class="zak-val">${fmtCJemne(plyC)}</div><div class="zak-lbl">Plýtvání na 1 cyklus</div></div>
   <div class="zak-item"><div class="zak-val">${kusyZaSmenu}</div><div class="zak-lbl">Kusů za směnu (${delkaSmeny}h)</div></div>
   <div class="zak-item"><div class="zak-val">${idealniKusy}</div><div class="zak-lbl">Kusů bez plýtvání</div></div>
-  <div class="zak-item zak-highlight"><div class="zak-val">+${rozdilKusu}</div><div class="zak-lbl">Kusů navíc bez plýtvání</div></div>
+  <div class="zak-item zak-highlight"><div class="zak-val">+${rozdilKusu}</div><div class="zak-lbl">Kusů navíc za směnu</div></div>
 </div>`}
 
 <div class="alert-box" style="background:${plyPct>40?'#fee2e2':plyPct>20?'#fff3e0':'#e8f5ee'};border:1px solid ${plyPct>40?'#c0392b33':plyPct>20?'#b4530933':'#2a7a4f33'};margin-top:16px;">
@@ -2211,7 +2229,7 @@ ${pocetKusu > 0 ? `
 
 ${doporuceni ? `<h2>Kde začít</h2><table class="tip-table"><tbody>${doporuceni}</tbody></table>` : ''}
 
-<footer>Tokva · tokva.cz · Gabriela Tomíčková, IČO: 75905311</footer>
+<footer>tokva.cz</footer>
 </body>
 </html>`;
 
@@ -2224,7 +2242,13 @@ ${doporuceni ? `<h2>Kde začít</h2><table class="tip-table"><tbody>${doporuceni
 
 function kopirovat() {
   const text = sestavit();
-  navigator.clipboard.writeText(text).then(() => {
+  const zapis = (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write)
+    ? navigator.clipboard.write([new ClipboardItem({
+        'text/plain': new Blob([text], {type:'text/plain'}),
+        'text/html': new Blob([sestavitHtml()], {type:'text/html'})
+      })]).catch(() => navigator.clipboard.writeText(text))
+    : navigator.clipboard.writeText(text);
+  zapis.then(() => {
     const btn = document.getElementById('btn-kop');
     btn.textContent = 'Zkopírováno!';
     btn.style.background = '#2a7a4f';

@@ -297,7 +297,13 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 .cookies-no{background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:8px 14px;font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;}
 .cookies-no:hover{color:rgba(255,255,255,.7);}
 
+#tokva-tisk-hlavicka{display:none;}
 @media print {
+  footer { display:none !important; }
+  #tokva-tisk-hlavicka { display:flex !important; justify-content:space-between; align-items:flex-end; border-bottom:3px solid #e9a91b; padding-bottom:10px; margin-bottom:20px; font-family:Arial,sans-serif; }
+  #tokva-tisk-hlavicka .tth-l { font-size:18px; font-weight:900; color:#000; }
+  #tokva-tisk-hlavicka .tth-r { font-size:11px; color:#666; }
+  body::after { content:"tokva.cz"; display:block; text-align:center; font-size:10px; color:#999; margin-top:24px; padding-top:10px; border-top:1px solid #eee; }
   nav, .hero, .otazka-wrap, .cookies-bar, .no-print { display:none !important; }
   body { background:white; }
   .vysledky-wrap { display:block !important; }
@@ -427,7 +433,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
   .content-block,.post-kviz{padding:24px 20px;}
 }
 </style>
-<body>
+<body data-tisk-hlavicka>
 
 <div class="cookies-bar" id="cookies-bar" style="display:none;">
   <p>Tento web používá analytické cookies (Google Analytics) pro měření návštěvnosti. <a href="https://tokva.cz/ochrana-osobnich-udaju/">Zásady ochrany osobních údajů</a></p>
@@ -1323,9 +1329,9 @@ async function exportovatData() {
         const q = i + 1;
         return odpovediText[q] != null ? odpovediText[q] : '';
       });
-      return zakladBunky.concat(otazkyBunky).map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',');
+      return zakladBunky.concat(otazkyBunky).map(v => '"' + String(v).replace(/^(-?\d+)\.(\d+)$/, '$1,$2').replace(/"/g, '""') + '"').join(';');
     });
-    const csv = hlavicky.map(h => '"' + String(h).replace(/"/g, '""') + '"').join(',') + '\n' + radky.join('\n');
+    const csv = hlavicky.map(h => '"' + String(h).replace(/"/g, '""') + '"').join(';') + '\n' + radky.join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1555,7 +1561,7 @@ async function pridatDoAkcnihoPlanu() {
     document.getElementById('akce-osoba').value = '';
     document.getElementById('akce-investice').value = '';
     document.getElementById('akce-prinos').value = '';
-    document.getElementById('akce-termin').value = '';
+    document.getElementById('akce-termin').value = window.tokvaTerminZa14 ? window.tokvaTerminZa14() : '';
     document.getElementById('akce-projekt-novy-nazev').value = '';
     document.getElementById('akce-projekt-novy-nazev').style.display = 'none';
     await nacistProjekty();
@@ -1916,5 +1922,39 @@ document.addEventListener('keydown', function(e){
     </div>
   </div>
 </div>
+<script>
+/* Tokva - společné pojistky (24. 9. 2026):
+   1) kolečko myši nad aktivním číselným polem tiše měnilo hodnotu (600 -> 597),
+   2) navrhovaný termín úkolu v akčním plánu = za 14 dní,
+   3) v tisku hlavička s názvem nástroje a patička jen tokva.cz. */
+(function () {
+  document.addEventListener('wheel', function (e) {
+    var el = document.activeElement;
+    if (el && el.type === 'number' && e.target === el) el.blur();
+  }, { passive: true });
+  function za14() { var d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); }
+  window.tokvaTerminZa14 = za14;
+  function doplnTerminy() {
+    ['akce-termin', 's-akce-termin', 'ap-termin'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && !el.value) el.value = za14();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', doplnTerminy); else doplnTerminy();
+  window.addEventListener('beforeprint', function () {
+    if (!document.body.hasAttribute('data-tisk-hlavicka')) return;
+    var h = document.getElementById('tokva-tisk-hlavicka');
+    if (!h) {
+      h = document.createElement('div');
+      h.id = 'tokva-tisk-hlavicka';
+      document.body.insertBefore(h, document.body.firstChild);
+    }
+    var nazev = (document.querySelector('.nav-tool') || {}).textContent || document.title;
+    h.innerHTML = '<div class="tth-l"></div><div class="tth-r"></div>';
+    h.querySelector('.tth-l').textContent = nazev;
+    h.querySelector('.tth-r').textContent = new Date().toLocaleDateString('cs-CZ');
+  });
+})();
+</script>
 </body>
 </html>

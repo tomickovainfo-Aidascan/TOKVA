@@ -1167,7 +1167,13 @@ nav {
   nav { padding:12px 16px; }
 }
 
+#tokva-tisk-hlavicka{display:none;}
 @media print {
+  footer { display:none !important; }
+  #tokva-tisk-hlavicka { display:flex !important; justify-content:space-between; align-items:flex-end; border-bottom:3px solid #e9a91b; padding-bottom:10px; margin-bottom:20px; font-family:Arial,sans-serif; }
+  #tokva-tisk-hlavicka .tth-l { font-size:18px; font-weight:900; color:#000; }
+  #tokva-tisk-hlavicka .tth-r { font-size:11px; color:#666; }
+  body::after { content:"tokva.cz"; display:block; text-align:center; font-size:10px; color:#999; margin-top:24px; padding-top:10px; border-top:1px solid #eee; }
   nav, .hero, .faq-section, .status-bar, .mic-wrap, .notif-bar,
   .manual-wrap, .section-title, .zaznam-del, .kat-tag, .cookies-bar,
   .modal-overlay, .empty-state, .warning, .login-overlay, .historie-card,
@@ -1232,7 +1238,7 @@ nav {
 @media (max-width:600px){#nav-ucet-info{display:none!important;}}
 </style>
 </head>
-<body>
+<body data-tisk-hlavicka>
 
 <nav>
   <div style="display:flex;align-items:center;"><a href="https://tokva.cz/" class="nav-brand" style="text-decoration:none;color:inherit;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Časová studie mého dne</span></div>
@@ -2902,7 +2908,7 @@ async function pridatDoAkcnihoPlanu() {
     document.getElementById('akce-osoba').value = '';
     document.getElementById('akce-investice').value = '';
     document.getElementById('akce-prinos').value = '';
-    document.getElementById('akce-termin').value = '';
+    document.getElementById('akce-termin').value = window.tokvaTerminZa14 ? window.tokvaTerminZa14() : '';
     document.getElementById('akce-projekt-novy-nazev').value = '';
     document.getElementById('akce-projekt-novy-nazev').style.display = 'none';
     await nacistProjekty();
@@ -2930,14 +2936,14 @@ function exportCSV() {
     const klasifikace = JSON.parse(localStorage.getItem('cs_klasifikace') || '{}');
     const KLAS_LABELY_EXPORT = { ja: 'Já', delegovat: 'Delegovat', automatizovat: 'Automatizovat', zrusit: 'Zrušit' };
 
-    const rows = [['Čas', 'Aktivita', 'Trvání', 'Kategorie', 'Rozhodnutí']];
+    const rows = [['Čas', 'Aktivita', 'Trvání (min)', 'Kategorie', 'Rozhodnutí']];
     zaznamy.forEach((z, i) => {
       if (z.text === 'Konec') {
         rows.push([z.cas, 'Konec dne', '', '', '']);
         return;
       }
       const next = zaznamy[i + 1];
-      const dur = next ? Math.round((next.timestamp - z.timestamp) / 60000) + ' min' : '';
+      const dur = next ? Math.round((next.timestamp - z.timestamp) / 60000) : '';
       const k = katInfo(z.kat || rozpoznatKat(z.text));
       const klasKey = z.text.trim().toLowerCase();
       const rozhodnuti = klasifikace[klasKey] ? (KLAS_LABELY_EXPORT[klasifikace[klasKey]] || '') : '';
@@ -2961,19 +2967,22 @@ function exportCSV() {
       const produktivniPct = total > 0 ? Math.round(produktivniMs / total * 100) : 0;
 
       rows.push([]);
-      rows.push(['Souhrn kategorií', 'Čas', 'Podíl', '', '']);
+      rows.push(['Souhrn kategorií', 'Čas (min)', 'Podíl (%)', '', '']);
       KATEGORIE
         .filter(k => katCas[k.id] > 0)
         .sort((a, b) => katCas[b.id] - katCas[a.id])
         .forEach(k => {
           const pct = total > 0 ? Math.round(katCas[k.id] / total * 100) : 0;
-          rows.push([k.label, formatDuration(katCas[k.id]), pct + ' %', '', '']);
+          rows.push([k.label, Math.round(katCas[k.id] / 60000), pct, '', '']);
         });
       rows.push([]);
-      rows.push(['Produktivní práce', produktivniPct + ' %', formatDuration(produktivniMs) + ' z ' + formatDuration(total), '', '']);
+      rows.push([]);
+      rows.push(['Produktivní práce (%)', produktivniPct, '', '', '']);
+      rows.push(['Produktivní práce (min)', Math.round(produktivniMs / 60000), '', '', '']);
+      rows.push(['Celkem změřeno (min)', Math.round(total / 60000), '', '', '']);
     }
 
-    const csv = rows.map(r => r.map(c => '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"').join(',')).join('\n');
+    const csv = rows.map(r => r.map(c => '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"').join(';')).join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -3272,6 +3281,40 @@ document.addEventListener('keydown', function(e){
   var btn = otevreny.querySelector('.modal-save:not(:disabled), .btn-modal-ok:not(:disabled), #modal-notice-ok, #notice-btn-ok, #pro-btn');
   if (btn && !btn.disabled) { e.preventDefault(); btn.click(); }
 });
+</script>
+<script>
+/* Tokva - společné pojistky (24. 9. 2026):
+   1) kolečko myši nad aktivním číselným polem tiše měnilo hodnotu (600 -> 597),
+   2) navrhovaný termín úkolu v akčním plánu = za 14 dní,
+   3) v tisku hlavička s názvem nástroje a patička jen tokva.cz. */
+(function () {
+  document.addEventListener('wheel', function (e) {
+    var el = document.activeElement;
+    if (el && el.type === 'number' && e.target === el) el.blur();
+  }, { passive: true });
+  function za14() { var d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); }
+  window.tokvaTerminZa14 = za14;
+  function doplnTerminy() {
+    ['akce-termin', 's-akce-termin', 'ap-termin'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && !el.value) el.value = za14();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', doplnTerminy); else doplnTerminy();
+  window.addEventListener('beforeprint', function () {
+    if (!document.body.hasAttribute('data-tisk-hlavicka')) return;
+    var h = document.getElementById('tokva-tisk-hlavicka');
+    if (!h) {
+      h = document.createElement('div');
+      h.id = 'tokva-tisk-hlavicka';
+      document.body.insertBefore(h, document.body.firstChild);
+    }
+    var nazev = (document.querySelector('.nav-tool') || {}).textContent || document.title;
+    h.innerHTML = '<div class="tth-l"></div><div class="tth-r"></div>';
+    h.querySelector('.tth-l').textContent = nazev;
+    h.querySelector('.tth-r').textContent = new Date().toLocaleDateString('cs-CZ');
+  });
+})();
 </script>
 </body>
 </html>

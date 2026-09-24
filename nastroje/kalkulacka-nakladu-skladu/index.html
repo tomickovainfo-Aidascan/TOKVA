@@ -1973,7 +1973,7 @@ function ulozitVypocet() {
     document.getElementById('s-akce-osoba').value = '';
     document.getElementById('s-akce-investice').value = '';
     document.getElementById('s-akce-prinos').value = '';
-    document.getElementById('s-akce-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+90);return d.toISOString().slice(0,10);})();
+    document.getElementById('s-akce-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+14);return d.toISOString().slice(0,10);})();
     document.getElementById('s-akce-stav').textContent = '';
     nacistProjektyKalk();
 
@@ -2035,7 +2035,7 @@ function otevritModalAkcniPlan(id) {
   document.getElementById('ap-osoba').value = '';
   document.getElementById('ap-investice').value = '';
   document.getElementById('ap-prinos').value = '';
-  document.getElementById('ap-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+90);return d.toISOString().slice(0,10);})();
+  document.getElementById('ap-termin').value = (function(){var d=new Date();d.setDate(d.getDate()+14);return d.toISOString().slice(0,10);})();
   document.getElementById('ap-stav').textContent = '';
   document.getElementById('ap-projekt-novy-nazev').value = '';
   document.getElementById('ap-projekt-novy-nazev').style.display = 'none';
@@ -2525,7 +2525,7 @@ function exportCSV() {
     radky.push([u.nazev, u.datum, u.plocha, u.mode === 'najem' ? 'Pronájem' : 'Vlastní budova', u.m2mesic, u.mesic, u.rok, u.m2rok]);
   });
   var csv = radky.map(function (r) {
-    return r.map(function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; }).join(';');
+    return r.map(function (v) { return '"' + String(v).replace(/^(-?\d+)\.(\d+)$/, '$1,$2').replace(/"/g, '""') + '"'; }).join(';');
   }).join('\r\n');
   var blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
   var url = URL.createObjectURL(blob);
@@ -2559,6 +2559,40 @@ document.addEventListener('keydown', function(e){
   var btn = otevreny.querySelector('.modal-save:not(:disabled), .btn-modal-ok:not(:disabled), #modal-notice-ok, #notice-btn-ok, #pro-btn');
   if (btn && !btn.disabled) { e.preventDefault(); btn.click(); }
 });
+</script>
+<script>
+/* Tokva - společné pojistky (24. 9. 2026):
+   1) kolečko myši nad aktivním číselným polem tiše měnilo hodnotu (600 -> 597),
+   2) navrhovaný termín úkolu v akčním plánu = za 14 dní,
+   3) v tisku hlavička s názvem nástroje a patička jen tokva.cz. */
+(function () {
+  document.addEventListener('wheel', function (e) {
+    var el = document.activeElement;
+    if (el && el.type === 'number' && e.target === el) el.blur();
+  }, { passive: true });
+  function za14() { var d = new Date(); d.setDate(d.getDate() + 14); return d.toISOString().slice(0, 10); }
+  window.tokvaTerminZa14 = za14;
+  function doplnTerminy() {
+    ['akce-termin', 's-akce-termin', 'ap-termin'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && !el.value) el.value = za14();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', doplnTerminy); else doplnTerminy();
+  window.addEventListener('beforeprint', function () {
+    if (!document.body.hasAttribute('data-tisk-hlavicka')) return;
+    var h = document.getElementById('tokva-tisk-hlavicka');
+    if (!h) {
+      h = document.createElement('div');
+      h.id = 'tokva-tisk-hlavicka';
+      document.body.insertBefore(h, document.body.firstChild);
+    }
+    var nazev = (document.querySelector('.nav-tool') || {}).textContent || document.title;
+    h.innerHTML = '<div class="tth-l"></div><div class="tth-r"></div>';
+    h.querySelector('.tth-l').textContent = nazev;
+    h.querySelector('.tth-r').textContent = new Date().toLocaleDateString('cs-CZ');
+  });
+})();
 </script>
 </body>
 </html>
