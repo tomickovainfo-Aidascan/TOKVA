@@ -311,6 +311,15 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 
 #tokva-tisk-hlavicka{display:none;}
 @media print {
+  body > *:not(.main):not(#tokva-tisk-hlavicka) { display:none !important; }
+  .main > *:not(#vysledky) { display:none !important; }
+  /* Tisk jen výsledku: vše kolem (úvod, otázky, formuláře, tlačítka, panely pro uložení) pryč */
+  #vysledky button, #vysledky input, #vysledky select, #vysledky textarea,
+  #vysledky form, #vysledky #sib-form-container, #vysledky .co-prvni-cta,
+  #vysledky #projekt-panel, #vysledky #akcni-panel, #vysledky #export-panel,
+  #vysledky #historie-panel, #vysledky .no-print,
+  #vysledky .vysledky-detail:has(.cta-final-btns), #vysledky .vysledky-detail:has(#sib-form-container),
+  #vysledky .email-card, #vysledky #v-ulozit-card, #vysledky .v-card:has(button) { display:none !important; }
   footer { display:none !important; }
   #tokva-tisk-hlavicka { display:flex !important; justify-content:space-between; align-items:flex-end; border-bottom:3px solid #e9a91b; padding-bottom:10px; margin-bottom:20px; font-family:Arial,sans-serif; }
   #tokva-tisk-hlavicka .tth-l { font-size:18px; font-weight:900; color:#000; }
@@ -977,6 +986,18 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
                     <div class="sib-input sib-form-block">
                       <div class="form__entry entry_block">
                         <div class="form__label-row">
+                          <label class="entry__label" for="ODPOVEDI">ODPOVEDI</label>
+                          <div class="entry__field"><input class="input" maxlength="200" type="text" id="ODPOVEDI" name="ODPOVEDI" autocomplete="off" placeholder="ODPOVEDI"></div>
+                        </div>
+                        <label class="entry__error entry__error--primary"></label>
+                        <label class="entry__specification"></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tokva-sib-hide">
+                    <div class="sib-input sib-form-block">
+                      <div class="form__entry entry_block">
+                        <div class="form__label-row">
                           <label class="entry__label" for="SKORE_POPIS">SKORE_POPIS</label>
                           <div class="entry__field"><input class="input" maxlength="200" type="text" id="SKORE_POPIS" name="SKORE_POPIS" autocomplete="off" placeholder="SKORE_POPIS"></div>
                         </div>
@@ -1292,9 +1313,27 @@ function zobrazVysledkyFinale() {
   }
 }
 
+// Odkaz „Zobrazit celý výsledek“ z e-mailu: ?odpovedi=2102n03120 (10 znaků,
+// číslo = odpověď, n = nevím). Stránka z nich znovu poskládá celý výsledek,
+// nic se neukládá a neposílá se analytika dokončení.
+let zobrazenoZOdkazu = false;
+function obnovitVysledekZOdkazu() {
+  const kod = new URLSearchParams(window.location.search).get('odpovedi');
+  if (!kod || !/^[0-2n]{10}$/.test(kod)) return;
+  zobrazenoZOdkazu = true;
+  for (let q = 1; q <= 10; q++) {
+    const z = kod[q - 1];
+    if (z === 'n') { nevimSet.add(q); } else { odpovedi[q] = parseInt(z, 10); }
+  }
+  document.querySelectorAll('.otazka-wrap.active').forEach(el => el.classList.remove('active'));
+  const pn = document.querySelector('.progress-nav'); if (pn) pn.style.display = 'none';
+  zobrazVysledky();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', obnovitVysledekZOdkazu); else setTimeout(obnovitVysledekZOdkazu, 0);
+
 function zobrazVysledky() {
   try {
-  oznamitDokonceni();
+  if (!zobrazenoZOdkazu) oznamitDokonceni();
   hasRozpracovanyAudit = false;
   const skore = vypocitejSkore();
   const maxS = maxSkore();
@@ -1500,7 +1539,7 @@ function zobrazVysledky() {
   setTimeout(() => v.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 
   vysledekUlozen = false;
-  ulozitVysledekDoSupabase(procenta, skore, maxS).then(renderHistorie);
+  if (!zobrazenoZOdkazu) ulozitVysledekDoSupabase(procenta, skore, maxS).then(renderHistorie);
   renderHistorie();
   prepnoutOdkazyNaPro(jePro);
   zobrazitOdkazAkcniPlan(jePro);
@@ -1528,6 +1567,9 @@ function zkratitNaVety(t, max) {
   return cut.replace(/\s+\S*$/, '') + '…';
 }
 function pripravitEmailAudit() {
+  // Kód odpovědí pro odkaz „Zobrazit celý výsledek“ v e-mailu (?odpovedi=...)
+  var poleOdp = document.getElementById('ODPOVEDI');
+  if (poleOdp) poleOdp.value = Array.from({length:10},(_,i)=>{const q=i+1;if(nevimSet.has(q))return 'n';return odpovedi[q]!=null?String(odpovedi[q]):'n';}).join('');
   document.getElementById('SKORE').value = document.getElementById('skore-cislo').textContent.trim();
   // Poznámka „Skóre je orientační… viz níž“ odkazuje na stránku, do e-mailu nepatří.
   var popisWeb = document.getElementById('skore-popis').textContent.split(' Skóre je orientační:')[0];
