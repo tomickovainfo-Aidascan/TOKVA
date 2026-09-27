@@ -58,7 +58,7 @@
       "name": "Kolik cyklů mám změřit, abych tomu mohl věřit?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Tři cykly stačí na první orientaci. Pokud se jednotlivé cykly hodně liší (appka to ukáže v sekci Variabilita cyklů), pokračujte dalším samostatným měřením, nebo použijte Pro, kde je počet cyklů v jednom měření neomezený."
+        "text": "Tři cykly stačí na první orientaci. Pokud se jednotlivé cykly hodně liší (appka to ukáže v sekci Variabilita cyklů), změřte další samostatné kolo. Víc než počet cyklů ale rozhoduje druhé měření po změně: teprve to ukáže, jestli změna zabrala."
       }
     },
     {
@@ -404,12 +404,12 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 <div class="hero">
   <div class="hero-inner">
     <div class="badge">Vedoucí skladu nebo výroby, co tuší, že se někde ztrácí čas</div>
-    <h1>Měřič <em>plýtvání</em></h1>
-    <p class="hero-sub">Zjistíte skutečnou produktivitu práce ve vašem provozu, kolik času padá na chození, hledání, čekání a papírování.</p>
+    <h1>Kolik z té směny je <em>opravdu práce?</em></h1>
+    <p class="hero-sub">Naklikáte, co pracovník zrovna dělá, a za deset minut vidíte, kolik času padá na chůzi, hledání, čekání a papírování.</p>
     <div class="hero-meta">
-      <span>7 kategorií činností</span>
+      <span>7 kategorií</span>
       <span>10 minut</span>
-      <span>Výsledek ihned nebo na e-mail</span>
+      <span>Výsledek ihned, e-mail nepovinný</span>
     </div>
   </div>
 </div>
@@ -460,16 +460,16 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
       <h3 class="content-card-title">Co k tomu nepotřebujete:</h3>
       <div class="no-need-grid">
         <div class="no-need-item">Stopky ani papír</div>
-        <div class="no-need-item">Registraci</div>
-        <div class="no-need-item">Žádné školení</div>
-        <div class="no-need-item">Žádný speciální software</div>
+        <div class="no-need-item">Registraci ani e-mail</div>
+        <div class="no-need-item">Školení</div>
+        <div class="no-need-item">Specializovaný software</div>
       </div>
     </div>
 
     <h2 class="howto-divider-title">Jak appka funguje krok za krokem</h2>
     <div class="steps-list" style="margin-bottom:18px;">
       <div class="step-item"><div class="step-num">1</div><div>Zapište název procesu, který měříte, a klikněte na tlačítko dané činnosti vždy <strong>na začátku</strong>, ne na konci</div></div>
-      <div class="step-item"><div class="step-num">2</div><div>Appka automaticky ukončí předchozí činnost a začne měřit novou, jakmile klikněte na další tlačítko</div></div>
+      <div class="step-item"><div class="step-num">2</div><div>Appka automaticky ukončí předchozí činnost a začne měřit novou, jakmile kliknete na další tlačítko</div></div>
       <div class="step-item"><div class="step-num">3</div><div>Po dokončení cyklu klikněte STOP, appka nabídne další cyklus nebo rovnou výsledek</div></div>
     </div>
     <div class="kat-prehled">
@@ -616,8 +616,15 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
     <div class="post-calc-grid">
       <div>
         <h2 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h2>
-        <p class="priklad-note" id="priklad-note">Konkrétní tipy zde najdete po měření, přizpůsobí se vašim vlastním číslům.</p>
-        <p id="co-delat-text" style="font-size:14px;color:var(--mid);line-height:1.75;">Obecně: Vyberete nejvýznamnější kategorii plýtvání a půjdete na další doporučený krok. Až zjistíte příčinu a napravíte ji, změříte stejný proces znovu.</p>
+        <p id="co-delat-text" style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Teď máte rozložení času v procentech a víte, která kategorie ukrojila nejvíc. Konkrétní tipy se vám ukážou pod grafem podle vašich vlastních čísel.</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:8px;">Dál to má tři kroky. Ten třetí většina lidí vynechá, a přitom až v něm se změna potvrdí:</p>
+        <ol style="font-size:14px;color:var(--mid);line-height:1.75;margin:0 0 12px 20px;padding:0;">
+          <li style="margin-bottom:6px;">Vezměte největší kategorii a zajděte se na ni podívat přímo v provozu.</li>
+          <li style="margin-bottom:6px;">Udělejte jednu změnu. Malou. Přesunout regál, doplnit jeden štítek, předpřipravit materiál.</li>
+          <li style="margin-bottom:6px;">Změřte ten samý proces znovu a položte oba grafy vedle sebe.</li>
+        </ol>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Bezplatný měřič spočítá vždycky jen jedno měření. Druhé měření a porovnání před a po drží Tokva Pro: měření zůstanou ve vašem účtu u projektu a rozdíl vidíte vedle sebe, v procentech i v korunách.</p>
+        <a href="#pro-cta" style="display:inline-block;font-size:14px;font-weight:700;color:var(--gold-dark);text-decoration:none;" onclick="event.preventDefault();document.getElementById('pro-cta').scrollIntoView({behavior:'smooth',block:'center'});">Změřit podruhé a porovnat →</a>
         <div class="faq-block" style="margin-top:24px;">
           <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
           <div class="faq-item">
@@ -630,7 +637,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
           </div>
           <div class="faq-item">
             <div class="faq-q">Kolik cyklů mám změřit, abych tomu mohl věřit?</div>
-            <div class="faq-a">Tři cykly stačí na první orientaci. Pokud se jednotlivé cykly hodně liší (appka to ukáže v sekci Variabilita cyklů), pokračujte dalším samostatným měřením, nebo použijte Pro, kde je počet cyklů v jednom měření neomezený.</div>
+            <div class="faq-a">Tři cykly stačí na první orientaci. Pokud se jednotlivé cykly hodně liší (appka to ukáže v sekci Variabilita cyklů), změřte další samostatné kolo. Víc než počet cyklů ale rozhoduje druhé měření po změně: teprve to ukáže, jestli změna zabrala.</div>
           </div>
           <div class="faq-item">
             <div class="faq-q">Je tohle to samé jako klasická časová studie?</div>
@@ -652,7 +659,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 
 <div class="dalsi-nastroje-wrap" id="dalsi-nastroje">
   <h2 class="content-card-title">Navazující nástroje</h2>
-  <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Obecný přehled dalších nástrojů - nemusí sedět na to, co konkrétně ukázal váš výsledek výše.</p>
+  <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Vyberte podle toho, která kategorie vám vyšla nejvýš.</p>
   <div class="dalsi-nastroje-grid">
     <div class="dalsi-nastroj-card">
       <div class="dalsi-nastroj-tag">Hodně chůze a přesunů</div>
@@ -683,21 +690,18 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 
 <div class="pro-cta-wrap">
   <!-- PRO CTA -->
-  <div class="pro-cta">
+  <div class="pro-cta" id="pro-cta">
     <div class="pro-cta-badge">Tokva Pro</div><span class="pro-cta-soon">Zakladatelský program</span>
-    <h3>Chcete měřit bez omezení?</h3>
-    <p>Přejděte na Měřič plýtvání Pro a získejte plný přístup ke všem funkcím.</p>
+    <h3>Změřili jste, kde čas mizí. Zabrala ta změna?</h3>
+    <p>Bezplatný měřič ukáže jedno měření v procentech. Tokva Pro postaví dvě měření vedle sebe, před změnou a po ní, a ten rozdíl převede na koruny. To je číslo, se kterým se chodí za majitelem podruhé.</p>
     <div class="pro-cta-features">
-      <span>Vlastní operace pro váš konkrétní proces</span>
-      <span>Neomezený počet cyklů a měření</span>
-      <span>Porovnání cyklů mezi sebou</span>
-      <span>Export CSV a PDF / tisk</span>
-      <span>Analýza zakázky a výpočet ztráty v Kč</span>
-      <span>Historie měření</span>
-      <span>Přiřazení k projektu</span>
-      <span>Propojení s akčním plánem</span>
+      <span>Porovnání měření před a po vedle sebe</span>
+      <span>Výpočet ztráty v korunách</span>
+      <span>Neomezený počet cyklů a vlastní názvy operací</span>
+      <span>Historie měření u projektu, export do PDF a CSV</span>
     </div>
     <a href="../meric-plytvani-pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'meric_plytvani_free',placement:'result'})" class="btn-pro">Otevřít Měřič plýtvání Pro</a>
+    <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;margin:10px 0 0;text-align:center;">Bezplatný měřič zůstává navždy zdarma, bez přihlášení. Dnešní měření si Pro po přihlášení převezme samo, nic neměříte znovu.</p>
   </div>
 </div>
 
@@ -1154,7 +1158,7 @@ function zacitZnovuSkutecne() {
   const prikladNoteR = document.getElementById('priklad-note');
   if (prikladNoteR) prikladNoteR.style.display = '';
   const coDelatElR = document.getElementById('co-delat-text');
-  if (coDelatElR) coDelatElR.textContent = 'Běžná rezerva, kterou má většina provozů. Vyberte největší kategorii plýtvání a zkuste jednu konkrétní změnu, pak měřte znovu.';
+  if (coDelatElR) coDelatElR.textContent = 'Teď máte rozložení času v procentech a víte, která kategorie ukrojila nejvíc. Konkrétní tipy se vám ukážou pod grafem podle vašich vlastních čísel.';
   document.getElementById('setup').style.display = 'block';
   document.getElementById('inp-nazev').value = '';
   document.getElementById('email-form').style.display = 'flex';
@@ -1200,7 +1204,7 @@ async function nacistPrihlaseniStav() {
 
 function renderUcetNav() {
   const proOdkazEl = document.getElementById('nav-pro-odkaz');
-  if (proOdkazEl) proOdkazEl.style.display = session ? 'none' : '';
+  if (proOdkazEl) proOdkazEl.style.display = ucetSession ? 'none' : '';
   const btn = document.getElementById('nav-ucet-btn');
   const info = document.getElementById('nav-ucet-info');
   if (!ucetSession) {

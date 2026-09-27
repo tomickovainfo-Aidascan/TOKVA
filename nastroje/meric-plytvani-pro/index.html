@@ -833,9 +833,57 @@ function renderPrihlaseniStav() {
   }
 }
 
+// Převzetí měření z bezplatného měřiče: free verze nechává dokončené měření
+// v prohlížeči (meric_free_rozpracovano, hotovo:true). Pro ho při vstupu
+// jednou převezme do historie a do účtu, aby šlo hned porovnat jako PŘED
+// s dalším měřením. Kategorie jsou ve free i Pro stejné (STD). Jen stejný
+// prohlížeč. Náklady se berou výchozí (250 Kč/h, 7,5 h, 1 pracovník).
+function prevzitMereniZFree() {
+  let free = null;
+  try { free = JSON.parse(localStorage.getItem('meric_free_rozpracovano') || 'null'); } catch (e) {}
+  if (!free || !free.hotovo || !Array.isArray(free.cykly) || !free.cykly.length) return;
+  const znacka = String(free.cas || '');
+  try { if (localStorage.getItem('meric_free_prevzato') === znacka) return; } catch (e) {}
+  const cyk = free.cykly.filter(c => c && c.cas && c.celkem > 0);
+  if (!cyk.length) return;
+  const n = cyk.length;
+  const avg = {};
+  STD.forEach(k => avg[k] = cyk.reduce((s,c)=>s+(c.cas[k]||0),0)/n);
+  const avgC = cyk.reduce((s,c)=>s+c.celkem,0)/n;
+  const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
+  const plyPct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(plyC*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
+  const plyKcRok = avgC > 0 ? Math.round((plyC/avgC) * 250 * 7.5 * 250 * 1) : 0;
+  const zaznam = {
+    id: Date.now(),
+    nazev: (free.nazev || 'Měření') + ' (z bezplatného měřiče)',
+    datum: new Date(free.cas || Date.now()).toLocaleDateString('cs-CZ'),
+    cyklu: n, avgC, plyPct, smena: 7.5, plyKcRok,
+    kategorie_avg: avg, cykly: cyk, vlastniOp: [],
+    hodinovaSazba: 250, pocetPracovniku: 1, pocetKusu: 0,
+    zdroj: 'free'
+  };
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]'); } catch (e) {}
+  hist.unshift(zaznam);
+  if (hist.length > 20) hist = hist.slice(0, 20);
+  try {
+    localStorage.setItem('meric_pro_hist', JSON.stringify(hist));
+    localStorage.setItem('meric_free_prevzato', znacka);
+  } catch (e) {}
+  ulozitDoSupabase(zaznam, plyKcRok).then(runId => {
+    if (!runId) return;
+    let hist2 = [];
+    try { hist2 = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]'); } catch (e) {}
+    const polozka = hist2.find(z => z.id === zaznam.id);
+    if (polozka) { polozka.toolRunId = runId; localStorage.setItem('meric_pro_hist', JSON.stringify(hist2)); nacistHistorii(); }
+  });
+  upozornit('Vaše měření z bezplatného měřiče „' + (free.nazev || 'Měření') + '“ je teď v historii. Až po změně změříte ten samý proces znovu, zaškrtněte obě měření a porovnejte je jako PŘED × PO.', 'Měření převzato');
+}
+
 function vstoupitDoAplikace() {
   document.getElementById('prihlaseni').style.display = 'none';
   document.getElementById('setup').style.display = 'block';
+  prevzitMereniZFree();
   nacistHistorii();
   synchronizovatHistoriiSeSupabase();
   otevritVysledekZAdresy();
@@ -1945,6 +1993,13 @@ function porovnatVybrane() {
   const kapPred = kapacita(pred), kapPo = kapacita(po);
   const deltaPct = Math.round(po.plyPct - pred.plyPct);
   const deltaKap = kapPo - kapPred;
+  // Rozdíl v korunách: kolik ročně ubylo (kladné = úspora). Jen když obě
+  // měření mají spočítanou hodnotu času mimo přímou práci.
+  const maKc = pred.plyKcRok != null && po.plyKcRok != null && (pred.plyKcRok > 0 || po.plyKcRok > 0);
+  const usporaKc = maKc ? Math.round(pred.plyKcRok - po.plyKcRok) : 0;
+  const kcText = !maKc ? '' : usporaKc > 0
+    ? ` Ročně zhruba <strong>${usporaKc.toLocaleString('cs-CZ')} Kč</strong> méně za čas mimo přímou práci.`
+    : usporaKc < 0 ? ` Ročně zhruba <strong>${Math.abs(usporaKc).toLocaleString('cs-CZ')} Kč</strong> víc za čas mimo přímou práci.` : '';
 
   const box = document.createElement('div');
   box.className = 'pred-po-box';
@@ -1966,7 +2021,7 @@ function porovnatVybrane() {
         <div class="pp-sub">mimo přímou práci</div>
         <div class="pp-sub">Cyklus ${fmtC(po.avgC)} · ${kapPo} ks/směna</div>
       </div>
-      <div class="pp-delta">Rozdíl: <strong>${deltaPct > 0 ? '+' : ''}${deltaPct} p. b.</strong> čas mimo přímou práci, <strong>${deltaKap > 0 ? '+' : ''}${deltaKap} ks/směna</strong> kapacity.</div>
+      <div class="pp-delta">Rozdíl: <strong>${deltaPct > 0 ? '+' : ''}${deltaPct} p. b.</strong> čas mimo přímou práci, <strong>${deltaKap > 0 ? '+' : ''}${deltaKap} ks/směna</strong> kapacity.${kcText}</div>
     </div>`;
   const cil = document.getElementById('pred-po-vysledek');
   cil.innerHTML = '';
