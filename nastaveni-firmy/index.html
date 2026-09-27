@@ -174,9 +174,17 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
     <div id="seznam-pozvanek"><p class="prazdny">Žádné čekající pozvánky.</p></div>
   </div>
 
+  <div class="karta">
+    <h2>Export dat</h2>
+    <p class="karta-pop">Stáhněte si všechny výsledky appek, akční plán a projekty vaší firmy jako soubor ke stažení - třeba jako zálohu, nebo než zrušíte předplatné.</p>
+    <button class="btn-gold" id="btn-export-vse" onclick="exportovatVsechnaData()">Stáhnout všechna data</button>
+    <div class="hlaska" id="export-hlaska"></div>
+  </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="../supabase-client.js"></script>
 <script src="../auth.js"></script>
 <script>
@@ -445,6 +453,63 @@ async function init() {
 
   document.getElementById('app').style.display = '';
   await nacistData();
+}
+
+function poleNaCSV(radky) {
+  if (!radky || !radky.length) return '';
+  const sloupce = Object.keys(radky[0]);
+  const bunka = (v) => {
+    if (v === null || v === undefined) return '';
+    const s = (typeof v === 'object') ? JSON.stringify(v) : String(v);
+    return '"' + s.replace(/"/g, '""') + '"';
+  };
+  const hlavicka = sloupce.map(bunka).join(',');
+  const telo = radky.map(r => sloupce.map(s => bunka(r[s])).join(',')).join('\r\n');
+  return hlavicka + '\r\n' + telo;
+}
+
+async function exportovatVsechnaData() {
+  const btn = document.getElementById('btn-export-vse');
+  const hlaska = document.getElementById('export-hlaska');
+  btn.disabled = true;
+  hlaska.className = 'hlaska';
+  hlaska.textContent = 'Připravuji export...';
+
+  try {
+    const orgId = clenstvi.organization_id;
+    const [vysledky, akce, projekty] = await Promise.all([
+      supabaseClient.from('tool_runs').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
+      supabaseClient.from('actions').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
+      supabaseClient.from('projects').select('*').eq('organization_id', orgId).order('created_at', { ascending: false })
+    ]);
+    if (vysledky.error) throw vysledky.error;
+    if (akce.error) throw akce.error;
+    if (projekty.error) throw projekty.error;
+
+    const zip = new JSZip();
+    zip.file('vysledky-nastroju.csv', '\ufeff' + poleNaCSV(vysledky.data));
+    zip.file('akcni-plan.csv', '\ufeff' + poleNaCSV(akce.data));
+    zip.file('projekty.csv', '\ufeff' + poleNaCSV(projekty.data));
+
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const nazevFirmy = (clenstvi.organizations && clenstvi.organizations.name || 'firma').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+    const datum = new Date().toISOString().slice(0, 10);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `tokva-export-${nazevFirmy}-${datum}.zip`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    hlaska.className = 'hlaska ok';
+    hlaska.textContent = 'Export stažen.';
+  } catch (e) {
+    console.warn('Export všech dat se nepodařil.', e);
+    hlaska.className = 'hlaska chyba';
+    hlaska.textContent = 'Export se nepodařilo připravit: ' + (e.message || e);
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 init();

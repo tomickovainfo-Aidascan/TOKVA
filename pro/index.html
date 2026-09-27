@@ -320,7 +320,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
       <div class="obj-field"><label>Cena</label><input type="text" id="obj-cena" readonly></div>
       <div class="obj-field"><label>Firma *</label><input type="text" id="obj-firma" required></div>
       <div class="obj-row">
-        <div class="obj-field"><label>IČO</label><input type="text" id="obj-ico"></div>
+        <div class="obj-field"><label>IČO *</label><input type="text" id="obj-ico" required></div>
         <div class="obj-field"><label>DIČ</label><input type="text" id="obj-dic"></div>
       </div>
       <div class="obj-field"><label>Fakturační adresa</label><input type="text" id="obj-adresa" placeholder="Ulice, město, PSČ"></div>
@@ -421,6 +421,11 @@ async function odeslatObjednavku(e) {
   const poznamkaPuvodni = document.getElementById('obj-poznamka').value.trim();
   const poznamka = 'Varianta: ' + (NAZEV_VARIANTY[varianta] || varianta) + (poznamkaPuvodni ? '\n' + poznamkaPuvodni : '');
 
+  if (!ico) {
+    err.textContent = 'Tokva Pro je pro firmy a OSVČ - vyplňte prosím IČO.';
+    err.style.display = 'block';
+    return false;
+  }
   if (heslo !== heslo2) {
     err.textContent = 'Hesla se neshodují.';
     err.style.display = 'block';
