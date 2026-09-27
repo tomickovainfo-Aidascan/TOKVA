@@ -1801,6 +1801,7 @@ async function nacistPrihlaseniStav() {
   }
   renderUcetNav();
   renderUlozene();
+  dokoncitCekajiciUlozeni();
 }
 
 function aktualizovatProBtn() {
@@ -1860,9 +1861,32 @@ async function klikNaUcet() {
   }
 }
 
+// Uložení po přihlášení: free uživatel klikne na Uložit, appka si poznamená,
+// že výsledek čeká (samotná data už leží v prohlížeči), a po návratu
+// z přihlášení s aktivním Pro ho uloží sama. Jen stejný prohlížeč, max 30 dní.
+const CEKA_ULOZENI_KEY = 'kalk_skladu_ceka_na_ulozeni';
+let proZUlozeni = false;
+function oznacitCekaNaUlozeni() {
+  try { ulozitRozpracovanyVstup(); localStorage.setItem(CEKA_ULOZENI_KEY, String(Date.now())); } catch (e) {}
+}
+function dokoncitCekajiciUlozeni() {
+  let cas = null;
+  try { cas = localStorage.getItem(CEKA_ULOZENI_KEY); } catch (e) {}
+  if (!cas || !session) return;
+  if (Date.now() - Number(cas) > 30 * 24 * 3600 * 1000) { try { localStorage.removeItem(CEKA_ULOZENI_KEY); } catch (e) {} return; }
+  if (!jePro) {
+    upozornit('Váš výsledek počká tady v prohlížeči. Až budete mít Tokva Pro, otevřete appku znovu na tomhle počítači a uloží se do účtu sám.');
+    return;
+  }
+  try { localStorage.removeItem(CEKA_ULOZENI_KEY); } catch (e) {}
+  if (!(posledniVysledek && posledniVysledek.celkem > 0)) return;
+  ulozitVypocet();
+}
+
 // Tlačítko v modalu "Odemknout Pro": podle stavu buď pošle na přihlášení,
 // nebo (už přihlášený, ale bez Pro plánu) jen vysvětlí.
 async function klikVModaluPro() {
+  if (!session && proZUlozeni) { oznacitCekaNaUlozeni(); hasUnsavedVypocet = false; }
   try {
     if (!session) { await vyzadovatPrihlaseni(); return; }
   } catch (e) {
@@ -1878,7 +1902,7 @@ function otevritModalPro() {
   document.getElementById('pro-err').textContent = '';
   document.getElementById('modal-pro').style.display = 'flex';
 }
-function zavritModalPro() { document.getElementById('modal-pro').style.display = 'none'; }
+function zavritModalPro() { proZUlozeni = false; document.getElementById('modal-pro').style.display = 'none'; }
 
 let _modalNoticeCb = null;
 function upozornit(text, title) {
@@ -1933,7 +1957,7 @@ document.addEventListener('click', function(e) {
 });
 
 function ulozitVypocet() {
-  if (!jePro) { otevritModalPro(); return; }
+  if (!jePro) { proZUlozeni = true; otevritModalPro(); return; }
   var navrh = (posledniVysledek.mode === 'najem' ? 'Sklad – pronájem' : 'Sklad – vlastní budova') + ', ' + fmt(posledniVysledek.plocha) + ' m²';
   zeptatSeNaNazev('Pojmenujte si výpočet, ať ho pak snadno najdete a porovnáte s dalším.', navrh, function(nazev) {
     nazev = (nazev || '').trim() || navrh;

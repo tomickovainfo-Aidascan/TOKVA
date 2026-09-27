@@ -1128,6 +1128,7 @@ async function nacistPrihlaseniStav() {
   zobrazitOdkazAkcniPlan(maAktivniPro(clenstvi));
   zobrazitOdkazProjekty(maAktivniPro(clenstvi));
   if (jePro && clenstvi) otevritVysledekZAdresy();
+  dokoncitCekajiciUlozeni();
 }
 
 function renderUcetNav() {
@@ -1167,7 +1168,41 @@ async function klikNaUcet() {
   }
 }
 
+// Uložení po přihlášení: free uživatel klikne na Uložit (Odemknout), appka si
+// hotové odpovědi odloží v prohlížeči a po návratu z přihlášení výsledek znovu
+// ukáže a s aktivním Pro ho sama uloží. Jen stejný prohlížeč, max 30 dní.
+const CEKA_ULOZENI_KEY = 'kviz_chaos_ceka_na_ulozeni';
+let proZUlozeni = false;
+function oznacitCekaNaUlozeni() {
+  try {
+    localStorage.setItem(CEKA_ULOZENI_KEY, JSON.stringify(
+      { cas: Date.now(), odpovedi, vybranaIndexy },
+      (k, v) => v instanceof Set ? { __set: Array.from(v) } : v
+    ));
+  } catch (e) {}
+}
+function dokoncitCekajiciUlozeni() {
+  let cekajici = null;
+  try {
+    const raw = localStorage.getItem(CEKA_ULOZENI_KEY);
+    if (raw) cekajici = JSON.parse(raw, (k, v) =>
+      (v && typeof v === 'object' && Array.isArray(v.__set)) ? new Set(v.__set) : v);
+  } catch (e) {}
+  if (!cekajici || !session) return;
+  if (Date.now() - Number(cekajici.cas) > 30 * 24 * 3600 * 1000) { try { localStorage.removeItem(CEKA_ULOZENI_KEY); } catch (e) {} return; }
+  Object.assign(odpovedi, cekajici.odpovedi || {});
+  Object.assign(vybranaIndexy, cekajici.vybranaIndexy || {});
+  zobrazitVysledek();
+  if (!jePro) {
+    upozornit('Váš výsledek počká tady v prohlížeči. Až budete mít Tokva Pro, otevřete kvíz znovu na tomhle počítači a uloží se do účtu sám.');
+    return;
+  }
+  try { localStorage.removeItem(CEKA_ULOZENI_KEY); } catch (e) {}
+  ulozitVysledek();
+}
+
 async function klikVModaluPro() {
+  if (!session && proZUlozeni) oznacitCekaNaUlozeni();
   const err = document.getElementById('pro-err');
   err.textContent = '';
   let s;
@@ -1209,7 +1244,7 @@ function renderUlozitNeboTym() {
 }
 
 function klikUlozitVysledek() {
-  if (!jePro) { document.getElementById('modal-pro').style.display = 'flex'; return; }
+  if (!jePro) { proZUlozeni = true; document.getElementById('modal-pro').style.display = 'flex'; return; }
   ulozitVysledek();
 }
 

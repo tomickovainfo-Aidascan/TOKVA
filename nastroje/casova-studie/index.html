@@ -1627,6 +1627,10 @@ async function nacistPrihlaseniStav() {
   }
   renderUcetNav();
   renderHistorie();
+  // Uložení po přihlášení: záznamy dne naměřené ve free verzi leží
+  // v prohlížeči. Když se uživatel přihlásí s aktivním Pro a den ještě
+  // není v účtu, appka ho tam rovnou pošle, nic se nezadává znovu.
+  if (jePro && !denRunId && zaznamy.length) naplanovatPrubezneUlozeni();
 }
 
 function aktualizovatProBtn() {

@@ -1622,6 +1622,7 @@ async function nacistPrihlaseniStav() {
   if (jePro) {
     renderHistorie();
   }
+  dokoncitCekajiciUlozeni();
 }
 
 function aktualizovatProBtn() {
@@ -1674,10 +1675,54 @@ async function klikNaUcet() {
   }
 }
 
+// Uložení po přihlášení: free uživatel s hotovým výsledkem klikne na Odemknout
+// v Tokva Pro a přihlásí se. Appka si odpovědi odloží v prohlížeči (stejný kód
+// jako odkaz z e-mailu) a po návratu výsledek znovu ukáže. S aktivním Pro ho
+// zobrazVysledky() rovnou uloží do účtu. Jen stejný prohlížeč, max 30 dní.
+const CEKA_ULOZENI_KEY = 'mini_audit_vyroby_ceka_na_ulozeni';
+function kodOdpovediProUlozeni() {
+  return Array.from({length:10}, (_, i) => {
+    const q = i + 1;
+    if (typeof nevimSet !== 'undefined' && nevimSet.has(q)) return 'n';
+    return odpovedi[q] != null ? String(odpovedi[q]) : 'n';
+  }).join('');
+}
+function oznacitCekaNaUlozeni() {
+  const v = document.getElementById('vysledky');
+  if (!v || !v.classList.contains('active')) return;
+  try { localStorage.setItem(CEKA_ULOZENI_KEY, JSON.stringify({ cas: Date.now(), kod: kodOdpovediProUlozeni() })); } catch (e) {}
+}
+function dokoncitCekajiciUlozeni() {
+  let cekajici = null;
+  try { cekajici = JSON.parse(localStorage.getItem(CEKA_ULOZENI_KEY) || 'null'); } catch (e) {}
+  if (!cekajici || !session) return;
+  if (Date.now() - Number(cekajici.cas) > 30 * 24 * 3600 * 1000 || !/^[0-3n]{10}$/.test(cekajici.kod || '')) {
+    try { localStorage.removeItem(CEKA_ULOZENI_KEY); } catch (e) {}
+    return;
+  }
+  if (jePro) { try { localStorage.removeItem(CEKA_ULOZENI_KEY); } catch (e) {} }
+  Object.keys(odpovedi).forEach(k => delete odpovedi[k]);
+  if (typeof nevimSet !== 'undefined') nevimSet.clear();
+  for (let q = 1; q <= 10; q++) {
+    const z = cekajici.kod[q - 1];
+    if (z === 'n') { if (typeof nevimSet !== 'undefined') nevimSet.add(q); } else { odpovedi[q] = parseInt(z, 10); }
+  }
+  toolDokoncenoOdeslanoPoPrihlaseni();
+  document.querySelectorAll('.otazka-wrap.active').forEach(el => el.classList.remove('active'));
+  const pn = document.querySelector('.progress-nav'); if (pn) pn.style.display = 'none';
+  zobrazVysledky();
+  if (!jePro) upozornit('Váš výsledek počká tady v prohlížeči. Až budete mít Tokva Pro, otevřete audit znovu na tomhle počítači a uloží se do účtu sám.');
+}
+// výsledek už byl jednou dokončený, po návratu z přihlášení se znovu nepočítá do analytiky
+function toolDokoncenoOdeslanoPoPrihlaseni() {
+  try { if (typeof toolDokoncenoOdeslano !== 'undefined') toolDokoncenoOdeslano = true; } catch (e) {}
+}
+
 async function klikVModaluPro() {
   const err = document.getElementById('pro-err');
   err.textContent = '';
   if (!session) {
+    oznacitCekaNaUlozeni();
     try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
     return;
   }
