@@ -253,6 +253,22 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 .modal-err { font-size:12px; color:var(--red); min-height:16px; margin-bottom:6px; }
 .modal-box-link { font-size:12px; color:var(--light); margin-top:12px; text-align:center; }
 .modal-box-link a { color:var(--gold-dark); text-decoration:none; }
+/* Historie uložených výpočtů (Pro) */
+.hist-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+.hist-item:last-child { border-bottom:none; }
+.hist-item:hover .hist-nazev { color:var(--gold-dark); }
+.hist-nazev { font-size:13.5px; font-weight:700; color:var(--dark); }
+.hist-meta { font-size:11.5px; color:var(--light); }
+.hist-num { font-family:"DM Mono",monospace; font-size:13px; font-weight:700; white-space:nowrap; }
+.hist-del { background:none; border:none; color:var(--light); font-size:18px; cursor:pointer; padding:0 4px; line-height:1; }
+.hist-del:hover { color:#c0392b; }
+.hist-trend { font-size:12.5px; color:var(--mid); background:var(--paper); border-radius:8px; padding:10px 12px; margin-top:10px; line-height:1.55; }
+.modal-box.siroky { max-width:640px; max-height:86vh; overflow-y:auto; }
+.tab-porov { width:100%; border-collapse:collapse; font-size:13px; }
+.tab-porov th { text-align:right; padding:6px; border-bottom:2px solid var(--border); font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--light); }
+.tab-porov th:first-child { text-align:left; }
+.tab-porov td { padding:7px 6px; border-bottom:1px solid #f0f0f0; text-align:right; font-family:"DM Mono",monospace; }
+.tab-porov td:first-child { text-align:left; font-family:inherit; }
 .uloz-btn-row { margin-bottom:16px; }
 .uloz-panel-vstup { width:100%; padding:11px 14px; border-radius:8px; border:1px solid var(--border); font-size:14px; margin-bottom:10px; font-family:"DM Sans",sans-serif; box-sizing:border-box; }
 
@@ -526,6 +542,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       </div>
 
       <div class="uloz-btn-row" style="margin-top:16px;">
+        <input id="s-nazev-vypoctu" type="text" class="uloz-panel-vstup" placeholder="Název výpočtu (nepovinné), např. Sklad A, září" style="display:none;">
         <button class="btn-gold" style="width:100%;" onclick="ulozitVypocetZtrat()">💾 Uložit tento výpočet <span class="pro-lock-badge">Pro</span></button>
         <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="novyVypocetZtrat()">🔄 Nový výpočet</button>
         <div id="s-ulozeno-stav" style="font-size:12.5px;margin-top:8px;display:none;"></div>
@@ -576,6 +593,15 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </div>
       </div>
 
+      <!-- HISTORIE ULOZENYCH VYPOCTU (Pro) -->
+      <div class="breakdown" id="historie-box" style="display:none;margin-bottom:16px;">
+        <div class="breakdown-title">Uložené výpočty</div>
+        <div style="padding:8px 20px 16px;">
+          <div id="historie-seznam"></div>
+          <button class="btn-gold" style="width:100%;margin-top:12px;display:none;" id="btn-porovnat" onclick="otevritPorovnaniZtrat()" disabled>Porovnat vybrané (0/2)</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -590,6 +616,26 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
     <div class="modal-err" id="pro-err"></div>
     <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
     <div class="modal-box-link">Ještě nemáte Pro? <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'kalkulacka_ztrat',placement:'modal'})">Zjistit víc o Tokva Pro</a></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-detail-ztrat" style="display:none;" onclick="if(event.target===this) this.style.display='none'">
+  <div class="modal-box siroky">
+    <div class="modal-box-head">
+      <h3 id="detail-ztrat-nadpis">Uložený výpočet</h3>
+      <button class="modal-box-close" onclick="document.getElementById('modal-detail-ztrat').style.display='none'">×</button>
+    </div>
+    <div id="detail-ztrat-obsah"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-porovnani-ztrat" style="display:none;" onclick="if(event.target===this) this.style.display='none'">
+  <div class="modal-box siroky">
+    <div class="modal-box-head">
+      <h3>Porovnání dvou výpočtů</h3>
+      <button class="modal-box-close" onclick="document.getElementById('modal-porovnani-ztrat').style.display='none'">×</button>
+    </div>
+    <div id="porovnani-ztrat-obsah"></div>
   </div>
 </div>
 
@@ -772,6 +818,11 @@ const CILE = {
 };
 
 function update() {
+  if (typeof posledniToolRunId !== 'undefined' && posledniToolRunId && !nacitamZHistorie) {
+    posledniToolRunId = null;
+    zobrazitPanelyPoUlozeni(false);
+    const st = document.getElementById('s-ulozeno-stav'); if (st) st.style.display = 'none';
+  }
   const lide = +document.getElementById("lide").value;
   const smeny = +document.getElementById("smeny").value;
   const delkaSmeny = +document.getElementById("delka-smeny").value;
@@ -915,13 +966,20 @@ function renderUcetNav() {
     info.style.display = 'none';
     document.getElementById('s-projekt-panel').style.display = 'none';
     document.getElementById('s-akce-panel').style.display = 'none';
+    document.getElementById('historie-box').style.display = 'none';
+    document.getElementById('s-nazev-vypoctu').style.display = 'none';
+    document.querySelectorAll('.pro-lock-badge').forEach(function (b) { b.style.display = ''; });
     return;
   }
   btn.textContent = 'Odhlásit';
   btn.style.display = '';
   info.style.display = '';
-  document.getElementById('s-projekt-panel').style.display = jePro ? 'block' : 'none';
-  document.getElementById('s-akce-panel').style.display = jePro ? 'block' : 'none';
+  // Panely Zařadit k projektu / Přidat do akčního plánu se ukážou až po uložení
+  // výpočtu (dřív byly vidět hned a hlásily „Výpočet se ještě ukládá“).
+  zobrazitPanelyPoUlozeni(!!(jePro && posledniToolRunId));
+  document.querySelectorAll('.pro-lock-badge').forEach(function (b) { b.style.display = jePro ? 'none' : ''; });
+  document.getElementById('s-nazev-vypoctu').style.display = jePro ? '' : 'none';
+  if (jePro) nacistHistoriiZtrat(); else document.getElementById('historie-box').style.display = 'none';
   const nazevFirmy = clenstvi && clenstvi.organizations ? clenstvi.organizations.name : session.user.email;
   info.textContent = jePro ? (nazevFirmy + ' \u00b7 Pro') : nazevFirmy;
   const infoEmail = document.getElementById('nav-ucet-email');
@@ -992,7 +1050,7 @@ async function odeslatZtratyDoSupabase() {
     var vysledek = await supabaseClient.from('tool_runs').insert({
       organization_id: clenstvi.organization_id,
       nastroj: 'kalkulacka-ztrat',
-      nazev: 'Kalkulačka ztrát — ' + new Date().toLocaleDateString('cs-CZ'),
+      nazev: ((document.getElementById('s-nazev-vypoctu') || {}).value || '').trim() || ('Kalkulačka ztrát ' + new Date().toLocaleDateString('cs-CZ')),
       shrnuti: 'Odhadovaný roční potenciál: ' + rok,
       hlavni_hodnota_jednotka: 'Kč/rok',
       hlavni_hodnota_typ: 'potencial_kc',
@@ -1003,14 +1061,16 @@ async function odeslatZtratyDoSupabase() {
     if (vysledek.data) posledniToolRunId = vysledek.data.id;
     if (stavEl) {
       stavEl.style.color = 'var(--green, #2a7a4f)';
-      stavEl.textContent = '✓ Výpočet uložen.';
+      stavEl.textContent = '✓ Výpočet uložen. Najdete ho níž v Uložených výpočtech.';
       stavEl.style.display = 'block';
     }
+    zobrazitPanelyPoUlozeni(true);
+    nacistHistoriiZtrat();
   } catch (e) {
     console.warn('Výpočet se nepodařilo uložit do Supabase.', e);
     if (stavEl) {
       stavEl.style.color = '#c0392b';
-      stavEl.textContent = 'Výpočet se nepodařilo uložit, zkuste to prosím znovu.';
+      stavEl.textContent = 'Výpočet se nepodařilo uložit, zkuste to prosím znovu.' + (e && e.message ? ' (' + e.message + ')' : '');
       stavEl.style.display = 'block';
     }
   }
@@ -1094,7 +1154,9 @@ async function zkontrolovatStarsiVysledek() {
 async function ulozitZarazeniProjektuVysledek() {
   var stav = document.getElementById('s-projekt-stav');
   var select = document.getElementById('s-projekt-select');
-  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Výpočet se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  if (!clenstvi) { stav.textContent = 'Nejste přihlášeni k účtu Pro.'; return; }
+  if (!posledniToolRunId) { stav.textContent = 'Ukládám výpočet…'; await odeslatZtratyDoSupabase(); }
+  if (!posledniToolRunId) { stav.textContent = 'Výpočet se nepodařilo uložit, zkuste to prosím znovu.'; return; }
   stav.textContent = 'Ukládám…';
   try {
     var projektId = select.value || null;
@@ -1128,7 +1190,9 @@ async function pridatDoAkcnihoPlanuVysledek() {
   var stav = document.getElementById('s-akce-stav');
   var nazev = (document.getElementById('s-akce-nazev').value || '').trim();
   if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
-  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Výpočet se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  if (!clenstvi) { stav.textContent = 'Nejste přihlášeni k účtu Pro.'; return; }
+  if (!posledniToolRunId) { stav.textContent = 'Ukládám výpočet…'; await odeslatZtratyDoSupabase(); }
+  if (!posledniToolRunId) { stav.textContent = 'Výpočet se nepodařilo uložit, zkuste to prosím znovu.'; return; }
   stav.textContent = 'Ukládám…';
   try {
     var selectProjekt = document.getElementById('s-akce-projekt-select');
@@ -1169,6 +1233,200 @@ async function pridatDoAkcnihoPlanuVysledek() {
     console.warn('Přidání do akčního plánu se nepodařilo.', e);
     stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
   }
+}
+
+// ── Pro: historie uložených výpočtů, detail a porovnání ──
+var nacitamZHistorie = false;
+let historieZtrat = [];
+let vybraneZtrat = [];
+const VSTUPY_ZTRAT = [
+  ['lide', 'lide', 'Pracovníků na směně', ''],
+  ['smeny', 'smeny', 'Směn denně', ''],
+  ['delkaSmeny', 'delka-smeny', 'Délka směny', 'h'],
+  ['mzda', 'mzda', 'Hodina pracovníka', 'Kč'],
+  ['chuze', 'chuze', 'Chůze a přesuny', 'min/směna'],
+  ['admin', 'admin', 'Ruční administrativa', 'min/směna'],
+  ['prostoje', 'prostoje', 'Čekání a prostoje', 'min/směna'],
+  ['kamionu', 'kamionu', 'Dodávek a expedic týdně', ''],
+  ['kamionCas', 'kamion-cas', 'Zbytečný čas u dodávky', 'min']
+];
+const VYSLEDKY_ZTRAT = [
+  ['rok', 'Ztráta za rok', 'Kč', 0],
+  ['mesic', 'Ztráta za měsíc', 'Kč', 0],
+  ['celkem', 'Ztracené hodiny týdně', 'h', 1],
+  ['chuzeh', 'Chůze a přesuny', 'h/týd', 1],
+  ['adminh', 'Administrativa', 'h/týd', 1],
+  ['prostojes', 'Čekání a prostoje', 'h/týd', 1],
+  ['kamionh', 'Dodávky a expedice', 'h/týd', 1],
+  ['uvazek', 'Úvazků na ztrátách', '', 1]
+];
+function fmtD(n, des) { return (Math.round(n * Math.pow(10, des)) / Math.pow(10, des)).toLocaleString('cs-CZ'); }
+function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+function zobrazitPanelyPoUlozeni(ano) {
+  document.getElementById('s-projekt-panel').style.display = ano ? 'block' : 'none';
+  document.getElementById('s-akce-panel').style.display = ano ? 'block' : 'none';
+}
+
+async function nacistHistoriiZtrat() {
+  const box = document.getElementById('historie-box');
+  if (!jePro || !clenstvi) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  const wrap = document.getElementById('historie-seznam');
+  wrap.innerHTML = '<p style="font-size:12.5px;color:var(--light);padding:8px 0;">Načítám uložené výpočty…</p>';
+  try {
+    const { data, error } = await supabaseClient.from('tool_runs').select('*')
+      .eq('organization_id', clenstvi.organization_id).eq('nastroj', 'kalkulacka-ztrat')
+      .order('created_at', { ascending: false }).limit(30);
+    if (error) throw error;
+    historieZtrat = data || [];
+    vybraneZtrat = vybraneZtrat.filter(function (id) { return historieZtrat.some(function (r) { return r.id === id; }); });
+    vykreslitHistoriiZtrat();
+    otevritVypocetZAdresy();
+  } catch (e) {
+    console.warn('Historii výpočtů se nepodařilo načíst.', e);
+    wrap.innerHTML = '<p style="font-size:12.5px;color:var(--light);padding:8px 0;">Uložené výpočty se teď nepodařilo načíst.</p>';
+  }
+}
+
+function vykreslitHistoriiZtrat() {
+  const wrap = document.getElementById('historie-seznam');
+  const btn = document.getElementById('btn-porovnat');
+  if (!historieZtrat.length) {
+    wrap.innerHTML = '<p style="font-size:12.5px;color:var(--light);padding:8px 0;">Zatím nemáte žádný uložený výpočet. Uložte ho tlačítkem nahoře a příště ho tu najdete a porovnáte s novým.</p>';
+    btn.style.display = 'none';
+    return;
+  }
+  wrap.innerHTML = historieZtrat.map(function (r) {
+    const v = (r.data || {}).vysledky || {};
+    const datum = new Date(r.created_at).toLocaleDateString('cs-CZ');
+    const vybrano = vybraneZtrat.indexOf(r.id) > -1;
+    return '<div class="hist-item" onclick="otevritDetailZtrat(\'' + r.id + '\')">' +
+      '<input type="checkbox" onclick="event.stopPropagation()" onchange="zaskrtnoutZtraty(\'' + r.id + '\', this.checked)"' + (vybrano ? ' checked' : '') + ' style="width:16px;height:16px;flex-shrink:0;" title="Vybrat k porovnání">' +
+      '<div style="flex:1;min-width:0;"><div class="hist-nazev">' + esc(r.nazev) + '</div><div class="hist-meta">' + datum + (v.celkem != null ? ' · ' + fmtD(v.celkem, 1) + ' h týdně' : '') + '</div></div>' +
+      '<div class="hist-num">' + (v.rok != null ? fmt(v.rok) + ' Kč' : esc(r.hlavni_hodnota_text || '')) + '</div>' +
+      '<button class="hist-del" onclick="event.stopPropagation();smazatVypocetZtrat(\'' + r.id + '\')" title="Smazat">×</button>' +
+      '</div>';
+  }).join('') + trendZtrat();
+  btn.style.display = historieZtrat.length >= 2 ? 'block' : 'none';
+  btn.disabled = vybraneZtrat.length !== 2;
+  btn.textContent = 'Porovnat vybrané (' + vybraneZtrat.length + '/2)';
+}
+
+// Krátké srovnání posledních dvou uložených výpočtů.
+function trendZtrat() {
+  if (historieZtrat.length < 2) return '';
+  const a = ((historieZtrat[1].data || {}).vysledky || {}).rok, b = ((historieZtrat[0].data || {}).vysledky || {}).rok;
+  if (a == null || b == null || a === 0 || a === b) return '';
+  const pct = Math.round((b - a) / a * 100);
+  return '<div class="hist-trend">Poslední výpočet oproti předchozímu: ztráta ' + (b < a ? 'klesla' : 'vzrostla') + ' o ' + fmt(Math.abs(b - a)) + ' Kč za rok (' + (pct > 0 ? '+' : '') + pct + ' %).</div>';
+}
+
+function zaskrtnoutZtraty(id, ano) {
+  vybraneZtrat = vybraneZtrat.filter(function (x) { return x !== id; });
+  if (ano) { vybraneZtrat.push(id); if (vybraneZtrat.length > 2) vybraneZtrat.shift(); }
+  vykreslitHistoriiZtrat();
+}
+
+function otevritDetailZtrat(id) {
+  const r = historieZtrat.find(function (x) { return x.id === id; });
+  if (!r) return;
+  const d = r.data || {}, v = d.vysledky || {}, vs = d.vstupy || {}, dop = d.doporuceni || {};
+  document.getElementById('detail-ztrat-nadpis').textContent = r.nazev;
+  const radkyV = VYSLEDKY_ZTRAT.filter(function (x) { return v[x[0]] != null; }).map(function (x) {
+    return '<tr><td>' + x[1] + '</td><td>' + fmtD(v[x[0]], x[3]) + (x[2] ? ' ' + x[2] : '') + '</td></tr>';
+  }).join('');
+  const radkyS = VSTUPY_ZTRAT.filter(function (x) { return vs[x[0]] != null; }).map(function (x) {
+    return '<tr><td>' + x[2] + '</td><td>' + fmtD(vs[x[0]], 1) + (x[3] ? ' ' + x[3] : '') + '</td></tr>';
+  }).join('');
+  document.getElementById('detail-ztrat-obsah').innerHTML =
+    '<p style="margin-bottom:10px;">Uloženo ' + new Date(r.created_at).toLocaleString('cs-CZ') + '</p>' +
+    (radkyV ? '<table class="tab-porov" style="margin-bottom:14px;"><tbody>' + radkyV + '</tbody></table>' : '<p>' + esc(r.shrnuti || '') + '</p>') +
+    (dop.nazev ? '<div class="hist-trend" style="margin-bottom:14px;"><strong>Největší zdroj ztráty:</strong> ' + esc(dop.nazev) + '<br>' + esc(dop.popis || '') + '</div>' : '') +
+    (radkyS ? '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light);margin-bottom:4px;">Zadané hodnoty</div><table class="tab-porov" style="margin-bottom:16px;"><tbody>' + radkyS + '</tbody></table>' : '') +
+    (radkyS ? '<button class="btn-gold" style="width:100%;" onclick="nacistVypocetZtrat(\'' + r.id + '\')">Načíst do kalkulačky a pracovat s ním dál</button>' : '');
+  document.getElementById('modal-detail-ztrat').style.display = 'flex';
+}
+
+// Vrátí uložený výpočet do formuláře. Výpočet zůstává ten uložený, takže
+// panely Zařadit k projektu / Přidat do akčního plánu se vážou na něj.
+function nacistVypocetZtrat(id) {
+  const r = historieZtrat.find(function (x) { return x.id === id; });
+  if (!r || !r.data || !r.data.vstupy) return;
+  nacitamZHistorie = true;
+  try {
+    VSTUPY_ZTRAT.forEach(function (x) {
+      const hod = r.data.vstupy[x[0]];
+      if (hod == null) return;
+      const range = document.getElementById(x[1]), num = document.getElementById(x[1] + '-num');
+      if (num) num.value = hod;
+      if (range) range.value = hod;
+    });
+    update();
+  } finally { nacitamZHistorie = false; }
+  posledniToolRunId = r.id;
+  zobrazitPanelyPoUlozeni(true);
+  const st = document.getElementById('s-ulozeno-stav');
+  if (st) { st.style.color = 'var(--mid)'; st.textContent = 'Načteno: ' + r.nazev + '. Když čísla změníte, uložte to jako nový výpočet.'; st.style.display = 'block'; }
+  document.getElementById('modal-detail-ztrat').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function otevritPorovnaniZtrat() {
+  if (vybraneZtrat.length !== 2) return;
+  const z = vybraneZtrat.map(function (id) { return historieZtrat.find(function (x) { return x.id === id; }); }).filter(Boolean);
+  if (z.length !== 2) return;
+  z.sort(function (x, y) { return new Date(x.created_at) - new Date(y.created_at); });
+  const a = z[0], b = z[1];
+  const va = (a.data || {}).vysledky || {}, vb = (b.data || {}).vysledky || {};
+  const sa = (a.data || {}).vstupy || {}, sb = (b.data || {}).vstupy || {};
+  function radek(nazev, x, y, jedn, des, nizsiLip) {
+    if (x == null || y == null) return '';
+    const rozdil = y - x;
+    let barva = 'var(--mid)', txt = '';
+    if (Math.abs(rozdil) > 0.0001) {
+      if (nizsiLip !== null) barva = (nizsiLip ? rozdil < 0 : rozdil > 0) ? '#2a7a4f' : '#b91c1c';
+      txt = (rozdil > 0 ? '+' : '') + fmtD(rozdil, des) + (jedn ? ' ' + jedn : '');
+    }
+    return '<tr><td>' + nazev + '</td><td>' + fmtD(x, des) + '</td><td>' + fmtD(y, des) + '</td><td style="font-weight:700;color:' + barva + ';">' + txt + '</td></tr>';
+  }
+  let radky = VYSLEDKY_ZTRAT.map(function (x) { return radek(x[1], va[x[0]], vb[x[0]], x[2], x[3], true); }).join('');
+  const vstupyRadky = VSTUPY_ZTRAT.map(function (x) { return radek(x[2], sa[x[0]], sb[x[0]], x[3], 1, null); }).join('');
+  if (vstupyRadky) radky += '<tr><td colspan="4" style="padding-top:14px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--light);font-family:inherit;text-align:left;">Zadané hodnoty</td></tr>' + vstupyRadky;
+  let shrnuti = '';
+  if (va.rok != null && vb.rok != null) {
+    shrnuti = vb.rok < va.rok ? 'Ztráta klesla z ' + fmt(va.rok) + ' na ' + fmt(vb.rok) + ' Kč za rok. Ušetřeno ' + fmt(va.rok - vb.rok) + ' Kč ročně.'
+      : vb.rok > va.rok ? 'Ztráta vzrostla z ' + fmt(va.rok) + ' na ' + fmt(vb.rok) + ' Kč za rok.'
+      : 'Ztráta zůstala stejná (' + fmt(vb.rok) + ' Kč za rok).';
+  }
+  document.getElementById('porovnani-ztrat-obsah').innerHTML =
+    (shrnuti ? '<div class="hist-trend" style="margin:6px 0 14px;">' + shrnuti + '</div>' : '') +
+    '<div style="overflow-x:auto;"><table class="tab-porov"><thead><tr><th></th><th>' + esc(a.nazev) + '<br><span style="font-weight:400;text-transform:none;letter-spacing:0;">' + new Date(a.created_at).toLocaleDateString('cs-CZ') + '</span></th><th>' + esc(b.nazev) + '<br><span style="font-weight:400;text-transform:none;letter-spacing:0;">' + new Date(b.created_at).toLocaleDateString('cs-CZ') + '</span></th><th>Rozdíl</th></tr></thead><tbody>' + radky + '</tbody></table></div>';
+  document.getElementById('modal-porovnani-ztrat').style.display = 'flex';
+}
+
+async function smazatVypocetZtrat(id) {
+  if (!confirm('Smazat tenhle uložený výpočet? Úkoly v akčním plánu zůstanou, jen ztratí odkaz na výpočet.')) return;
+  try {
+    const { error } = await supabaseClient.from('tool_runs').delete().eq('id', id);
+    if (error) throw error;
+    if (posledniToolRunId === id) { posledniToolRunId = null; zobrazitPanelyPoUlozeni(false); }
+    vybraneZtrat = vybraneZtrat.filter(function (x) { return x !== id; });
+    nacistHistoriiZtrat();
+  } catch (e) {
+    console.warn('Výpočet se nepodařilo smazat.', e);
+    alert('Výpočet se nepodařilo smazat, zkuste to prosím znovu.');
+  }
+}
+
+// Odkaz z Akčního plánu / Projektů: ?vysledek=<id> otevře detail uloženého výpočtu.
+let vypocetZAdresyOtevren = false;
+function otevritVypocetZAdresy() {
+  if (vypocetZAdresyOtevren) return;
+  const id = new URLSearchParams(window.location.search).get('vysledek');
+  if (!id) return;
+  vypocetZAdresyOtevren = true;
+  if (historieZtrat.some(function (x) { return x.id === id; })) otevritDetailZtrat(id);
 }
 
 nacistPrihlaseniStav();

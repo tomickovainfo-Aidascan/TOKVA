@@ -378,6 +378,14 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 <style id="print-css">
 #tokva-tisk-hlavicka{display:none;}
 @media print {
+  body > *:not(#vysledek):not(#tokva-tisk-hlavicka) { display:none !important; }
+  /* Tisk jen výsledku: vše kolem (úvod, otázky, formuláře, tlačítka, panely pro uložení) pryč */
+  #vysledek button, #vysledek input, #vysledek select, #vysledek textarea,
+  #vysledek form, #vysledek #sib-form-container, #vysledek .co-prvni-cta,
+  #vysledek #projekt-panel, #vysledek #akcni-panel, #vysledek #export-panel,
+  #vysledek #historie-panel, #vysledek .no-print,
+  #vysledek .vysledky-detail:has(.cta-final-btns), #vysledek .vysledky-detail:has(#sib-form-container),
+  #vysledek .email-card, #vysledek #v-ulozit-card, #vysledek .v-card:has(button) { display:none !important; }
   footer { display:none !important; }
   #tokva-tisk-hlavicka { display:flex !important; justify-content:space-between; align-items:flex-end; border-bottom:3px solid #e9a91b; padding-bottom:10px; margin-bottom:20px; font-family:Arial,sans-serif; }
   #tokva-tisk-hlavicka .tth-l { font-size:18px; font-weight:900; color:#000; }
