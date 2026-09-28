@@ -22,12 +22,12 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tokva Pro – propojený systém pro zlepšování firmy | Tokva</title>
-<meta name="description" content="Tokva Pro není balíček placených kalkulaček. Pamatuje si výsledky, propojí je s projekty a úkoly a ověří, jestli změna doopravdy pomohla. Momentálně se testuje.">
+<meta name="description" content="Tokva Pro ověří, jestli změna v provozu zabrala. Po změně postaví dvě měření vedle sebe a rozdíl přepočítá na koruny. Pro malé výrobní a skladové firmy.">
 <meta name="author" content="Gabriela Tomíčková">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tokva.cz/pro/">
 <meta property="og:title" content="Tokva Pro – propojený systém pro zlepšování firmy | Tokva">
-<meta property="og:description" content="Tokva Pro není balíček placených kalkulaček. Pamatuje si výsledky, propojí je s projekty a úkoly a ověří, jestli změna doopravdy pomohla.">
+<meta property="og:description" content="Tokva Pro ověří, jestli změna v provozu zabrala. Po změně postaví dvě měření vedle sebe a rozdíl přepočítá na koruny. Pro malé výrobní a skladové firmy.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:image" content="https://tokva.cz/og-image.png">
@@ -73,7 +73,13 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .btn-gold:hover { background:var(--gold-dark); color:var(--white); }
 .btn-outline { display:inline-block; background:transparent; color:var(--dark); border:1.5px solid var(--border2); font-family:'Poppins',sans-serif; font-weight:800; font-size:14px; padding:12px 26px; border-radius:8px; text-decoration:none; }
 .btn-outline:hover { border-color:var(--gold-dark); color:var(--gold-dark); }
-.hero-trust { font-size:12.5px; color:var(--mid); margin-bottom:34px; }
+.hero-trust { font-size:12.5px; color:var(--mid); margin-bottom:34px; max-width:620px; }
+.hero-proof { background:#fff; border:1px solid var(--border2); border-left:4px solid var(--gold); border-radius:10px; padding:18px 22px; max-width:620px; margin-bottom:26px; }
+.hero-proof p { font-size:15px; color:var(--dark); line-height:1.65; margin-bottom:10px; }
+.hero-proof p:last-child { margin-bottom:0; font-size:13px; color:var(--mid); }
+.hero-proof strong { color:var(--dark); }
+.btn-link { display:inline-block; align-self:center; font-size:14px; font-weight:600; color:var(--mid); text-decoration:underline; text-underline-offset:3px; padding:12px 6px; }
+.btn-link:hover { color:var(--gold-dark); }
 
 .screenshoty { display:flex; flex-direction:column; gap:20px; margin:36px 0 40px; }
 .screenshoty-row { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; }
@@ -195,18 +201,22 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
 <main class="main">
   <a class="back-link" href="https://tokva.cz/">← Zpět na Tokvu</a>
-  <div class="badge">Zakladatelský program</div>
-  <h1>Najděte, kde firma ztrácí čas. Udělejte změnu. Ověřte, že skutečně pomohla.</h1>
-  <p class="lead" style="margin-bottom:16px;">Tokva Pro propojí měření, výsledky, projekty a úkoly na jednom místě. Pro malé výrobní a skladové firmy, které chtějí zlepšovat provoz, ale nemají vlastního procesního specialistu.</p>
-  <p class="hero-pains">Poznáváte se v tomhle? Chyby při expedici, hledání materiálu, zbytečná chůze, opakované přepisování stejných čísel, čekání mezi kroky, špatné předávání informací mezi směnami.</p>
+  <div class="badge">Zakladatelská cena pro prvních 20 firem platí napořád. Nástroje zdarma zůstávají zdarma.</div>
+  <h1>Zabrala ta změna? Tokva Pro to ukáže černé na bílém.</h1>
+  <p class="lead" style="margin-bottom:22px;">Tokva Pro si uloží výsledky z nástrojů, po změně postaví dvě měření vedle sebe a rozdíl přepočítá na koruny. Pro malé výrobní a skladové firmy, které zlepšují provoz bez vlastního procesního specialisty.</p>
+  <div class="hero-proof">
+    <p>Sklad, pět lidí, jedna směna. Práce, která nikam nevedla, stála <strong>303&nbsp;100&nbsp;Kč ročně</strong>.</p>
+    <p>Přeskládali jsme zboží a zjednodušili jeden formulář. Ze 40 minut denně zbylo 15. Druhé měření ukázalo úsporu zhruba <strong>189&nbsp;400&nbsp;Kč ročně</strong>. Ne odhad. Rozdíl dvou měření.</p>
+    <p>U Měřiče plýtvání vypadá druhé měření takhle: chůze při vychystávání spadla z <strong>31&nbsp;% času na 12&nbsp;%</strong>.</p>
+    <p>Čísla stojí na měřeních, která jsem přes 10 let dělala ručně se stopkami přímo v provozu.</p>
+  </div>
 
   <div class="hero-cta">
-    <a href="https://tokva.cz/reseni-problemu/" class="btn-outline">Vyzkoušet nástroje zdarma</a>
-    <a href="#objednavka" class="btn-gold">Prohlédnout varianty a ceny</a>
+    <a href="#objednavka" class="btn-gold">Chci varianty a ceny →</a>
+    <a href="https://tokva.cz/reseni-problemu/" class="btn-link">Ještě si chci projít nástroje zdarma</a>
   </div>
-  <p class="hero-trust">Pro jednotlivce od 499 Kč · Týmové varianty od 1 390 Kč (zakladatelská cena pro prvních 20 firem)</p>
+  <p class="hero-trust">Pro jednotlivce 499&nbsp;Kč, tým 2 až 5 lidí 1&nbsp;390&nbsp;Kč, tým 6 až 15 lidí 2&nbsp;690&nbsp;Kč měsíčně. Zakladatelská cena, dál 690&nbsp;Kč, 1&nbsp;990&nbsp;Kč a 4&nbsp;490&nbsp;Kč.</p>
 
-  <p class="lead">Tokva Pro si navíc pamatuje, co jste zjistili, propojí to s projekty a úkoly a ukáže, jestli změna doopravdy pomohla. Není to balíček placených kalkulaček – je to systém, co vás provede od zjištění po ověřený přínos.</p>
 
   <div class="compare">
     <div class="compare-col free">
@@ -270,6 +280,8 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
       <p>Po dokončení opatření appka připomene, ať to změříte znovu, a ukáže, jestli to fakt pomohlo.</p>
     </div>
   </div>
+
+  <p class="hero-pains" style="margin-top:8px;">Poznáváte se v tomhle? Chyby při expedici, hledání materiálu, zbytečná chůze, opakované přepisování stejných čísel, čekání mezi kroky, špatné předávání informací mezi směnami.</p>
 
   <div class="stav-nadpis"><h2>Co Tokva Pro dnes reálně umí</h2><span class="stav-chip funguje">Funguje nyní</span></div>
   <p class="stav-popis">Tohle není plán do budoucna – tyhle věci appky dělají už teď, na živém webu.</p>
