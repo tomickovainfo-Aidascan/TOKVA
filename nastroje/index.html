@@ -530,7 +530,7 @@ const TOOLS = [
     ],
     vstupy:"Odpovědi na 10 otázek o vašem skladu, e-mail jen nepovinně, pokud chcete výsledek i poslat.",
     vystupy:"Skóre 0 až 30 bodů se slovním hodnocením (třeba \"firma ztrácí významnou kapacitu každý týden\"), přehled odpovědí po jednotlivých otázkách, a konkrétní tipy pro 3 nejkritičtější oblasti, hned na stránce.",
-    priklad:"Petr vedl sklad v Hradci. 12 lidí, příjem zboží každý den, dva až tři kamiony týdně. Stěžoval si, že lidi nestíhají. Uvažoval o posilách.\n\nAudit odhalil dva problémy. Při příjmu kamionu nebylo jasné, kdo kontroluje zboží a kdo ho zaskladňuje, dělal to vždy ten, kdo byl zrovna volný. Zboží proto čekalo na zaskladnění průměrně 2,5 hodiny po vyložení, leželo na rampě a blokovalo provoz. Druhý problém byly výjimky, poškozené zboží, chybějící položky, nesouhlasící množství, bez jasného postupu to každý řešil jinak.\n\nJedno pravidlo pro příjem zkrátilo dobu příjmu kamionu ze 3 hodin na 55 minut. Při 10 kamionech za měsíc to dělá 480 hodin ročně, při 300 Kč nákladu na osobu za hodinu skoro 145 000 Kč.\n\nPosily nepřišly. Čas se našel jinde.",
+    priklad:"Petr vedl sklad v Hradci. 12 lidí, příjem zboží každý den, dva až tři kamiony týdně. Stěžoval si, že lidi nestíhají. Uvažoval o posilách.\n\nAudit odhalil dva problémy. Při příjmu kamionu nebylo jasné, kdo kontroluje zboží a kdo ho zaskladňuje, dělal to vždy ten, kdo byl zrovna volný. Zboží proto čekalo na zaskladnění průměrně 2,5 hodiny po vyložení, leželo na rampě a blokovalo provoz. Druhý problém byly výjimky, poškozené zboží, chybějící položky, nesouhlasící množství, bez jasného postupu to každý řešil jinak.\n\nJedno pravidlo pro příjem zkrátilo dobu příjmu kamionu ze 3 hodin na 55 minut, tedy o 2 hodiny a 5 minut. Při 10 kamionech za měsíc to dělá 250 hodin ročně, při 300 Kč nákladu na hodinu 75 000 Kč.\n\nPosily nepřišly. Čas se našel jinde.",
     chyby:[
       "Přeskočit otázku, na kterou přesně neznáte odpověď. Nevím je taky odpověď, a často důležitá, ukazuje, kde se ve skladu vůbec nesleduje, co se děje.",
       "Snažit se audit rozdělit na víckrát. Nedá se uložit a vrátit se k němu později, lepší je najít 5 minut vcelku."
@@ -553,7 +553,7 @@ const TOOLS = [
       recognizeClose:"Stačí znát svůj sklad a 5 minut klidu.",
       example:{
         headline:"Kolik stojí 2,5 hodiny čekání na rampě?",
-        stat:{ num:"145 000 Kč", note:"ročně, jen díky jednomu jasnému pravidlu pro příjem zboží. Posily nepřišly, čas se našel jinde." }
+        stat:{ num:"75 000 Kč", note:"ročně, jen díky jednomu jasnému pravidlu pro příjem zboží. Posily nepřišly, čas se našel jinde." }
       }
     } },
 
@@ -778,7 +778,60 @@ const TOOLS = [
   { id:"meric-pro", group:"paid-solo", name:"Měřič plýtvání Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Změříte čas přesněji, s vlastními kroky procesu a exportem dat.",
     popis:"Jde do hloubky víc než free verze. Pro výrobní firmy a sklady, co chtějí přesnější čísla a víc kontextu.",
     proKoho:"Kdo si vyzkoušel Free verzi a chce dál.",
-    prodejniStranka:"nastroje/meric-plytvani-pro/", souvisejici:["spaghetti-vyroba","mini-audit"] },
+    prodejniStranka:"nastroje/meric-plytvani-pro/", souvisejici:["spaghetti-vyroba","mini-audit"],
+    kdyPouzit:{
+      otazky:[
+        "Vyzkoušeli jste si Měřič plýtvání zdarma a tři cykly vám na jistotu nestačí?",
+        "Má váš proces vlastní kroky, třeba „černé pouzdro“ nebo „značení“, a do sedmi základních kategorií se nevejde?",
+        "Chcete plýtvání vidět v korunách a v kusech za směnu, ne jen v procentech času?",
+        "Potřebujete vědět, jak dlouho bude trvat zakázka a kolik času ušetříte, když plýtvání odstraníte?",
+        "Měříte opakovaně a chcete porovnat výsledek před změnou a po ní?"
+      ],
+      zaver:[
+        "Pokud jste se našli aspoň v jedné otázce, Pro verze vám dá čísla, se kterými se dá rozhodovat.",
+        "Měřič plýtvání Pro je součást Tokva Pro. Přihlásíte se svým účtem a výsledky máte uložené u firmy."
+      ]
+    },
+    ucelMetoda:"Měřič plýtvání Pro je časová studie jednoho opakujícího se procesu, stejně jako Free verze. Klikáte na tlačítko podle toho, co pracovník zrovna dělá, a appka měří, kolik času padá na práci a kolik na plýtvání.\n\nPro verze k tomu přidává vlastní kroky procesu, přepočet na koruny a kusy za směnu, výpočet délky zakázky a uložení měření do účtu. Každé měření pak můžete zařadit k projektu, porovnat s dalším a rovnou z něj založit úkol v akčním plánu.",
+    princip:"Nejdřív nastavíte proces: vyberete základní kategorie, přidáte vlastní kroky a určíte, které z nich jsou práce a které plýtvání. Zadáte délku směny, náklad na hodinu práce a počet pracovníků, volitelně i počet kusů v zakázce. Pak měříte stejně jako ve Free verzi, kliknutím na začátku každé činnosti. Appka spočítá průměrný cyklus, cyklus bez plýtvání, kusy za směnu a délku zakázky.",
+    postup:[
+      "Pojmenujte proces a vyberte kategorie, které budete měřit. Přidejte vlastní kroky procesu.",
+      "Zadejte délku směny, náklad práce na hodinu a počet pracovníků.",
+      "Volitelně zadejte počet kusů v zakázce.",
+      "Změřte aspoň 5 cyklů, klikejte vždy na začátku činnosti. K cyklu můžete připsat poznámku.",
+      "Prohlédněte si výsledek: rozložení času, cyklus bez plýtvání, kusy za směnu, délku zakázky a hodnotu plýtvání v korunách.",
+      "Uložte měření k projektu, založte z něj úkol, výsledek vytiskněte nebo stáhněte jako CSV."
+    ],
+    vstupy:"Název procesu, vybrané kategorie a vlastní kroky, délka směny, náklad práce na hodinu, počet pracovníků, volitelně počet kusů v zakázce a živé kliky během měření.",
+    vystupy:"Průměrný cyklus a cyklus bez plýtvání, rozložení času po kategoriích i vlastních krocích, porovnání cyklů mezi sebou, kusy za směnu, délka zakázky dnes a bez plýtvání, hodnota plýtvání v Kč za rok. Uložení do účtu, historie a porovnání měření, tisk, CSV a kopírování do tabulky.",
+    priklad:"Modelový příklad: montáž kabelového svazku. Tři změřené cykly vyšly v průměru na 25 sekund, z toho 13 sekund padlo na přesuny, čekání a přípravu.\n\nCyklus bez plýtvání by tedy trval 12 sekund. Zakázka na 600 kusů dnes zabere přes 4 hodiny, bez plýtvání asi 2 hodiny.\n\nNení to slib, že plýtvání zmizí celé. Některý přesun nebo příprava budou potřeba vždycky. Ale víte, kde začít a kolik je ve hře.",
+    chyby:[
+      "Označit vlastní krok jako práci, i když je to ve skutečnosti přesun nebo čekání. Výsledek pak vypadá lépe, než je.",
+      "Měřit různé varianty procesu dohromady, třeba různé výrobky. Cykly pak nejdou srovnat.",
+      "Změřit jednou a nevrátit se. Skutečný přínos uvidíte až v porovnání měření před změnou a po ní."
+    ],
+    faq:[
+      { q:"Čím se liší od Free verze?", a:"Free verze měří 3 cykly v sedmi základních kategoriích. Pro přidává vlastní kroky procesu, přepočet na koruny a kusy za směnu, výpočet délky zakázky, poznámky k cyklům, uložení do účtu, historii, porovnání, export a propojení s projekty a akčním plánem." },
+      { q:"Jak se k Pro verzi dostanu?", a:"Je součástí Tokva Pro. Přihlásíte se svým účtem a měření se ukládají k vaší firmě. Ceny najdete na stránce Tokva Pro." },
+      { q:"Kolik cyklů mám změřit?", a:"Na orientaci stačí 3. Pro spolehlivější průměr doporučujeme 5 až 10 cyklů stejného procesu." }
+    ],
+    design2a:{
+      heroLines:["Plýtvání v minutách,","kusech i korunách."],
+      heroNote:"Součást Tokva Pro · vlastní kroky procesu<br>uložené měření a porovnání",
+      ctaLabel:"Otevřít Měřič plýtvání Pro",
+      stats:[
+        {num:"7+", lbl:"základních kategorií a vlastní kroky procesu"},
+        {num:"Kč", lbl:"hodnota plýtvání za rok"},
+        {num:"ks", lbl:"kusy za směnu a délka zakázky"},
+        {num:"PŘED/PO", lbl:"porovnání uložených měření"}
+      ],
+      recognizeClose:"Pokud jste se našli aspoň v jedné otázce, Pro verze vám dá čísla, se kterými se dá rozhodovat.",
+      how:{ chipsLabel:"Co Pro přidává", chips:["Vlastní kroky","Koruny za rok","Kusy za směnu","Délka zakázky","Poznámky k cyklům","Historie a porovnání","Projekt a akční plán","CSV a tisk"] },
+      example:{
+        headline:"Kolik trvá zakázka bez plýtvání?",
+        stat:{ num:"25 → 12 s", note:"modelový příklad: průměrný cyklus a cyklus bez plýtvání u montáže kabelového svazku. Zakázka 600 kusů zhruba za polovinu času." }
+      }
+    } },
 
   { id:"spaghetti-vyroba", group:"paid-solo", name:"Spaghetti diagram Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Zaznamenáte pohyb víc lidí najednou, ve skladu i ve výrobě, včetně zastávek.",
     popis:"Zaznamenáte trasy víc lidí najednou, včetně zastávek, kde se zastaví a něco dělají. Umí i rovnou spočítat, o kolik je návrh lepší než současný stav. Pro sklad i pro výrobu.",
@@ -794,7 +847,7 @@ const TOOLS = [
       ],
       zaver:[
         "Appka umí to samé jako zdarma verze, jen navíc pro víc lidí najednou, se zastávkami a s automatickým porovnáním současného stavu a návrhu.",
-        "Je to placená verze, součást Tokva Pro, přístup přes kód."
+        "Je to součást Tokva Pro, přihlásíte se svým účtem."
       ]
     },
     ucelMetoda:"Spaghetti diagram je starý nástroj z výroby, papír a tužka: sledujete pohyb člověka a každý krok zaznamenáte čarou. Tahle appka dělá to samé digitálně, a navíc umí, co papír s tužkou neumí: zaznamenat víc lidí najednou do stejného půdorysu, označit místa kde se pracovník zastaví a něco dělá (zastávka), a když nakreslíte dvě trasy vedle sebe, sama spočítá, o kolik metrů a procent je jedna kratší než druhá.\n\nTohle poslední, porovnání současného stavu s návrhem, je přesně to, co se dřív dělalo ručně: naměřit současný stav, navrhnout změnu, naměřit ji znovu, a teprve pak spočítat rozdíl na kalkulačce. Appka teď ten poslední krok udělá za vás sama.",
@@ -816,7 +869,7 @@ const TOOLS = [
       "Nakreslit jen jednu variantu trasy a čekat, že appka porovnání zobrazí sama. Pro srovnání musí existovat dvě trasy, jedna označená jako současný stav a druhá jako návrh, teprve pak se objeví karta s úsporou."
     ],
     faq:[
-      { q:"Jak funguje přístup do appky?", a:"Appka je za přístupovým kódem, je součástí Tokva Pro. Žádné balíčky, každý placený nástroj má vlastní přístup." },
+      { q:"Jak funguje přístup do appky?", a:"Appka je součástí Tokva Pro. Přihlásíte se svým účtem a diagramy se ukládají k vaší firmě." },
       { q:"Čím se liší od zdarma verze Spaghetti diagramu?", a:"Zdarma verze umí zaznamenat víc tras (zakázek) a jejich délku. Pro navíc umí zastávky, víc pracovníků najednou ve stejném půdorysu, a přímé porovnání současného stavu s návrhem s automaticky spočítanou úsporou." },
       { q:"Funguje appka i na mobilu nebo tabletu?", a:"Ano, kreslení trasy, zoom i posun mapy fungují i na dotykovém displeji, ne jen myší na počítači." }
     ],
@@ -840,7 +893,7 @@ const TOOLS = [
   { id:"5s-audit", group:"free", name:"5S pro každého smrtelníka", krok:3, oblasti:["sklad","vyroba","administrativa"], benefit:"Uspořádáte pracoviště krok za krokem, s fotkami před a po.",
     popis:"Krok po kroku uspořádáte jedno pracoviště, s fotkami před a po u všech 5 kroků, zdarma bez časového omezení.\n\nVíc pracovišť najednou, přehledný tisk reportu, historie kontrol a úkoly jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu, výroby nebo dílny, co chce uklidit konkrétní pracoviště podle metody 5S krok za krokem, s fotkami jako důkazem, ne jen na oko.",
-    url:"nastroje/5S_audit/", souvisejici:["meric-free","spaghetti-sklad"], prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
+    url:"nastroje/5S_audit/", souvisejici:["meric-free","spaghetti-sklad"], prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Víc najdete v Tokva Pro.",
     kdyPouzit:{
       otazky:[
         "Chcete uklidit konkrétní pracoviště (dílnu, sklad, kancelář) podle osvědčené metody, ne nazdařbůh?",
@@ -896,7 +949,7 @@ const TOOLS = [
   { id:"5x-proc", group:"free", name:"5× Proč AI kouč", krok:3, oblasti:["sklad","vyroba","administrativa","lide"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
     popis:"AI kouč vás provede rozhovorem a dovede ke kořenu problému. Strukturovaný výstup s příčinou a prvním krokem, zdarma.\n\nHistorie analýz a navazující úkoly jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu nebo výroby, co řeší furt stejný problém dokola a chce se dostat k tomu, co ho fakt způsobuje, ne jen hasit znovu a znovu.",
-    url:"nastroje/5x-proc-ai-kouc/", souvisejici:["meric-free","casova-studie"], prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
+    url:"nastroje/5x-proc-ai-kouc/", souvisejici:["meric-free","casova-studie"], prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Víc najdete v Tokva Pro.",
     kdyPouzit:{
       otazky:[
         "Řešíte problém, který se pořád vrací, i když jste ho už párkrát \"vyřešili\"?",
@@ -949,7 +1002,7 @@ const TOOLS = [
   { id:"casova-studie", group:"free", name:"Časová studie mého dne", krok:3, oblasti:["sklad","vyroba","administrativa","lide"], benefit:"Získáte skutečný přehled svého dne, podklad pro delegování nebo automatizaci.",
     popis:"Skutečný přehled vašeho dne s činnostmi a intervaly. Podklad pro delegování nebo automatizaci, export do CSV.\n\n1 den zdarma. Historie a trendy mezi dny jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu, výroby nebo kdokoli, kdo tuší, že mu den nějak utíká, ale neví přesně kam, a chce si to ověřit čísly, ne pocitem.",
-    url:"nastroje/casova-studie/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Tokva Pro je samostatná placená úroveň, ne balíček — prodejní stránka se připravuje.",
+    url:"nastroje/casova-studie/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Víc najdete v Tokva Pro.",
     souvisejici:["5x-proc","kalkulacka","kviz-komunikace"],
     kdyPouzit:{
       otazky:[
