@@ -105,6 +105,12 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .stav-list li { font-size:14px; color:var(--dark); padding:8px 2px; border-bottom:1px dashed var(--border2); line-height:1.55; }
 .stav-list li:last-child { border-bottom:none; }
 .stav-list li b { font-weight:700; }
+.stav-skupina { font-family:'Poppins',sans-serif; font-size:14px; font-weight:800; margin:22px 0 4px; color:var(--gold-dark); }
+.objednavka-box ul.obj-ceny { list-style:none; margin:0 0 12px; padding:0; }
+.objednavka-box ul.obj-ceny li { font-size:13.5px; color:rgba(255,255,255,.85); padding:4px 0; }
+.objednavka-box ul.obj-ceny li b { color:var(--gold); }
+#objednavka-cena-popis p { font-size:13.5px; color:rgba(255,255,255,.65); margin-bottom:12px; max-width:560px; }
+#objednavka-cena-popis { margin-bottom:18px; }
 .stav-popis { font-size:13px; color:var(--mid); margin-bottom:12px; }
 
 .note { margin-top:36px; font-size:13.5px; color:var(--mid); border-left:3px solid var(--gold); padding:14px 18px; background:var(--white); border-radius:0 8px 8px 0; }
@@ -174,18 +180,66 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Jsou moje data v bezpečí?",
+      "name": "Nemáme čas na další appku.",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Data jednotlivých firem jsou oddělena na úrovni databáze. Přístup k nim mají pouze přihlášení členové příslušné firmy podle své role a oprávnění."
+        "text": "Ten čas už platíte, jenom ho nevidíte. Vstup je krátký: měřič plýtvání zabere 10 minut, kalkulačka ztrát 30 vteřin, mini audit kolem 5 minut. Zbytek spočítá appka."
       }
     },
     {
       "@type": "Question",
-      "name": "Kdo vidí moje výsledky?",
+      "name": "Lidi u nás nic vyplňovat nebudou.",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Výsledky vidí pouze členové dané firmy podle přidělené role a oprávnění. Bez přihlášení se k výsledkům nikdo nedostane."
+        "text": "A nemusí. Nástroje obvykle vyplňuje jeden člověk, ten, kdo provoz řeší. Ostatní se dozví výsledek, ne dotazník."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co z toho mám za 499 Kč měsíčně?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Výsledky, které se neztratí, úkoly s termínem a porovnání dvou měření. Stačí u jednoho člověka ušetřit deset minut denně. Při nákladech 250 Kč na hodinu je to přes 800 Kč měsíčně, takže se appka zaplatí sama."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Nevím, co bych měl měřit.",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Začnete nástrojem zdarma, ten vás otázkami provede. Po výsledku Tokva doporučí další krok."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jak se platí?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Převodem na fakturu. Pošlu vám ji na e-mail z objednávky a appku na Pro přepnu, jakmile platba dorazí."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jsou naše data v bezpečí?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Data každé firmy jsou oddělená na úrovni databáze. Dostanou se k nim jen přihlášení členové vaší firmy podle své role."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kdo vidí naše výsledky?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Jen členové vaší firmy podle přidělené role. Bez přihlášení se k výsledkům nedostane nikdo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Můžu s Pro kdykoliv přestat?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ano, bez výpovědi. Předplatné je měsíční. Týden před koncem se vás zeptám, jestli chcete pokračovat. Když ne, další fakturu neposílám a appka se přepne zpátky na verzi zdarma. Výsledky si předtím stáhnete jedním exportem, ve verzi zdarma už je appka neukazuje."
       }
     }
   ]
@@ -247,77 +301,122 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <div class="screenshoty-row">
       <figure class="screenshot-card">
         <img src="screenshoty/projekt-vysledky.webp" alt="Projekt v Tokva Pro s výsledky ve fázích Vidět, Změřit, Změnit a Ověřit" loading="lazy">
-        <figcaption>Jeden projekt, všechny výsledky pohromadě. Od zjištění (mini audit) přes měření až po opatření s odpovědným člověkem.</figcaption>
       </figure>
       <figure class="screenshot-card">
         <img src="screenshoty/pred-po-porovnani.png" alt="Porovnání výsledků před a po opakovaném auditu, skóre kleslo z 39 % na 25 %" loading="lazy">
-        <figcaption>Zopakujete audit nebo měření a appka sama ukáže, co se zlepšilo, zhoršilo nebo zůstalo stejné.</figcaption>
       </figure>
     </div>
     <figure class="screenshot-card">
       <img src="screenshoty/akcni-plan-ukol.png" alt="Akční plán s úkoly, odpovědnou osobou a termínem u každého úkolu" loading="lazy">
-      <figcaption>Z každého zjištění úkol s odpovědným člověkem a termínem, rovnou v centrálním akčním plánu.</figcaption>
     </figure>
   </div>
 
   <h2 class="pilire-uvod">Čtyři věci, které appky zdarma neumí</h2>
-  <p class="pilire-uvod-sub">Nástroj zdarma vám dá samostatný výsledek. Tokva Pro se postará o to, co se s ním stane dál.</p>
+  <p class="pilire-uvod-sub">Nástroj zdarma vám dá výsledek. Pro se postará o to, co s ním bude dál.</p>
   <div class="pilire">
     <div class="pilir">
-      <h3>Všechno na jednom místě</h3>
-      <p>Výsledky, projekty, úkoly, fotky i doporučení pohromadě. Nemusíte hledat, ve které appce jste co dřív zjistili.</p>
+      <h3>Výsledek nezmizí</h3>
+      <p>Nástroj zdarma spočítá a zapomene. Pro uloží celý výsledek k vaší firmě: odpovědi, naměřené hodnoty, fotky i poznámky. Za půl roku se máte k čemu vrátit.</p>
     </div>
     <div class="pilir">
-      <h3>Vidíte změnu v čase</h3>
-      <p>Zopakujete audit nebo měření a appka vám sama ukáže, co se zlepšilo, co ne a co zůstalo stejné.</p>
+      <h3>Uvidíte rozdíl mezi dvěma měřeními</h3>
+      <p>Změřili jste, něco změnili, změřili znovu. Appka postaví obě měření vedle sebe a ukáže, co se zlepšilo, co ne a co zůstalo stejné. Vy nepočítáte nic.</p>
     </div>
     <div class="pilir">
-      <h3>Z výsledku rovnou k akci</h3>
-      <p>Z každého zjištění uděláte úkol s odpovědným člověkem a termínem. Ne papír, co skončí v šuplíku.</p>
+      <h3>Ze zjištění se stane úkol se jménem a termínem</h3>
+      <p>Ne papír, co skončí v šuplíku. Úkol má odpovědného člověka, termín a fotku stavu před a po. Z úkolu se vždycky vrátíte na celý výsledek, ze kterého vznikl.</p>
     </div>
     <div class="pilir">
-      <h3>Ověříte skutečný přínos</h3>
-      <p>Po dokončení opatření appka připomene, ať to změříte znovu, a ukáže, jestli to fakt pomohlo.</p>
+      <h3>Hotovo ještě neznamená vyřešeno</h3>
+      <p>Hotové opatření přepnete do stavu Ověřit výsledek a v akčním plánu na vás svítí, dokud změnu nezměříte znovu. Bez toho se nikdy nedozvíte, jestli zabrala, nebo jen vypadala dobře na poradě.</p>
     </div>
   </div>
 
   <p class="hero-pains" style="margin-top:8px;">Poznáváte se v tomhle? Chyby při expedici, hledání materiálu, zbytečná chůze, opakované přepisování stejných čísel, čekání mezi kroky, špatné předávání informací mezi směnami. <a href="https://tokva.cz/reseni-problemu/" style="color:var(--gold-dark);font-weight:700;">Začněte u nástrojů zdarma, změřte to a vraťte se sem s číslem.</a></p>
 
-  <div class="stav-nadpis"><h2>Co Tokva Pro umí</h2></div>
+  <div class="stav-nadpis"><h2>Co Tokva Pro dnes reálně umí</h2></div>
+  <p class="stav-popis">Žádný plán do budoucna. Tohle appka dělá už teď, na živém webu.</p>
+
+  <h3 class="stav-skupina">Výsledky na jednom místě</h3>
   <ul class="stav-list">
-    <li><b>Přihlášení a firemní účet.</b> Appky zdarma fungují bez přihlášení, Pro appky vás poznají a ukládají výsledky přímo k vaší firmě.</li>
-    <li><b>Kompletní historie výsledků.</b> Appka si nepamatuje jen skóre, ale celý výsledek (odpovědi, naměřené hodnoty, fotky, poznámky) u všech nástrojů s historií.</li>
-    <li><b>Firma → projekt → výsledek → úkol.</b> Výsledky jde zařadit k projektu, projekty se dají zakládat a filtrovat, i bez projektu se výsledek neztratí.</li>
-    <li><b>Centrální Akční plán.</b> Jeden seznam úkolů napříč všemi appkami, karty i tabulka s filtry a řazením, fotka k akci (třeba stav před/po).</li>
-    <li><b>Klikatelný zdroj úkolu.</b> Z úkolu se vždycky vrátíte na celý výsledek, ze kterého vznikl, ne jen na text.</li>
-    <li><b>Opakovaná měření a porovnání PŘED × PO.</b> U mini auditů, obou kvízů, časové studie, kalkulačky nákladů skladu, měřiče plýtvání a spaghetti diagramu appka ukáže, co se zlepšilo, zhoršilo nebo zůstalo stejné.</li>
-    <li><b>Moje Tokva.</b> Přehled firmy po přihlášení: aktivní projekty, poslední výsledky, otevřené úkoly, doporučený další krok.</li>
-    <li><b>Appka Projekty.</b> Souhrn jednoho projektu ve čtyřech fázích Vidět/Změřit/Změnit/Ověřit, s prezentačním režimem na poradu (černé pozadí, velké písmo, krokování).</li>
-    <li><b>Export a tisk.</b> Výsledky všech nástrojů vytisknete nebo stáhnete do tabulky (CSV). Akční plán i souhrn projektu vytisknete na poradu.</li>
-    <li><b>Objednávka a fakturace.</b> Objednáte přímo tady na stránce, platí se převodem na fakturu, appku na Pro přepnu po přijetí platby.</li>
-    <li><b>Týmová spolupráce.</b> Pozvěte kolegy do firmy e-mailem, role majitel/správce/člen řídí, kdo co smí upravovat nebo mazat.</li>
+    <li><b>Firemní účet.</b> Appky zdarma fungují bez přihlášení. Pro appky vás poznají a ukládají výsledky k vaší firmě.</li>
+    <li><b>Celý výsledek, ne jen skóre.</b> Odpovědi, naměřené hodnoty, fotky i poznámky, u všech nástrojů s historií.</li>
+    <li><b>Firma, projekt, výsledek, úkol.</b> Výsledky zařadíte k projektu, projekty jdou zakládat a filtrovat. I bez projektu se výsledek neztratí.</li>
+    <li><b>Moje Tokva.</b> Po přihlášení vidíte aktivní projekty, poslední výsledky, otevřené úkoly a doporučený další krok.</li>
   </ul>
 
-  <div class="note">Tokva Pro se testuje na prvních zákaznících. Appky zdarma fungují naplno i bez přihlášení. Pro appky si objednáte tady na stránce, platí se převodem na fakturu, appku odemknu po přijetí platby.</div>
+  <h3 class="stav-skupina">Od zjištění k akci</h3>
+  <ul class="stav-list">
+    <li><b>Centrální Akční plán.</b> Jeden seznam úkolů napříč všemi appkami, karty i tabulka s filtry a řazením.</li>
+    <li><b>Fotka u úkolu.</b> Stav před a po, přímo u akce.</li>
+    <li><b>Zpátky ke zdroji.</b> Z úkolu se dostanete na celý výsledek, ze kterého vznikl, ne jen na jeho název.</li>
+  </ul>
 
-  <p class="podpora-note">Podporu k appkám dělám vždycky osobně já, Gabriela Tomíčková. Pokud byste kromě appky potřebovali i pomoc přímo ve firmě, najdete mě na <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a>.</p>
+  <h3 class="stav-skupina">Ověření, že to zabralo</h3>
+  <ul class="stav-list">
+    <li><b>Porovnání před a po.</b> U mini auditů, obou kvízů, časové studie, kalkulačky ztrát, kalkulačky nákladů skladu, měřiče plýtvání a spaghetti diagramu.</li>
+    <li><b>Appka Projekty.</b> Souhrn projektu ve čtyřech fázích: Vidět, Změřit, Změnit, Ověřit. Má i režim na poradu: černé pozadí, velké písmo, krokování.</li>
+  </ul>
+
+  <h3 class="stav-skupina">Pro tým a pro papírování</h3>
+  <ul class="stav-list">
+    <li><b>Kolegové ve firmě.</b> Pozvete je e-mailem, role majitel, správce a člen řídí, kdo co smí upravovat a mazat.</li>
+    <li><b>Export a tisk.</b> Výsledky všech nástrojů vytisknete nebo stáhnete do tabulky. Akční plán i souhrn projektu vytisknete na poradu.</li>
+    <li><b>Objednávka a faktura.</b> Objednáte přímo tady na stránce, platí se převodem na fakturu, appku na Pro přepnu po přijetí platby.</li>
+  </ul>
+
+  <div class="note">Tokva Pro se teď testuje na prvních zákaznících. Appky zdarma fungují naplno i bez přihlášení.</div>
+
+  <p class="podpora-note">Podporu dělám vždycky osobně já, Gabriela Tomíčková. Kdybyste kromě appky potřebovali pomoc přímo ve firmě, najdete mě na <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a>.</p>
 
   <h2 class="faq-nadpis">Časté otázky</h2>
   <div class="faq-item">
-    <h3>Jsou moje data v bezpečí?</h3>
-    <p>Data jednotlivých firem jsou oddělena na úrovni databáze. Přístup k nim mají pouze přihlášení členové příslušné firmy podle své role a oprávnění.</p>
+    <h3>Nemáme čas na další appku.</h3>
+    <p>Ten čas už platíte, jenom ho nevidíte. Vstup je krátký: měřič plýtvání zabere 10 minut, kalkulačka ztrát 30 vteřin, mini audit kolem 5 minut. Zbytek spočítá appka.</p>
   </div>
   <div class="faq-item">
-    <h3>Kdo vidí moje výsledky?</h3>
-    <p>Výsledky vidí pouze členové dané firmy podle přidělené role a oprávnění. Bez přihlášení se k výsledkům nikdo nedostane.</p>
+    <h3>Lidi u nás nic vyplňovat nebudou.</h3>
+    <p>A nemusí. Nástroje obvykle vyplňuje jeden člověk, ten, kdo provoz řeší. Ostatní se dozví výsledek, ne dotazník.</p>
+  </div>
+  <div class="faq-item">
+    <h3>Co z toho mám za 499 Kč měsíčně?</h3>
+    <p>Výsledky, které se neztratí, úkoly s termínem a porovnání dvou měření. Stačí u jednoho člověka ušetřit deset minut denně. Při nákladech 250 Kč na hodinu je to přes 800 Kč měsíčně, takže se appka zaplatí sama.</p>
+  </div>
+  <div class="faq-item">
+    <h3>Nevím, co bych měl měřit.</h3>
+    <p>Začnete nástrojem zdarma, ten vás otázkami provede. Po výsledku Tokva doporučí další krok.</p>
+  </div>
+  <div class="faq-item">
+    <h3>Jak se platí?</h3>
+    <p>Převodem na fakturu. Pošlu vám ji na e-mail z objednávky a appku na Pro přepnu, jakmile platba dorazí.</p>
+  </div>
+  <div class="faq-item">
+    <h3>Jsou naše data v bezpečí?</h3>
+    <p>Data každé firmy jsou oddělená na úrovni databáze. Dostanou se k nim jen přihlášení členové vaší firmy podle své role.</p>
+  </div>
+  <div class="faq-item">
+    <h3>Kdo vidí naše výsledky?</h3>
+    <p>Jen členové vaší firmy podle přidělené role. Bez přihlášení se k výsledkům nedostane nikdo.</p>
+  </div>
+  <div class="faq-item">
+    <h3>Můžu s Pro kdykoliv přestat?</h3>
+    <p>Ano, bez výpovědi. Předplatné je měsíční. Týden před koncem se vás zeptám, jestli chcete pokračovat. Když ne, další fakturu neposílám a appka se přepne zpátky na verzi zdarma. Výsledky si předtím stáhnete jedním exportem, ve verzi zdarma už je appka neukazuje.</p>
   </div>
 
 
   <div class="objednavka-box" id="objednavka">
     <h2>Objednat Tokva Pro</h2>
-    <p id="objednavka-cena-popis">Vyberte variantu níže, cena se doplní automaticky. Zakladatelská cena <span class="objednavka-cena">499 Kč / 1 390 Kč / 2 690 Kč měsíčně</span> (podle varianty) platí pro prvních 20 firem napořád, ne jen první rok. Pro další zájemce potom 690 Kč / 1 990 Kč / 4 490 Kč měsíčně.</p>
-    <p id="objednavka-podminka-popis">Podmínka zakladatelské ceny: vyplníte tři krátké dotazníky (před začátkem používání appky, po prvním použití a po měsíci provozu) a souhlasíte, že uvidím, jak appku vaše firma využívá (ne kdo konkrétně, jen firma jako celek), abych appku podle toho mohla doladit.</p>
-    <p id="objednavka-platba-popis">Platí se převodem na fakturu. Pošlu vám ji na zadaný e-mail, appku na Pro přepnu po přijetí platby.</p>
+    <p id="objednavka-platba-popis">Vyberte variantu, cena se doplní sama. Platí se převodem na fakturu, appku na Pro přepnu po přijetí platby.</p>
+    <div id="objednavka-cena-popis">
+      <p>Zakladatelská cena platí pro prvních 20 firem napořád, ne jen první rok:</p>
+      <ul class="obj-ceny">
+        <li>Pro jednotlivce <b>499&nbsp;Kč</b> měsíčně, dál 690&nbsp;Kč</li>
+        <li>Tým 2 až 5 lidí <b>1&nbsp;390&nbsp;Kč</b> měsíčně, dál 1&nbsp;990&nbsp;Kč</li>
+        <li>Tým 6 až 15 lidí <b>2&nbsp;690&nbsp;Kč</b> měsíčně, dál 4&nbsp;490&nbsp;Kč</li>
+      </ul>
+      <p>Žádný závazek: přestat můžete kdykoliv a bez výpovědi. Když nebudete chtít pokračovat, další fakturu neposílám a appka se přepne zpátky na verzi zdarma.</p>
+      <p id="objednavka-podminka-popis">Za tu cenu vás poprosím o dvě věci: vyplníte tři krátké dotazníky (než začnete, po prvním použití a po měsíci provozu) a necháte mě vidět, jak appku vaše firma používá. Ne kdo konkrétně, jen firma jako celek. Podle toho appku doladím.</p>
+    </div>
 
     <form id="objednavka-form" onsubmit="return odeslatObjednavku(event)">
       <div class="obj-field">
