@@ -629,7 +629,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
         <div class="faq-block" style="margin-top:24px;">
           <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
           <div class="faq-item">
-            <div class="faq-q">Jak přesné to měření je?</div>
+            <div class="faq-q">Jak přesné je měření v appce Měřič plýtvání?</div>
             <div class="faq-a">Podle toho, jak klikáte. Pokud jste přesní vy, je přesný i výsledek. Neměříte odhadem jako u kalkulačky, měříte reálný čas mezi kliknutími. Čím víc cyklů změříte, tím spolehlivější je průměr.</div>
           </div>
           <div class="faq-item">
@@ -641,7 +641,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
             <div class="faq-a">Tři cykly stačí na první orientaci. Pokud se jednotlivé cykly hodně liší (appka to ukáže v sekci Variabilita cyklů), změřte další samostatné kolo. Víc než počet cyklů ale rozhoduje druhé měření po změně: teprve to ukáže, jestli změna zabrala.</div>
           </div>
           <div class="faq-item">
-            <div class="faq-q">Je tohle to samé jako klasická časová studie?</div>
+            <div class="faq-q">Je Měřič plýtvání to samé jako klasická časová studie?</div>
             <div class="faq-a">Princip je stejný, jen bez stopek a papíru. Appka dělá to samé, co byste jinak dělali ručně, jen automaticky měří a rovnou spočítá rozložení času.</div>
           </div>
           <div class="faq-item">
@@ -649,7 +649,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
             <div class="faq-a">Ano, změřte proces u víc lidí postupně a porovnejte výsledky ručně. Automatické porovnání cyklů mezi sebou je ve verzi Pro.</div>
           </div>
           <div class="faq-item">
-            <div class="faq-q">Hodí se to i mimo sklad, třeba ve výrobě?</div>
+            <div class="faq-q">Hodí se Měřič plýtvání i mimo sklad, třeba ve výrobě?</div>
             <div class="faq-a">Ano, kategorie (práce, přesun, hledání, čekání, administrativa, kontrola, příprava) sedí na jakoukoliv opakující se operaci, ve skladu i na lince.</div>
           </div>
         </div>
@@ -732,7 +732,7 @@ const KAT_NAZVY = {prace:'Práce',presun:'Přesun',hledani:'Hledání',cekani:'�
 const KAT_BARVY = {prace:'#2a7a4f',presun:'#1a6aaa',hledani:'#d97706',cekani:'#c0392b',papiry:'#7c3aed',priprava:'#545454',kontrola:'#0891b2'};
 const PLYTVANI = ['presun','hledani','cekani','papiry','priprava','kontrola'];
 const MAX_CYKLY = 3;
-const HODINOVA_SAZBA = 250;
+const HODINOVA_SAZBA = 300;
 
 
 let nazev = '';
@@ -1092,9 +1092,9 @@ function vykreslitSouhrn() {
       <div class="insight-title" style="color:${barvaBox}">Čas mimo přímou práci tvoří ${plyPct}%</div>
       <div class="insight-text">
         Průměrný cyklus trvá <strong>${fmtC(avgC)}</strong>. Z toho ${fmtCJemne(plyC)} (${plyPct}%) je plýtvání.<br><br>
-        Při 7,5h směně stihnete <strong>${kusyZaSmenu} kusů</strong>. Bez plýtvání by to bylo <strong>${idealniKusy} kusů</strong> — o ${rozdilKusu} kusů více za směnu.<br><br>
+        Při 7,5h směně stihnete <strong>${kusyZaSmenu} kusů</strong>. Bez plýtvání by to bylo <strong>${idealniKusy} kusů</strong>, o ${rozdilKusu} kusů více za směnu.<br><br>
         Ročně (250 dní × ${kusyZaSmenu} ks) vyrobíte <strong>${kusyRocne.toLocaleString('cs-CZ')} kusů</strong>. Hodnota času mimo přímou práci: přibližně <strong>${plyKcRok.toLocaleString('cs-CZ')} Kč/rok</strong>.<br>
-        <span style="font-size:11px;color:var(--light);">Orientační výpočet: 7,5h směna · 250 dní · 250 Kč/h. Ne vše lze odstranit — cílem je určit, která část je skutečně zbytečná.</span>
+        <span style="font-size:11px;color:var(--light);">Orientační výpočet: 7,5h směna · 250 dní · 300 Kč/h (celkové náklady na člověka za hodinu). Ne vše lze odstranit. Cílem je určit, která část je skutečně zbytečná.</span>
       </div>
     </div>
     <div class="insight-box" style="background:var(--white);border:1px solid var(--border);margin-bottom:10px;">

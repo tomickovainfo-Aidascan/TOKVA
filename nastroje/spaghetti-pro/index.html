@@ -31,7 +31,7 @@
       "description": "Nahrajte půdorys skladu nebo výroby, kreslete trasy a porovnejte je mezi sebou. Vizuálně uvidíte, kde se pohyb kříží nebo zbytečně opakuje.",
       "url": "https://tokva.cz/nastroje/spaghetti-pro/",
       "applicationCategory": "BusinessApplication",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CZK" },
+      "offers": { "@type": "Offer", "price": "499", "priceCurrency": "CZK", "url": "https://tokva.cz/pro/#objednavka", "description": "Součást Tokva Pro, od 499 Kč měsíčně (zakladatelská cena)", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "499", "priceCurrency": "CZK", "unitCode": "MON", "referenceQuantity": { "@type": "QuantitativeValue", "value": "1", "unitCode": "MON" } } },
       "author": { "@type": "Person", "name": "Gabriela Tomíčková" }
     }
   </script>
@@ -671,7 +671,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <div class="setup-grid">
       <div class="setup-group">
         <label>Náklady na zaměstnance (Kč/hod)</label>
-        <input type="number" class="setup-input" id="naklady-hod" value="350" min="0" step="10" onchange="prepocitatDopad()">
+        <input type="number" class="setup-input" id="naklady-hod" value="300" min="0" step="10" onchange="prepocitatDopad()">
       </div>
       <div class="setup-group">
         <label>Rychlost chůze bez břemene (km/h)</label>
@@ -935,7 +935,7 @@ let poznamky = []; // {x, y, text} - poznamka k mistu na pudorysu, nezavisla na 
 let poznamkaEditIdx = null; // index upravovane poznamky, null = zaklada se nova
 let poznamkaPendingPos = null; // pozice nove poznamky, nez se ulozi text
 let vybranaBarva = BARVY[0];
-let nakladyHod = 350; // Kc/hod, celkove naklady na zamestnance, editovatelne
+let nakladyHod = 300; // Kc/hod, celkove naklady na zamestnance, editovatelne
 let rychlostChuze = 4.5; // km/h, chuze bez bremene, editovatelne
 let frekvenceEditIdx = null; // index zakazky, u ktere se prave edituje frekvence
 
@@ -2585,7 +2585,7 @@ function ulozitFrekvenci() {
 }
 
 function prepocitatDopad() {
-  nakladyHod = parseFloat(document.getElementById('naklady-hod').value) || 350;
+  nakladyHod = parseFloat(document.getElementById('naklady-hod').value) || 300;
   rychlostChuze = parseFloat(document.getElementById('rychlost-chuze').value) || 4.5;
   updateStats();
 }
@@ -3301,7 +3301,7 @@ function zkusitObnovitRozpracovanyNakres() {
   poznamky = draft.poznamky || [];
   meritko = draft.meritko || 1;
   meritkoNastaveno = !!draft.meritkoNastaveno;
-  nakladyHod = draft.nakladyHod || 350;
+  nakladyHod = draft.nakladyHod || 300;
   rychlostChuze = draft.rychlostChuze || 4.5;
   aktivniZakazka = 0;
   hasUnsavedPrace = true;

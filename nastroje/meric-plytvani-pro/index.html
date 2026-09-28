@@ -28,7 +28,7 @@
   "description": "Měřte délku cyklu přesněji, s vlastními kroky procesu, exportem dat a historií napříč zařízeními.",
   "url": "https://tokva.cz/nastroje/meric-plytvani-pro/",
   "applicationCategory": "BusinessApplication",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CZK", "description": "Placena verze pres Tokva Pro" },
+  "offers": { "@type": "Offer", "price": "499", "priceCurrency": "CZK", "url": "https://tokva.cz/pro/#objednavka", "description": "Součást Tokva Pro, od 499 Kč měsíčně (zakladatelská cena)", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "499", "priceCurrency": "CZK", "unitCode": "MON", "referenceQuantity": { "@type": "QuantitativeValue", "value": "1", "unitCode": "MON" } } },
   "author": { "@type": "Person", "name": "Gabriela Tomíčková" }
 }
 </script>
@@ -537,11 +537,11 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <button class="btn-pridat" style="margin-top:8px;" onclick="toggleVlastniSmena()">Vlastní délka směny</button>
     <div class="field-row" style="margin-top:12px;">
       <div class="field"><label>Náklad pracovníka na hodinu (Kč/h)</label>
-        <input type="number" id="inp-sazba" value="250" min="0" step="10"></div>
+        <input type="number" id="inp-sazba" value="300" min="0" step="10"></div>
       <div class="field"><label>Počet pracovníků v procesu</label>
         <input type="number" id="inp-pocet-pracovniku" value="1" min="1" step="1"></div>
     </div>
-    <p style="font-size:12px;color:var(--light);margin-top:6px;line-height:1.6;">Výchozích 250 Kč/h je orientační odhad celkových nákladů na pracovníka (mzda + odvody). Zadejte vlastní číslo pro přesnější výsledek. Počet pracovníků násobí dopad — čeká-li na materiál víc lidí najednou, ztráta je vyšší než u jednoho člověka.</p>
+    <p style="font-size:12px;color:var(--light);margin-top:6px;line-height:1.6;">Výchozích 300 Kč/h je orientační odhad celkových nákladů na pracovníka (mzda + odvody). Zadejte vlastní číslo pro přesnější výsledek. Počet pracovníků násobí dopad. Když čeká na materiál víc lidí najednou, ztráta je vyšší než u jednoho člověka.</p>
   </div>
 
   <div class="setup-krok">
@@ -837,7 +837,7 @@ function renderPrihlaseniStav() {
 // v prohlížeči (meric_free_rozpracovano, hotovo:true). Pro ho při vstupu
 // jednou převezme do historie a do účtu, aby šlo hned porovnat jako PŘED
 // s dalším měřením. Kategorie jsou ve free i Pro stejné (STD). Jen stejný
-// prohlížeč. Náklady se berou výchozí (250 Kč/h, 7,5 h, 1 pracovník).
+// prohlížeč. Náklady se berou výchozí (300 Kč/h, 7,5 h, 1 pracovník), stejné jako ve free verzi.
 function prevzitMereniZFree() {
   let free = null;
   try { free = JSON.parse(localStorage.getItem('meric_free_rozpracovano') || 'null'); } catch (e) {}
@@ -852,14 +852,14 @@ function prevzitMereniZFree() {
   const avgC = cyk.reduce((s,c)=>s+c.celkem,0)/n;
   const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
   const plyPct = (Math.round(avgC*10)/10) > 0 ? Math.round((Math.round(plyC*10)/10)/(Math.round(avgC*10)/10)*100) : 0;
-  const plyKcRok = avgC > 0 ? Math.round((plyC/avgC) * 250 * 7.5 * 250 * 1) : 0;
+  const plyKcRok = avgC > 0 ? Math.round((plyC/avgC) * 300 * 7.5 * 250 * 1) : 0;
   const zaznam = {
     id: Date.now(),
     nazev: (free.nazev || 'Měření') + ' (z bezplatného měřiče)',
     datum: new Date(free.cas || Date.now()).toLocaleDateString('cs-CZ'),
     cyklu: n, avgC, plyPct, smena: 7.5, plyKcRok,
     kategorie_avg: avg, cykly: cyk, vlastniOp: [],
-    hodinovaSazba: 250, pocetPracovniku: 1, pocetKusu: 0,
+    hodinovaSazba: 300, pocetPracovniku: 1, pocetKusu: 0,
     zdroj: 'free'
   };
   let hist = [];
@@ -1002,7 +1002,7 @@ let vsechnyKat = [];
 let vyrazeneStd = new Set();
 let pouziteNavrhy = new Set();
 let delkaSmeny = 7.5;
-let hodinovaSazba = 250;
+let hodinovaSazba = 300;
 let pocetPracovniku = 1;
 let nazev = '', pocetKusu = 0;
 let cykly = [], aktCyklus = null, aktivniKat = null;
@@ -1175,7 +1175,7 @@ document.addEventListener('wheel', function (e) {
 function spustit() {
   nazev = document.getElementById('inp-nazev').value.trim() || 'Proces';
   pocetKusu = parseInt(document.getElementById('inp-zakazka').value) || 0;
-  hodinovaSazba = parseFloat(document.getElementById('inp-sazba').value) || 250;
+  hodinovaSazba = parseFloat(document.getElementById('inp-sazba').value) || 300;
   pocetPracovniku = parseInt(document.getElementById('inp-pocet-pracovniku').value) || 1;
 
   if (pocetAktivnichPraci() < 1) {
@@ -2404,7 +2404,7 @@ function zkusitObnovitRozpracovaneMereni() {
   nazev = draft.nazev || 'Proces';
   pocetKusu = draft.pocetKusu || 0;
   delkaSmeny = draft.delkaSmeny || 7.5;
-  hodinovaSazba = draft.hodinovaSazba || 250;
+  hodinovaSazba = draft.hodinovaSazba || 300;
   pocetPracovniku = draft.pocetPracovniku || 1;
   vlastniOp = draft.vlastniOp || [];
   vyrazeneStd = new Set(draft.vyrazeneStd || []);
