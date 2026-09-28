@@ -342,6 +342,7 @@ body.prezentace footer{display:none;}
         <div class="detail-nazev" id="det-nazev"></div>
         <div class="detail-akce skryt-v-prezentaci">
           <button class="btn-secondary" onclick="exportovatProjektCSV()">⬇ Export CSV</button>
+          <button class="btn-secondary" onclick="tisknoutProjekt()">🖨 Vytisknout souhrn</button>
           <button class="btn-secondary" onclick="otevritModalHlavicka()">Upravit hlavičku</button>
           <button class="btn-secondary danger" id="btn-smazat-projekt" onclick="smazatProjekt()">Smazat projekt</button>
           <button class="btn-gold" id="btn-prezentovat" onclick="prepnoutPrezentaci()">▶ Prezentovat</button>
@@ -1295,6 +1296,68 @@ function cookiesOdmitnout() {
     h.querySelector('.tth-r').textContent = new Date().toLocaleDateString('cs-CZ');
   });
 })();
+
+// ── Společný tisk a CSV (Tokva) ──
+function tokvaEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function tokvaTiskOkno(nazevNastroje, info, telo) {
+  const w = window.open('', '_blank');
+  if (!w) { alert('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
+  w.document.write('<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><title>' + tokvaEsc(nazevNastroje) + '</title><style>' +
+    '*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;font-size:13px;color:#111;max-width:800px;margin:0 auto;padding:32px;}' +
+    '.hl{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:3px solid #e9a91b;padding-bottom:12px;margin-bottom:22px;}' +
+    '.hl .n{font-size:20px;font-weight:900;}.hl .i{text-align:right;font-size:11px;color:#666;line-height:1.5;}.hl .i b{display:block;font-size:15px;color:#111;}' +
+    'h2{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;margin:20px 0 8px;}' +
+    'table{width:100%;border-collapse:collapse;margin-bottom:6px;}th{background:#111;color:#fff;padding:7px 9px;text-align:left;font-size:10px;}' +
+    'td{padding:6px 9px;border-bottom:1px solid #eee;font-size:11.5px;vertical-align:top;}td.c{text-align:right;font-family:monospace;white-space:nowrap;}' +
+    '.st{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}.st div{background:#f5f4f0;border-radius:6px;padding:10px;text-align:center;}' +
+    '.st b{display:block;font-size:17px;font-family:monospace;}.st span{font-size:10px;color:#888;}.st .g{background:#fdf3d9;}.st .g b{color:#c48e10;}' +
+    '.box{background:#fdf3d9;border-radius:6px;padding:12px 14px;margin:10px 0;line-height:1.6;}.txt{line-height:1.65;white-space:pre-wrap;}' +
+    'footer{margin-top:30px;padding-top:10px;border-top:1px solid #eee;font-size:10px;color:#aaa;text-align:center;}' +
+    '@media print{body{padding:12px;}tr,.box{break-inside:avoid;}}' +
+    '</style></head><body><div class="hl"><div class="n">' + tokvaEsc(nazevNastroje) + '</div><div class="i">' + info + '</div></div>' + telo + '<footer>tokva.cz</footer></body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function () { w.print(); }, 400);
+}
+function tokvaStahnoutCSV(nazevSouboru, radky) {
+  const csv = radky.map(function (r) {
+    return (r || []).map(function (v) {
+      let t = v == null ? '' : String(v);
+      if (typeof v === 'number') t = (Math.round(v * 100) / 100).toString().replace('.', ',');
+      return '"' + t.replace(/"/g, '""') + '"';
+    }).join(';');
+  }).join('\r\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nazevSouboru;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+}
+
+function tisknoutProjekt() {
+  if (!aktualniProjekt) return;
+  const t = function (id) { const el = document.getElementById(id); return el ? el.textContent.trim() : ''; };
+  const p = aktualniProjekt;
+  const vysl = aktualniToolRuny.slice().sort(function (a, b) { return new Date(a.created_at) - new Date(b.created_at); }).map(function (tr) {
+    return '<tr><td>' + tokvaEsc(toolNazev(tr)) + '</td><td>' + tokvaEsc(tr.shrnuti || '') + '</td><td class="c">' +
+      (tr.hlavni_hodnota_cislo != null ? tokvaEsc(String(tr.hlavni_hodnota_cislo).replace('.', ',') + (tr.hlavni_hodnota_jednotka ? ' ' + tr.hlavni_hodnota_jednotka : '')) : tokvaEsc(tr.hlavni_hodnota_text || '')) +
+      '</td><td class="c">' + new Date(tr.created_at).toLocaleDateString('cs-CZ') + '</td></tr>';
+  }).join('');
+  const akc = aktualniAkce.map(function (a) {
+    return '<tr><td>' + tokvaEsc(a.title || '') + '</td><td>' + tokvaEsc(NAZVY_STAVU_AKCE[a.status] || a.status || '') + '</td><td>' + tokvaEsc(a.responsible_person || '') + '</td><td class="c">' +
+      (a.due_date ? new Date(a.due_date + 'T00:00:00').toLocaleDateString('cs-CZ') : '') + '</td><td class="c">' + (a.actual_benefit != null ? formatKc(a.actual_benefit) : '') + '</td><td>' +
+      (a.verification_confirmed === true ? 'Ano' : (a.verification_confirmed === false ? 'Ne' : '')) + '</td></tr>';
+  }).join('');
+  const telo =
+    '<div class="st"><div><b style="font-size:13px;">' + tokvaEsc(t('det-stav')) + '</b><span>stav</span></div><div><b style="font-size:13px;">' + tokvaEsc(t('det-osoba')) + '</b><span>odpovídá</span></div>' +
+    '<div class="g"><b style="font-size:14px;">' + tokvaEsc(t('det-potencial')) + '</b><span>očekávaný potenciál</span></div><div class="g"><b style="font-size:14px;">' + tokvaEsc(t('det-overeno')) + '</b><span>ověřená úspora</span></div></div>' +
+    (p.description ? '<h2>Popis</h2><div class="txt">' + tokvaEsc(p.description) + '</div>' : '') +
+    '<h2>Další krok</h2><div class="box">' + tokvaEsc(t('det-krok')) + '</div>' +
+    '<h2>Výsledky měření</h2>' + (vysl ? '<table><thead><tr><th>Nástroj</th><th>Shrnutí</th><th style="text-align:right">Hodnota</th><th style="text-align:right">Datum</th></tr></thead><tbody>' + vysl + '</tbody></table>' : '<p>Zatím žádné.</p>') +
+    '<h2>Úkoly</h2>' + (akc ? '<table><thead><tr><th>Úkol</th><th>Stav</th><th>Kdo</th><th style="text-align:right">Termín</th><th style="text-align:right">Přínos</th><th>Ověřeno</th></tr></thead><tbody>' + akc + '</tbody></table>' : '<p>Zatím žádné.</p>');
+  tokvaTiskOkno('Projekt', '<b>' + tokvaEsc(p.name) + '</b>založeno ' + tokvaEsc(t('det-datum')) + ' · vytištěno ' + new Date().toLocaleDateString('cs-CZ'), telo);
+}
 </script>
 </body>
 </html>

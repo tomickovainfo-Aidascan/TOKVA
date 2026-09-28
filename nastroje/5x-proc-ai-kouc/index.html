@@ -1706,7 +1706,14 @@ function renderOutput(raw, ulozit = true, neuplne = false) {
   exportBtn.style.marginTop = '0';
   exportBtn.textContent = 'Stáhnout jako TXT';
   exportBtn.onclick = () => exportTxt(raw);
+
+  const tiskBtn = document.createElement('button');
+  tiskBtn.className = 'export-output';
+  tiskBtn.style.marginTop = '0';
+  tiskBtn.textContent = 'Vytisknout';
+  tiskBtn.onclick = () => tisknoutAnalyzu5x(card);
   btnRow.appendChild(exportBtn);
+  btnRow.appendChild(tiskBtn);
 
   const novaBtn = document.createElement('button');
   novaBtn.className = 'export-output';
@@ -2496,6 +2503,58 @@ document.addEventListener('keydown', function(e){
   var btn = otevreny.querySelector('.modal-save:not(:disabled), .btn-modal-ok:not(:disabled), #modal-notice-ok, #notice-btn-ok, #pro-btn');
   if (btn && !btn.disabled) { e.preventDefault(); btn.click(); }
 });
+
+// ── Společný tisk a CSV (Tokva) ──
+function tokvaEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function tokvaTiskOkno(nazevNastroje, info, telo) {
+  const w = window.open('', '_blank');
+  if (!w) { alert('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
+  w.document.write('<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><title>' + tokvaEsc(nazevNastroje) + '</title><style>' +
+    '*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;font-size:13px;color:#111;max-width:800px;margin:0 auto;padding:32px;}' +
+    '.hl{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:3px solid #e9a91b;padding-bottom:12px;margin-bottom:22px;}' +
+    '.hl .n{font-size:20px;font-weight:900;}.hl .i{text-align:right;font-size:11px;color:#666;line-height:1.5;}.hl .i b{display:block;font-size:15px;color:#111;}' +
+    'h2{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;margin:20px 0 8px;}' +
+    'table{width:100%;border-collapse:collapse;margin-bottom:6px;}th{background:#111;color:#fff;padding:7px 9px;text-align:left;font-size:10px;}' +
+    'td{padding:6px 9px;border-bottom:1px solid #eee;font-size:11.5px;vertical-align:top;}td.c{text-align:right;font-family:monospace;white-space:nowrap;}' +
+    '.st{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}.st div{background:#f5f4f0;border-radius:6px;padding:10px;text-align:center;}' +
+    '.st b{display:block;font-size:17px;font-family:monospace;}.st span{font-size:10px;color:#888;}.st .g{background:#fdf3d9;}.st .g b{color:#c48e10;}' +
+    '.box{background:#fdf3d9;border-radius:6px;padding:12px 14px;margin:10px 0;line-height:1.6;}.txt{line-height:1.65;white-space:pre-wrap;}' +
+    'footer{margin-top:30px;padding-top:10px;border-top:1px solid #eee;font-size:10px;color:#aaa;text-align:center;}' +
+    '@media print{body{padding:12px;}tr,.box{break-inside:avoid;}}' +
+    '</style></head><body><div class="hl"><div class="n">' + tokvaEsc(nazevNastroje) + '</div><div class="i">' + info + '</div></div>' + telo + '<footer>tokva.cz</footer></body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function () { w.print(); }, 400);
+}
+function tokvaStahnoutCSV(nazevSouboru, radky) {
+  const csv = radky.map(function (r) {
+    return (r || []).map(function (v) {
+      let t = v == null ? '' : String(v);
+      if (typeof v === 'number') t = (Math.round(v * 100) / 100).toString().replace('.', ',');
+      return '"' + t.replace(/"/g, '""') + '"';
+    }).join(';');
+  }).join('\r\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nazevSouboru;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+}
+
+function tisknoutAnalyzu5x(card) {
+  const kopie = card.cloneNode(true);
+  kopie.querySelectorAll('button, select, input, textarea, .export-output').forEach(function (el) { el.remove(); });
+  let telo = '';
+  kopie.querySelectorAll('.output-section').forEach(function (sec) {
+    const t = sec.querySelector('.output-section-title');
+    const obsah = sec.querySelector('.output-highlight, .output-section-text');
+    const zvyraz = obsah && obsah.classList.contains('output-highlight');
+    telo += (t ? '<h2>' + tokvaEsc(t.textContent) + '</h2>' : '') + '<div class="' + (zvyraz ? 'box' : 'txt') + '">' + (obsah ? obsah.innerHTML : '') + '</div>';
+  });
+  if (!telo) telo = '<div class="txt">' + tokvaEsc(posledniRawVystup || '') + '</div>';
+  tokvaTiskOkno('5× Proč AI kouč', '<b>Analýza příčiny</b>' + new Date().toLocaleDateString('cs-CZ'), telo);
+}
 </script>
 </body>
 </html>

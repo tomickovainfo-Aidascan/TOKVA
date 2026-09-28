@@ -552,6 +552,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <input id="s-nazev-vypoctu" type="text" class="uloz-panel-vstup" placeholder="Název výpočtu (nepovinné), např. Sklad A, září" style="display:none;">
         <button class="btn-gold" id="btn-ulozit-vychozi" style="width:100%;" onclick="ulozitVypocetZtrat()">Uložit jako výchozí stav <span class="pro-lock-badge">Pro</span></button>
         <div class="uloz-hint">Za měsíc spočítáte to samé znovu a uvidíte rozdíl v korunách.</div>
+        <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="tisknoutZtraty()">🖨 Vytisknout výsledek</button>
         <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="novyVypocetZtrat()">🔄 Nový výpočet</button>
         <div id="s-ulozeno-stav" style="font-size:12.5px;margin-top:8px;display:none;"></div>
       </div>
@@ -607,6 +608,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div style="padding:8px 20px 16px;">
           <div id="historie-seznam"></div>
           <button class="btn-gold" style="width:100%;margin-top:12px;display:none;" id="btn-porovnat" onclick="otevritPorovnaniZtrat()" disabled>Porovnat vybrané (0/2)</button>
+          <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="exportovatHistoriiZtratCSV()">⬇ Export uložených výpočtů (CSV)</button>
         </div>
       </div>
 
@@ -1485,6 +1487,70 @@ function otevritVypocetZAdresy() {
   if (!id) return;
   vypocetZAdresyOtevren = true;
   if (historieZtrat.some(function (x) { return x.id === id; })) otevritDetailZtrat(id);
+}
+
+// ── Společný tisk a CSV (Tokva) ──
+function tokvaEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function tokvaTiskOkno(nazevNastroje, info, telo) {
+  const w = window.open('', '_blank');
+  if (!w) { alert('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
+  w.document.write('<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><title>' + tokvaEsc(nazevNastroje) + '</title><style>' +
+    '*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;font-size:13px;color:#111;max-width:800px;margin:0 auto;padding:32px;}' +
+    '.hl{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:3px solid #e9a91b;padding-bottom:12px;margin-bottom:22px;}' +
+    '.hl .n{font-size:20px;font-weight:900;}.hl .i{text-align:right;font-size:11px;color:#666;line-height:1.5;}.hl .i b{display:block;font-size:15px;color:#111;}' +
+    'h2{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;margin:20px 0 8px;}' +
+    'table{width:100%;border-collapse:collapse;margin-bottom:6px;}th{background:#111;color:#fff;padding:7px 9px;text-align:left;font-size:10px;}' +
+    'td{padding:6px 9px;border-bottom:1px solid #eee;font-size:11.5px;vertical-align:top;}td.c{text-align:right;font-family:monospace;white-space:nowrap;}' +
+    '.st{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}.st div{background:#f5f4f0;border-radius:6px;padding:10px;text-align:center;}' +
+    '.st b{display:block;font-size:17px;font-family:monospace;}.st span{font-size:10px;color:#888;}.st .g{background:#fdf3d9;}.st .g b{color:#c48e10;}' +
+    '.box{background:#fdf3d9;border-radius:6px;padding:12px 14px;margin:10px 0;line-height:1.6;}.txt{line-height:1.65;white-space:pre-wrap;}' +
+    'footer{margin-top:30px;padding-top:10px;border-top:1px solid #eee;font-size:10px;color:#aaa;text-align:center;}' +
+    '@media print{body{padding:12px;}tr,.box{break-inside:avoid;}}' +
+    '</style></head><body><div class="hl"><div class="n">' + tokvaEsc(nazevNastroje) + '</div><div class="i">' + info + '</div></div>' + telo + '<footer>tokva.cz</footer></body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function () { w.print(); }, 400);
+}
+function tokvaStahnoutCSV(nazevSouboru, radky) {
+  const csv = radky.map(function (r) {
+    return (r || []).map(function (v) {
+      let t = v == null ? '' : String(v);
+      if (typeof v === 'number') t = (Math.round(v * 100) / 100).toString().replace('.', ',');
+      return '"' + t.replace(/"/g, '""') + '"';
+    }).join(';');
+  }).join('\r\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nazevSouboru;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+}
+
+function tisknoutZtraty() {
+  const v = (posledniVypocetPlny || {}).vysledky || {}, vs = (posledniVypocetPlny || {}).vstupy || {}, dop = (posledniVypocetPlny || {}).doporuceni || {};
+  const kat = [['Chůze a přesuny', v.chuzeh], ['Ruční administrativa', v.adminh], ['Čekání a prostoje', v.prostojes], ['Dodávky a expedice', v.kamionh]];
+  const telo =
+    '<div class="st"><div class="g"><b>' + fmt(v.rok || 0) + ' Kč</b><span>ztráta za rok</span></div><div><b>' + fmt(v.mesic || 0) + ' Kč</b><span>za měsíc</span></div>' +
+    '<div><b>' + fmtD(v.celkem || 0, 1) + ' h</b><span>ztracených hodin týdně</span></div><div><b>' + fmtD(v.uvazek || 0, 1) + '</b><span>úvazků na ztrátách</span></div></div>' +
+    (dop.nazev ? '<div class="box"><b>Největší zdroj ztráty:</b> ' + tokvaEsc(dop.nazev) + '<br>' + tokvaEsc(dop.popis || '') + '</div>' : '') +
+    '<h2>Kde čas mizí</h2><table><thead><tr><th>Oblast</th><th style="text-align:right">Hodin týdně</th><th style="text-align:right">Podíl</th></tr></thead><tbody>' +
+    kat.map(function (k) { return '<tr><td>' + k[0] + '</td><td class="c">' + fmtD(k[1] || 0, 1) + '</td><td class="c">' + (v.celkem ? Math.round((k[1] || 0) / v.celkem * 100) : 0) + ' %</td></tr>'; }).join('') +
+    '</tbody></table>' +
+    '<h2>Zadané hodnoty</h2><table><tbody>' +
+    VSTUPY_ZTRAT.map(function (x) { return vs[x[0]] == null ? '' : '<tr><td>' + x[2] + '</td><td class="c">' + fmtD(vs[x[0]], 1) + (x[3] ? ' ' + x[3] : '') + '</td></tr>'; }).join('') +
+    '</tbody></table><p style="font-size:11px;color:#666;margin-top:10px;">Orientační odhad, počítáno s 250 pracovními dny v roce.</p>';
+  const nazev = ((document.getElementById('s-nazev-vypoctu') || {}).value || '').trim();
+  tokvaTiskOkno('Kalkulačka ztrát', (nazev ? '<b>' + tokvaEsc(nazev) + '</b>' : '') + new Date().toLocaleDateString('cs-CZ'), telo);
+}
+function exportovatHistoriiZtratCSV() {
+  if (!historieZtrat.length) { alert('Zatím nemáte žádný uložený výpočet k exportu.'); return; }
+  const hlav = ['Název', 'Datum'].concat(VYSLEDKY_ZTRAT.map(function (x) { return x[1] + (x[2] ? ' (' + x[2] + ')' : ''); }), VSTUPY_ZTRAT.map(function (x) { return x[2] + (x[3] ? ' (' + x[3] + ')' : ''); }));
+  const radky = [hlav].concat(historieZtrat.map(function (r) {
+    const v = (r.data || {}).vysledky || {}, vs = (r.data || {}).vstupy || {};
+    return [r.nazev, new Date(r.created_at).toLocaleDateString('cs-CZ')].concat(VYSLEDKY_ZTRAT.map(function (x) { return v[x[0]]; }), VSTUPY_ZTRAT.map(function (x) { return vs[x[0]]; }));
+  }));
+  tokvaStahnoutCSV('kalkulacka-ztrat-' + new Date().toISOString().slice(0, 10) + '.csv', radky);
 }
 
 nacistPrihlaseniStav();

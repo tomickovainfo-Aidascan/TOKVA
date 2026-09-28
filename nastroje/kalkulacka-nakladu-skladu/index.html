@@ -940,6 +940,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="ulozit-row">
         <button class="btn-gold" onclick="ulozitVypocet()">💾 Uložit tento výpočet <span class="pro-lock-badge">Pro</span></button>
         <button class="btn-outline" onclick="exportCSV()">⬇ Export CSV <span class="pro-lock-badge">Pro</span></button>
+        <button class="btn-outline" onclick="tisknoutNakladySkladu()">🖨 Vytisknout výsledek</button>
         <button class="btn-outline" onclick="novyVypocet()">🔄 Nový výpočet</button>
       </div>
 
@@ -2617,6 +2618,69 @@ document.addEventListener('keydown', function(e){
     h.querySelector('.tth-r').textContent = new Date().toLocaleDateString('cs-CZ');
   });
 })();
+
+// ── Společný tisk a CSV (Tokva) ──
+function tokvaEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function tokvaTiskOkno(nazevNastroje, info, telo) {
+  const w = window.open('', '_blank');
+  if (!w) { alert('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
+  w.document.write('<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><title>' + tokvaEsc(nazevNastroje) + '</title><style>' +
+    '*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;font-size:13px;color:#111;max-width:800px;margin:0 auto;padding:32px;}' +
+    '.hl{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:3px solid #e9a91b;padding-bottom:12px;margin-bottom:22px;}' +
+    '.hl .n{font-size:20px;font-weight:900;}.hl .i{text-align:right;font-size:11px;color:#666;line-height:1.5;}.hl .i b{display:block;font-size:15px;color:#111;}' +
+    'h2{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;margin:20px 0 8px;}' +
+    'table{width:100%;border-collapse:collapse;margin-bottom:6px;}th{background:#111;color:#fff;padding:7px 9px;text-align:left;font-size:10px;}' +
+    'td{padding:6px 9px;border-bottom:1px solid #eee;font-size:11.5px;vertical-align:top;}td.c{text-align:right;font-family:monospace;white-space:nowrap;}' +
+    '.st{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}.st div{background:#f5f4f0;border-radius:6px;padding:10px;text-align:center;}' +
+    '.st b{display:block;font-size:17px;font-family:monospace;}.st span{font-size:10px;color:#888;}.st .g{background:#fdf3d9;}.st .g b{color:#c48e10;}' +
+    '.box{background:#fdf3d9;border-radius:6px;padding:12px 14px;margin:10px 0;line-height:1.6;}.txt{line-height:1.65;white-space:pre-wrap;}' +
+    'footer{margin-top:30px;padding-top:10px;border-top:1px solid #eee;font-size:10px;color:#aaa;text-align:center;}' +
+    '@media print{body{padding:12px;}tr,.box{break-inside:avoid;}}' +
+    '</style></head><body><div class="hl"><div class="n">' + tokvaEsc(nazevNastroje) + '</div><div class="i">' + info + '</div></div>' + telo + '<footer>tokva.cz</footer></body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function () { w.print(); }, 400);
+}
+function tokvaStahnoutCSV(nazevSouboru, radky) {
+  const csv = radky.map(function (r) {
+    return (r || []).map(function (v) {
+      let t = v == null ? '' : String(v);
+      if (typeof v === 'number') t = (Math.round(v * 100) / 100).toString().replace('.', ',');
+      return '"' + t.replace(/"/g, '""') + '"';
+    }).join(';');
+  }).join('\r\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = nazevSouboru;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+}
+
+function tisknoutNakladySkladu() {
+  const t = function (id) { const el = document.getElementById(id); return el ? el.textContent.trim() : ''; };
+  const kat = ['zakladni','energie','pojisteni','revize','provoz','odpisy','ostatni'];
+  const radkyKat = kat.map(function (k) {
+    const nazevEl = document.getElementById('bd-' + k + '-name');
+    const nazev = nazevEl ? nazevEl.textContent.trim() : (NAZVY_KAT[k] || k);
+    return '<tr><td>' + tokvaEsc(nazev) + '</td><td class="c">' + tokvaEsc(t('val-' + k)) + '</td></tr>';
+  }).join('');
+  const radkyVst = Object.keys(VSTUPY_NAZVY).map(function (id) {
+    const el = document.getElementById(id); if (!el) return '';
+    // Zobrazit jen položky, které patří k aktuálnímu režimu (pronájem / vlastní budova).
+    if (mode === 'najem' && (id === 'budova' || id === 'pozemek')) return '';
+    if (mode !== 'najem' && (id === 'najemne' || id === 'sprava')) return '';
+    const h = getVal(id); if (!h) return '';
+    return '<tr><td>' + VSTUPY_NAZVY[id] + '</td><td class="c">' + fmt(h) + ' Kč</td></tr>';
+  }).join('');
+  const telo =
+    '<div class="st"><div class="g"><b>' + tokvaEsc(t('res-m2-mesic')) + ' Kč</b><span>na 1 m² za měsíc</span></div><div><b>' + tokvaEsc(t('res-mesic')) + '</b><span>Kč celkem za měsíc</span></div>' +
+    '<div><b>' + tokvaEsc(t('res-rok')) + '</b><span>Kč celkem za rok</span></div><div><b>' + tokvaEsc(t('res-m2-rok')) + '</b><span>Kč/m² za rok</span></div></div>' +
+    '<p style="margin:6px 0 4px;">Plocha: <b>' + fmt(getVal('plocha')) + ' m²</b> · ' + (mode === 'najem' ? 'pronájem' : 'vlastní budova') + ' · podíl základního nájmu/odpisu ' + tokvaEsc(t('res-podil')) + '</p>' +
+    '<h2>Rozpad nákladů za měsíc</h2><table><tbody>' + radkyKat + '</tbody></table>' +
+    (radkyVst ? '<h2>Zadané položky (nenulové)</h2><table><tbody>' + radkyVst + '</tbody></table>' : '');
+  tokvaTiskOkno('Kalkulačka nákladů skladu', new Date().toLocaleDateString('cs-CZ'), telo);
+}
 </script>
 </body>
 </html>
