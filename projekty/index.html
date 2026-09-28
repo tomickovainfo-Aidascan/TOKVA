@@ -638,7 +638,7 @@ async function nacistSeznamProjektu() {
   const orgId = clenstvi.organization_id;
   const [projRes, trRes, akceRes] = await Promise.all([
     supabaseClient.from('projects').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
-    supabaseClient.from('tool_runs').select('id,project_id,created_at').eq('organization_id', orgId).not('project_id', 'is', null),
+    supabaseClient.from('tool_runs').select('id,project_id,created_at').eq('organization_id', orgId).neq('nastroj', '5s-pracoviste').not('project_id', 'is', null),
     supabaseClient.from('actions').select('id,project_id,created_at').eq('organization_id', orgId).not('project_id', 'is', null)
   ]);
 
@@ -695,7 +695,7 @@ async function otevritDetailProjektu(id) {
   aktualniProjekt = projekt;
 
   const [trRes, akceRes] = await Promise.all([
-    supabaseClient.from('tool_runs').select('*').eq('project_id', id).order('created_at', { ascending: true }),
+    supabaseClient.from('tool_runs').select('*').eq('project_id', id).neq('nastroj', '5s-pracoviste').order('created_at', { ascending: true }),
     supabaseClient.from('actions').select('*').eq('project_id', id).order('created_at', { ascending: true })
   ]);
   aktualniToolRuny = trRes.error ? [] : (trRes.data || []);

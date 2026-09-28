@@ -544,26 +544,28 @@ async function exportovatVsechnaData() {
     }, null, 2));
     obrazky.forEach(o => zip.file(o.nazev, o.base64, { base64: true }));
 
-    // 3) Fotky u úkolů v akčním plánu (úložiště souborů)
+    // 3) Fotky z úložiště: u úkolů v akčním plánu a z pracovišť 5S
     let fotekOk = 0, fotekChyba = 0;
+    const FOTKY_5S = ['foto_pred', 'foto_po', 'standard'];
     for (const f of (soubory.data || [])) {
       if (!f.storage_path) continue;
       try {
         const { data: blob, error } = await supabaseClient.storage.from('nastrojovna-files').download(f.storage_path);
         if (error || !blob) throw error || new Error('prázdný soubor');
         const jmeno = (f.file_name || f.storage_path.split('/').pop()).replace(/[\\/:*?"<>|]/g, '-');
-        zip.file('fotky-akcniho-planu/' + (f.id || fotekOk) + '-' + jmeno, blob);
+        const slozka = FOTKY_5S.indexOf(f.file_type) >= 0 ? 'fotky-5s/' : 'fotky-akcniho-planu/';
+        zip.file(slozka + (f.id || fotekOk) + '-' + jmeno, blob);
         fotekOk++;
       } catch (e) { fotekChyba++; console.warn('Fotku se nepodařilo stáhnout.', f.storage_path, e); }
     }
 
-    // 4) 5S pracoviště z tohoto prohlížeče (5S appka je drží v prohlížeči, ne v účtu)
+    // 4) Záloha 5S z tohoto prohlížeče (pro jistotu, kdyby se něco ještě nestihlo uložit do účtu)
     let ma5s = false;
     try {
       const d5s = JSON.parse(localStorage.getItem('5s_data') || 'null');
       if (d5s && d5s.mista && d5s.mista.length) {
         const obr5s = [];
-        zip.file('5s-pracoviste-z-tohoto-prohlizece.json', JSON.stringify(vytahnoutObrazky(d5s, '5s', obr5s), null, 2));
+        zip.file('5s-zaloha-z-tohoto-prohlizece.json', JSON.stringify(vytahnoutObrazky(d5s, '5s', obr5s), null, 2));
         obr5s.forEach(o => zip.file(o.nazev, o.base64, { base64: true }));
         ma5s = true;
       }
@@ -578,8 +580,9 @@ async function exportovatVsechnaData() {
       'kompletni-data.json     úplná data včetně všech odpovědí, vstupů, tras a poznámek\r\n' +
       'obrazky/                obrázky uložené u výsledků (třeba půdorysy ze Spaghetti diagramu)\r\n' +
       'fotky-akcniho-planu/    fotky přiložené k úkolům\r\n' +
-      (ma5s ? '5s-pracoviste-z-tohoto-prohlizece.json   pracoviště 5S včetně fotek, uložená v tomto prohlížeči\r\n' : '') +
-      '\r\nPoznámka: 5S appka drží pracoviště a fotky v prohlížeči, ve kterém s ní pracujete. Pokud jste 5S používali i na jiném zařízení, stáhněte export i tam.\r\n');
+      'fotky-5s/               fotky z pracovišť 5S (před, po, standard)\r\n' +
+      (ma5s ? '5s-zaloha-z-tohoto-prohlizece.json   záloha 5S z prohlížeče, ve kterém jste export stáhli\r\n' : '') +
+      '\r\nPracoviště 5S (kroky, poznámky, standard, kontroly) najdete v kompletni-data.json u nástroje 5s-pracoviste.\r\n');
 
     const blob = await zip.generateAsync({ type: 'blob' });
     const nazevFirmy = (clenstvi.organizations && clenstvi.organizations.name || 'firma').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase();

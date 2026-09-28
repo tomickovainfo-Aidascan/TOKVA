@@ -919,6 +919,9 @@ nav {
 /* STANDARD MÍSTA (4S, Pro) */
 .standard-block { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
 .standard-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.sync-stav { align-self: center; font-size: 11px; color: var(--light); margin-left: 4px; }
+.sync-stav.sync-ok { color: var(--green); }
+.sync-stav.sync-chyba { color: var(--gold); }
 .standard-foto-slot {
   width: 100%; max-width: 220px; aspect-ratio: 4/3;
   border: 2px dashed var(--border); border-radius: 10px;
@@ -1306,11 +1309,10 @@ nav {
 <script src="../../auth.js"></script>
 <script>
 // DATA
-// Místa, kroky, fotky a poznámky zůstávají v localStorage i pro Pro uživatele –
-// appka jede naplno i offline. Přihlášení a Pro plán appka zjišťuje ze Supabase
-// (viz nacistPrihlaseniStav níž), Pro běhy a úkoly appka navíc, best-effort,
-// posílá do Supabase (tool_runs/measurements/actions), aby se daly číst napříč
-// nástroji a v budoucím Akčním plánu.
+// Free: místa, kroky, fotky a poznámky jsou jen v localStorage tohoto prohlížeče.
+// Pro: celé pracoviště včetně fotek se ukládá i do účtu firmy (viz ULOŽENÍ
+// PRACOVIŠŤ DO ÚČTU FIRMY níž), localStorage je jen rychlá kopie pro práci
+// offline. Kontroly a úkoly jdou navíc do tool_runs/measurements/actions.
 let data = JSON.parse(localStorage.getItem('5s_data') || 'null') || {
   mista: [],
   aktivniMisto: null
@@ -1448,8 +1450,384 @@ const S_DATA = [
 ];
 
 function ulozit() {
-  localStorage.setItem('5s_data', JSON.stringify(data));
+  naplanovatSync();
+  ulozitLokalne();
 }
+
+// ===== ULOŽENÍ PRACOVIŠŤ DO ÚČTU FIRMY (Pro) =====
+// U Pro appka drží každé pracoviště celé v účtu firmy: kroky, poznámky,
+// standard, kontroly, úkoly i fotky. Prohlížeč slouží jen jako rychlá kopie,
+// takže appka jede i offline a po připojení všechno dožene. Na jiném zařízení
+// se po přihlášení pracoviště i s fotkami stáhnou z účtu.
+// Řádek v tool_runs: nastroj '5s-pracoviste', data = pracoviště bez fotek.
+// Fotky: úložiště nastrojovna-files, cesta {firma}/5s/{pracoviště}/..., řádek ve files.
+const SYNC_NASTROJ = '5s-pracoviste';
+let syncPovoleno = false;   // zapne se, až se pracoviště z účtu načtou
+let syncPodpisy = {};       // id pracoviště -> podpis stavu, který je v účtu
+let syncCasovace = {};
+let syncBezi = {};
+let syncChyby = 0;
+let syncOpakovani = null;
+
+function hashTextu(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36) + '_' + s.length;
+}
+// Otisk fotky: stačí délka a vzorek z dat, celý hash by u velkých fotek zdržoval
+function otiskFotky(dataUrl) {
+  const b = String(dataUrl).split(',').pop();
+  return hashTextu(b.slice(0, 300) + b.slice(Math.floor(b.length / 2), Math.floor(b.length / 2) + 300) + b.slice(-300)) + '_' + b.length;
+}
+function fotkyMista(m) {
+  const vysledek = {};
+  Object.keys(m.fotky || {}).forEach(k => {
+    const v = m.fotky[k];
+    if (!/_ts$/.test(k) && typeof v === 'string' && v.indexOf('data:') === 0) vysledek[k] = v;
+  });
+  if (m.standard && typeof m.standard.foto === 'string' && m.standard.foto.indexOf('data:') === 0) vysledek.standard = m.standard.foto;
+  return vysledek;
+}
+function nastavitFotkuMista(m, klic, dataUrl) {
+  if (klic === 'standard') {
+    if (!m.standard) m.standard = { foto: null, pravidla: '' };
+    m.standard.foto = dataUrl;
+  } else {
+    if (!m.fotky) m.fotky = {};
+    m.fotky[klic] = dataUrl;
+  }
+}
+// Kopie pracoviště bez fotek (fotky jdou zvlášť do úložiště)
+function mistoBezFotek(m) {
+  const kopie = JSON.parse(JSON.stringify(m));
+  Object.keys(kopie.fotky || {}).forEach(k => {
+    if (typeof kopie.fotky[k] === 'string' && kopie.fotky[k].indexOf('data:') === 0) delete kopie.fotky[k];
+  });
+  if (kopie.standard && typeof kopie.standard.foto === 'string' && kopie.standard.foto.indexOf('data:') === 0) kopie.standard.foto = null;
+  return kopie;
+}
+function podpisMista(m) {
+  const k = mistoBezFotek(m);
+  delete k.cloud; delete k.upravenoTs;
+  return hashTextu(JSON.stringify(k));
+}
+function chybiFotkyVUctu(m) {
+  const cf = (m.cloud && m.cloud.fotky) || {};
+  const f = fotkyMista(m);
+  return Object.keys(f).some(k => !cf[k] || cf[k].otisk !== otiskFotky(f[k]));
+}
+function patriDoJineFirmy(m) {
+  return !!(m.cloud && m.cloud.orgId && clenstvi && m.cloud.orgId !== clenstvi.organization_id);
+}
+function dataUrlNaBlob(dataUrl) {
+  const [hlavicka, b64] = dataUrl.split(',');
+  const typ = (hlavicka.match(/data:([^;]+)/) || [])[1] || 'image/jpeg';
+  const bin = atob(b64);
+  const pole = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) pole[i] = bin.charCodeAt(i);
+  return new Blob([pole], { type: typ });
+}
+function blobNaDataUrl(blob, typ) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve('data:' + (typ || 'image/jpeg') + ';base64,' + String(r.result).split(',').pop());
+    r.onerror = reject;
+    r.readAsDataURL(blob);
+  });
+}
+const NAZEV_FOTKY_5S = { pred: 'před', po: 'po' };
+function nazevSouboruFotky(m, klic) {
+  if (klic === 'standard') return m.nazev + ' - standard.jpg';
+  const [sId, typ] = klic.split('_');
+  const s = S_DATA.find(x => x.id === sId);
+  return m.nazev + ' - ' + (s ? s.num : sId) + ' ' + (NAZEV_FOTKY_5S[typ] || typ) + '.jpg';
+}
+function typSouboruFotky(klic) {
+  if (klic === 'standard') return 'standard';
+  return /_po$/.test(klic) ? 'foto_po' : 'foto_pred';
+}
+
+let posledniSyncStav = '';
+function nastavitSyncStav(stav) {
+  if (stav !== undefined) posledniSyncStav = stav;
+  stav = posledniSyncStav;
+  const el = document.getElementById('sync-stav');
+  if (!el) return;
+  const texty = {
+    uklada: 'Ukládám do účtu…',
+    ok: 'Uloženo v účtu firmy',
+    chyba: 'Zatím jen v tomto prohlížeči, do účtu uložím po připojení',
+    nacita: 'Načítám pracoviště z účtu…'
+  };
+  el.textContent = texty[stav] || '';
+  el.className = 'sync-stav sync-' + stav;
+}
+
+// Zapíše data do prohlížeče. Když dojde místo (fotky jsou velké), nechá
+// v prohlížeči jen fotky, které ještě nejsou v účtu. Ostatní se stáhnou z účtu.
+function ulozitLokalne() {
+  try {
+    localStorage.setItem('5s_data', JSON.stringify(data));
+    return true;
+  } catch (e) {
+    if (jePro) {
+      try {
+        const lehka = JSON.parse(JSON.stringify(data));
+        lehka.mista.forEach(m => {
+          const cf = (m.cloud && m.cloud.fotky) || {};
+          const f = fotkyMista(m);
+          Object.keys(f).forEach(k => {
+            if (cf[k] && cf[k].otisk === otiskFotky(f[k])) nastavitFotkuMista(m, k, null);
+          });
+        });
+        localStorage.setItem('5s_data', JSON.stringify(lehka));
+        return true;
+      } catch (e2) {}
+    }
+    ukazatUpozorneni('V prohlížeči došlo místo pro fotky. ' + (jePro ? 'Do účtu firmy se uloží, jakmile bude připojení.' : 'Smažte staré pracoviště nebo vyčistěte data prohlížeče.'));
+    return false;
+  }
+}
+
+function naplanovatSync() {
+  if (!jePro || !clenstvi || !syncPovoleno) return;
+  data.mista.forEach(m => {
+    if (patriDoJineFirmy(m)) return;
+    const p = podpisMista(m);
+    const zmena = syncPodpisy[m.id] !== p;
+    if (!zmena && !chybiFotkyVUctu(m)) return;
+    if (zmena && syncPodpisy[m.id] !== undefined) m.upravenoTs = Date.now();
+    if (!m.upravenoTs) m.upravenoTs = Date.now();
+    clearTimeout(syncCasovace[m.id]);
+    nastavitSyncStav('uklada');
+    syncCasovace[m.id] = setTimeout(() => synchronizovatMisto(m.id), 1200);
+  });
+}
+
+async function synchronizovatMisto(id) {
+  if (!jePro || !clenstvi || !syncPovoleno) return;
+  if (syncBezi[id]) { syncCasovace[id] = setTimeout(() => synchronizovatMisto(id), 1500); return; }
+  const m = data.mista.find(x => x.id === id);
+  if (!m || patriDoJineFirmy(m)) return;
+  syncBezi[id] = true;
+  const org = clenstvi.organization_id;
+  const podpisNaStartu = podpisMista(m);
+  try {
+    if (!m.cloud) m.cloud = {};
+    if (!m.cloud.fotky) m.cloud.fotky = {};
+    m.cloud.orgId = org;
+    const splneno = Object.keys(m.splneno || {}).filter(k => m.splneno[k]).length;
+    const radek = () => ({
+      nazev: '5S pracoviště: ' + m.nazev,
+      shrnuti: splneno + ' z 5 kroků hotovo',
+      project_id: m.projekt_id || null,
+      location_id: m.location_id || null,
+      hlavni_hodnota_cislo: splneno,
+      hlavni_hodnota_jednotka: 'kroků z 5',
+      data: mistoBezFotek(m)
+    });
+
+    // 1) Řádek pracoviště (potřebujeme jeho id pro fotky)
+    if (m.cloud.runId) {
+      const { data: upd, error } = await supabaseClient.from('tool_runs').update(radek()).eq('id', m.cloud.runId).select('id');
+      if (error) throw error;
+      if (!upd || !upd.length) m.cloud.runId = null;
+    }
+    if (!m.cloud.runId) {
+      const { data: ins, error } = await supabaseClient.from('tool_runs')
+        .insert(Object.assign({ organization_id: org, user_id: session.user.id, nastroj: SYNC_NASTROJ }, radek()))
+        .select('id').single();
+      if (error) throw error;
+      m.cloud.runId = ins.id;
+    }
+
+    // 2) Fotky, které v účtu ještě nejsou nebo se změnily
+    const fotky = fotkyMista(m);
+    let fotkyZmenene = false;
+    for (const klic of Object.keys(fotky)) {
+      const otisk = otiskFotky(fotky[klic]);
+      const stara = m.cloud.fotky[klic];
+      if (stara && stara.otisk === otisk) continue;
+      const cesta = org + '/5s/' + m.id + '/' + klic + '-' + Date.now() + '.jpg';
+      const blob = dataUrlNaBlob(fotky[klic]);
+      const { error: eUp } = await supabaseClient.storage.from('nastrojovna-files').upload(cesta, blob, { contentType: blob.type });
+      if (eUp) throw eUp;
+      const { data: soubor, error: eF } = await supabaseClient.from('files').insert({
+        organization_id: org,
+        project_id: m.projekt_id || null,
+        tool_run_id: m.cloud.runId,
+        storage_path: cesta,
+        file_name: nazevSouboruFotky(m, klic),
+        file_type: typSouboruFotky(klic),
+        uploaded_by: session.user.id
+      }).select('id').single();
+      if (eF) {
+        try { await supabaseClient.storage.from('nastrojovna-files').remove([cesta]); } catch (e) {}
+        throw eF;
+      }
+      m.cloud.fotky[klic] = { cesta, otisk, souborId: soubor.id };
+      fotkyZmenene = true;
+      if (stara) await smazatFotkuZUctu(stara);
+    }
+
+    // 3) Znovu řádek, aby v něm byly cesty k fotkám pro ostatní zařízení
+    if (fotkyZmenene) {
+      const { error } = await supabaseClient.from('tool_runs').update(radek()).eq('id', m.cloud.runId);
+      if (error) throw error;
+    }
+
+    syncPodpisy[id] = podpisNaStartu;
+    syncChyby = 0;
+    ulozitLokalne();
+    if (podpisMista(m) !== podpisNaStartu || chybiFotkyVUctu(m)) naplanovatSync();
+    else if (!Object.keys(syncBezi).some(k => k !== id && syncBezi[k])) nastavitSyncStav('ok');
+  } catch (e) {
+    console.warn('Pracoviště se nepodařilo uložit do účtu, zkusím to znovu.', e);
+    syncChyby++;
+    nastavitSyncStav('chyba');
+    ulozitLokalne();
+    clearTimeout(syncOpakovani);
+    syncOpakovani = setTimeout(naplanovatSync, Math.min(120000, 15000 * syncChyby));
+  } finally {
+    syncBezi[id] = false;
+  }
+}
+
+async function smazatFotkuZUctu(f) {
+  if (!f) return;
+  try { if (f.cesta) await supabaseClient.storage.from('nastrojovna-files').remove([f.cesta]); } catch (e) {}
+  try {
+    if (f.souborId) await supabaseClient.from('files').delete().eq('id', f.souborId);
+    else if (f.cesta) await supabaseClient.from('files').delete().eq('storage_path', f.cesta);
+  } catch (e) {}
+}
+
+// Smazání pracoviště z účtu. Když zrovna není připojení, appka si ho
+// poznamená a smaže ho z účtu při příštím otevření.
+async function smazatMistoZUctu(m) {
+  if (!m || !m.cloud || !m.cloud.runId || patriDoJineFirmy(m)) return;
+  const runId = m.cloud.runId;
+  try {
+    const { data: soubory } = await supabaseClient.from('files').select('id, storage_path').eq('tool_run_id', runId);
+    const cesty = (soubory || []).map(f => f.storage_path).filter(Boolean);
+    Object.values(m.cloud.fotky || {}).forEach(f => { if (f.cesta && cesty.indexOf(f.cesta) < 0) cesty.push(f.cesta); });
+    if (cesty.length) await supabaseClient.storage.from('nastrojovna-files').remove(cesty);
+    const { error: eF } = await supabaseClient.from('files').delete().eq('tool_run_id', runId);
+    if (eF) throw eF;
+    const { error } = await supabaseClient.from('tool_runs').delete().eq('id', runId).eq('nastroj', SYNC_NASTROJ);
+    if (error) throw error;
+    data.kSmazaniZUctu = (data.kSmazaniZUctu || []).filter(x => x.runId !== runId);
+  } catch (e) {
+    console.warn('Pracoviště se nepodařilo smazat z účtu, zkusím to příště.', e);
+    data.kSmazaniZUctu = (data.kSmazaniZUctu || []).filter(x => x.runId !== runId);
+    data.kSmazaniZUctu.push({ runId, fotky: m.cloud.fotky || {}, orgId: m.cloud.orgId || clenstvi.organization_id });
+  }
+  ulozitLokalne();
+}
+
+// Při otevření appky: načte pracoviště z účtu, spojí je s tím, co je
+// v prohlížeči (novější verze vyhrává), a stáhne chybějící fotky.
+async function nacistMistaZUctu(prekreslit) {
+  if (!jePro || !clenstvi) return;
+  const org = clenstvi.organization_id;
+  nastavitSyncStav('nacita');
+
+  // Dořešit mazání, které se minule nepovedlo
+  const cekajici = (data.kSmazaniZUctu || []).filter(x => x.orgId === org);
+  for (const x of cekajici) await smazatMistoZUctu({ cloud: { runId: x.runId, fotky: x.fotky, orgId: x.orgId } });
+
+  const { data: radky, error } = await supabaseClient.from('tool_runs')
+    .select('id, data, created_at').eq('organization_id', org).eq('nastroj', SYNC_NASTROJ);
+  if (error) {
+    console.warn('Pracoviště z účtu se nepodařilo načíst, zkusím to znovu.', error);
+    nastavitSyncStav('chyba');
+    setTimeout(() => nacistMistaZUctu(true), 30000);
+    return;
+  }
+
+  const vUctu = {};
+  (radky || []).forEach(r => {
+    const cm = r.data;
+    if (!cm || !cm.id) return;
+    vUctu[cm.id] = true;
+    cm.cloud = Object.assign({}, cm.cloud || {}, { runId: r.id, orgId: org });
+    if (!cm.cloud.fotky) cm.cloud.fotky = {};
+    const idx = data.mista.findIndex(m => m.id === cm.id);
+    if (idx < 0) {
+      data.mista.push(cm);
+      syncPodpisy[cm.id] = podpisMista(cm);
+      return;
+    }
+    const lok = data.mista[idx];
+    if ((cm.upravenoTs || 0) > (lok.upravenoTs || 0)) {
+      // V účtu je novější verze, fotky z prohlížeče si necháme, pokud sedí
+      const lokFotky = fotkyMista(lok);
+      Object.keys(cm.cloud.fotky).forEach(k => {
+        if (lokFotky[k] && otiskFotky(lokFotky[k]) === cm.cloud.fotky[k].otisk) nastavitFotkuMista(cm, k, lokFotky[k]);
+      });
+      data.mista[idx] = cm;
+      syncPodpisy[cm.id] = podpisMista(cm);
+    } else {
+      lok.cloud = Object.assign({}, cm.cloud, lok.cloud || {}, { runId: r.id, orgId: org });
+      lok.cloud.fotky = Object.assign({}, cm.cloud.fotky, (lok.cloud && lok.cloud.fotky) || {});
+      if ((cm.upravenoTs || 0) === (lok.upravenoTs || 0)) syncPodpisy[lok.id] = podpisMista(lok);
+    }
+  });
+
+  // Pracoviště, která už v účtu byla a někdo je mezitím smazal, zmizí i tady
+  const predtim = data.mista.length;
+  data.mista = data.mista.filter(m => !(m.cloud && m.cloud.runId && m.cloud.orgId === org && !vUctu[m.id]));
+  if (data.mista.length !== predtim && !data.mista.find(m => m.id === data.aktivniMisto)) {
+    data.aktivniMisto = data.mista.length ? data.mista[0].id : null;
+  }
+
+  syncPovoleno = true;
+  ulozitLokalne();
+  naplanovatSync();
+  if (!data.mista.some(m => !patriDoJineFirmy(m) && (syncPodpisy[m.id] !== podpisMista(m) || chybiFotkyVUctu(m)))) nastavitSyncStav('ok');
+
+  if (prekreslit) {
+    renderMista();
+    if (data.mista.length) renderMain(); else zobrazitUvod();
+  }
+
+  // Fotky, které v prohlížeči chybí, stáhneme z účtu
+  stahnoutChybejiciFotky();
+}
+
+async function stahnoutChybejiciFotky() {
+  let neco = false;
+  for (const m of data.mista) {
+    const cf = (m.cloud && m.cloud.fotky) || {};
+    const lok = fotkyMista(m);
+    for (const k of Object.keys(cf)) {
+      if (lok[k] && otiskFotky(lok[k]) === cf[k].otisk) continue;
+      if (lok[k]) continue; // v prohlížeči je novější fotka, ta půjde do účtu
+      try {
+        const { data: blob, error } = await supabaseClient.storage.from('nastrojovna-files').download(cf[k].cesta);
+        if (error || !blob) throw error || new Error('prázdná fotka');
+        nastavitFotkuMista(m, k, await blobNaDataUrl(blob, 'image/jpeg'));
+        neco = true;
+      } catch (e) {
+        console.warn('Fotku z účtu se nepodařilo stáhnout.', cf[k].cesta, e);
+      }
+    }
+  }
+  if (neco) {
+    ulozitLokalne();
+    if (data.mista.length) { renderMista(); renderMain(); }
+  }
+}
+
+window.addEventListener('online', () => { if (syncPovoleno) naplanovatSync(); });
+// Po návratu do appky (třeba z jiného zařízení se mezitím něco změnilo)
+// načteme stav z účtu, ale jen když se zrovna nic neukládá.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible' || !syncPovoleno) return;
+  const neceUklada = Object.values(syncBezi).some(Boolean) || data.mista.some(m => !patriDoJineFirmy(m) && (syncPodpisy[m.id] !== podpisMista(m) || chybiFotkyVUctu(m)));
+  const piseSe = document.activeElement && /TEXTAREA|INPUT/.test(document.activeElement.tagName);
+  if (!neceUklada && !piseSe) nacistMistaZUctu(true);
+});
 
 function aktivniMistoData() {
   return data.mista.find(m => m.id === data.aktivniMisto);
@@ -1458,6 +1836,10 @@ function aktivniMistoData() {
 // INIT
 async function init() {
   await nacistPrihlaseniStav();
+  if (jePro) {
+    try { await nacistMistaZUctu(); }
+    catch (e) { console.warn('Pracoviště z účtu se nepodařilo načíst.', e); }
+  }
   if (data.mista.length === 0) {
     // První spuštění, zobrazíme úvod
     zobrazitUvod();
@@ -1664,6 +2046,9 @@ function smazatMisto(id) {
   if (!misto) return;
   ukazatPotvrzeni('Smazat místo "' + misto.nazev + '"? Vše včetně fotek a poznámek bude odstraněno.', () => {
     data.mista = data.mista.filter(m => m.id !== id);
+    delete syncPodpisy[id];
+    clearTimeout(syncCasovace[id]);
+    if (jePro) smazatMistoZUctu(misto);
     if (data.aktivniMisto === id) {
       data.aktivniMisto = data.mista.length > 0 ? data.mista[0].id : null;
     }
@@ -1697,7 +2082,9 @@ function renderMista() {
       <button class="misto-del" onclick="smazatMisto('${m.id}')" title="Smazat místo">×</button>
     </div>`;
   }).join('') + `<button class="add-misto" onclick="novaMista()">+ Přidat místo</button>` +
-    (clenstvi ? `<button class="add-misto" onclick="exportovatData()">⬇ Export CSV</button>` : '');
+    (clenstvi ? `<button class="add-misto" onclick="exportovatData()">⬇ Export CSV</button>` : '') +
+    (jePro ? `<span id="sync-stav" class="sync-stav"></span>` : '');
+  if (jePro) nastavitSyncStav();
 }
 
 async function exportovatData() {

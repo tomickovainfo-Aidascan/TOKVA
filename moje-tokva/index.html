@@ -381,9 +381,9 @@ async function nacistData() {
 async function nacistVysledky() {
   const orgId = clenstvi.organization_id;
   const [{ count }, vysledkyRes] = await Promise.all([
-    supabaseClient.from('tool_runs').select('id', { count: 'exact', head: true }).eq('organization_id', orgId),
+    supabaseClient.from('tool_runs').select('id', { count: 'exact', head: true }).eq('organization_id', orgId).neq('nastroj', '5s-pracoviste'),
     supabaseClient.from('tool_runs').select('id,nastroj,nazev,shrnuti,hlavni_hodnota_cislo,hlavni_hodnota_jednotka,hlavni_hodnota_text,created_at,data')
-      .eq('organization_id', orgId).order('created_at', { ascending: false }).limit(limitVysledku)
+      .eq('organization_id', orgId).neq('nastroj', '5s-pracoviste').order('created_at', { ascending: false }).limit(limitVysledku)
   ]);
   vsechnyVysledky = vysledkyRes.error ? [] : (vysledkyRes.data || []);
   document.getElementById('souhrn-vysledky').textContent = count || 0;
