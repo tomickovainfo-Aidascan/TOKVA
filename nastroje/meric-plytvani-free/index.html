@@ -739,6 +739,11 @@ let posledniPlytvaniPct = '';
 let posledniPrumerCyklus = '';
 let posledniPlytvaniKcRok = '';
 let cykly = [], aktCyklus = null, aktivniKat = null;
+// Musí být deklarované tady nahoře: obnova měření po načtení stránky
+// (zkusitObnovitRozpracovaneMereni níž) volá upozornit() dřív, než by se
+// došlo k původnímu místu deklarace, a appka pak celá spadla (nefungovalo
+// ani Začít znovu).
+let _modalNoticeCb = null;
 let timerInt = null, katInt = null, cyklusStart = null, draftInt = null;
 
 // Stejná oprava jako v Tokva Pro verzi: rozpracované měření se dřív ukládalo
@@ -912,7 +917,6 @@ function updateKat() {
   if (el) el.textContent = pad(Math.floor(s/60)) + ':' + pad(s%60);
 }
 
-let _modalNoticeCb = null;
 function upozornit(text, title) {
   document.getElementById('modal-notice-title').textContent = title || 'Upozornění';
   document.getElementById('modal-notice-text').textContent = text;
