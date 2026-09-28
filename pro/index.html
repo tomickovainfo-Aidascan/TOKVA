@@ -59,8 +59,8 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .compare-col { border-radius:12px; padding:24px 22px; }
 .compare-col.free { background:var(--white); border:1.5px solid var(--border2); }
 .compare-col.pro { background:var(--dark); color:var(--white); }
-.compare-col h2 { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; margin-bottom:16px; letter-spacing:.5px; }
-.compare-col.pro h2 { color:var(--gold); }
+.compare-col .compare-title { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; margin-bottom:16px; letter-spacing:.5px; }
+.compare-col.pro .compare-title { color:var(--gold); }
 .flow-step { font-size:14px; padding:9px 0; border-bottom:1px dashed var(--border2); }
 .compare-col.pro .flow-step { border-bottom-color:rgba(255,255,255,.15); color:rgba(255,255,255,.85); }
 .flow-step:last-child { border-bottom:none; }
@@ -128,7 +128,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .notify-msg.show { display:block; }
 
 .objednavka-box { margin-top:20px; padding:28px 26px; background:var(--dark); border-radius:12px; scroll-margin-top:80px; }
-.objednavka-box h3 { font-family:'Poppins',sans-serif; font-weight:800; font-size:16px; color:var(--white); margin-bottom:10px; }
+.objednavka-box h2 { font-family:'Poppins',sans-serif; font-weight:800; font-size:16px; color:var(--white); margin-bottom:10px; }
 .objednavka-box > p { font-size:13.5px; color:rgba(255,255,255,.65); margin-bottom:18px; max-width:560px; }
 .objednavka-cena { font-weight:800; color:var(--gold); white-space:nowrap; }
 .objednavka-vs { font-weight:700; font-size:15px; margin:10px 0; }
@@ -220,13 +220,13 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
   <div class="compare">
     <div class="compare-col free">
-      <h2>ZDARMA</h2>
+      <div class="compare-title">ZDARMA</div>
       <div class="flow-step">Použiju nástroj</div>
       <div class="flow-arrow">↓</div>
       <div class="flow-step">Dostanu výsledek</div>
     </div>
     <div class="compare-col pro">
-      <h2>TOKVA PRO</h2>
+      <div class="compare-title">TOKVA PRO</div>
       <div class="flow-step">Použiju nástroj</div>
       <div class="flow-arrow">↓</div>
       <div class="flow-step">Uložím výsledek k firmě</div>
@@ -260,7 +260,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     </figure>
   </div>
 
-  <p class="pilire-uvod">Čtyři věci, které appky zdarma neumí</p>
+  <h2 class="pilire-uvod">Čtyři věci, které appky zdarma neumí</h2>
   <p class="pilire-uvod-sub">Nástroj zdarma vám dá samostatný výsledek. Tokva Pro se postará o to, co se s ním stane dál.</p>
   <div class="pilire">
     <div class="pilir">
@@ -281,7 +281,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     </div>
   </div>
 
-  <p class="hero-pains" style="margin-top:8px;">Poznáváte se v tomhle? Chyby při expedici, hledání materiálu, zbytečná chůze, opakované přepisování stejných čísel, čekání mezi kroky, špatné předávání informací mezi směnami.</p>
+  <p class="hero-pains" style="margin-top:8px;">Poznáváte se v tomhle? Chyby při expedici, hledání materiálu, zbytečná chůze, opakované přepisování stejných čísel, čekání mezi kroky, špatné předávání informací mezi směnami. <a href="https://tokva.cz/reseni-problemu/" style="color:var(--gold-dark);font-weight:700;">Začněte u nástrojů zdarma, změřte to a vraťte se sem s číslem.</a></p>
 
   <div class="stav-nadpis"><h2>Co Tokva Pro dnes reálně umí</h2><span class="stav-chip funguje">Funguje nyní</span></div>
   <p class="stav-popis">Tohle není plán do budoucna. Tyhle věci appky dělají už teď, na živém webu.</p>
@@ -303,7 +303,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
   <p class="podpora-note">Podporu k appkám dělám vždycky osobně já, Gabriela Tomíčková. Pokud byste kromě appky potřebovali i pomoc přímo ve firmě, najdete mě na <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a>.</p>
 
-  <p class="faq-nadpis">Časté otázky</p>
+  <h2 class="faq-nadpis">Časté otázky</h2>
   <div class="faq-item">
     <h3>Jsou moje data v bezpečí?</h3>
     <p>Data jednotlivých firem jsou oddělena na úrovni databáze. Přístup k nim mají pouze přihlášení členové příslušné firmy podle své role a oprávnění.</p>
@@ -315,7 +315,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
 
   <div class="objednavka-box" id="objednavka">
-    <h3>Objednat Tokva Pro</h3>
+    <h2>Objednat Tokva Pro</h2>
     <p id="objednavka-cena-popis">Vyberte variantu níže, cena se doplní automaticky. Zakladatelská cena <span class="objednavka-cena">499 Kč / 1 390 Kč / 2 690 Kč měsíčně</span> (podle varianty) platí pro prvních 20 firem napořád, ne jen první rok. Pro další zájemce potom 690 Kč / 1 990 Kč / 4 490 Kč měsíčně.</p>
     <p id="objednavka-podminka-popis">Podmínka zakladatelské ceny: vyplníte tři krátké dotazníky (před začátkem používání appky, po prvním použití a po měsíci provozu) a souhlasíte, že uvidím, jak appku vaše firma využívá (ne kdo konkrétně, jen firma jako celek), abych appku podle toho mohla doladit.</p>
     <p id="objednavka-platba-popis">Platí se převodem na fakturu. Pošlu vám ji na zadaný e-mail, appku na Pro přepnu po přijetí platby.</p>
