@@ -968,7 +968,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
                         <div class="form__label-row">
                           <label class="entry__label" for="EMAIL" data-required="*">E-mail</label>
                           <div class="entry__field">
-                            <input class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="off" value="" placeholder="vas@email.cz" data-required="true" required>
+                            <input aria-label="Váš e-mail, kam pošleme výsledek" class="input" type="text" id="EMAIL" name="EMAIL" autocomplete="email" inputmode="email" value="" placeholder="vas@email.cz" data-required="true" required>
                           </div>
                         </div>
                         <label class="entry__error entry__error--primary"></label>
@@ -1182,7 +1182,7 @@ const CTA_ODKAZ = {
   5: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" },
   6: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" },
   8: { url: "../5x-proc-ai-kouc/", cta: "Najít příčinu pomocí 5× Proč" },
-  9: { url: "../kviz-jak-znate-svuj-sklad/", cta: "Otestovat, co o skladu nevíte" },
+  9: { url: "../kviz-komunikacniho-chaosu/", cta: "Zjistit, kde vázne předávání informací" },
   10: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" },
 };
 
@@ -1194,10 +1194,10 @@ const CTA_ODKAZ = {
 // problemu) ma svuj vlastni tip s odkazem na Kviz Jak dobre znate svuj sklad.
 const OBLASTI = [
   { klic: "tok", nazev: "Tok výroby", otazky: [1, 5],
-    text: "Největší neznámá je, jestli je jasné, co a v jakém pořadí se má vyrábět a jestli mezi operacemi neuvízne rozpracovaná výroba. Změřte to Měřičem plýtvání dvakrát - jednou na obsluze (shání informace, materiál, čeká na pokyn) a jednou na výrobku nebo dávce (kolik času čeká mezi operacemi místo aby se na něm pracovalo).",
+    text: "Není úplně jasné, co a v jakém pořadí se má vyrábět, nebo mezi operacemi uvízne rozpracovaná výroba. Změřte to Měřičem plýtvání dvakrát - jednou na obsluze (shání informace, materiál, čeká na pokyn) a jednou na výrobku nebo dávce (kolik času čeká mezi operacemi místo aby se na něm pracovalo).",
     nastroj: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" } },
   { klic: "cekani", nazev: "Čekání a prostoje", otazky: [2, 6],
-    text: "Největší neznámá není kvalita ani layout, ale to, kam během směny mizí pracovní čas.",
+    text: "Pracovní čas mizí čekáním na materiál, nářadí nebo informace a prostoji, u kterých není jasné proč.",
     nastroj: { url: "../meric-plytvani-free/", cta: "Změřit čas v Měřiči plýtvání" } },
   { klic: "pohyb", nazev: "Pohyb a pracoviště", otazky: [3, 4],
     text: "Lidé během práce zbytečně chodí nebo přenášejí materiál.",
@@ -1351,6 +1351,7 @@ function zobrazVysledky() {
 
   if (maxS === 0) {
     hero.className = 'skore-hero oranzova';
+    cislo.innerHTML = '?';
     label.textContent = 'Zatím jen "nevím"';
     popis.textContent = 'Na všechny otázky jste odpověděli "nevím" - to je samo o sobě důležité zjištění, viz níž.';
   } else if (pomer <= 0.2) {
@@ -1385,9 +1386,9 @@ function zobrazVysledky() {
     const maxOb = 2 * zname.length;
     // proc je "podil problemu" v teto oblasti - vyssi cislo = horsi stav.
     const proc = Math.round((1 - soucet / maxOb) * 100);
-    return { ob, vsechnyNevim: false, proc };
+    return { ob, vsechnyNevim: false, proc, zname: zname.length, celkem: ob.otazky.length };
   });
-  oblastiVysledky.forEach(({ ob, vsechnyNevim, proc }) => {
+  oblastiVysledky.forEach(({ ob, vsechnyNevim, proc, zname, celkem }) => {
     const row = document.createElement('div');
     row.className = 'oblast-row';
     if (vsechnyNevim) {
@@ -1404,7 +1405,7 @@ function zobrazVysledky() {
       row.innerHTML = `
         <div class="oblast-row-top">
           <span class="oblast-nazev">${ob.nazev}${znacka}</span>
-          <span class="oblast-pct">${proc} %</span>
+          <span class="oblast-pct">${proc} %${zname < celkem ? ` <span style="font-size:11px;font-weight:400;color:var(--light);">(zjištěno ${zname} z ${celkem})</span>` : ''}</span>
         </div>
         <div class="oblast-bar-track"><div class="oblast-bar-fill ${trida}" style="width:${proc}%"></div></div>
       `;
@@ -1511,9 +1512,22 @@ function zobrazVysledky() {
   } else {
     znameOblasti.sort((a, b) => b.proc - a.proc);
     const nejhorsi = znameOblasti[0];
+    if (nejhorsi.proc === 0) {
+      // Ve všech zodpovězených oblastech vyšlo "Ano" - žádná oblast není
+      // "nejslabší", doporučí se ověření měřením místo falešné priority.
+      coPrvniPanel.style.display = 'block';
+      document.getElementById('co-prvni-title').textContent = 'Nic akutního. Ověřte to měřením.';
+      document.getElementById('co-prvni-text').textContent = 'Ve všech zodpovězených oblastech vyšlo, že výroba funguje. Odhad od stolu a realita se ale často liší. Změřte jednu opakující se operaci a uvidíte, jestli čísla potvrdí, co si myslíte.' + (nevimSet.size ? ' A doplňte otázky, na které jste odpověděli „nevím“, postup najdete níž.' : '');
+      const ctaOk = document.getElementById('co-prvni-cta');
+      ctaOk.href = '../meric-plytvani-free/';
+      ctaOk.textContent = 'Změřit čas v Měřiči plýtvání';
+      document.getElementById('co-prvni-dalsi').innerHTML = '';
+      const akceNazevOk = document.getElementById('akce-nazev');
+      if (akceNazevOk) akceNazevOk.value = 'Ověřit stav výroby měřením';
+    } else {
     coPrvniPanel.style.display = 'block';
     document.getElementById('co-prvni-title').textContent = 'Začněte tímhle: ' + nejhorsi.ob.nazev.toLowerCase() + '.';
-    document.getElementById('co-prvni-text').textContent = 'Z vašich odpovědí vychází, že tohle je teď nejslabší místo. ' + nejhorsi.ob.text;
+    document.getElementById('co-prvni-text').textContent = 'Z vašich odpovědí vychází, že tohle je teď nejslabší místo. ' + nejhorsi.ob.text + (nejhorsi.zname < nejhorsi.celkem ? ' Jedna otázka v této oblasti je zatím nezjištěná, výsledek je proto orientační.' : '');
     const cta = document.getElementById('co-prvni-cta');
     cta.href = nejhorsi.ob.nastroj.url;
     cta.textContent = nejhorsi.ob.nastroj.cta;
@@ -1532,6 +1546,7 @@ function zobrazVysledky() {
     document.getElementById('co-prvni-dalsi').innerHTML = dalsiNastroje.length
       ? 'Další vhodný krok: ' + dalsiNastroje.map(n => '<a href="' + n.url + '" target="_blank">' + n.cta + '</a>').join(' · ')
       : '';
+    }
   }
 
   const v = document.getElementById('vysledky');

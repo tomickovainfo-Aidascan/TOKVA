@@ -176,7 +176,7 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 
   <div class="karta">
     <h2>Export dat</h2>
-    <p class="karta-pop">Stáhněte si všechny výsledky appek, akční plán a projekty vaší firmy jako soubor ke stažení - třeba jako zálohu, nebo než zrušíte předplatné.</p>
+    <p class="karta-pop">Stáhněte si všechna data vaší firmy v jednom ZIP souboru: výsledky všech nástrojů včetně odpovědí a vstupů, akční plán, projekty, lidi ve firmě, obrázky a fotky. Tabulky otevřete v Excelu. Hodí se jako záloha, nebo než předplatné ukončíte.</p>
     <button class="btn-gold" id="btn-export-vse" onclick="exportovatVsechnaData()">Stáhnout všechna data</button>
     <div class="hlaska" id="export-hlaska"></div>
   </div>
@@ -219,6 +219,7 @@ function klikNaUcet() {
   if (session) { odhlasit(); } else { klikNaPrihlaseni(); }
 }
 
+var profilyClenu = {};
 async function nacistData() {
   const { data: clenoveRaw, error: chybaClenu } = await supabaseClient
     .from('organization_members')
@@ -237,6 +238,7 @@ async function nacistData() {
       .in('id', idClenu);
     (profilyData || []).forEach(p => { profily[p.id] = p; });
   }
+  profilyClenu = profily;
 
   const { data: pozvankyRaw } = await supabaseClient
     .from('organization_invites')
@@ -455,17 +457,40 @@ async function init() {
   await nacistData();
 }
 
-function poleNaCSV(radky) {
-  if (!radky || !radky.length) return '';
-  const sloupce = Object.keys(radky[0]);
+// CSV pro český Excel: oddělovač středník, BOM, desetinná čárka.
+function tabulkaNaCSV(hlavicka, radky) {
   const bunka = (v) => {
-    if (v === null || v === undefined) return '';
-    const s = (typeof v === 'object') ? JSON.stringify(v) : String(v);
-    return '"' + s.replace(/"/g, '""') + '"';
+    if (v === null || v === undefined) return '""';
+    let t = (typeof v === 'object') ? JSON.stringify(v) : String(v);
+    if (typeof v === 'number') t = t.replace('.', ',');
+    return '"' + t.replace(/"/g, '""') + '"';
   };
-  const hlavicka = sloupce.map(bunka).join(',');
-  const telo = radky.map(r => sloupce.map(s => bunka(r[s])).join(',')).join('\r\n');
-  return hlavicka + '\r\n' + telo;
+  return '﻿' + [hlavicka].concat(radky).map(r => r.map(bunka).join(';')).join('\r\n');
+}
+const datumCZ = (d) => d ? new Date(d).toLocaleDateString('cs-CZ') : '';
+const STAV_AKCE_CZ = { novy: 'Nový', probiha: 'Probíhá', hotovo: 'Hotovo', overit_vysledek: 'Ověřit výsledek', uzavreno: 'Uzavřeno' };
+const STAV_PROJEKTU_CZ = { aktivni: 'Probíhá', dokonceny: 'Dokončeno', archivovany: 'Archivováno' };
+const ROLE_CZ = { majitel: 'Majitel', spravce: 'Správce', clen: 'Člen', konzultant: 'Konzultant' };
+
+// Najde v uložených datech výsledku obrázky (půdorys ve Spaghetti, fotky)
+// uložené přímo jako data:image/... a nahradí je odkazem na soubor v ZIPu.
+function vytahnoutObrazky(obj, prefix, obrazky) {
+  if (obj === null || obj === undefined) return obj;
+  if (typeof obj === 'string') {
+    const m = obj.match(/^data:image\/(png|jpe?g|webp|gif);base64,/i);
+    if (!m) return obj;
+    const pripona = m[1].toLowerCase() === 'jpeg' ? 'jpg' : m[1].toLowerCase();
+    const nazev = 'obrazky/' + prefix + '-' + (obrazky.length + 1) + '.' + pripona;
+    obrazky.push({ nazev, base64: obj.slice(m[0].length) });
+    return '[obrázek: ' + nazev + ']';
+  }
+  if (Array.isArray(obj)) return obj.map(x => vytahnoutObrazky(x, prefix, obrazky));
+  if (typeof obj === 'object') {
+    const out = {};
+    Object.keys(obj).forEach(k => { out[k] = vytahnoutObrazky(obj[k], prefix, obrazky); });
+    return out;
+  }
+  return obj;
 }
 
 async function exportovatVsechnaData() {
@@ -477,22 +502,87 @@ async function exportovatVsechnaData() {
 
   try {
     const orgId = clenstvi.organization_id;
-    const [vysledky, akce, projekty] = await Promise.all([
+    const [vysledky, akce, projekty, soubory, clenove] = await Promise.all([
       supabaseClient.from('tool_runs').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
       supabaseClient.from('actions').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
-      supabaseClient.from('projects').select('*').eq('organization_id', orgId).order('created_at', { ascending: false })
+      supabaseClient.from('projects').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
+      supabaseClient.from('files').select('*').eq('organization_id', orgId),
+      supabaseClient.from('organization_members').select('user_id, role, created_at').eq('organization_id', orgId)
     ]);
     if (vysledky.error) throw vysledky.error;
     if (akce.error) throw akce.error;
     if (projekty.error) throw projekty.error;
 
     const zip = new JSZip();
-    zip.file('vysledky-nastroju.csv', '\ufeff' + poleNaCSV(vysledky.data));
-    zip.file('akcni-plan.csv', '\ufeff' + poleNaCSV(akce.data));
-    zip.file('projekty.csv', '\ufeff' + poleNaCSV(projekty.data));
+    const V = vysledky.data || [], A = akce.data || [], P = projekty.data || [];
+    const nazevProjektu = {}; P.forEach(p => { nazevProjektu[p.id] = p.name; });
+    const nazevVysledku = {}; V.forEach(v => { nazevVysledku[v.id] = v.nazev; });
+
+    // 1) Čitelné tabulky pro Excel
+    zip.file('vysledky-nastroju.csv', tabulkaNaCSV(
+      ['Datum', 'Nástroj', 'Název', 'Shrnutí', 'Hlavní hodnota', 'Jednotka', 'Projekt', 'ID'],
+      V.map(v => [datumCZ(v.created_at), v.nastroj, v.nazev, v.shrnuti, v.hlavni_hodnota_cislo != null ? v.hlavni_hodnota_cislo : (v.hlavni_hodnota_text || ''), v.hlavni_hodnota_jednotka, nazevProjektu[v.project_id] || '', v.id])));
+    zip.file('akcni-plan.csv', tabulkaNaCSV(
+      ['Úkol', 'Projekt', 'Stav', 'Odpovídá', 'Termín', 'Důvod', 'Poznámka', 'Investice (Kč)', 'Očekávaný přínos (Kč/rok)', 'Skutečný stav', 'Skutečný přínos (Kč/rok)', 'Datum ověření', 'Ověřeno', 'Zdrojový výsledek', 'Vytvořeno'],
+      A.map(a => [a.title, nazevProjektu[a.project_id] || '', STAV_AKCE_CZ[a.status] || a.status, a.responsible_person, datumCZ(a.due_date), a.reason, a.note, a.estimated_investment, a.expected_benefit, a.actual_state, a.actual_benefit, datumCZ(a.verification_date), a.verification_confirmed === true ? 'Ano' : (a.verification_confirmed === false ? 'Ne' : ''), nazevVysledku[a.tool_run_id] || '', datumCZ(a.created_at)])));
+    zip.file('projekty.csv', tabulkaNaCSV(
+      ['Projekt', 'Stav', 'Odpovídá', 'Popis', 'Další krok', 'Očekávaný potenciál (Kč/rok)', 'Založeno', 'ID'],
+      P.map(p => [p.name, STAV_PROJEKTU_CZ[p.status] || p.status, p.responsible_person, p.description, p.next_step, p.expected_potential_kc, datumCZ(p.created_at), p.id])));
+    if (!clenove.error && clenove.data) {
+      zip.file('clenove.csv', tabulkaNaCSV(['Uživatel', 'Role', 'Člen od'],
+        clenove.data.map(c => { const pr = (typeof profilyClenu !== 'undefined' && profilyClenu[c.user_id]) || {}; return [pr.email || pr.full_name || c.user_id, ROLE_CZ[c.role] || c.role, datumCZ(c.created_at)]; })));
+    }
+
+    // 2) Kompletní data včetně všech odpovědí, vstupů, tras a poznámek (JSON),
+    //    obrázky uložené přímo ve výsledcích se vytáhnou do složky obrazky/.
+    const obrazky = [];
+    const vysledkyKompletni = V.map((v, i) => Object.assign({}, v, { data: vytahnoutObrazky(v.data, (v.nastroj || 'vysledek') + '-' + (i + 1), obrazky) }));
+    zip.file('kompletni-data.json', JSON.stringify({
+      exportovano: new Date().toISOString(),
+      firma: clenstvi.organizations ? clenstvi.organizations.name : '',
+      vysledky: vysledkyKompletni, akcni_plan: A, projekty: P, soubory: soubory.data || []
+    }, null, 2));
+    obrazky.forEach(o => zip.file(o.nazev, o.base64, { base64: true }));
+
+    // 3) Fotky u úkolů v akčním plánu (úložiště souborů)
+    let fotekOk = 0, fotekChyba = 0;
+    for (const f of (soubory.data || [])) {
+      if (!f.storage_path) continue;
+      try {
+        const { data: blob, error } = await supabaseClient.storage.from('nastrojovna-files').download(f.storage_path);
+        if (error || !blob) throw error || new Error('prázdný soubor');
+        const jmeno = (f.file_name || f.storage_path.split('/').pop()).replace(/[\\/:*?"<>|]/g, '-');
+        zip.file('fotky-akcniho-planu/' + (f.id || fotekOk) + '-' + jmeno, blob);
+        fotekOk++;
+      } catch (e) { fotekChyba++; console.warn('Fotku se nepodařilo stáhnout.', f.storage_path, e); }
+    }
+
+    // 4) 5S pracoviště z tohoto prohlížeče (5S appka je drží v prohlížeči, ne v účtu)
+    let ma5s = false;
+    try {
+      const d5s = JSON.parse(localStorage.getItem('5s_data') || 'null');
+      if (d5s && d5s.mista && d5s.mista.length) {
+        const obr5s = [];
+        zip.file('5s-pracoviste-z-tohoto-prohlizece.json', JSON.stringify(vytahnoutObrazky(d5s, '5s', obr5s), null, 2));
+        obr5s.forEach(o => zip.file(o.nazev, o.base64, { base64: true }));
+        ma5s = true;
+      }
+    } catch (e) {}
+
+    zip.file('CTI-ME.txt',
+      'Export dat z Tokva Pro, firma: ' + (clenstvi.organizations ? clenstvi.organizations.name : '') + ', ' + new Date().toLocaleString('cs-CZ') + '\r\n\r\n' +
+      'vysledky-nastroju.csv   přehled všech uložených výsledků (otevřete v Excelu)\r\n' +
+      'akcni-plan.csv          všechny úkoly\r\n' +
+      'projekty.csv            všechny projekty\r\n' +
+      'clenove.csv             lidé ve firmě a jejich role\r\n' +
+      'kompletni-data.json     úplná data včetně všech odpovědí, vstupů, tras a poznámek\r\n' +
+      'obrazky/                obrázky uložené u výsledků (třeba půdorysy ze Spaghetti diagramu)\r\n' +
+      'fotky-akcniho-planu/    fotky přiložené k úkolům\r\n' +
+      (ma5s ? '5s-pracoviste-z-tohoto-prohlizece.json   pracoviště 5S včetně fotek, uložená v tomto prohlížeči\r\n' : '') +
+      '\r\nPoznámka: 5S appka drží pracoviště a fotky v prohlížeči, ve kterém s ní pracujete. Pokud jste 5S používali i na jiném zařízení, stáhněte export i tam.\r\n');
 
     const blob = await zip.generateAsync({ type: 'blob' });
-    const nazevFirmy = (clenstvi.organizations && clenstvi.organizations.name || 'firma').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+    const nazevFirmy = (clenstvi.organizations && clenstvi.organizations.name || 'firma').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
     const datum = new Date().toISOString().slice(0, 10);
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -502,7 +592,8 @@ async function exportovatVsechnaData() {
     a.remove();
 
     hlaska.className = 'hlaska ok';
-    hlaska.textContent = 'Export stažen.';
+    hlaska.textContent = 'Export stažen: ' + V.length + ' výsledků, ' + A.length + ' úkolů, ' + P.length + ' projektů, ' + (obrazky.length + fotekOk) + ' obrázků a fotek.' +
+      (fotekChyba ? ' ' + fotekChyba + ' fotek se nepodařilo stáhnout, zkuste export znovu.' : '');
   } catch (e) {
     console.warn('Export všech dat se nepodařil.', e);
     hlaska.className = 'hlaska chyba';
