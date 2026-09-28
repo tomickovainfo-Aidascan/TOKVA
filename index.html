@@ -47,7 +47,12 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 }
 </script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Písma se načítají bez blokování vykreslení: stránka se ukáže hned
+     se záložním písmem a Poppins/DM Sans se doplní, jakmile dorazí. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@400;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@400;700&display=swap"></noscript>
 <style>
 :root {
   --gold: #e9a91b; --gold-dark: #7d5a0c; --gold-light: #fdf3d9;
@@ -246,10 +251,12 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
   <div class="footer-line">Tokvu vytvořila <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">Gabriela Tomíčková</a>, konzultantka procesů a AI automatizace.</div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-client.js"></script>
-<script src="auth.js"></script>
+<!-- Přihlášení se načítá odloženě (defer), aby nebrzdilo první zobrazení stránky. -->
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="supabase-client.js"></script>
+<script defer src="auth.js"></script>
 <script>
+window.addEventListener('DOMContentLoaded', function () {
 // Přihlašovací stav v horní liště: ukáže jméno firmy + Odhlásit, když je uživatel
 // přihlášený a má firmu; jinak nechá odkaz "Moje Tokva" na přihlašovací stránku.
 (async function nacistUcetHome() {
@@ -286,6 +293,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     };
   }
 })();
+});
 </script>
 
 </body>
