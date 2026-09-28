@@ -1160,6 +1160,13 @@ function zacitZnovuSkutecne() {
   const coDelatElR = document.getElementById('co-delat-text');
   if (coDelatElR) coDelatElR.textContent = 'Teď máte rozložení času v procentech a víte, která kategorie ukrojila nejvíc. Konkrétní tipy se vám ukážou pod grafem podle vašich vlastních čísel.';
   document.getElementById('setup').style.display = 'block';
+  // ukoncit() měřicí panel schovává, bez tohohle po Začít znovu chyběla
+  // tlačítka činností a nové měření nešlo spustit
+  document.getElementById('mereni').style.display = '';
+  // staré cykly se dřív nemazaly: nové měření začínalo na „Cyklus 2 / 3“
+  // a do výsledku se míchaly cykly z předchozího měření
+  cykly = []; aktCyklus = null; aktivniKat = null; cyklusStart = null;
+  clearInterval(timerInt); clearInterval(katInt);
   document.getElementById('inp-nazev').value = '';
   document.getElementById('email-form').style.display = 'flex';
   document.getElementById('email-ok').style.display = 'none';
