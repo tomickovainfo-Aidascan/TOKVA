@@ -896,7 +896,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
     <div class="vysledky-detail" id="projekt-panel" style="display:none;">
       <div class="vysledky-detail-header">Zařadit k projektu</div>
       <div style="padding:16px 20px;">
-        <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Nepovinné. Pomůže vám tenhle výsledek pozdějí najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
+        <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Nepovinné. Pomůže vám tenhle výsledek později najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
         <select id="projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
           <option value="">Bez projektu</option>
           <option value="__novy__">+ Nový projekt…</option>
@@ -2290,5 +2290,33 @@ document.addEventListener('keydown', function(e){
   });
 })();
 </script>
+<script>
+// Okno "Odemknout v Tokva Pro": kdo Pro ještě nemá, dostane jako hlavní
+// tlačítko cestu na /pro/ (v nové záložce, ať nepřijde o výsledek).
+// Přihlášení je až druhá možnost pro ty, kdo Pro už mají.
+(function () {
+  var modal = document.getElementById('modal-pro');
+  if (!modal) return;
+  var btn = document.getElementById('pro-btn') || modal.querySelector('.modal-save, .btn-gold');
+  var link = modal.querySelector('.modal-box-link, .login-link');
+  if (!btn || !link) return;
+  var puvodniA = link.querySelector('a');
+  var sledovat = puvodniA && puvodniA.getAttribute('onclick') ? new Function(puvodniA.getAttribute('onclick')) : function () {};
+  function upravit() {
+    var prihlasen = typeof session !== 'undefined' && !!session;
+    var maPro = typeof jePro !== 'undefined' && !!jePro;
+    if (maPro) { link.style.display = 'none'; return; }
+    btn.textContent = 'Zjistit víc o Tokva Pro';
+    btn.onclick = function () { try { sledovat(); } catch (e) {} window.open('https://tokva.cz/pro/', '_blank'); };
+    if (prihlasen) { link.style.display = 'none'; return; }
+    link.style.display = '';
+    link.innerHTML = 'Už máte Tokva Pro? <a href="#">Přihlásit se</a>';
+    link.querySelector('a').onclick = function (e) { e.preventDefault(); klikVModaluPro(); };
+  }
+  upravit();
+  new MutationObserver(function () { if (modal.style.display !== 'none') upravit(); }).observe(modal, { attributes: true, attributeFilter: ['style', 'class'] });
+})();
+</script>
+
 </body>
 </html>

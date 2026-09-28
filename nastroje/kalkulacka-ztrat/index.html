@@ -478,7 +478,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
     <div class="results">
       <div class="result-hero">
         <div class="result-hero-label">Odhadovaný roční potenciál</div>
-        <div class="result-hero-num" id="res-rok">0 Kc</div>
+        <div class="result-hero-num" id="res-rok">0 Kč</div>
         <div class="result-hero-sub">hodnota času, který podle zadaných odhadů nepřináší přímou hodnotu — orientační výpočet, ne přesný audit</div>
       </div>
 
@@ -678,8 +678,9 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <li>Udělejte jednu změnu. Malou. Přeskládat zboží, zjednodušit jeden formulář.</li>
           <li>Spočítejte to samé znovu a porovnejte s dneškem.</li>
         </ol>
-        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Ve skladu s pěti lidmi, o kterém je příběh výš, stála práce, která nikam nevedla, 303 100 Kč ročně. Přeskládali jsme zboží a zjednodušili jeden formulář. Ze 40 minut denně zbylo 15. Druhé měření ukázalo úsporu zhruba 189 400 Kč ročně. Ne odhad. Rozdíl dvou měření.</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Ve skladu s pěti lidmi, o kterém je příběh výš, stála práce, která nikam nevedla, 303 100 Kč ročně. Přeskládali jsme zboží a zjednodušili jeden formulář. Ze 40 minut denně zbylo 15. Druhé měření ukázalo úsporu zhruba 189 400 Kč ročně. Ne odhad. Rozdíl dvou měření, tehdy ještě ručně se stopkami, bez appky.</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Kalkulačka počítá vždycky jen dnešek. Druhé měření a porovnání před a po drží Tokva Pro: výpočty zůstanou ve vašem účtu u projektu a rozdíl vidíte vedle sebe.</p>
+        <p style="font-size:14px;line-height:1.75;margin-bottom:14px;"><a href="https://tokva.cz/pro/" target="_blank" onclick="trackTokvaEvent('pro_click',{source_tool:'kalkulacka_ztrat',placement:'result'})" style="color:var(--gold-dark);font-weight:700;">Co umí Tokva Pro a kolik stojí →</a></p>
         <a href="#btn-ulozit-vychozi" class="vysledek-cta" onclick="event.preventDefault();document.getElementById('btn-ulozit-vychozi').scrollIntoView({behavior:'smooth',block:'center'});">Uložit tenhle výpočet jako výchozí stav →</a>
         <div class="faq-block" style="margin-top:24px;">
           <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
@@ -1646,5 +1647,33 @@ function cookiesOdmitnout() {
   });
 })();
 </script>
+<script>
+// Okno "Odemknout v Tokva Pro": kdo Pro ještě nemá, dostane jako hlavní
+// tlačítko cestu na /pro/ (v nové záložce, ať nepřijde o výsledek).
+// Přihlášení je až druhá možnost pro ty, kdo Pro už mají.
+(function () {
+  var modal = document.getElementById('modal-pro');
+  if (!modal) return;
+  var btn = document.getElementById('pro-btn') || modal.querySelector('.modal-save, .btn-gold');
+  var link = modal.querySelector('.modal-box-link, .login-link');
+  if (!btn || !link) return;
+  var puvodniA = link.querySelector('a');
+  var sledovat = puvodniA && puvodniA.getAttribute('onclick') ? new Function(puvodniA.getAttribute('onclick')) : function () {};
+  function upravit() {
+    var prihlasen = typeof session !== 'undefined' && !!session;
+    var maPro = typeof jePro !== 'undefined' && !!jePro;
+    if (maPro) { link.style.display = 'none'; return; }
+    btn.textContent = 'Zjistit víc o Tokva Pro';
+    btn.onclick = function () { try { sledovat(); } catch (e) {} window.open('https://tokva.cz/pro/', '_blank'); };
+    if (prihlasen) { link.style.display = 'none'; return; }
+    link.style.display = '';
+    link.innerHTML = 'Už máte Tokva Pro? <a href="#">Přihlásit se</a>';
+    link.querySelector('a').onclick = function (e) { e.preventDefault(); klikVModaluPro(); };
+  }
+  upravit();
+  new MutationObserver(function () { if (modal.style.display !== 'none') upravit(); }).observe(modal, { attributes: true, attributeFilter: ['style', 'class'] });
+})();
+</script>
+
 </body>
 </html>
