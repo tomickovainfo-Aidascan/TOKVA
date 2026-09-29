@@ -1044,8 +1044,9 @@ function ulozitRozpracovaneMereni() {
       nazev, pocetKusu, delkaSmeny, hodinovaSazba, pocetPracovniku,
       vlastniOp, vyrazeneStd: Array.from(vyrazeneStd),
       cykly,
-      aktCyklusCas: aktCyklus ? aktCyklus.cas : null,
-      cas: Date.now()
+      aktCyklusCas: aktCyklus ? (pripsatBeziciKat(), aktCyklus.cas) : null,
+      cas: Date.now(),
+      beh: cyklusStart ? { cyklusStart, aktivniKat, katOd } : null
     }));
   } catch (e) { console.warn('Rozpracované měření se nepodařilo uložit lokálně.', e); }
 }
@@ -1242,11 +1243,13 @@ function setKat(kat, nazevKat, barva) {
     clearInterval(katInt); katInt = setInterval(updateKat, 100);
     clearInterval(draftInt); draftInt = setInterval(ulozitRozpracovaneMereni, 3000);
   }
+  pripsatBeziciKat();
   ulozitRozpracovaneMereni();
   document.querySelectorAll('.kat-btn').forEach(b => { b.classList.remove('on'); if(b.classList.contains('k-vlastni')){b.style.background='';b.style.color='';} });
   const btn = document.getElementById('btn-'+kat) || document.querySelector('.k-'+kat);
   if (btn) { btn.classList.add('on'); if(btn.classList.contains('k-vlastni')){btn.style.background=barva;btn.style.color='white';} }
   aktivniKat = kat;
+  katOd = Date.now();
   document.getElementById('timer-kat').textContent = nazevKat;
   document.getElementById('timer-kat').style.background = barva;
   document.getElementById('timer').style.color = barva;
@@ -1258,9 +1261,41 @@ function updateTimer() {
   document.getElementById('timer').textContent = pad(Math.floor(e/60)) + ':' + pad(e%60);
 }
 
+// Čas činnosti se počítá z hodin (Date.now), ne přičítáním po 0,1 s.
+// Mobil při zamčené obrazovce tikání appky uspí: čas cyklu (počítaný
+// z hodin) běžel dál, ale čas právě běžící činnosti stál, takže po
+// odemčení nesouhlasil součet (cyklus 50 s, činnost 35 s).
+var katOd = null; // var, ne let: obnova měření běží dřív, než se sem kód dostane
+function pripsatBeziciKat() {
+  if (!aktCyklus || !aktivniKat || !katOd) return;
+  const ted = Date.now();
+  aktCyklus.cas[aktivniKat] = (aktCyklus.cas[aktivniKat] || 0) + (ted - katOd) / 1000;
+  katOd = ted;
+}
+// Po odemčení mobilu hned dopočítat a překreslit, nečekat na další tik.
+document.addEventListener('visibilitychange', function () {
+  if (document.visibilityState === 'visible' && cyklusStart) { updateKat(); updateTimer(); }
+});
+// Když prohlížeč stránku při zamčení úplně zavře, rozjetý cyklus
+// obnovíme i s během (jen když od posledního uložení neuběhlo moc času).
+
+function obnovitBeziciCyklus(draft) {
+  if (!draft || !draft.beh || !draft.beh.cyklusStart || !aktCyklus) return false;
+  if (Date.now() - (draft.cas || 0) > 30 * 60 * 1000) return false; // víc než 30 min: spíš zavřené schválně, nepokračovat
+  cyklusStart = draft.beh.cyklusStart;
+  clearInterval(timerInt); timerInt = setInterval(updateTimer, 100);
+  clearInterval(katInt); katInt = setInterval(updateKat, 100);
+  clearInterval(draftInt); draftInt = setInterval(ulozitRozpracovaneMereni, 3000);
+  const kat = draft.beh.aktivniKat;
+  const btn = kat ? (document.getElementById('btn-' + kat) || document.querySelector('.k-' + kat)) : null;
+  if (btn) { btn.click(); katOd = draft.beh.katOd || draft.cas || Date.now(); }
+  updateKat(); updateTimer();
+  return true;
+}
+
 function updateKat() {
   if (!aktCyklus || !aktivniKat) return;
-  aktCyklus.cas[aktivniKat] = (aktCyklus.cas[aktivniKat] || 0) + 0.1;
+  pripsatBeziciKat();
   const s = Math.floor(aktCyklus.cas[aktivniKat]);
   const el = document.getElementById('k-'+aktivniKat);
   if (el) el.textContent = pad(Math.floor(s/60)) + ':' + pad(s%60);
@@ -1295,9 +1330,10 @@ function potvrdModalNotice() {
 
 function stopCyklus() {
   if (!cyklusStart) { upozornit('Nejdřív klikněte na některou činnost, pak můžete cyklus ukončit.'); return; }
+  pripsatBeziciKat();
   clearInterval(timerInt); clearInterval(katInt); clearInterval(draftInt);
   document.querySelectorAll('.kat-btn').forEach(b => { b.classList.remove('on'); if(b.classList.contains('k-vlastni')){b.style.background='';b.style.color='';} });
-  aktivniKat = null;
+  aktivniKat = null; katOd = null;
   aktCyklus.celkem = (Date.now() - cyklusStart) / 1000;
   cykly.push({...aktCyklus, cas: {...aktCyklus.cas}});
   pridatRadek(cykly.length, aktCyklus);
@@ -2448,6 +2484,10 @@ function zkusitObnovitRozpracovaneMereni() {
   }
 
   hasUnsavedMereni = true;
+  if (obnovitBeziciCyklus(draft)) {
+    upozornit('Prohlížeč stránku mezitím zavřel, ale měření „' + nazev + '" běží dál. Čas cyklu i právě měřené činnosti se počítal i během zamčení.', 'Měření pokračuje');
+    return;
+  }
   upozornit('Obnovili jsme rozpracované měření „' + nazev + '" (' + cykly.length + ' dokončených cyklů). Rozjetý cyklus pokračuje tam, kde jste přestali - klikněte znovu na činnost a měřte dál.', 'Měření obnoveno');
 }
 
