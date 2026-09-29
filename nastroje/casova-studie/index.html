@@ -1396,7 +1396,7 @@ nav {
 
   <!-- Manuální vstup -->
   <div class="manual-wrap">
-    <input type="text" class="manual-input" id="manual-input"
+    <input type="text" class="manual-input" id="manual-input" aria-label="Co právě děláte (ruční zápis činnosti)"
       placeholder="Nebo napište ručně..."
       onkeydown="if(event.key==='Enter') pridatRucne()">
     <button class="manual-btn" onclick="pridatRucne()">Přidat</button>
@@ -1405,7 +1405,7 @@ nav {
   <!-- Nastavení upozornění -->
   <div class="notif-bar">
     <label>Upozornit pokud nezaznamenám změnu déle než</label>
-    <select class="notif-select" id="notif-interval">
+    <select class="notif-select" id="notif-interval" aria-label="Jak často připomínat zápis">
       <option value="10">10 min</option>
       <option value="15" selected>15 min</option>
       <option value="20">20 min</option>
@@ -1442,7 +1442,7 @@ nav {
     <div class="hodnota-hodiny-row">
       <label for="hodnota-hodiny">Hodnota vaší hodiny (nepovinné, jen pro přepočet na Kč)</label>
       <div class="hodnota-hodiny-input-wrap">
-        <input type="number" id="hodnota-hodiny" class="hodnota-hodiny-input" placeholder="např. 700" min="0" step="10" oninput="nastavHodnotuHodiny(this.value)">
+        <input type="number" id="hodnota-hodiny" aria-label="Hodnota vaší hodiny v Kč" class="hodnota-hodiny-input" placeholder="např. 700" min="0" step="10" oninput="nastavHodnotuHodiny(this.value)">
         <span>Kč/hod</span>
       </div>
     </div>
@@ -1962,8 +1962,8 @@ function renderZaznamy() {
 
     if (editingId === z.id) {
       return `<div class="zaznam editing">
-        <input class="zaznam-edit-time" id="edit-time-${z.id}" value="${z.cas}">
-        <input class="zaznam-edit-text" id="edit-text-${z.id}" value="${z.text}">
+        <input class="zaznam-edit-time" id="edit-time-${z.id}" value="${z.cas}" aria-label="Čas záznamu (HH:MM)" inputmode="numeric">
+        <input class="zaznam-edit-text" id="edit-text-${z.id}" value="${z.text}" aria-label="Činnost">
         <button class="zaznam-save" onclick="ulozitEdit(${z.id})">Uložit</button>
         <button class="zaznam-del" onclick="editingId=null;renderZaznamy()" title="Zrušit">×</button>
       </div>`;
@@ -2301,6 +2301,7 @@ function konecMereni() {
   // Pokud poslední záznam není "Konec", přidáme ho
   if (posl.text !== 'Konec') {
     const t = new Date();
+    t.setSeconds(0, 0); // stejně jako u ručně zadaných časů HH:MM, jinak by konec dne přidal pár vteřin navíc
     zaznamy.push({
       id: Date.now(),
       cas: t.toTimeString().slice(0, 5),
@@ -2976,8 +2977,12 @@ function exportCSV() {
         .filter(k => katCas[k.id] > 0)
         .sort((a, b) => katCas[b.id] - katCas[a.id])
         .forEach(k => {
-          const pct = total > 0 ? Math.round(katCas[k.id] / total * 100) : 0;
-          rows.push([k.label, Math.round(katCas[k.id] / 60000), pct, '', '']);
+          // Podíl z celých minut, aby seděl s minutami ve stejném řádku
+          // (dřív 10 a 10 minut vycházelo jako 51 % a 49 % kvůli vteřinám)
+          const min = Math.round(katCas[k.id] / 60000);
+          const celkemMin = Math.round(total / 60000);
+          const pct = celkemMin > 0 ? Math.round(min / celkemMin * 100) : 0;
+          rows.push([k.label, min, pct, '', '']);
         });
       rows.push([]);
       rows.push([]);
@@ -3132,11 +3137,11 @@ function renderModalRows() {
   const container = document.getElementById('modal-rows');
   container.innerHTML = modalRows.map((r, i) => `
     <div class="modal-row">
-      <input class="modal-time" type="text" placeholder="08:30"
+      <input class="modal-time" type="text" placeholder="08:30" aria-label="Čas začátku činnosti ${i + 1} (HH:MM)" inputmode="numeric"
         value="${r.cas}" maxlength="5"
         oninput="modalRows[${i}].cas=this.value"
         onkeydown="if(event.key==='Tab'&&!event.shiftKey){event.preventDefault();document.querySelectorAll('.modal-text')[${i}].focus();}">
-      <input class="modal-text" type="text" placeholder="Co jste dělali..."
+      <input class="modal-text" type="text" placeholder="Co jste dělali..." aria-label="Činnost ${i + 1}"
         value="${r.text}"
         oninput="modalRows[${i}].text=this.value"
         onkeydown="if(event.key==='Enter'){event.preventDefault();pridatModalRow();}">
