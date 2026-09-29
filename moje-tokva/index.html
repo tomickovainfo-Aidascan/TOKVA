@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Moje Tokva – přehled firmy | Tokva</title>
+<title>Moje Tokva - přehled firmy | Tokva</title>
 <meta name="description" content="Přehled toho, co se ve vaší firmě v Tokvě děje - otevřené akce, poslední výsledky nástrojů a rychlé odkazy na Akční plán a Projekty.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://tokva.cz/moje-tokva/">
@@ -442,7 +442,7 @@ const RENDER_DETAIL = {
       if (nevim.includes(q)) return radekOtazky(text, 'Nevím', 'nevim');
       const h = odp[q];
       const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
-      return radekOtazky(text, MOZNOSTI_MINI_SKLADU[h] != null ? MOZNOSTI_MINI_SKLADU[h] : '—', trida);
+      return radekOtazky(text, MOZNOSTI_MINI_SKLADU[h] != null ? MOZNOSTI_MINI_SKLADU[h] : '-', trida);
     }).join('');
   },
   'mini-audit-vyroby': function (d) {
@@ -452,7 +452,7 @@ const RENDER_DETAIL = {
       if (nevim.includes(q)) return radekOtazky(text, 'Nevím', 'nevim');
       const h = odp[q];
       const trida = h === 2 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
-      return radekOtazky(text, LABELY_MINI_VYROBY[h] != null ? LABELY_MINI_VYROBY[h] : '—', trida);
+      return radekOtazky(text, LABELY_MINI_VYROBY[h] != null ? LABELY_MINI_VYROBY[h] : '-', trida);
     }).join('');
   },
   'kviz-sklad': function (d) {
@@ -462,7 +462,7 @@ const RENDER_DETAIL = {
       const q = String(i + 1);
       const h = odp[q];
       const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
-      const znaceni = odpText[q] || (LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '—');
+      const znaceni = odpText[q] || (LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '-');
       return radekOtazky(text, znaceni, trida);
     }).join('');
   },

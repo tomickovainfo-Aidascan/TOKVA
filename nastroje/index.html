@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Katalog nástrojů Tokvy | Tokva</title>
 <link rel="canonical" href="https://tokva.cz/nastroje/">
-<meta name="description" content="Diagnostika, měření, kalkulačky, analýza příčin i nástroje pro zavedení změny – celý katalog appek Tokvy na jednom místě.">
+<meta name="description" content="Diagnostika, měření, kalkulačky, analýza příčin i nástroje pro zavedení změny - celý katalog appek Tokvy na jednom místě.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Gabriela Tomíčková">
 <meta property="og:title" content="Katalog nástrojů Tokvy | Tokva">
-<meta property="og:description" content="Diagnostika, měření, kalkulačky, analýza příčin i nástroje pro zavedení změny – celý katalog appek Tokvy na jednom místě.">
+<meta property="og:description" content="Diagnostika, měření, kalkulačky, analýza příčin i nástroje pro zavedení změny - celý katalog appek Tokvy na jednom místě.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:image" content="https://tokva.cz/og-image.png">
@@ -17,7 +17,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Katalog nástrojů Tokvy | Tokva">
-<meta name="twitter:description" content="Diagnostika, měření, kalkulačky, analýza příčin i nástroje pro zavedení změny – celý katalog appek Tokvy na jednom místě.">
+<meta name="twitter:description" content="Diagnostika, měření, kalkulačky, analýza příčin i nástroje pro zavedení změny - celý katalog appek Tokvy na jednom místě.">
 <meta name="twitter:image" content="https://tokva.cz/og-image.png">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
@@ -333,7 +333,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
     <section class="intro active" id="intro">
       <div class="eyebrow">Katalog</div>
       <h1>Všechny nástroje Tokvy na jednom místě.</h1>
-      <p class="intro-sub">Zde najdete všechny dostupné nástroje Tokvy – diagnostiku, měření, kalkulačky i nástroje pro zavedení změny.</p>
+      <p class="intro-sub">Zde najdete všechny dostupné nástroje Tokvy - diagnostiku, měření, kalkulačky i nástroje pro zavedení změny.</p>
       <p class="intro-proof">První výsledek za pár minut · všechny appky mají něco zdarma · bez znalosti Kaizenu</p>
 
       <div id="cesta"></div>
@@ -1097,7 +1097,7 @@ const TOOLS = [
         {num:"7", lbl:"kategorií nákladů budovy"},
         {num:"2", lbl:"minuty na rychlý odhad"},
         {num:"0", lbl:"Kč, appka je celá zdarma"},
-        {num:"1,5–2×", lbl:"reálné náklady oproti nájmu"}
+        {num:"1,5-2×", lbl:"reálné náklady oproti nájmu"}
       ],
       recognizeClose:"Reálné náklady bývají 1,5 až 2× vyšší než samotný nájem.",
       example:{
@@ -1241,7 +1241,7 @@ function bottomCtaHtml(t, d2) {
 }
 
 function statsHtml(stats) {
-  const items = (stats && stats.length) ? stats : [0,1,2,3].map(() => ({num:"—", lbl:"čeká na doplnění"}));
+  const items = (stats && stats.length) ? stats : [0,1,2,3].map(() => ({num:"-", lbl:"čeká na doplnění"}));
   return `<div class="d-stats">${items.map(s => `<div class="d-stat"><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join("")}</div>`;
 }
 

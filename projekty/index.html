@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Projekty – souhrn a prezentační mód | Tokva</title>
+<title>Projekty - souhrn a prezentační mód | Tokva</title>
 <meta name="description" content="Souhrn toho, co se u projektu dělalo a kdy - a proklik do prezentačního módu na poradu.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://tokva.cz/projekty/">
@@ -306,9 +306,9 @@ body.prezentace footer{display:none;}
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="tool-badge">Placený nástroj – Tokva Pro</div>
+    <div class="tool-badge">Placený nástroj - Tokva Pro</div>
     <h1>Co se u projektu <em>dělo a proč</em></h1>
-    <p>Jedna stránka na projekt – co jste zjistili, co jste změřili, co jste změnili a jestli to pomohlo. A z ní proklik do prezentačního módu na poradu.</p>
+    <p>Jedna stránka na projekt - co jste zjistili, co jste změřili, co jste změnili a jestli to pomohlo. A z ní proklik do prezentačního módu na poradu.</p>
   </div>
 </div>
 
@@ -842,7 +842,7 @@ const RENDER_DETAIL = {
       if (nevim.includes(q)) return radekOtazky(text, 'Nevím', 'nevim');
       const h = odp[q];
       const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
-      return radekOtazky(text, MOZNOSTI_MINI_SKLADU[h] != null ? MOZNOSTI_MINI_SKLADU[h] : '—', trida);
+      return radekOtazky(text, MOZNOSTI_MINI_SKLADU[h] != null ? MOZNOSTI_MINI_SKLADU[h] : '-', trida);
     }).join('');
   },
   'mini-audit-vyroby': function (d) {
@@ -852,7 +852,7 @@ const RENDER_DETAIL = {
       if (nevim.includes(q)) return radekOtazky(text, 'Nevím', 'nevim');
       const h = odp[q];
       const trida = h === 2 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
-      return radekOtazky(text, LABELY_MINI_VYROBY[h] != null ? LABELY_MINI_VYROBY[h] : '—', trida);
+      return radekOtazky(text, LABELY_MINI_VYROBY[h] != null ? LABELY_MINI_VYROBY[h] : '-', trida);
     }).join('');
   },
   'kviz-sklad': function (d) {
@@ -864,7 +864,7 @@ const RENDER_DETAIL = {
       const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
       // Přesné znění odpovědi, pokud appka uložila (viz odpovedi_text) - starší
       // výsledky bez tohohle ukážou aspoň odvozený stav jako dřív.
-      const znaceni = odpText[q] || (LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '—');
+      const znaceni = odpText[q] || (LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '-');
       return radekOtazky(text, znaceni, trida);
     }).join('');
   },
@@ -1023,7 +1023,7 @@ function renderFazeSloupce() {
     krokNav.style.display = 'flex';
     const jeShrnuti = prezentaceKrok === FAZE_RADY.length;
     const rada = jeShrnuti ? { nadpis: 'SHRNUTÍ' } : FAZE_RADY[prezentaceKrok];
-    document.getElementById('krok-oznaceni').textContent = (prezentaceKrok + 1) + ' / ' + (FAZE_RADY.length + 1) + ' — ' + rada.nadpis;
+    document.getElementById('krok-oznaceni').textContent = (prezentaceKrok + 1) + ' / ' + (FAZE_RADY.length + 1) + ' - ' + rada.nadpis;
     document.getElementById('btn-krok-zpet').disabled = prezentaceKrok === 0;
     document.getElementById('btn-krok-dal').disabled = prezentaceKrok === FAZE_RADY.length;
     wrap.innerHTML = jeShrnuti ? shrnutiKartaHtml() : jedenSloupecHtml(rada, sloupce[rada.klic], 1);

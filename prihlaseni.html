@@ -92,7 +92,7 @@ input:focus { border-color:var(--gold); }
       <input id="pozvanka-heslo" type="password" placeholder="min. 6 znaků" autocomplete="new-password">
       <button class="btn-gold" id="btn-pozvanka" onclick="prijmoutPozvankuNoveHeslo()">Vytvořit účet a přijmout pozvánku</button>
       <div class="zprava" id="zprava-pozvanka"></div>
-      <a href="#" class="zapomenute-link" style="text-align:center;margin-top:14px;" onclick="pouzitStavajiciUcetProPozvanku(event)">Už mám účet Tokva – přihlásit se</a>
+      <a href="#" class="zapomenute-link" style="text-align:center;margin-top:14px;" onclick="pouzitStavajiciUcetProPozvanku(event)">Už mám účet Tokva - přihlásit se</a>
     </div>
 
     <div id="pozvanka-chyba" class="zprava chyba" style="display:none;"></div>
@@ -121,12 +121,12 @@ input:focus { border-color:var(--gold); }
   <!-- KROK 2: založení firmy (jen při prvním přihlášení) -->
   <div id="krok-firma" class="krok">
     <h1>Vítejte v Tokvě</h1>
-    <p class="podnadpis">Ještě potřebujeme založit vaši firmu nebo provoz – pod ní se budou ukládat všechny vaše výsledky a projekty.</p>
+    <p class="podnadpis">Ještě potřebujeme založit vaši firmu nebo provoz - pod ní se budou ukládat všechny vaše výsledky a projekty.</p>
     <p class="podnadpis" id="prihlaseny-jako" style="margin-top:-14px;"></p>
 
     <form id="form-firma" onsubmit="odeslatZalozeniFirmy(event); return false;">
       <label for="nazev-firmy">Název firmy nebo provozu</label>
-      <input id="nazev-firmy" type="text" placeholder="např. Novák s.r.o. – sklad Vrchlabí">
+      <input id="nazev-firmy" type="text" placeholder="např. Novák s.r.o. - sklad Vrchlabí">
 
       <button type="submit" class="btn-gold" id="btn-firma">Chci pokračovat</button>
 
@@ -451,7 +451,7 @@ inicializovatPozvanku();
 
 function prelozitChybu(msg) {
   if (msg.includes('Invalid login credentials')) return 'Nesprávný e-mail nebo heslo.';
-  if (msg.includes('already registered')) return 'Tenhle e-mail už má účet – zkuste se přihlásit.';
+  if (msg.includes('already registered')) return 'Tenhle e-mail už má účet - zkuste se přihlásit.';
   if (msg.includes('Password should be')) return 'Heslo musí mít aspoň 6 znaků.';
   if (msg.includes('Email not confirmed')) return 'Nejdřív potvrďte registraci v e-mailu, který jsme vám poslali.';
   return 'Něco se nepovedlo: ' + msg;

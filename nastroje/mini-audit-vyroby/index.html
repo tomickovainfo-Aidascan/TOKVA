@@ -1120,7 +1120,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
           <div class="pro-final-item-icon">✓</div>
           <div>
             <div class="pro-final-item-title">Porovnání PŘED × PO</div>
-            <div class="pro-final-item-desc">Vyberete dva audity z historie a appka je porovná otázku po otázce – co se zlepšilo, zhoršilo nebo zůstalo stejné.</div>
+            <div class="pro-final-item-desc">Vyberete dva audity z historie a appka je porovná otázku po otázce - co se zlepšilo, zhoršilo nebo zůstalo stejné.</div>
           </div>
         </div>
         <div class="pro-final-item">
@@ -2100,7 +2100,7 @@ function aktualizovatPorovnatBar() {
 // jednoho auditu (2 = nejlíp, 0 = nejhůř), "nevím" se řeší zvlášť.
 function popisOdpovediPorovnani(hodnota, jeNevim) {
   if (jeNevim) return 'Nevím';
-  return LABELY[hodnota] != null ? LABELY[hodnota] : '—';
+  return LABELY[hodnota] != null ? LABELY[hodnota] : '-';
 }
 
 function otevritModalPorovnani() {
@@ -2212,7 +2212,7 @@ function otevritModalDetailVysledku(i) {
     if (nevim.includes(q)) { znacka = 'Nevím'; trida = 'nevim'; }
     else {
       const hodnota = odp[q];
-      znacka = LABELY[hodnota] != null ? LABELY[hodnota] : '—';
+      znacka = LABELY[hodnota] != null ? LABELY[hodnota] : '-';
       trida = hodnota === 2 ? 'dobre' : hodnota === 1 ? 'stredni' : 'spatne';
     }
     return '<div class="detail-otazka"><div class="detail-otazka-text">' + text + '</div>' +

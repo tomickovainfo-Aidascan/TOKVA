@@ -299,9 +299,9 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="tool-badge">Placený nástroj – Tokva Pro</div>
+    <div class="tool-badge">Placený nástroj - Tokva Pro</div>
     <h1>Co uděláme, <em>proč a jak to poznáme</em></h1>
-    <p>Jeden akční plán pro celou firmu. Úkoly se dají třídit podle projektu, každý má odpovědnou osobu, termín a napojení na výsledek nástroje, ze kterého vznikl – takže kdykoli víte, proč tuhle akci vlastně děláte.</p>
+    <p>Jeden akční plán pro celou firmu. Úkoly se dají třídit podle projektu, každý má odpovědnou osobu, termín a napojení na výsledek nástroje, ze kterého vznikl - takže kdykoli víte, proč tuhle akci vlastně děláte.</p>
   </div>
 </div>
 
@@ -452,7 +452,7 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 <div class="modal-overlay" id="modal-projekt-overlay">
   <div class="modal">
     <h3>Nový projekt</h3>
-    <p class="modal-sub">Projekt je oblast zlepšování, ne jednotlivý úkol – např. „Expedice nestíhá".</p>
+    <p class="modal-sub">Projekt je oblast zlepšování, ne jednotlivý úkol - např. „Expedice nestíhá".</p>
     <form id="form-projekt" onsubmit="ulozitProjekt(event)">
       <div class="field"><label>Název projektu *</label>
         <input type="text" id="pr-nazev" placeholder="např. Expedice nestíhá" required></div>
@@ -867,7 +867,7 @@ const RENDER_DETAIL = {
       if (nevim.includes(q)) return radekOtazky(text, 'Nevím', 'nevim');
       const h = odp[q];
       const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
-      return radekOtazky(text, MOZNOSTI_MINI_SKLADU[h] != null ? MOZNOSTI_MINI_SKLADU[h] : '—', trida);
+      return radekOtazky(text, MOZNOSTI_MINI_SKLADU[h] != null ? MOZNOSTI_MINI_SKLADU[h] : '-', trida);
     }).join('');
   },
   'mini-audit-vyroby': function (d) {
@@ -877,7 +877,7 @@ const RENDER_DETAIL = {
       if (nevim.includes(q)) return radekOtazky(text, 'Nevím', 'nevim');
       const h = odp[q];
       const trida = h === 2 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
-      return radekOtazky(text, LABELY_MINI_VYROBY[h] != null ? LABELY_MINI_VYROBY[h] : '—', trida);
+      return radekOtazky(text, LABELY_MINI_VYROBY[h] != null ? LABELY_MINI_VYROBY[h] : '-', trida);
     }).join('');
   },
   'kviz-sklad': function (d) {
@@ -887,7 +887,7 @@ const RENDER_DETAIL = {
       const q = String(i + 1);
       const h = odp[q];
       const trida = h === 0 ? 'dobre' : h === 1 ? 'stredni' : 'spatne';
-      const znaceni = odpText[q] || (LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '—');
+      const znaceni = odpText[q] || (LABELY_KVIZ_SKLAD[h] != null ? LABELY_KVIZ_SKLAD[h] : '-');
       return radekOtazky(text, znaceni, trida);
     }).join('');
   },
@@ -1088,20 +1088,20 @@ function aktualizovatTabulkuRadky() {
   }
 
   tbody.innerHTML = f.map(a => {
-    const projektJmeno = a.projects ? a.projects.name : '—';
+    const projektJmeno = a.projects ? a.projects.name : '-';
     return '<tr>' +
       '<td>' + escapovat(a.title) + '</td>' +
       '<td>' + escapovat(projektJmeno) + '</td>' +
       '<td><span class="akce-status status-' + a.status + '">' + NAZVY_STAVU[a.status] + '</span></td>' +
-      '<td>' + escapovat(a.responsible_person || '—') + '</td>' +
-      '<td>' + (a.due_date ? formatDatum(a.due_date) : '—') + '</td>' +
-      '<td>' + (a.estimated_investment != null ? formatKc(a.estimated_investment) : '—') + '</td>' +
-      '<td>' + (a.expected_benefit != null ? formatKc(a.expected_benefit) + '/rok' : '—') + '</td>' +
-      '<td>' + escapovat(a.actual_state || '—') + '</td>' +
-      '<td>' + (a.actual_benefit != null ? formatKc(a.actual_benefit) + '/rok' : '—') + '</td>' +
-      '<td>' + (a.verification_date ? formatDatum(a.verification_date) : '—') + '</td>' +
-      '<td>' + (a.verification_confirmed ? '✓' : '—') + '</td>' +
-      '<td>' + (a.tool_runs ? '<span class="akce-duvod" onclick="otevritModalDuvod(\'' + a.id + '\')">' + escapovat(a.tool_runs.nazev || 'Výsledek nástroje') + '</span>' : '—') + '</td>' +
+      '<td>' + escapovat(a.responsible_person || '-') + '</td>' +
+      '<td>' + (a.due_date ? formatDatum(a.due_date) : '-') + '</td>' +
+      '<td>' + (a.estimated_investment != null ? formatKc(a.estimated_investment) : '-') + '</td>' +
+      '<td>' + (a.expected_benefit != null ? formatKc(a.expected_benefit) + '/rok' : '-') + '</td>' +
+      '<td>' + escapovat(a.actual_state || '-') + '</td>' +
+      '<td>' + (a.actual_benefit != null ? formatKc(a.actual_benefit) + '/rok' : '-') + '</td>' +
+      '<td>' + (a.verification_date ? formatDatum(a.verification_date) : '-') + '</td>' +
+      '<td>' + (a.verification_confirmed ? '✓' : '-') + '</td>' +
+      '<td>' + (a.tool_runs ? '<span class="akce-duvod" onclick="otevritModalDuvod(\'' + a.id + '\')">' + escapovat(a.tool_runs.nazev || 'Výsledek nástroje') + '</span>' : '-') + '</td>' +
       '<td class="tabulka-akce-bunka"><button class="ikona-btn" title="Upravit" aria-label="Upravit" onclick="otevritModalUpravitAkce(\'' + a.id + '\')">' + IKONA_UPRAVIT + '</button>' + (jsemAdmin() ? '<button class="ikona-btn smazat" title="Smazat" aria-label="Smazat" onclick="smazatAkci(\'' + a.id + '\')">' + IKONA_SMAZAT + '</button>' : '') + '</td>' +
     '</tr>';
   }).join('');

@@ -21,21 +21,21 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Časová studie dne zdarma – kam vám mizí čas | Tokva</title>
-<meta name="description" content="Snímek pracovního dne zdarma – zaznamenejte si činnosti a intervaly a zjistěte, kam vám mizí čas. Podklad pro delegování nebo automatizaci, export do CSV.">
+<title>Časová studie dne zdarma - kam vám mizí čas | Tokva</title>
+<meta name="description" content="Snímek pracovního dne zdarma - zaznamenejte si činnosti a intervaly a zjistěte, kam vám mizí čas. Podklad pro delegování nebo automatizaci, export do CSV.">
 <meta name="keywords" content="časová studie dne, produktivní den, plýtvání časem, time tracking, snímek pracovního dne">
 <meta name="author" content="Gabriela Tomíčková">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tokva.cz/nastroje/casova-studie/">
-<meta property="og:title" content="Časová studie dne zdarma – kam vám mizí čas | Tokva">
-<meta property="og:description" content="Snímek pracovního dne zdarma – zaznamenejte si činnosti a intervaly a zjistěte, kam vám mizí čas. Podklad pro delegování nebo automatizaci.">
+<meta property="og:title" content="Časová studie dne zdarma - kam vám mizí čas | Tokva">
+<meta property="og:description" content="Snímek pracovního dne zdarma - zaznamenejte si činnosti a intervaly a zjistěte, kam vám mizí čas. Podklad pro delegování nebo automatizaci.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:image" content="https://tokva.cz/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Časová studie dne zdarma – kam vám mizí čas | Tokva">
+<meta name="twitter:title" content="Časová studie dne zdarma - kam vám mizí čas | Tokva">
 <meta name="twitter:description" content="Zaznamenejte si činnosti a intervaly během dne a zjistěte, kam vám mizí čas.">
 <meta name="twitter:image" content="https://tokva.cz/og-image.png">
 <script type="application/ld+json">
@@ -2551,7 +2551,7 @@ function formatKritickeObdobi(k) {
   const hod = String(k.hodina).padStart(2, '0');
   const hodDo = String((k.hodina + 1) % 24).padStart(2, '0');
   return '<div class="kriticke-obdobi-box">' +
-    '<strong>' + hod + ':00–' + hodDo + ':00</strong> · produktivní práce ' + k.produktivniPct + ' %<br>' +
+    '<strong>' + hod + ':00-' + hodDo + ':00</strong> · produktivní práce ' + k.produktivniPct + ' %<br>' +
     'Nejvíc času (' + k.dominantniPct + ' %) padlo na: ' + katLabel(k.dominantniId) +
     '</div>';
 }
@@ -2715,7 +2715,7 @@ async function renderHistorie() {
           <div class="pro-final-item-icon">✓</div>
           <div>
             <div class="pro-final-item-title">Porovnání dnů a kritické období</div>
-            <div class="pro-final-item-desc">Appka srovná dva dny po kategoriích a sama najde nejhorší hodinu dne – i to, jestli se v čase posouvá.</div>
+            <div class="pro-final-item-desc">Appka srovná dva dny po kategoriích a sama najde nejhorší hodinu dne - i to, jestli se v čase posouvá.</div>
           </div>
         </div>
       </div>

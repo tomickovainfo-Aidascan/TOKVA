@@ -20,7 +20,7 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Nastavení firmy – lidé a role | Tokva</title>
+<title>Nastavení firmy - lidé a role | Tokva</title>
 <meta name="description" content="Pozvěte kolegy do své firmy na Tokva Pro, nastavte jim roli a spravujte přístup na jednom místě.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://tokva.cz/nastaveni-firmy/">
@@ -124,7 +124,7 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="tool-badge">Placený nástroj – Tokva Pro</div>
+    <div class="tool-badge">Placený nástroj - Tokva Pro</div>
     <h1>Kdo je ve vaší firmě v Tokvě</h1>
     <p>Pozvěte kolegy, nastavte jim roli a mějte přehled, kdo má k appce přístup. Data firmy vidí a upravuje kdokoli z týmu.</p>
   </div>
@@ -150,7 +150,7 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
   <div class="karta">
     <h2>Lidé ve firmě</h2>
     <p class="karta-pop">Kdokoli tady vidí a upravuje výsledky, projekty i akční plán celé firmy.</p>
-    <div class="pasmo-pill" id="pasmo-pill">–</div>
+    <div class="pasmo-pill" id="pasmo-pill">-</div>
     <div id="seznam-clenu"></div>
   </div>
 
@@ -196,8 +196,8 @@ let jsemMajitel = false;
 
 function pasmo(pocet) {
   if (pocet <= 1) return { nazev: '1 uživatel', cena: 699, max: 1 };
-  if (pocet <= 5) return { nazev: '2–5 uživatelů', cena: 1390, max: 5 };
-  if (pocet <= 15) return { nazev: '6–15 uživatelů', cena: 2690, max: 15 };
+  if (pocet <= 5) return { nazev: '2-5 uživatelů', cena: 1390, max: 5 };
+  if (pocet <= 15) return { nazev: '6-15 uživatelů', cena: 2690, max: 15 };
   return { nazev: '16+ uživatelů', cena: null, max: Infinity };
 }
 
@@ -205,8 +205,8 @@ function pasmo(pocet) {
 // toho, kolik lidí je zrovna přihlášeno - limit zadává ručně Gábina.
 function pasmoPodleLimitu(max) {
   if (max <= 1) return '1 uživatel';
-  if (max <= 5) return '2–5 uživatelů';
-  if (max <= 15) return '6–15 uživatelů';
+  if (max <= 5) return '2-5 uživatelů';
+  if (max <= 15) return '6-15 uživatelů';
   return '16+ uživatelů (individuálně)';
 }
 
