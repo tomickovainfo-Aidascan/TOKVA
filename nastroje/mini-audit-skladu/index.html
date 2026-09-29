@@ -349,7 +349,10 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
   body { background:white; }
   .vysledky-wrap { display:block !important; }
   .skore-hero { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-  .vysledky-detail { break-inside:avoid; }
+  /* Velké karty se smějí rozdělit (jinak zůstane první strana skoro prázdná), jednotlivé řádky ne */
+  .vysledky-detail { break-inside:auto; }
+  .vysledky-detail-header, .top3-header, .nemereno-header { break-after:avoid; }
+  #vysledky-rows > *, #top3-rows > *, #nemereno-rows > * { break-inside:avoid; }
   @page { margin:20mm; }
 }
 
