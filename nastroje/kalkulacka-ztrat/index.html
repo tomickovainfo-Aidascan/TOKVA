@@ -479,7 +479,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="result-hero">
         <div class="result-hero-label">Odhadovaný roční potenciál</div>
         <div class="result-hero-num" id="res-rok">0 Kč</div>
-        <div class="result-hero-sub">hodnota času, který podle zadaných odhadů nepřináší přímou hodnotu - orientační výpočet, ne přesný audit</div>
+        <div class="result-hero-sub">hodnota času, který podle zadaných odhadů nepřináší přímou hodnotu - orientační výpočet, ne přesný audit. Rok počítáme jako 250 pracovních dnů, tedy 50 týdnů po 5 dnech.</div>
       </div>
 
       <div class="result-grid">
@@ -1553,7 +1553,7 @@ function tisknoutZtraty() {
     '</tbody></table>' +
     '<h2>Zadané hodnoty</h2><table><tbody>' +
     VSTUPY_ZTRAT.map(function (x) { return vs[x[0]] == null ? '' : '<tr><td>' + x[2] + '</td><td class="c">' + fmtD(vs[x[0]], 1) + (x[3] ? ' ' + x[3] : '') + '</td></tr>'; }).join('') +
-    '</tbody></table><p style="font-size:11px;color:#666;margin-top:10px;">Orientační odhad, počítáno s 250 pracovními dny v roce.</p>';
+    '</tbody></table><p style="font-size:11px;color:#666;margin-top:10px;">Orientační odhad. Rok počítáme jako 250 pracovních dnů, tedy 50 týdnů po 5 dnech: hodiny týdně × hodinová sazba × 50.</p>';
   const nazev = ((document.getElementById('s-nazev-vypoctu') || {}).value || '').trim();
   tokvaTiskOkno('Kalkulačka ztrát', (nazev ? '<b>' + tokvaEsc(nazev) + '</b>' : '') + new Date().toLocaleDateString('cs-CZ'), telo);
 }
