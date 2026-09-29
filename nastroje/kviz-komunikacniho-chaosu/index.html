@@ -611,7 +611,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   <div class="email-card">
     <h3>Chcete podrobnější rozbor?</h3>
     <p style="font-size:12px;color:var(--mid);margin-bottom:6px;">Výsledek nahoře máte celý zdarma a bez přihlášení - tohle je jen dobrovolná nadstavba navíc.</p>
-    <p>Na e-mail vám pošlu váš výsledek i s doporučením, co s vaší nejslabší oblastí dělat jako první.</p>
+    <p>Na e-mail vám pošlu váš výsledek i s doporučením, co dělat jako první.</p>
     <button type="button" class="btn-spustit" id="btn-poslat-email-chaos" onclick="ukazatEmailFormChaos()">Poslat podrobný výsledek na e-mail</button>
     <div id="email-form-wrap-chaos" style="display:none;margin-top:10px;">
       <div id="sib-form-container" class="sib-form-container">
@@ -633,7 +633,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
               <div class="sib-form-block"><p>Chcete podrobnější rozbor?</p></div>
             </div>
             <div class="tokva-sib-hide">
-              <div class="sib-form-block"><div class="sib-text-form-block"><p>Na e-mail vám pošlu váš výsledek i s doporučením, co s vaší nejslabší oblastí dělat jako první.</p></div></div>
+              <div class="sib-form-block"><div class="sib-text-form-block"><p>Na e-mail vám pošlu váš výsledek i s doporučením, co dělat jako první.</p></div></div>
             </div>
             <div class="tokva-sib-email-field">
               <div class="sib-input sib-form-block">
@@ -930,6 +930,7 @@ const OTAZKY = [
       {t:'Účetní → firma', b:2},
       {t:'Zákazník → firma', b:2},
       {t:'Nevíme přesně', b:3, nevim:true},
+      {t:'Nikde výrazně, drhne to jen výjimečně', b:0},
     ],
     other:true
   },
@@ -2148,6 +2149,18 @@ document.addEventListener('keydown', function(e){
   if(btn && !btn.disabled){ e.preventDefault(); btn.click(); }
 });
 
+// Kanály z otázky 2 ve tvaru "mezi e-maily, WhatsAppem a ústní domluvou",
+// aby výsledek jmenoval jen to, co člověk opravdu zaškrtl.
+const KANALY_7_PAD = ['e-maily','telefonáty','WhatsAppem či Messengerem','papírovými poznámkami','tabulkami','informačním systémem','CRM','účetním programem','sdílenou složkou','ústní domluvou mezi dveřmi'];
+function kanalyVeVete(){
+  const v = odpovedi.q2;
+  const seznam = v instanceof Set ? Array.from(v).filter(i => typeof i === 'number').sort((a,b)=>a-b).map(i => KANALY_7_PAD[i]).filter(Boolean) : [];
+  const jine = (odpovedi.q2_text || '').trim();
+  if (jine) seznam.push(jine);
+  if (seznam.length < 2) return 'cestou mezi lidmi a odděleními';
+  return 'mezi ' + (seznam.length === 2 ? seznam.join(' a ') : seznam.slice(0,-1).join(', ') + ' a ' + seznam[seznam.length-1]);
+}
+
 function vybrat(qid, typ, oi, el){
   oznamitZahajeni();
   if(typ==='radio'){
@@ -2350,7 +2363,7 @@ function zobrazitVysledek(){
     doporuceni='Pravděpodobně se často čeká, dohledává, přeposílá a opravuje. Problém není v lidech, ale v tom, že informace nemá jasnou cestu. Zmapujte jeden tok informace od začátku do konce tam nejspíš najdete hlavní úzké místo.';
   } else {
     pasmo='Komunikace je jedno z hlavních úzkých míst';
-    doporuceni='Informace se ztrácí mezi e-maily, telefonáty, tabulkami, WhatsAppem a ústní domluvou. Tady už nejde o drobnosti, ale o kapacitu, chyby, zpoždění a nervy. Dává smysl zmapovat, kudy informace chodí a kde se ztrácí.';
+    doporuceni='Informace se ztrácí ' + kanalyVeVete() + '. Tady už nejde o drobnosti, ale o kapacitu, chyby, zpoždění a nervy. Dává smysl zmapovat, kudy informace chodí a kde se ztrácí.';
   }
   if(nevimOtazky.length > 0){
     doporuceni += ' Skóre je orientační: ' + nevimOtazky.length + ' ' + (nevimOtazky.length===1 ? 'otázku jste' : nevimOtazky.length>=2 && nevimOtazky.length<=4 ? 'otázky jste' : 'otázek jste') + ' označili jako "nevím", to je samo o sobě důležité zjištění.';
