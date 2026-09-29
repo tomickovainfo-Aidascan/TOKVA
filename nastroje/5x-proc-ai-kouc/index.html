@@ -773,7 +773,7 @@ nav {
     <div style="font-family:'Poppins',sans-serif;font-size:18px;font-weight:900;color:var(--dark);margin-bottom:16px;line-height:1.2;">Spustit analýzu</div>
     <div id="zdarma-blok">
       <p style="font-size:13px;color:var(--mid);margin-bottom:16px;">Vyzkoušejte si 1 kompletní analýzu zdarma. Stačí e-mail, nic dalšího.</p>
-      <input class="login-input" id="zdarma-email" type="email" placeholder="vas@email.cz" style="letter-spacing:normal;"
+      <input class="login-input" id="zdarma-email" type="email" aria-label="Váš e-mail pro analýzu zdarma" autocomplete="email" inputmode="email" placeholder="vas@email.cz" style="letter-spacing:normal;"
         onkeydown="if(event.key==='Enter') spustitZdarma()">
       <div class="login-err" id="zdarma-err"></div>
       <button class="login-btn" id="zdarma-btn" onclick="spustitZdarma()">Chci spustit analýzu zdarma</button>
