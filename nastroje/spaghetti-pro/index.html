@@ -3304,7 +3304,47 @@ function vstoupitDoAplikace() {
   if (new URLSearchParams(window.location.search).get('vysledek')) {
     otevritVysledekZAdresy();
   } else {
+    prevzitNakresZFree();
     zkusitObnovitRozpracovanyNakres();
+  }
+}
+
+// Převzetí nákresu z bezplatného Spaghetti diagramu: free verze si nákres
+// průběžně ukládá do prohlížeče (spaghetti_free_rozpracovano). Když v Pro
+// zatím žádný rozpracovaný nákres není, Pro si ten z free verze jednou
+// převezme jako vlastní rozpracovaný nákres, takže se nic nekreslí znovu.
+// Jen stejný prohlížeč. Frekvence a náklady si uživatel doplní v Pro.
+function prevzitNakresZFree() {
+  let free = null;
+  try { free = JSON.parse(localStorage.getItem('spaghetti_free_rozpracovano') || 'null'); } catch (e) {}
+  if (!free || !free.layoutSrc || !Array.isArray(free.zakazky)) return;
+  if (!free.zakazky.some(z => z && Array.isArray(z.body) && z.body.length >= 2)) return;
+  const znacka = String(free.cas || '');
+  try {
+    if (localStorage.getItem('spaghetti_free_prevzato') === znacka) return;
+    if (localStorage.getItem(DRAFT_KEY_SPAGHETTI)) return; // v Pro se už něco kreslí, nepřepisovat
+  } catch (e) { return; }
+  const zak = free.zakazky.map((z, i) => ({
+    nazev: z.nazev || ('Trasa ' + (i + 1)),
+    barva: z.barva || BARVY[i % BARVY.length],
+    body: z.body || [],
+    role: null,
+    frek: { opakovani: 0, smeny: 0, dny: 0 },
+    typ: 'clovek',
+    viditelna: true
+  }));
+  try {
+    localStorage.setItem(DRAFT_KEY_SPAGHETTI, JSON.stringify({
+      nazevProjektu: '', aktualniProjektId: null,
+      layoutSrc: free.layoutSrc,
+      zakazky: zak, zastavky: [], poznamky: [],
+      meritko: free.meritko || 1, meritkoNastaveno: !!free.meritkoNastaveno,
+      nakladyHod: 300, rychlostChuze: 4.5,
+      cas: Date.now()
+    }));
+    localStorage.setItem('spaghetti_free_prevzato', znacka);
+  } catch (e) {
+    console.warn('Nákres z bezplatné verze se nepodařilo převzít (málo místa v prohlížeči).', e);
   }
 }
 

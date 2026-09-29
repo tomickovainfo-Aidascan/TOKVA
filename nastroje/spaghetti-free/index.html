@@ -48,7 +48,7 @@
       {
         "@type": "Question",
         "name": "Jde appka použít i na mobilu nebo tabletu?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Ano, ovládá se dotykem stejně jako myší - jedním prstem přidáváte body trasy klepnutím, dvěma prsty plánek přibližujete a posouváte." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Ano, ovládá se dotykem stejně jako myší. Jedním prstem přidáváte body trasy klepnutím, dvěma prsty plánek přibližujete a posouváte." }
       },
       {
         "@type": "Question",
@@ -121,6 +121,12 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px; }
 .content-card { background:var(--paper); border:1px solid var(--border); border-radius:12px; padding:22px; }
 .content-card-title { font-family:"Poppins",sans-serif; font-size:12.5px; font-weight:700; color:var(--dark); margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
+.pro-final-text { font-size:13.5px; color:rgba(255,255,255,.75); line-height:1.7; margin-bottom:12px; }
+.pro-final-proof { font-size:12.5px; color:var(--gold); line-height:1.6; margin:4px 0 16px; }
+.pro-final-note { font-size:11.5px; color:rgba(255,255,255,.5); line-height:1.6; margin-top:10px; text-align:center; }
+.navazujici-odkazy p { font-size:14px; color:var(--mid); margin-bottom:8px; }
+.navazujici-odkazy a { color:var(--gold-dark); font-weight:700; text-decoration:none; }
+.navazujici-odkazy a:hover { text-decoration:underline; }
 .pro-final-panel {
   background: linear-gradient(135deg, #000, #1a1400);
   border-radius: 16px;
@@ -655,27 +661,41 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 <div class="post-app">
   <div class="post-app-inner">
 
-    <div>
-      <h2 class="content-card-title">Navazující nástroje</h2>
-      <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Obecný přehled dalších nástrojů - nemusí sedět na to, co konkrétně ukázal váš výsledek výše.</p>
-      <div class="dalsi-nastroje-grid">
-        <div class="dalsi-nastroj-card">
-          <div class="dalsi-nastroj-tag">Hlavní další krok</div>
-          <div class="dalsi-nastroj-nazev">5S pro každého smrtelníka</div>
-          <div class="dalsi-nastroj-popis">Diagram vám ukázal kudy se chodí navíc. 5S vám pomůže přerovnat pracoviště tak, aby to nebylo potřeba.</div>
-          <a href="../5S_audit/" target="_blank" class="dalsi-nastroj-btn">Otevřít 5S audit</a>
+    <div class="pro-final-panel" id="pro-final-panel">
+      <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
+      <h2 class="pro-final-title">Máte metry. Kolik je to za rok v korunách?</h2>
+      <p class="pro-final-text">Trasa, kterou jste právě nakreslili, se v provozu opakuje každý den. Zadáte, kolikrát denně se po ní jde a co stojí hodina pracovníka, a Spaghetti diagram Pro dopočítá roční kilometry, hodiny i částku, kterou ta chůze spolkne.</p>
+      <p class="pro-final-text">Ve stejné mapě pak nakreslíte návrh nového rozmístění vedle současného stavu. Úsporu v metrech i procentech spočítá appka sama, takže na poradu nejdete s pocitem, ale s číslem.</p>
+      <div class="pro-final-list">
+        <div class="pro-final-item">
+          <div class="pro-final-item-icon">✓</div>
+          <div>
+            <div class="pro-final-item-title">Přepočet na koruny</div>
+            <div class="pro-final-item-desc">Zadáte frekvenci trasy a náklady na zaměstnance, appka spočítá roční km, hodiny i korunovou úsporu.</div>
+          </div>
         </div>
-        <div class="dalsi-nastroj-card">
-          <div class="dalsi-nastroj-tag">Když chcete znát čas, ne jen metry</div>
-          <div class="dalsi-nastroj-nazev">Měřič plýtvání</div>
-          <div class="dalsi-nastroj-popis">Změřte přímo v provozu, kolik z pracovní doby padá na chození, čekání a hledání.</div>
-          <a href="../meric-plytvani-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Měřič plýtvání</a>
+        <div class="pro-final-item">
+          <div class="pro-final-item-icon">✓</div>
+          <div>
+            <div class="pro-final-item-title">Současný stav a návrh v jedné mapě</div>
+            <div class="pro-final-item-desc">Nakreslíte obě varianty vedle sebe, appka sama spočítá úsporu v metrech i procentech.</div>
+          </div>
+        </div>
+        <div class="pro-final-item">
+          <div class="pro-final-item-icon">✓</div>
+          <div>
+            <div class="pro-final-item-title">Poznámky do plánku</div>
+            <div class="pro-final-item-desc">Ke konkrétnímu místu na půdorysu si napíšete poznámku (třeba „vybudovat dveře“), nezávisle na trase. Objeví se i v exportu a na tisku.</div>
+          </div>
         </div>
       </div>
+      <p class="pro-final-proof">U Anduly na výdeji to bylo 7,5&nbsp;km za směnu. Po přesunu šesti položek v regálu 4,2&nbsp;km, o 44&nbsp;% míň. Bez investice.</p>
+      <a href="../spaghetti-pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'spaghetti_free',placement:'result'})" class="pro-final-cta">Spočítat, co ta chůze stojí</a>
+      <p class="pro-final-note">Dnešní nákres si Pro po přihlášení převezme samo, nic nekreslíte znovu. Bezplatný Spaghetti diagram zůstává navždy zdarma.</p>
     </div>
 
     <div>
-      <h3 class="content-card-title">Časté otázky</h3>
+      <h2 class="content-card-title">Časté otázky</h2>
       <div class="faq-block">
         <div class="faq-item">
           <div class="faq-q">Musím appku umět kalibrovat, aby čísla dávala smysl?</div>
@@ -683,7 +703,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
         </div>
         <div class="faq-item">
           <div class="faq-q">Jde appka použít i na mobilu nebo tabletu?</div>
-          <div class="faq-a">Ano, ovládá se dotykem stejně jako myší - jedním prstem přidáváte body trasy klepnutím, dvěma prsty plánek přibližujete a posouváte.</div>
+          <div class="faq-a">Ano, ovládá se dotykem stejně jako myší. Jedním prstem přidáváte body trasy klepnutím, dvěma prsty plánek přibližujete a posouváte.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q">Můžu zaznamenat víc tras najednou?</div>
@@ -692,33 +712,10 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
       </div>
     </div>
 
-    <div class="pro-final-panel" id="pro-final-panel">
-      <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
-      <div class="pro-final-title">Co appka umí navíc v Pro</div>
-      <div class="pro-final-list">
-        <div class="pro-final-item">
-          <div class="pro-final-item-icon">✓</div>
-          <div>
-            <div class="pro-final-item-title">Poznámky do plánku</div>
-            <div class="pro-final-item-desc">Ke konkrétnímu místu na půdorysu si napíšete poznámku (třeba "vybudovat dveře"), nezávisle na trase. Objeví se i v exportu a na tisku.</div>
-          </div>
-        </div>
-        <div class="pro-final-item">
-          <div class="pro-final-item-icon">✓</div>
-          <div>
-            <div class="pro-final-item-title">Porovnání návrhů v jedné mapě</div>
-            <div class="pro-final-item-desc">Nakreslíte současný stav a návrh vedle sebe, appka sama spočítá úsporu v metrech i procentech.</div>
-          </div>
-        </div>
-        <div class="pro-final-item">
-          <div class="pro-final-item-icon">✓</div>
-          <div>
-            <div class="pro-final-item-title">Přepočet na Kč</div>
-            <div class="pro-final-item-desc">Zadáte frekvenci trasy a náklady na zaměstnance, appka spočítá roční km, hodiny i korunovou úsporu.</div>
-          </div>
-        </div>
-      </div>
-      <a href="../spaghetti-pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'spaghetti_free',placement:'result'})" class="pro-final-cta">Otevřít Spaghetti diagram Pro</a>
+    <div class="navazujici-odkazy">
+      <h2 class="content-card-title">Kam dál</h2>
+      <p>Chcete pracoviště přerovnat tak, aby se zbytečně nechodilo? <a href="../5S_audit/">5S pro každého smrtelníka →</a></p>
+      <p>Chcete znát čas, ne jen metry? <a href="../meric-plytvani-free/">Měřič plýtvání →</a></p>
     </div>
 
   </div>
