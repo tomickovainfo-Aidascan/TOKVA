@@ -1683,9 +1683,9 @@ const PROC_ZALEZI = [
 ];
 
 // Kde uz dnes jde konkretni oblast zjistit v jinem zdarma nastroji Tokvy.
-// Jen nastroje s zivou verejnou adresou - 5x Proc, 5S, Casova studie a Kalkulacka m2
-// zatim vlastni domenu nemaji, proto tu zamerne nejsou.
 const CO_DAL_ODKAZY = {
+  1: { nazev: 'Spočítat náklady na m² skladu', url: '../kalkulacka-nakladu-skladu/' },
+  3: { nazev: 'Zapsat si den v Časové studii', url: '../casova-studie/' },
   2: { nazev: 'Změřit čas v Měřiči plýtvání', url: '../meric-plytvani-free/' },
   5: { nazev: 'Spočítat finanční dopad', url: '../kalkulacka-ztrat/' },
   6: { nazev: 'Najít příčinu pomocí 5× Proč', url: '../5x-proc-ai-kouc/' },
@@ -1811,7 +1811,7 @@ function zobrazVysledky() {
   if (skore <= 4) {
     hero.style.background = '#2a7a4f';
     label.textContent = 'Výborný přehled';
-    popis.textContent = 'Máte data a systémy. Vždy je prostor na zlepšení - ale základ je solid.';
+    popis.textContent = 'Máte data a systémy. Vždycky je co zlepšovat, ale základ máte pevný.';
   } else if (skore <= 9) {
     hero.style.background = '#d97706';
     label.textContent = 'Přehled je, ale mezery jsou vidět';
