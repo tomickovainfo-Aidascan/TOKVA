@@ -608,6 +608,8 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     </div>
   </div>
 
+  <div id="kalibrace-hint" role="status" aria-live="polite" style="display:none;margin:0 0 10px;padding:10px 14px;border:1px solid var(--gold);border-radius:8px;font-size:13px;font-weight:600;color:var(--dark, #222);line-height:1.5;"></div>
+
   <!-- CANVAS -->
   <div class="canvas-outer" id="canvas-outer">
     <div class="canvas-placeholder" id="canvas-placeholder">
@@ -1138,11 +1140,29 @@ function inicializovat() {
 // =============================================
 // SETUP - kalibrace meritka kliknutim na dva body
 // =============================================
+// Hláška ke kalibraci nad plánkem. Při kreslení je panel nastavení schovaný,
+// takže "Upravit měřítko" dřív jen změnilo kurzor a nebylo poznat, co dělat.
+var _kalibraceHlaskaTimer = null;
+function hlaskaKalibrace(text, ok) {
+  var el = document.getElementById('kalibrace-hint');
+  if (!el) return;
+  clearTimeout(_kalibraceHlaskaTimer);
+  var toolbar = document.getElementById('toolbar');
+  var kreslime = toolbar && toolbar.style.display !== 'none';
+  if (!text || !kreslime) { el.style.display = 'none'; return; }
+  el.textContent = text;
+  el.style.display = 'block';
+  el.style.background = ok ? 'var(--green-light, #e8f5ee)' : 'var(--gold-light)';
+  el.style.borderColor = ok ? 'var(--green, #2a7a4f)' : 'var(--gold)';
+  if (ok) _kalibraceHlaskaTimer = setTimeout(function () { el.style.display = 'none'; }, 7000);
+}
+
 function spustitKalibraci() {
   mod = 'kalibrace';
   kalibraceBody = [];
   const status = document.getElementById('kalibrace-status');
   if (status) status.textContent = 'Klikněte na první bod známé vzdálenosti na plánku.';
+  hlaskaKalibrace('Upravujete měřítko: klikněte na plánku na začátek známé vzdálenosti, třeba na kraj regálu.');
   canvas.style.cursor = 'crosshair';
   kreslit();
 }
@@ -1152,6 +1172,7 @@ function kalibraceKlik(pos) {
   const status = document.getElementById('kalibrace-status');
   if (kalibraceBody.length === 1) {
     if (status) status.textContent = 'Teď klikněte na druhý bod téže vzdálenosti.';
+    hlaskaKalibrace('Teď klikněte na konec téže vzdálenosti.');
     kreslit();
   } else if (kalibraceBody.length === 2) {
     kalibracePxDist = Math.hypot(kalibraceBody[1].x - kalibraceBody[0].x, kalibraceBody[1].y - kalibraceBody[0].y);
@@ -1169,6 +1190,7 @@ function jeAppSpustena() {
 }
 
 function zavritModalKalibrace() {
+  hlaskaKalibrace('');
   document.getElementById('modal-kalibrace').classList.remove('visible');
   const kalErrEl = document.getElementById('modal-kalibrace-err');
   if (kalErrEl) kalErrEl.style.display = 'none';
@@ -1200,6 +1222,7 @@ function ulozitKalibraci() {
   kalibraceBody = [];
   const status = document.getElementById('kalibrace-status');
   if (status) status.textContent = 'Měřítko nastavené (' + realM.toLocaleString('cs-CZ') + ' m). Klidně zkalibrujte znovu, pokud se spletete.';
+  hlaskaKalibrace('Měřítko upravené (' + realM.toLocaleString('cs-CZ') + ' m). Délky všech tras jsou přepočítané.', true);
   const btn = document.getElementById('btn-zacit-kreslit');
   if (btn) btn.disabled = false;
   mod = jeAppSpustena() ? 'kreslit' : null;
