@@ -1891,7 +1891,8 @@ async function zavolatAI(messages, pokus) {
   // při výpadku backendu zůstaly tečky "píše" viset navždy beze slova
   // vysvětlení nebo možnosti to zkusit jinak.
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 45000);
+  // 90 s: delší výstup analýzy (max_tokens 3000 v Apps Scriptu) se píše i přes 45 s
+  const timeoutId = setTimeout(() => controller.abort(), 90000);
   try {
     const res = await fetch(LOGIN_SCRIPT_URL, {
       method: 'POST',
@@ -1915,7 +1916,7 @@ async function zavolatAI(messages, pokus) {
       return zavolatAI(messages, pokus + 1);
     }
     if (e.name === 'AbortError') {
-      const timeoutErr = new Error('Časový limit vypršel, server neodpověděl do 45 sekund.');
+      const timeoutErr = new Error('Časový limit vypršel, server neodpověděl do 90 sekund.');
       timeoutErr.isTimeout = true;
       throw timeoutErr;
     }
@@ -2072,7 +2073,7 @@ async function odeslat() {
     hideTyping();
     console.error('Chyba odeslat:', e);
     const zprava = e.isTimeout
-      ? 'Server neodpověděl do 45 sekund. Vaše otázka zůstala uložená.'
+      ? 'Server neodpověděl do 90 sekund. Vaše otázka zůstala uložená.'
       : 'Nepodařilo se spojit se serverem. Vaše otázka zůstala uložená.';
     addMsg('ai', zprava);
     // Tlačítko Zkusit znovu, ať se otázka nemusí přepisovat ručně - je už
@@ -2123,7 +2124,7 @@ async function odeslatZnovu() {
     hideTyping();
     console.error('Chyba při opakování:', e);
     addMsg('ai', e.isTimeout
-      ? 'Server neodpověděl do 45 sekund. Vaše otázka zůstala uložená.'
+      ? 'Server neodpověděl do 90 sekund. Vaše otázka zůstala uložená.'
       : 'Nepodařilo se spojit se serverem. Vaše otázka zůstala uložená.');
     pridatTlacitkoZkusitZnovu();
   }
