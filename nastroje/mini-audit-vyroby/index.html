@@ -1965,11 +1965,12 @@ async function exportovatData() {
     // konkrétně firma odpověděla.
     const hlavickyZakladni = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
     const hlavickyOtazky = OTAZKY.map((t, i) => 'Otázka ' + (i + 1) + ': ' + t);
-    const hlavicky = hlavickyZakladni.concat(hlavickyOtazky);
+    const POPISKY_ZAKLAD = { created_at: 'Datum', nazev: 'Název', shrnuti: 'Shrnutí', hlavni_hodnota_cislo: 'Hlavní hodnota', hlavni_hodnota_jednotka: 'Jednotka', project_id: 'ID projektu' };
+    const hlavicky = hlavickyZakladni.map(h => POPISKY_ZAKLAD[h] || h).concat(hlavickyOtazky);
     const radky = data.map(r => {
       const d = r.data || {};
       const nevimPole = (d.nevim || []).map(String);
-      const zakladBunky = hlavickyZakladni.map(h => r[h] == null ? '' : String(r[h]));
+      const zakladBunky = hlavickyZakladni.map(h => r[h] == null ? '' : (h === 'created_at' ? new Date(r[h]).toLocaleString('cs-CZ') : String(r[h])));
       const otazkyBunky = OTAZKY.map((_, i) => {
         const q = i + 1;
         if (nevimPole.includes(String(q))) return 'Nevím';
@@ -1987,7 +1988,7 @@ async function exportovatData() {
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1500); // hned po kliknutí by prohlížeč mohl stažení zrušit
   } catch (e) {
     console.warn('Export se nepodařil.', e);
     upozornit('Export se teď nepodařil, zkuste to prosím znovu.');

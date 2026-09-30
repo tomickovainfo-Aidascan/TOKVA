@@ -2116,7 +2116,7 @@ async function exportovatData() {
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1500); // hned po kliknutí by prohlížeč mohl stažení zrušit
   } catch (e) {
     console.warn('Export se nepodařil.', e);
     ukazatUpozorneni('Export se teď nepodařil, zkuste to prosím znovu.');

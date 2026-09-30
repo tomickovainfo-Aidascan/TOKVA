@@ -2151,7 +2151,7 @@ function stahnoutCSV() {
   const bezpecnyNazev = nazev.toLowerCase().replace(/[\\/:*?"<>|]/g, '-').replace(/\s+/g,'-');
   a.download = 'meric-pro-' + bezpecnyNazev + '.csv';
   a.click();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 1500); // hned po kliknutí by prohlížeč mohl stažení zrušit
 }
 
 function tiskReport() {

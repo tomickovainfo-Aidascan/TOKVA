@@ -738,7 +738,7 @@ function exportovatCSV() {
   document.body.appendChild(a);
   a.click();
   a.remove();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 1500); // hned po kliknutí by prohlížeč mohl stažení zrušit
 }
 
 function renderSouhrn(seznam) {

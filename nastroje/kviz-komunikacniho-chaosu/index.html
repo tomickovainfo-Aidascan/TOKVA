@@ -1666,10 +1666,11 @@ async function exportovatDataChaos() {
     // u víc-výběrových otázek vyjmenuje všechny zaškrtnuté možnosti.
     const hlavickyZakladni = ['created_at', 'nazev', 'shrnuti', 'hlavni_hodnota_cislo', 'hlavni_hodnota_jednotka', 'project_id'];
     const hlavickyOtazky = OTAZKY.map((o, i) => 'Otázka ' + (i + 1) + ': ' + o.text);
-    const hlavicky = hlavickyZakladni.concat(hlavickyOtazky);
+    const POPISKY_ZAKLAD = { created_at: 'Datum', nazev: 'Název', shrnuti: 'Shrnutí', hlavni_hodnota_cislo: 'Hlavní hodnota', hlavni_hodnota_jednotka: 'Jednotka', project_id: 'ID projektu' };
+    const hlavicky = hlavickyZakladni.map(h => POPISKY_ZAKLAD[h] || h).concat(hlavickyOtazky);
     const radky = data.map(r => {
       const d = r.data || {};
-      const zakladBunky = hlavickyZakladni.map(h => r[h] == null ? '' : String(r[h]));
+      const zakladBunky = hlavickyZakladni.map(h => r[h] == null ? '' : (h === 'created_at' ? new Date(r[h]).toLocaleString('cs-CZ') : String(r[h])));
       const otazkyBunky = OTAZKY.map(o => popisOdpovedZaznamChaos(o, d));
       return zakladBunky.concat(otazkyBunky).map(v => '"' + String(v).replace(/^(-?\d+)\.(\d+)$/, '$1,$2').replace(/"/g, '""') + '"').join(';');
     });
@@ -1682,7 +1683,7 @@ async function exportovatDataChaos() {
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1500); // hned po kliknutí by prohlížeč mohl stažení zrušit
   } catch (e) {
     console.warn('Export se nepodařil.', e);
     ukazatUpozorneni('Export se teď nepodařil, zkuste to prosím znovu.');
