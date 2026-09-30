@@ -1985,7 +1985,24 @@ async function dokoncitVystup(btn, raw) {
       { role: 'assistant', content: '===VÝSTUP===\n' + raw.replace(/\s+$/, '') },
       { role: 'user', content: 'Pokračuj přesně tam, kde jsi přestal/a, žádný nový úvod ani opakování už napsaného. Dokonči zbylé očíslované sekce výstupu přesně podle zadané struktury, až po ===KONEC===.' }
     ]);
-    const data = await zavolatAI(pokracovaciZpravy);
+    // Dlouhý rozhovor se nemusí vejít do požadavku (dokud Apps Script neumí
+    // POST, jde celý rozhovor v adrese a ta má limit). Když plný rozhovor
+    // selže, zkusíme to jen s problémem a useknutým výstupem - na dopsání
+    // zbylých sekcí to stačí, analýza v něm už je.
+    let data;
+    try {
+      data = await zavolatAI(pokracovaciZpravy);
+      if (!data || data.type === 'error' || !(data.content && data.content[0] && data.content[0].text)) throw new Error((data && data.error && data.error.message) || 'Prázdná odpověď.');
+    } catch (e1) {
+      console.warn('Dokončení s celým rozhovorem selhalo, zkouším zkrácenou verzi.', e1);
+      const prvniOtazka = (history.find(m => m.role === 'user' && m.content !== 'Začni.') || {}).content || posledniProblem || '';
+      const kratkeZpravy = [
+        { role: 'user', content: 'Dělali jsme spolu analýzu 5× proč. Můj problém: ' + String(prvniOtazka).slice(0, 600) + '\nNapiš výsledný výstup analýzy.' },
+        { role: 'assistant', content: '===VÝSTUP===\n' + raw.replace(/\s+$/, '') },
+        { role: 'user', content: 'Pokračuj přesně tam, kde jsi přestal/a, žádný nový úvod ani opakování už napsaného. Dokonči zbylé očíslované sekce výstupu, až po ===KONEC===. Vykej mi.' }
+      ];
+      data = await zavolatAI(kratkeZpravy);
+    }
     if (data && data.type === 'error') throw new Error((data.error && data.error.message) || 'Chyba serveru.');
     const pokracText = data.content?.[0]?.text || '';
     if (!pokracText) throw new Error('Prázdná odpověď od AI.');
