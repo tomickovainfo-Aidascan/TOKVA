@@ -1590,6 +1590,9 @@ function zvyraznitDoporucenyNastroj(raw) {
 }
 
 function renderOutput(raw, ulozit = true, neuplne = false) {
+  // Značka konce výstupu je jen pro appku. Po dopsání přes "Dokončit výstup"
+  // v textu zůstávala (i useknutá jako "KONEC===") a tiskla se.
+  raw = String(raw || '').replace(/^[ \t]*=*[ \t]*KONEC[ \t]*=*[ \t]*$/gm, '').replace(/\n{3,}/g, '\n\n').trim();
   posledniRawVystup = raw;
   zvyraznitDoporucenyNastroj(raw);
   const chat = document.getElementById('chat');
