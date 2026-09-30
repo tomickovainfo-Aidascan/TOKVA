@@ -993,7 +993,7 @@ Důležité - appka tenhle výstup strojově zpracovává:
 - Nic mezi ===VÝSTUP=== a první sekcí, žádný úvodní komentář.
 
 Styl komunikace:
-- mluv česky,
+- mluv česky a uživateli vždy vykej, i ve výstupu a doporučeních ("Určete", ne "Urči"),
 - buď klidný, lidský a podporující,
 - používej jednoduchý jazyk,
 - nepůsob jako formulář,
@@ -1976,11 +1976,17 @@ async function dokoncitVystup(btn, raw) {
   btn.disabled = true;
   btn.textContent = 'Dokončuji...';
   try {
-    const pokracovaciZpravy = history.concat([
-      { role: 'assistant', content: '===VÝSTUP===\n' + raw },
+    // Historie už končí odpovědí AI s tímhle výstupem. Dřív se k ní přidala
+    // druhá odpověď AI hned za sebou a server takový rozhovor odmítl
+    // (role se musí střídat), proto "Nepodařilo se dokončit výstup".
+    const zaklad = history.slice();
+    if (zaklad.length && zaklad[zaklad.length - 1].role === 'assistant') zaklad.pop();
+    const pokracovaciZpravy = zaklad.concat([
+      { role: 'assistant', content: '===VÝSTUP===\n' + raw.replace(/\s+$/, '') },
       { role: 'user', content: 'Pokračuj přesně tam, kde jsi přestal/a, žádný nový úvod ani opakování už napsaného. Dokonči zbylé očíslované sekce výstupu přesně podle zadané struktury, až po ===KONEC===.' }
     ]);
     const data = await zavolatAI(pokracovaciZpravy);
+    if (data && data.type === 'error') throw new Error((data.error && data.error.message) || 'Chyba serveru.');
     const pokracText = data.content?.[0]?.text || '';
     if (!pokracText) throw new Error('Prázdná odpověď od AI.');
     const noveRaw = raw + (raw.endsWith('\n') ? '' : '\n') + pokracText;
