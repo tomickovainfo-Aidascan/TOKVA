@@ -45,7 +45,7 @@
       "name": "Co když nevím odpověď na některou otázku v auditu?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Zvolte \"Nevím / nemáme data\". Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku - protože nevědět je samo o sobě důležité zjištění, ne totéž co \"nemáme problém\"."
+        "text": "Zvolte „Nevím / nemáme data“. Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku. Nevědět je samo o sobě důležité zjištění, ne totéž co „nemáme problém“."
       }
     },
     {
@@ -53,7 +53,39 @@
       "name": "Musím projít celý Mini audit skladu najednou?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později - projděte ji v jednom sezení."
+        "text": "Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později. Projděte ji v jednom sezení."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jak může deset otázek něco poznat o mém skladu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nepozná všechno. Pozná, kde se ptát dál. Otázky jsou kontrolní body, které jsem procházela ve skladech ručně, a skóre vám řekne, kterou oblast si vzít jako první."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Hodí se audit i pro malý sklad nebo pro výrobu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pro malý sklad ano. Otázky míří na pravidla, toky a předávání, ne na velikost. Pro výrobu je tu samostatný Mini audit výroby."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co s výsledkem, když vyjde dobře?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pak máte podloženo, že problém není ve skladu, a to je taky odpověď. Podívejte se na to, co skladu předchází."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jak často má smysl audit opakovat?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Po každé větší změně, jinak jednou za čtvrt roku. Dřív se stav nestihne usadit."
       }
     }
   ]
@@ -363,7 +395,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 .content-inner { max-width:700px; margin:0 auto; display:flex; flex-direction:column; gap:28px; }
 .d-example{background:var(--black);color:var(--white);border-radius:14px;padding:28px 24px;}
 .d-example-eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2.2px;color:var(--gold);margin-bottom:12px;}
-.d-example h4{font-family:"Poppins",sans-serif;font-weight:900;font-size:clamp(18px,2.6vw,22px);line-height:1.2;letter-spacing:-.5px;margin-bottom:16px;}
+.d-example h2{font-family:"Poppins",sans-serif;font-weight:900;font-size:clamp(18px,2.6vw,22px);line-height:1.2;letter-spacing:-.5px;margin-bottom:16px;}
 .d-example-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;align-items:start;}
 .d-example-text p{font-size:13.5px;line-height:1.7;color:rgba(255,255,255,.8);margin-bottom:10px;}
 .d-example-text p:last-child{margin-bottom:0;}
@@ -401,6 +433,14 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 
 /* POST SEKCE - FAQ, další nástroje */
 .post-audit { background:var(--white); border-top:1px solid var(--border); padding:40px; }
+.post-text { font-size:14px; color:var(--mid); line-height:1.75; margin-bottom:10px; }
+.post-kroky { font-size:14px; color:var(--mid); line-height:1.75; margin:0 0 12px 20px; padding:0; }
+.post-kroky li { margin-bottom:6px; }
+.post-cta { display:inline-block; font-size:14px; font-weight:700; color:var(--gold-dark); text-decoration:none; }
+.post-cta:hover { text-decoration:underline; }
+.faq-a a { color:var(--gold-dark); font-weight:700; }
+.pro-final-text { font-size:13.5px; color:rgba(255,255,255,.75); line-height:1.7; margin-bottom:16px; }
+.pro-final-note { font-size:11.5px; color:rgba(255,255,255,.5); line-height:1.6; margin-top:10px; text-align:center; }
 .post-audit-inner { max-width:700px; margin:0 auto; display:flex; flex-direction:column; gap:28px; }
 .faq-block {}
 .faq-item { border-bottom:1px solid var(--border); padding:16px 0; }
@@ -532,10 +572,12 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 <div class="modal-overlay" id="modal-pro">
   <div class="modal-box">
     <div class="modal-box-head">
-      <h3>Odemknout v Tokva Pro</h3>
+      <h3>Druhý audit drží Tokva Pro</h3>
       <button class="modal-box-close" onclick="zavritModalPro()">×</button>
     </div>
-    <p>Pro verze uloží tenhle výsledek do vašeho účtu. Audit pak stačí za čas zopakovat a hned uvidíte, jestli se stav skladu zlepšuje, nebo je stejný. Samotný audit zůstává navždy zdarma, bez přihlášení.</p>
+    <p>Tenhle výsledek je váš výchozí stav. V Tokva Pro se uloží, a až ve skladu něco změníte, projdete audit znovu a appka postaví oba vedle sebe, otázku po otázce: co se zlepšilo, co zhoršilo a co zůstalo stejné.</p>
+    <p>Když se teď přihlásíte, výsledek se do účtu uloží sám. Nic nevyplňujete znovu.</p>
+    <p>Mini audit skladu zůstává navždy zdarma, bez přihlášení.</p>
     <div class="modal-err" id="pro-err" style="color:var(--mid);"></div>
     <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
     <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'mini_audit_skladu',placement:'modal'})">Zjistit víc o Tokva Pro</a></div>
@@ -580,12 +622,12 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 <div class="hero">
   <div class="hero-inner">
     <div class="tool-badge">Vedoucí skladu, co chce rychlý přehled kde to vázne</div>
-    <h1>Za 5 minut víte, kde váš sklad<br><em>ztrácí čas, lidi a kapacitu.</em></h1>
+    <h1>Kde váš sklad<br><em>ztrácí nejvíc času?</em></h1>
     <p class="hero-sub">10 otázek ze skutečného provozu. Bez teorie, bez přípravy. Konkrétní tipy pro 3 nejkritičtější oblasti ihned na stránce.</p>
     <div class="hero-meta">
       <span>10 otázek</span>
       <span>5 minut</span>
-      <span>Výsledek ihned</span>
+      <span>Výsledek ihned, e-mail nepovinný</span>
     </div>
   </div>
 </div>
@@ -599,15 +641,16 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 
     <div class="d-example">
       <div class="d-example-eyebrow">Z praxe</div>
-      <h4>Vedoucí si myslel, že chybí ruce. Chyběla jasná pravidla.</h4>
+      <h2>Vedoucí si myslel, že chybí ruce. Chyběla jasná pravidla.</h2>
       <div class="d-example-grid">
         <div class="d-example-text">
           <p>Sklad v Hradci, 12 lidí, denní příjem zboží. U příjmu kamionu nebylo jasné, kdo zboží kontroluje a kdo zaskladňuje, takže leželo na rampě v průměru 2,5 hodiny.</p>
           <p>Jedno jasné pravidlo zkrátilo příjem ze 3 hodin na 55 minut. Při 10 kamionech měsíčně to je 250 hodin a 75 000 Kč ročně. Posily nakonec nebyly potřeba.</p>
+          <p>Častěji ale vídám opak. Změny se udělají, kontrolní audit nepřijde a dodnes nikdo neví, jestli pomohly a co přinesly. Proto má smysl projít ten samý audit za čtvrt roku znovu a položit obě skóre vedle sebe.</p>
         </div>
         <div class="d-example-stat">
           <div class="stat-num">250 h</div>
-          <div class="stat-note">ročně navíc uvolnilo jedno jasné pravidlo u příjmu zboží - beze změny počtu lidí.</div>
+          <div class="stat-note">ročně navíc uvolnilo jedno jasné pravidlo u příjmu zboží, beze změny počtu lidí.</div>
         </div>
       </div>
       <div class="trust-line">Otázky v auditu vycházejí z kontrolních bodů, které jsem procházela ručně ve skladech různého charakteru. Nic vymyšleného, jen to, co v provozu skutečně bolí.</div>
@@ -615,7 +658,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 
     <div class="two-col">
       <div class="content-card">
-        <h3 class="content-card-title">Hodí se vám to, pokud:</h3>
+        <h2 class="content-card-title">Hodí se vám to, pokud:</h2>
         <ul class="check-list">
           <li>Máte pocit, že někde ztrácíte čas, ale nevíte přesně kde</li>
           <li>Lidi jsou v napětí, každý řeší věci jinak, pořád se na něco ptají nebo čekají na rozhodnutí</li>
@@ -623,7 +666,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
         </ul>
       </div>
       <div class="content-card">
-        <h3 class="content-card-title">Tři kroky, žádná věda:</h3>
+        <h2 class="content-card-title">Tři kroky, žádná věda:</h2>
         <div class="steps-list">
           <div class="step-item"><div class="step-num">1</div><div>Spustíte audit rovnou, e-mail je nepovinný. Žádná příprava, žádné podklady.</div></div>
           <div class="step-item"><div class="step-num">2</div><div>Odpovíte na 10 otázek ze svého provozu. Většinou jedno kliknutí.</div></div>
@@ -633,12 +676,12 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
     </div>
 
     <div class="content-card">
-      <h3 class="content-card-title">Co k tomu nepotřebujete:</h3>
+      <h2 class="content-card-title">Co k tomu nepotřebujete:</h2>
       <div class="no-need-grid">
         <div class="no-need-item">Konzultanta ani poradce</div>
         <div class="no-need-item">Přípravu ani podklady</div>
         <div class="no-need-item">Přesná data ze systému</div>
-        <div class="no-need-item">Zkušenosti s KAIZEN</div>
+        <div class="no-need-item">Znalost štíhlé výroby ani KAIZEN</div>
       </div>
       <div class="time-note">Stačí znát svůj sklad a 5 minut klidu.</div>
     </div>
@@ -857,7 +900,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
   <!-- HISTORIE A POROVNÁNÍ - vždy viditelné, i před vyplněním nového auditu,
        ne jen na obrazovce výsledků. Pro uživatel se tak může podívat na
        starší audity, aniž by musel appku znovu vyplňovat. -->
-  <div class="vysledky-detail" id="historie-panel">
+  <div class="vysledky-detail" id="historie-panel" style="display:none;">
     <div class="vysledky-detail-header">Historie auditů</div>
     <div id="historie-zamceno" style="padding:18px 20px;">
       <p style="font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:12px;">Pro verze uloží tenhle výsledek do vašeho účtu. Audit stačí za čas zopakovat a uvidíte, jestli se stav skladu zlepšuje.</p>
@@ -970,7 +1013,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
               <div id="sib-container" class="sib-container--large sib-container--vertical">
                 <form id="sib-form" method="POST" action="https://2f524664.sibforms.com/serve/MUIFADBV1wG0TwfPwo6aLvF8QiCGo6beKuaY7Y_J9UVHScSZonk4OYFHztETmh9gsYuOHXybCcbEGGzyxTIa5yCZkR8flFL4CLi0Sqi54gkoIVUm_ujs_E6IKWgLrOKsiBoTzxNHFerZooLnOvEDiTR7fC1KbJEDem4IEeXMXM7Sd83jRtyVsfvj8IveWheVJkdNZlwGM3kSdOw-sw==" data-type="subscription" onsubmit="pripravitEmailAudit()">
                   <div class="tokva-sib-hide">
-                    <div class="sib-form-block"><p>Zjistěte, kde vám sklad bere čas a peníze</p></div>
+                    <div class="sib-form-block"><p>Chcete si výsledek nechat poslat?</p></div>
                   </div>
                   <div class="tokva-sib-hide">
                     <div class="sib-form-block"><div class="sib-text-form-block"><p>Chcete si tenhle výsledek uložit i na později? Necháme vám ho poslat na e-mail.</p></div></div>
@@ -1072,8 +1115,21 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
   <div class="post-audit-inner">
 
     <div>
+      <h2 class="content-card-title">Co dělat s výsledkem?</h2>
+      <p class="post-text">Teď máte skóre a víte, které tři oblasti vám ukrojily nejvíc bodů. Konkrétní tipy k nim najdete přímo u výsledku.</p>
+      <p class="post-text" style="margin-bottom:8px;">Dál to má tři kroky. Ten třetí většina lidí vynechá, a přitom až v něm se změna potvrdí:</p>
+      <ol class="post-kroky">
+        <li>Vezměte oblast s nejvyšším skóre a zajděte se na ni podívat přímo v provozu.</li>
+        <li>Udělejte jednu změnu. Malou. Jedno pravidlo u příjmu, jeden štítek, jedno jméno u úkolu.</li>
+        <li>Za tři měsíce projděte ten samý audit znovu a položte obě skóre vedle sebe.</li>
+      </ol>
+      <p class="post-text">Bezplatný audit spočítá vždycky jen jedno skóre a po zavření stránky zmizí. Druhý audit a porovnání otázku po otázce drží Tokva Pro: výsledky zůstanou ve vašem účtu u projektu a rozdíl vidíte vedle sebe.</p>
+      <a href="#pro-final-panel" class="post-cta" onclick="event.preventDefault();document.getElementById('pro-final-panel').scrollIntoView({behavior:'smooth',block:'center'});">Projít audit podruhé a porovnat →</a>
+    </div>
+
+    <div>
       <h2 class="content-card-title">Navazující nástroje</h2>
-      <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Obecný přehled dalších nástrojů - nemusí sedět na to, co konkrétně ukázal váš výsledek výše.</p>
+      <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Vyberte podle toho, která oblast vám vyšla nejhůř.</p>
       <div class="dalsi-nastroje-col">
         <div class="dalsi-nastroj-card">
           <div class="dalsi-nastroj-tag">Hlavní další krok</div>
@@ -1091,51 +1147,45 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
     </div>
 
     <div class="faq-block">
-      <h3 class="content-card-title" style="font-family:Poppins,sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Časté otázky</h3>
+      <h2 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h2>
       <div class="faq-item">
         <div class="faq-q">Co když nevím odpověď na některou otázku v auditu?</div>
-        <div class="faq-a">Zvolte "Nevím / nemáme data". Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku - protože nevědět je samo o sobě důležité zjištění, ne totéž co "nemáme problém".</div>
+        <div class="faq-a">Zvolte „Nevím / nemáme data“. Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku. Nevědět je samo o sobě důležité zjištění, ne totéž co „nemáme problém“.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">Musím projít celý Mini audit skladu najednou?</div>
-        <div class="faq-a">Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později - projděte ji v jednom sezení.</div>
+        <div class="faq-a">Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později. Projděte ji v jednom sezení.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Jak může deset otázek něco poznat o mém skladu?</div>
+        <div class="faq-a">Nepozná všechno. Pozná, kde se ptát dál. Otázky jsou kontrolní body, které jsem procházela ve skladech ručně, a skóre vám řekne, kterou oblast si vzít jako první.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Hodí se audit i pro malý sklad nebo pro výrobu?</div>
+        <div class="faq-a">Pro malý sklad ano. Otázky míří na pravidla, toky a předávání, ne na velikost. Pro výrobu je tu samostatný <a href="../mini-audit-vyroby/">Mini audit výroby</a>.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Co s výsledkem, když vyjde dobře?</div>
+        <div class="faq-a">Pak máte podloženo, že problém není ve skladu, a to je taky odpověď. Podívejte se na to, co skladu předchází.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Jak často má smysl audit opakovat?</div>
+        <div class="faq-a">Po každé větší změně, jinak jednou za čtvrt roku. Dřív se stav nestihne usadit.</div>
       </div>
     </div>
 
     <div class="pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
-      <div class="pro-final-title">Co appka umí navíc v Pro</div>
+      <h2 class="pro-final-title">Víte, kde to vázne. Srovnalo se to?</h2>
+      <p class="pro-final-text">Bezplatný audit ukáže jedno skóre k dnešku. Tokva Pro postaví dva audity vedle sebe, otázku po otázce, a ukáže, co se zlepšilo, co zhoršilo a co zůstalo stejné. To je podklad, se kterým se jde za majitelem podruhé.</p>
       <div class="pro-final-list">
-        <div class="pro-final-item">
-          <div class="pro-final-item-icon">✓</div>
-          <div>
-            <div class="pro-final-item-title">Historie auditů</div>
-            <div class="pro-final-item-desc">Výsledek se uloží do vašeho účtu. Audit zopakujete za čtvrt roku nebo za rok a hned vidíte, jestli se stav skladu zlepšuje, nebo je pořád stejný.</div>
-          </div>
-        </div>
-        <div class="pro-final-item">
-          <div class="pro-final-item-icon">✓</div>
-          <div>
-            <div class="pro-final-item-title">Zařazení k projektu</div>
-            <div class="pro-final-item-desc">Výsledek najdete pohromadě s ostatními appkami a měřeními, které se týkají stejné věci.</div>
-          </div>
-        </div>
-        <div class="pro-final-item">
-          <div class="pro-final-item-icon">✓</div>
-          <div>
-            <div class="pro-final-item-title">Porovnání PŘED × PO</div>
-            <div class="pro-final-item-desc">Vyberete dva audity z historie a appka je porovná otázku po otázce - co se zlepšilo, zhoršilo nebo zůstalo stejné.</div>
-          </div>
-        </div>
-        <div class="pro-final-item">
-          <div class="pro-final-item-icon">✓</div>
-          <div>
-            <div class="pro-final-item-title">Export dat</div>
-            <div class="pro-final-item-desc">Vaše odpovědi a výsledek si stáhnete jako CSV a zpracujete si je dál po svém.</div>
-          </div>
-        </div>
+        <div class="pro-final-item"><div class="pro-final-item-icon">✓</div><div><div class="pro-final-item-title">Porovnání dvou auditů otázku po otázce</div></div></div>
+        <div class="pro-final-item"><div class="pro-final-item-icon">✓</div><div><div class="pro-final-item-title">Historie auditů ve vašem účtu, audit zopakujete za čtvrt roku i za rok</div></div></div>
+        <div class="pro-final-item"><div class="pro-final-item-icon">✓</div><div><div class="pro-final-item-title">Zařazení k projektu, výsledky pohromadě s měřiči a plány</div></div></div>
+        <div class="pro-final-item"><div class="pro-final-item-icon">✓</div><div><div class="pro-final-item-title">Export odpovědí do CSV</div></div></div>
       </div>
-      <button class="pro-final-cta" onclick="otevritModalPro()">Odemknout v Tokva Pro</button>
+      <button class="pro-final-cta" onclick="otevritModalPro()">Uložit audit jako výchozí stav</button>
+      <p class="pro-final-note">Mini audit skladu zůstává navždy zdarma, bez přihlášení.</p>
     </div>
 
   </div>
@@ -1651,6 +1701,10 @@ async function klikVModaluPro() {
 }
 
 function otevritModalPro() {
+  // Výsledek si appka odloží hned při otevření nabídky, ne až při kliknutí
+  // na Přihlásit se. Kdo si Pro teprve jde objednat na /pro/, najde po
+  // návratu svůj dnešní audit uložený (stejný prohlížeč, do 30 dní).
+  if (!session && typeof oznacitCekaNaUlozeni === 'function') oznacitCekaNaUlozeni();
   document.getElementById('pro-err').textContent = '';
   document.getElementById('modal-pro').style.display = 'flex';
 }
@@ -1933,6 +1987,10 @@ async function renderHistorie() {
   const projektPanel = document.getElementById('projekt-panel');
   const exportPanel = document.getElementById('export-panel');
   const akcniPanel = document.getElementById('akcni-panel');
+  // Nepřihlášeným a účtům bez Pro se panel Historie neukazuje vůbec, nabídka
+  // Pro je na stránce jen jednou, v bloku dole (viz #pro-final-panel).
+  const historiePanel = document.getElementById('historie-panel');
+  if (historiePanel) historiePanel.style.display = (jePro && clenstvi) ? '' : 'none';
   if (!jePro || !clenstvi) {
     zamceno.style.display = 'block';
     obsah.style.display = 'none';
