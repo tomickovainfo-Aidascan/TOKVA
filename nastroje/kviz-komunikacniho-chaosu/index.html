@@ -1482,6 +1482,30 @@ function otevritModalDetailVysledkuChaos(i) {
   vykreslitDetailVysledkuChaos({ datum: new Date(r.created_at).toLocaleDateString('cs-CZ'), data: r.data || {} });
 }
 
+// Detail uloženého výsledku ukazoval jen skóre a šest oblastí. Původní
+// odpovědi i vlastní texty v datech byly, jen nebyly vidět (audit KC-01).
+function detailDoporuceniChaos(d) {
+  const k = d.nejslabsiKey;
+  if (!k || !OBLASTI[k]) return '';
+  const rada = (typeof RADY_OBLAST !== 'undefined' && RADY_OBLAST[k]) || OBLASTI[k].popis || '';
+  return '<div style="margin-top:18px;padding:14px 16px;border-radius:10px;background:rgba(233,169,27,.1);border:1px solid rgba(233,169,27,.3);">' +
+    '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#e9a91b;margin-bottom:6px;">Nejslabší oblast</div>' +
+    '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">' + escapeHtml(OBLASTI[k].nazev) + '</div>' +
+    (rada ? '<div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.6;">' + escapeHtml(rada) + '</div>' : '') +
+    '</div>';
+}
+function detailOdpovediChaos(d) {
+  if (!d.odpovedi) return '';
+  const radky = OTAZKY.map((o, i) => {
+    const odp = popisOdpovedZaznamChaos(o, d) || 'bez odpovědi';
+    return '<div style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08);">' +
+      '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:3px;">' + (i + 1) + '. ' + escapeHtml(o.text) + '</div>' +
+      '<div style="font-size:13.5px;color:#fff;line-height:1.5;overflow-wrap:anywhere;">' + escapeHtml(odp).replace(/ \| /g, '<br>') + '</div>' +
+      '</div>';
+  }).join('');
+  return '<div style="margin-top:20px;"><div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px;">Vaše odpovědi</div>' + radky + '</div>';
+}
+
 function vykreslitDetailVysledkuChaos(zaznam) {
   const d = zaznam.data || {};
   const ov = d.oblastiVysledky || {};
@@ -1501,7 +1525,7 @@ function vykreslitDetailVysledkuChaos(zaznam) {
   document.getElementById('detail-vysledku-obsah').innerHTML =
     '<div class="historie-datum" style="margin-bottom:10px;">' + zaznam.datum + '</div>' +
     '<div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:16px;">' + d.skore + ' / ' + d.maxSkore + ' <span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.4);">(vyšší = víc chaosu)</span></div>' +
-    radky;
+    radky + detailDoporuceniChaos(d) + detailOdpovediChaos(d);
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
 }
 
@@ -1547,6 +1571,10 @@ function popisOdpovedZaznamChaos(o, d) {
     return texty.join(' | ');
   }
   const idx = (d.vybranaIndexy || {})[o.id];
+  if (idx === 'other') {
+    const jine = (d.jine_texty || {})[o.id];
+    return jine ? ('Jiné: ' + jine) : 'Jiné';
+  }
   if (idx !== undefined) {
     const t = popisOdpovedRadioChaos(o, idx);
     if (t !== null) return t;
