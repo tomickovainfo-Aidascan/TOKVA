@@ -422,7 +422,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
     <div class="upload-zone-icon">🗺</div>
     <p><strong>Klikněte nebo přetáhněte půdorys skladu či výroby</strong></p>
-    <small>JPG, PNG, PDF - obrázek layoutu nebo fotka plánku</small>
+    <small>JPG, PNG, PDF: obrázek půdorysu nebo fotka plánku</small>
     <input type="file" id="file-input" accept="image/*,application/pdf" onchange="nahratLayout(this)">
   </div>
   <div id="upload-notice" style="display:none;margin:-6px 0 16px;padding:9px 14px;border-radius:8px;font-size:12.5px;line-height:1.6;"></div>
@@ -431,9 +431,9 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   <div class="setup-panel" id="setup-panel" style="display:none;">
     <div class="setup-group" style="margin-bottom:16px;">
       <label>Měřítko plánku</label>
-      <div id="kalibrace-status" style="font-size:13px;color:var(--mid);margin-bottom:8px;">Zatím není nastavené - klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.</div>
+      <div id="kalibrace-status" style="font-size:13px;color:var(--mid);margin-bottom:8px;">Zatím není nastavené. Klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.</div>
       <button class="tool-btn" id="btn-kalibrovat" onclick="spustitKalibraci()" style="width:100%;justify-content:center;background:var(--gold-light);border-color:var(--gold);color:var(--gold-dark);">
-        Kalibrovat kliknutím na plánek
+        Nastavit měřítko (dva body na plánku)
       </button>
     </div>
     <div class="setup-grid">
@@ -448,7 +448,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
       </div>
     </div>
     <div style="font-size:12px;color:var(--light);margin-top:10px;">
-      1. Klikněte na tlačítko Kalibrovat. 2. Klikněte na plánku na začátek a konec známé vzdálenosti (délku stroje, stolu, uličky). 3. Napište, kolik metrů to ve skutečnosti je. Měřítko pak platí pro všechny výpočty bez ohledu na zoom.
+      1. Klikněte na tlačítko Nastavit měřítko. 2. Klikněte na plánku na začátek a konec známé vzdálenosti (délku stroje, stolu, uličky). 3. Napište, kolik metrů to ve skutečnosti je. Měřítko pak platí pro všechny výpočty bez ohledu na zoom.
     </div>
   </div>
 
@@ -476,7 +476,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
         <div style="width:14px;height:9px;background:#545454;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
         <div>
           <div style="font-size:12px;font-weight:700;color:#111;margin-bottom:2px;">Zoom a posun</div>
-          <div style="font-size:11px;color:#a8a6a6;line-height:1.55;">Mapu přibližujte tlačítky + / − nebo kolečkem myši. Zoom nemění měřítko - vzdálenosti se počítají vždy stejně bez ohledu na přiblížení.</div>
+          <div style="font-size:11px;color:#a8a6a6;line-height:1.55;">Plánek přibližujte tlačítky + / − nebo kolečkem myši. Zoom nemění měřítko, vzdálenosti se počítají vždy stejně bez ohledu na přiblížení.</div>
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:flex-start;">
@@ -520,7 +520,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
         <div style="width:16px;height:16px;border-radius:50%;background:#4338ca;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">1</div>
         <div>
           <div style="font-size:12px;font-weight:700;color:#111;margin-bottom:2px;">Označit místo</div>
-          <div style="font-size:11px;color:#a8a6a6;line-height:1.55;">Klikněte na tlačítko Označit místo a pak kamkoliv do mapy - appka otevře poznámku k tomu místu (např. "vybudovat dveře"). Poznámka patří k místu na půdorysu, ne ke konkrétní trase. Objeví se i v exportu a na tisku.</div>
+          <div style="font-size:11px;color:#a8a6a6;line-height:1.55;">Klikněte na tlačítko Označit místo a pak kamkoliv do plánku. Appka otevře poznámku k tomu místu (např. "vybudovat dveře"). Poznámka patří k místu na půdorysu, ne ke konkrétní trase. Objeví se i v exportu a na tisku.</div>
         </div>
       </div>
     </div>
@@ -538,11 +538,11 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
       Označit místo
     </button>
     <button class="tool-btn" id="btn-posouvat" onclick="setMod('posouvat')">
-      Posouvat mapu
+      Posouvat plánek
     </button>
     <button class="tool-btn" onclick="zoomIn()" title="Přiblížit">+</button>
     <button class="tool-btn" onclick="zoomOut()" title="Oddálit">−</button>
-    <button class="tool-btn" onclick="resetZoom()" title="Původní velikost">Celá mapa</button>
+    <button class="tool-btn" onclick="resetZoom()" title="Původní velikost">Celý plánek</button>
     <button class="tool-btn" onclick="zpetKrok()" title="Vrátit poslední bod" style="width:40px;justify-content:center;padding:10px;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.87 5.12-1.87 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
     </button>
@@ -552,7 +552,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <button class="tool-btn danger" onclick="smazatAktualniTrasu()" style="margin-left:8px;">
       Smazat trasu
     </button>
-    <button class="tool-btn" onclick="spustitKalibraci()" title="Zadali jste špatné měřítko? Kalibrujte znovu, appka přepočítá délky u všech tras.">
+    <button class="tool-btn" onclick="spustitKalibraci()" title="Zadali jste špatné měřítko? Nastavte ho znovu, appka přepočítá délky u všech tras.">
       Upravit měřítko
     </button>
     <button class="tool-btn" onclick="ulozitProjekt()" style="background:#eef2ff;border-color:#c7d2fe;color:#4338ca;margin-left:8px;">
@@ -1212,7 +1212,7 @@ function ulozitKalibraci() {
     return;
   }
   if (kalibracePxDist <= 0) {
-    if (errEl) { errEl.textContent = 'Oba klikací body vyšly na stejném místě, zkuste kalibraci znovu.'; errEl.style.display = 'block'; }
+    if (errEl) { errEl.textContent = 'Oba klikací body vyšly na stejném místě, zkuste nastavit měřítko znovu.'; errEl.style.display = 'block'; }
     return;
   }
   if (errEl) errEl.style.display = 'none';
@@ -1221,7 +1221,7 @@ function ulozitKalibraci() {
   meritkoNastaveno = true;
   kalibraceBody = [];
   const status = document.getElementById('kalibrace-status');
-  if (status) status.textContent = 'Měřítko nastavené (' + realM.toLocaleString('cs-CZ') + ' m). Klidně zkalibrujte znovu, pokud se spletete.';
+  if (status) status.textContent = 'Měřítko nastavené (' + realM.toLocaleString('cs-CZ') + ' m). Klidně ho nastavte znovu, pokud se spletete.';
   hlaskaKalibrace('Měřítko upravené (' + realM.toLocaleString('cs-CZ') + ' m). Délky všech tras jsou přepočítané.', true);
   const btn = document.getElementById('btn-zacit-kreslit');
   if (btn) btn.disabled = false;
@@ -1234,7 +1234,7 @@ function ulozitKalibraci() {
 
 
 function spustitKresleni() {
-  if (!meritkoNastaveno) { upozornit('Nejdřív zkalibrujte měřítko kliknutím na plánek.'); return; }
+  if (!meritkoNastaveno) { upozornit('Nejdřív nastavte měřítko kliknutím na plánek.'); return; }
   const nazev = document.getElementById('nazev-zakazky').value || 'Pracovník 1';
   zakazky[0].nazev = nazev;
 
@@ -3175,7 +3175,7 @@ function resetovat() {
     aktualniProjektId = null;
     nazevProjektu = '';
     const kalStatus = document.getElementById('kalibrace-status');
-    if (kalStatus) kalStatus.textContent = 'Zatím není nastavené - klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.';
+    if (kalStatus) kalStatus.textContent = 'Zatím není nastavené. Klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.';
     const kalBtn = document.getElementById('btn-zacit-kreslit');
     if (kalBtn) kalBtn.disabled = true;
     mod = null; // stejna pojistka jako po prvnim nahrani - nekreslit driv, nez se potvrdi meritko
@@ -3372,7 +3372,7 @@ function zkusitObnovitRozpracovanyNakres() {
   document.getElementById('naklady-hod').value = nakladyHod;
   document.getElementById('rychlost-chuze').value = rychlostChuze;
   const kalStatus = document.getElementById('kalibrace-status');
-  if (kalStatus && meritkoNastaveno) kalStatus.textContent = 'Měřítko nastavené. Klidně zkalibrujte znovu, pokud se spletete.';
+  if (kalStatus && meritkoNastaveno) kalStatus.textContent = 'Měřítko nastavené. Klidně ho nastavte znovu, pokud se spletete.';
   const kalBtn = document.getElementById('btn-zacit-kreslit');
   if (kalBtn) kalBtn.disabled = !meritkoNastaveno;
 

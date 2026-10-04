@@ -397,8 +397,8 @@ const TOOLS = [
     popis:"Máte pocit, že vaši zaměstnanci víc nachodí, než vyrobí? Nebo že půlku pracovní doby vyplňují papíry? To jste tady správně.\n\nMěřič plýtvání vám pomůže objevit místa, kde ztrácíte nejvíc.\n\nZvolíte si proces, který chcete změřit, pozorujete pracovníka přímo při práci a klikáte na tlačítka podle toho, co zrovna dělá.\n\nAppka sama spočítá, kolik času padá na práci, přesun, hledání, čekání, administrativu, kontrolu a přípravu. Tři cykly zdarma, bez registrace.",
     proKoho:"Majitel nebo manažer výroby či skladu, co tuší, že se někde ztrácí čas, ale nemá to podložené čísly.",
     url:"nastroje/meric-plytvani-free/", souvisejici:["spaghetti-sklad","kalkulacka","kviz-komunikace"],
-    metaTitle:"Výpočet produktivity práce zdarma | Gabriela Tomíčková",
-    metaDescription:"Zjistěte výpočet produktivity práce ve vaší firmě za 10 minut. Bez stopek a papíru, zdarma online, výsledek na e-mail.",
+    metaTitle:"Měřič plýtvání zdarma: produktivita za 10 minut | Tokva",
+    metaDescription:"Zjistěte výpočet produktivity práce ve vaší firmě za 10 minut. Bez stopek a papíru, zdarma online, výsledek hned na stránce.",
     ucelMetoda:"Měřič plýtvání je jednoduchá časová studie jednoho konkrétního procesu. Místo stopek a papíru klikáte na tlačítko podle toho, co zrovna pracovník dělá, appka sama měří, jak dlouho která činnost trvá. Na konci uvidíte, kolik času padá na skutečnou práci, a kolik na chození, hledání, čekání, papírování nebo kontrolu.\n\nKdo zná metodu KAIZEN, pozná v těch kategoriích klasické druhy plýtvání, takzvané muda. Znát ji ale vůbec nemusíte, appka funguje stejně dobře i bez toho.",
     kdyPouzit:{
       otazky:[
@@ -410,31 +410,31 @@ const TOOLS = [
         "Trvá příprava pracoviště nebo materiálu skoro stejně dlouho jako samotná práce?"
       ],
       zaver:[
-        "Pokud jste si u aspoň jedné otázky řekli \"to je přesně u nás\", máte tušení, kde plýtváte. Měřič plýtvání vám ukáže přesně kolik, ne jen že \"asi něco\".",
+        "Pokud jste si u aspoň jedné otázky řekli „to je přesně u nás“, máte tušení, kde plýtváte. Měřič plýtvání vám ukáže přesně kolik, ne jen že „asi něco“.",
         "Nehodí se na jednorázové věci. Měříte opakující se proces, jednu konkrétní operaci, ne celý den najednou."
       ]
     },
-    princip:"Vyberete proces, spustíte měření a klikáte na tlačítko podle aktuální činnosti vždy na jejím začátku, ne na konci. Appka automaticky ukončí předchozí činnost a spustí další. Po 3 změřených cyklech (ve free verzi) spočítá průměrné rozložení času mezi kategoriemi.",
+    princip:"Vyberete proces, spustíte měření a klikáte na tlačítko podle aktuální činnosti vždy na jejím začátku, ne na konci. Appka automaticky ukončí předchozí činnost a spustí další. Po 3 změřených cyklech (v bezplatné verzi) spočítá průměrné rozložení času mezi kategoriemi.",
     postup:[
       "Zvolte proces, který chcete měřit, jednu konkrétní opakující se operaci.",
       "Spusťte měření a klikejte na tlačítko podle toho, co zrovna děláte, vždy na začátku činnosti.",
-      "Absolvujte 3 cykly (free verze).",
-      "Prohlédněte si průměrné rozložení času mezi kategoriemi.",
+      "Absolvujte 3 cykly (bezplatná verze).",
+      "Prohlédněte si průměrné rozložení času mezi kategoriemi a orientační odhad, kolik to stojí v korunách za rok.",
       "Zaměřte se na plýtvání, které vychází nejvyšší, a postupně eliminujte všechna zjištěná plýtvání.",
-      "Pošlete si výsledek e-mailem, nebo zvažte Měřič plýtvání Pro pro víc cyklů, vlastní kroky procesu a export."
+      "Po změně změřte stejný proces znovu. Porovnání měření před a po, vlastní kroky procesu a export jsou v Tokva Pro."
     ],
     vstupy:"Název procesu, který měříte, a živé kliky na tlačítka během reálné práce.",
-    vystupy:"Průměrné rozložení času mezi 7 kategoriemi za změřené cykly, nalezení různých druhů plýtvání, možnost poslat si výsledek e-mailem.",
-    priklad:"Řekněme, že máte na skladě Honzu, který furt čeká na materiál. Jenže nikdo pořádně neví, na kolik minut se to čekání za směnu natáhne.\n\nSpustíte Měřič plýtvání a jdete se na Honzu podívat přímo do provozu. Klikáte na tlačítka podle toho, co zrovna dělá: práce, čekání na materiál, chození pro dodací list, co byl přece ráno na stole.\n\nPo pár cyklech appka spočítá skutečná čísla. Ne odhad typu \"tak nějak deset minut, možná patnáct\", ale přesný podíl času, který padá na čekání, hledání a chození.\n\nTahle čísla pak stačí zadat do Kalkulačky ztrát a najednou víte, kolik vás to čekání stojí ročně v korunách.",
+    vystupy:"Průměrné rozložení času mezi 7 kategoriemi za změřené cykly, orientační odhad kusů za směnu a hodnoty plýtvání v korunách za rok (s pevnou sazbou 300 Kč/h) a tipy podle největší ztráty. Výsledek vidíte hned, e-mailem si ho můžete nechat poslat.",
+    priklad:"Vedoucí skladu byl přesvědčený, že lidi na vychystávání makají skoro pořád. Změřil tři cykly a vyšlo mu, že skoro třetina času, 31 %, padá na chození pro materiál, který ležel na druhém konci skladu.\n\nPřesunul pár nejčastěji vychystávaných položek blíž k výdeji. Beze změny směn, beze změny lidí.\n\nPak změřil ten samý proces ještě jednou. Na chůzi už padlo jen 12 % času. Teprve druhé měření ukázalo, že změna opravdu zabrala.",
     chyby:[
       "Kliknutí na konci činnosti místo na jejím začátku, appka pak měří špatný úsek.",
       "Míchání různých variant procesu dohromady, cykly pak nejdou mezi sebou srovnat.",
-      "Jen 3 cykly a rovnou definitivní závěr, na první orientaci stačí, na jistotu se hodí 5 až 10 cyklů, to už je v Pro verzi."
+      "Jen 3 cykly a rovnou definitivní závěr. Na první orientaci stačí, pro jistotu změřte další kolo. A hlavně změřte znovu po změně, teprve to ukáže, jestli zabrala."
     ],
     faq:[
-      { q:"Kolik cyklů potřebuju pro spolehlivý výsledek?", a:"Free verze měří 3 cykly, to stačí na první orientaci. Pro přesnější statistiku appka sama doporučuje 5 až 10 cyklů, což je součást Pro verze." },
-      { q:"Co když moje činnost nespadá do žádné ze 7 kategorií?", a:"Free verze pracuje jen s těmito kategoriemi. Přidání vlastních kroků procesu je dostupné v Měřiči plýtvání Pro." },
-      { q:"Kam se mi pošlou výsledky měření?", a:"Na e-mail, který zadáte po dokončení měření." }
+      { q:"Kolik cyklů potřebuju pro spolehlivý výsledek?", a:"Bezplatná verze měří 3 cykly, to stačí na první orientaci. Když chcete větší jistotu, změřte další samostatné kolo. Víc než počet cyklů ale rozhoduje druhé měření po změně." },
+      { q:"Co když moje činnost nespadá do žádné ze 7 kategorií?", a:"Bezplatná verze pracuje jen s těmito kategoriemi. Vlastní kroky procesu jsou v Tokva Pro." },
+      { q:"Musím zadat e-mail?", a:"Ne. Výsledek uvidíte hned na stránce. E-mail zadáte, jen když si ho chcete nechat poslat." }
     ],
     design2a:{
       heroLines:["Kde vám","reálně mizí čas."],
@@ -442,20 +442,20 @@ const TOOLS = [
       ctaLabel:"Chci si to změřit",
       stats:[
         {num:"7", lbl:"kategorií času"},
-        {num:"3", lbl:"cykly ve free verzi"},
+        {num:"3", lbl:"cykly v bezplatné verzi"},
         {num:"0", lbl:"stopek a papírů"},
         {num:"KAIZEN", lbl:"metoda v pozadí"}
       ],
       recognizeClose:"Pokud jste se našli alespoň v jedné, má smysl změřit, kolik času tam skutečně mizí.",
       how:{ chipsLabel:"Sedm kategorií času", chips:["Práce","Přesun","Hledání","Čekání","Administrativa","Kontrola","Příprava"] },
       example:{
-        headline:"Kolik času denně zabere obyčejné čekání?",
-        stat:{ quote:true, text:"Ne tuším, ale vím.", note:"Přesný podíl času na čekání, hledání a chození, místo odhadu od oka." }
+        headline:"Kolik času padá na chůzi pro materiál?",
+        stat:{ num:"31 % → 12 %", note:"času padalo na chození pro materiál před změnou a po ní. Ověřeno druhým měřením." }
       }
     } },
 
   { id:"kalkulacka", group:"free", name:"Kalkulačka ztrát", krok:2, oblasti:["sklad","vyroba"], benefit:"Zjistíte v korunách, kolik vás ročně stojí obyčejná rutina ve skladu nebo výrobě.",
-    popis:"Tušíte, že vám ve skladu nebo ve výrobě někde uniká čas a peníze, ale nemáte to podložené číslem? Tady ho zjistíte za pár minut.\n\nZadáte pár čísel o svém provozu, kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje, a kalkulačka to spočítá na hodiny, kilometry a koruny za rok.\n\nVýsledek je orientační, ne audit na korunu přesně. Ale vychází z reálných měření, ne z odhadu od stolu.",
+    popis:"Tušíte, že vám ve skladu nebo ve výrobě někde uniká čas a peníze, ale nemáte to podložené číslem? Tady ho zjistíte hned.\n\nZadáte pár čísel o svém provozu, kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje, a kalkulačka to spočítá na hodiny, kilometry a koruny za rok.\n\nVýsledek je orientační, ne audit na korunu přesně. Ale vychází z reálných měření, ne z odhadu od stolu.",
     proKoho:"Vedoucí skladu nebo výroby, co chce první rychlé číslo, ne jen pocit, že něco vázne. Ideální pro tým 5 až 50 lidí.",
     url:"nastroje/kalkulacka-ztrat/", souvisejici:["mini-audit","meric-free","kviz-komunikace","kalkulacka-naklady-skladu"],
     kdyPouzit:{
@@ -470,16 +470,16 @@ const TOOLS = [
       ]
     },
     ucelMetoda:"Kalkulačka ztrát je rychlý odhad, kolik vás ročně stojí běžná rutina ve skladu nebo ve výrobě. Zadáte pár čísel o svém provozu (kolik lidí, kolik směn, kolik se zbytečně chodí, čeká nebo ručně přepisuje) a kalkulačka to přepočítá na hodiny, kilometry a koruny za rok.\n\nNení to náhrada za měření přímo v provozu. Je to první rychlý odhad, jestli se vůbec vyplatí to řešit dál.",
-    princip:"Do posuvníků zadáte základní údaje o provozu (počet lidí, počet směn, délka směny, mzdové náklady) a pět čísel o ztrátách (zbytečná chůze, ruční administrativa, čekání a prostoje, počet kamionů a čas na zpracování jednoho). Kalkulačka je hned přepočítá na hodiny týdně, kilometry navíc za rok a koruny za měsíc i za rok, a ukáže i to, kde ztráta vzniká nejvíc.",
+    princip:"Do posuvníků zadáte základní údaje o provozu (počet lidí, počet směn, délka směny, mzdové náklady) a pět čísel o ztrátách (zbytečná chůze, ruční administrativa, čekání a prostoje, počet dodávek a expedic týdně a zbytečný čas u jedné z nich). Kalkulačka je hned přepočítá na hodiny týdně, kilometry navíc za rok a koruny za měsíc i za rok, a ukáže i to, kde ztráta vzniká nejvíc.",
     postup:[
       "Zadejte základní údaje o provozu: počet lidí, počet směn a mzdové náklady.",
-      "Zadejte čísla o ztrátách: kolik se zbytečně chodí, kolik se ručně přepisuje, kolik se čeká a kolik trvá zpracování dodávky nebo expedice.",
+      "Zadejte čísla o ztrátách: kolik se zbytečně chodí, kolik se ručně přepisuje, kolik se čeká a kolik času se zbytečně ztratí u jedné dodávky nebo expedice.",
       "Výsledek se spočítá okamžitě, bez registrace, přímo na stránce.",
       "Podívejte se, jaká je vaše výchozí situace a kolik vás plýtvání reálně stojí, vezměte to jako startovní čáru. U kategorie, kde ztrácíte nejvíc času, začněte a udělejte si detailnější rozbor procesu."
     ],
     vstupy:"Počet pracovníků, počet směn, délka směny, mzdové náklady, a pět čísel o ztrátách: zbytečná chůze a přesuny, ruční administrativa, čekání a prostoje, počet dodávek a expedic týdně a zbytečný čas u jedné z nich.",
-    vystupy:"Celková ztráta za rok v korunách, náklady za měsíc, zbytečné hodiny za týden, kilometry nachozené navíc za rok, a kolik lidí v přepočtu pracuje jen na těchto ztrátách. Plus rozpad podle toho, kde ztráta vzniká nejvíc.",
-    priklad:"Sklad, 5 lidí, jedna směna. Nic dramatického, jen běžná rutina: špatně rozmístěné zboží, přepisování dodacích listů, čekání na informaci. Dohromady to dělalo kolem 40 minut zbytečně za směnu na člověka.\n\nKalkulačka z těchto čísel spočítala 303 100 Kč ročně za práci, která nepřinášela žádnou hodnotu.\n\nŘešení nebylo drahé. Změnilo se rozmístění zboží a jeden formulář pro příjem zboží. Žádná velká investice, jen jinak nastavený systém.",
+    vystupy:"Celková ztráta za rok v korunách, náklady za měsíc, zbytečné hodiny za týden, kilometry nachozené navíc za rok, a kolik lidí v přepočtu pracuje jen na těchto ztrátách. Plus rozpad podle toho, kde ztráta vzniká nejvíc. Uložení výsledku a porovnání s druhým měřením je v Tokva Pro.",
+    priklad:"Sklad, 5 lidí, jedna směna. Nic dramatického, jen běžná rutina: špatně rozmístěné zboží, přepisování dodacích listů, čekání na informaci. Dohromady to dělalo kolem 40 minut zbytečně za směnu na člověka.\n\nKalkulačka z těchto čísel spočítala 303 100 Kč ročně za práci, která nepřinášela žádnou hodnotu.\n\nŘešení nebylo drahé. Změnilo se rozmístění zboží a jeden formulář pro příjem zboží. Žádná velká investice, jen jinak nastavený systém.\n\nZe 40 minut denně zbylo 15. Druhé měření ukázalo úsporu zhruba 189 400 Kč ročně.",
     chyby:[
       "Čekání s vyplněním, dokud nemáte přesná čísla. Kalkulačka počítá s odhadem, přesnost tady není cíl, směr ano.",
       "Brát výsledek jako přesný audit. Je to orientační číslo pro rychlé rozhodnutí, jestli se vyplatí to řešit dál, ne finální částka.",
@@ -492,7 +492,7 @@ const TOOLS = [
     ],
     design2a:{
       heroLines:["Kolik vás stojí","obyčejná rutina?"],
-      heroNote:"Bez registrace · výsledek hned<br>orientační odhad za pár minut",
+      heroNote:"Bez registrace · výsledek hned<br>orientační odhad za půl minuty",
       ctaLabel:"Chci znát svoje číslo",
       stats:[
         {num:"4", lbl:"základní údaje o provozu"},
@@ -531,7 +531,7 @@ const TOOLS = [
       "Dostanete skóre a konkrétní tipy pro 3 oblasti, kde to bolí nejvíc, hned na stránce."
     ],
     vstupy:"Odpovědi na 10 otázek o vašem skladu, e-mail jen nepovinně, pokud chcete výsledek i poslat.",
-    vystupy:"Skóre 0 až 30 bodů se slovním hodnocením (třeba \"firma ztrácí významnou kapacitu každý týden\"), přehled odpovědí po jednotlivých otázkách, a konkrétní tipy pro 3 nejkritičtější oblasti, hned na stránce.",
+    vystupy:"Skóre 0 až 30 bodů (čím míň, tím líp) se slovním hodnocením (třeba „firma ztrácí významnou kapacitu každý týden“), přehled odpovědí po jednotlivých otázkách, a konkrétní tipy pro 3 nejkritičtější oblasti, hned na stránce. Druhý audit a porovnání otázku po otázce jsou v Tokva Pro.",
     priklad:"Petr vedl sklad v Hradci. 12 lidí, příjem zboží každý den, dva až tři kamiony týdně. Stěžoval si, že lidi nestíhají. Uvažoval o posilách.\n\nAudit odhalil dva problémy. Při příjmu kamionu nebylo jasné, kdo kontroluje zboží a kdo ho zaskladňuje, dělal to vždy ten, kdo byl zrovna volný. Zboží proto čekalo na zaskladnění průměrně 2,5 hodiny po vyložení, leželo na rampě a blokovalo provoz. Druhý problém byly výjimky, poškozené zboží, chybějící položky, nesouhlasící množství, bez jasného postupu to každý řešil jinak.\n\nJedno pravidlo pro příjem zkrátilo dobu příjmu kamionu ze 3 hodin na 55 minut, tedy o 2 hodiny a 5 minut. Při 10 kamionech za měsíc to dělá 250 hodin ročně, při 300 Kč nákladu na hodinu 75 000 Kč.\n\nPosily nepřišly. Čas se našel jinde.",
     chyby:[
       "Přeskočit otázku, na kterou přesně neznáte odpověď. Nevím je taky odpověď, a často důležitá, ukazuje, kde se ve skladu vůbec nesleduje, co se děje.",
@@ -539,8 +539,8 @@ const TOOLS = [
     ],
     faq:[
       { q:"Musím zadat e-mail?", a:"Ne. Audit spustíte rovnou bez e-mailu a výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit." },
-      { q:"Co když nevím odpověď na některou otázku?", a:"Zvolte \"Nevím / nemáme data\". Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku - protože nevědět je samo o sobě důležité zjištění, ne totéž co \"nemáme problém\"." },
-      { q:"Musím projít celý audit najednou?", a:"Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později - projděte ji v jednom sezení." }
+      { q:"Co když nevím odpověď na některou otázku?", a:"Zvolte „Nevím / nemáme data“. Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku, protože nevědět je samo o sobě důležité zjištění, ne totéž co „nemáme problém“." },
+      { q:"Musím projít celý audit najednou?", a:"Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později. Projděte ji v jednom sezení." }
     ],
     design2a:{
       heroLines:["Za 5 minut víte,","kde sklad ztrácí čas."],
@@ -560,7 +560,7 @@ const TOOLS = [
     } },
 
   { id:"mini-audit-vyroba", group:"free", name:"Mini audit výroby", krok:1, oblasti:["vyroba"], benefit:"Za 5 minut zjistíte, kde vaše výroba nejvíc ztrácí čas, výkon a kapacitu.",
-    popis:"Za 5 minut víte, kde vaše výroba ztrácí čas, výkon a kapacitu.\n\n10 otázek ze skutečného provozu. Bez teorie, bez přípravy. Jedno jasné doporučení, co řešit jako první - ne šest appek najednou.",
+    popis:"Za 5 minut víte, kde vaše výroba ztrácí čas, výkon a kapacitu.\n\n10 otázek ze skutečného provozu. Bez teorie, bez přípravy. Jedno jasné doporučení, co řešit jako první, ne šest appek najednou.",
     proKoho:"Vedoucí výroby nebo mistr, co chce rychlý přehled, kde to vázne.",
     url:"nastroje/mini-audit-vyroby/", souvisejici:["meric-free","spaghetti-sklad","kviz-sklad","5x-proc","5s-audit"],
     kdyPouzit:{
@@ -582,16 +582,16 @@ const TOOLS = [
       "Dostanete skóre v procentech, rozpad podle 5 oblastí a jedno konkrétní doporučení, co řešit jako první."
     ],
     vstupy:"Odpovědi na 10 otázek o vaší výrobě, e-mail jen nepovinně, pokud chcete výsledek i poslat.",
-    vystupy:"Skóre v procentech se slovním hodnocením (třeba \"výroba ztrácí významnou kapacitu\"), rozpad výsledku do 5 oblastí (tok výroby, čekání a prostoje, pohyb a pracoviště, standard a kvalita, řízení problémů) a jedno konkrétní doporučení, co řešit jako první, hned na stránce.",
-    priklad:"Montážní linka, 8 lidí, sériová výroba. Vedoucí chtěl žádat o posilu, lidi nestíhali. Materiál pro jednu operaci ležel na paletě u vstupu haly, ne u pracoviště - operátorky si pro něj chodily samy, několikrát za směnu, a každá jinou trasou.\n\nPřesun palety blíž k pracovišti a jedno jasné pravidlo, kdo doplňuje, zkrátily čas jedné operace o čtvrtinu. Beze změny počtu lidí.\n\nPosila nakonec nebyla potřeba. Čas se našel jinde.",
+    vystupy:"Skóre v procentech (podíl problémů, čím nižší, tím líp) se slovním hodnocením (třeba „výroba ztrácí významnou kapacitu“), rozpad výsledku do 5 oblastí (tok výroby, čekání a prostoje, pohyb a pracoviště, standard a kvalita, řízení problémů) a jedno konkrétní doporučení, co řešit jako první, hned na stránce. Druhý audit a porovnání otázku po otázce jsou v Tokva Pro.",
+    priklad:"Ilustrační příklad z typu situací, které ve výrobě řeším nejčastěji. Montážní linka, 8 lidí, sériová výroba. Vedoucí chtěl žádat o posilu, lidi nestíhali. Materiál pro jednu operaci ležel na paletě u vstupu haly, ne u pracoviště. Operátorky si pro něj chodily samy, několikrát za směnu, a každá jinou trasou.\n\nPřesun palety blíž k pracovišti a jedno jasné pravidlo, kdo doplňuje, zkrátily čas jedné operace o čtvrtinu. Beze změny počtu lidí.\n\nPosila nakonec nebyla potřeba. Čas se našel jinde.",
     chyby:[
       "Přeskočit otázku, na kterou přesně neznáte odpověď. Nevím je taky odpověď, a často důležitá, ukazuje, kde se ve výrobě vůbec nesleduje, co se děje.",
       "Snažit se audit rozdělit na víckrát. Nedá se uložit a vrátit se k němu později, lepší je najít 5 minut vcelku."
     ],
     faq:[
       { q:"Musím zadat e-mail?", a:"Ne. Audit spustíte rovnou bez e-mailu a výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit." },
-      { q:"Co když nevím odpověď na některou otázku?", a:"Zvolte \"Nevím / nemáme data\". Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku - protože nevědět je samo o sobě důležité zjištění, ne totéž co \"máme to pod kontrolou\"." },
-      { q:"Musím projít celý audit najednou?", a:"Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později - projděte ji v jednom sezení." }
+      { q:"Co když nevím odpověď na některou otázku?", a:"Zvolte „Nevím / nemáme data“. Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku, protože nevědět je samo o sobě důležité zjištění, ne totéž co „máme to pod kontrolou“." },
+      { q:"Musím projít celý audit najednou?", a:"Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později. Projděte ji v jednom sezení." }
     ],
     design2a:{
       heroLines:["Za 5 minut víte,","kde výroba ztrácí čas."],
@@ -634,8 +634,8 @@ const TOOLS = [
       "Dostanete skóre a konkrétní tipy, co sledovat jako první, hned na stránce."
     ],
     vstupy:"Odpovědi na 10 otázek o vašem provozu, e-mail jen nepovinně, pokud chcete výsledek i poslat.",
-    vystupy:"Skóre 0 až 20 bodů se slovním hodnocením (třeba \"provoz řídí vás, ne vy provoz\"), přehled po jednotlivých oblastech, kde vám chybí přehled, a konkrétní tipy pro oblasti, kde to bolí nejvíc, hned na stránce.",
-    priklad:"Vedoucí skladu, 15 lidí, firma fungovala. Na papíře v pohodě. Přišel kvíz.\n\nNeznal náklady na metr čtvereční. Nevedl statistiku chyb. Nevěděl, kolik ho stojí odchod jednoho člověka. Tři procesy závisely na jednom skladníkovi, který byl u firmy 11 let. Kdyby odešel, nikdo by nevěděl, jak to dělá.\n\nKaždou z těchto věcí věděl, že nějak fungují. Ale číslo k žádné z nich neměl.\n\nKvíz nezjistil, co nefunguje. Zjistil, co neví. A to byl první krok k tomu, aby to začal řídit.",
+    vystupy:"Skóre 0 až 20 problémových bodů (čím míň, tím líp) se slovním hodnocením (třeba „provoz řídí vás, ne vy provoz“), přehled po jednotlivých oblastech, kde vám chybí přehled, a konkrétní tipy pro oblasti, kde to bolí nejvíc, hned na stránce. Druhý kvíz a porovnání otázku po otázce jsou v Tokva Pro.",
+    priklad:"Ilustrační příklad. Vedoucí skladu, 15 lidí, firma fungovala. Na papíře v pohodě. Přišel kvíz.\n\nNeznal náklady na metr čtvereční. Nevedl statistiku chyb. Nevěděl, kolik ho stojí odchod jednoho člověka. Tři procesy závisely na jednom skladníkovi, který byl u firmy přes deset let. Kdyby odešel, nikdo by nevěděl, jak to dělá.\n\nKaždou z těchto věcí věděl, že nějak fungují. Ale číslo k žádné z nich neměl.\n\nKvíz nezjistil, co nefunguje. Zjistil, co neví. A to byl první krok k tomu, aby to začal řídit.\n\nZačal si chyby tahat ze systému a dělat z nich jednoduchý přehled. Ukázalo se, že nejčastější chybou při vychystávání je záměna dvou podobných lahví vodky. Mohl ten problém začít řešit, protože už o něm věděl.",
     chyby:[
       "Odpovídat, jak by to mělo být, ne jak to skutečně je. Kvíz ukáže reálný stav jen tehdy, když odpovídáte upřímně.",
       "Splést si kvíz s mini auditem skladu. Kvíz ukazuje, co nevíte a neměříte, mini audit hledá, kde konkrétně vznikají ztráty v procesech."
@@ -643,7 +643,7 @@ const TOOLS = [
     faq:[
       { q:"Musím zadat e-mail?", a:"Ne. Kvíz spustíte rovnou bez e-mailu a výsledek uvidíte hned na stránce. E-mail necháte, jen pokud chcete výsledek poslat i na později, žádný spam, kdykoli se můžete odhlásit." },
       { q:"Jaký je rozdíl mezi kvízem a mini auditem skladu?", a:"Kvíz odhaluje slepá místa v přehledu, co nevíte, co neměříte, kde chybí čísla. Mini audit skladu hledá, kde konkrétně vznikají ztráty v procesech." },
-      { q:"Musím projít celý kvíz najednou?", a:"Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později - projděte ji v jednom sezení." }
+      { q:"Musím projít celý kvíz najednou?", a:"Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později. Projděte ji v jednom sezení." }
     ],
     design2a:{
       heroLines:["10 otázek,","co odhalí slepá místa."],
@@ -651,7 +651,7 @@ const TOOLS = [
       ctaLabel:"Chci zjistit, co nevím",
       stats:[
         {num:"10", lbl:"otázek o vašem provozu"},
-        {num:"20", lbl:"bodů maximální skóre"},
+        {num:"20", lbl:"problémových bodů nejvíc, čím míň, tím líp"},
         {num:"5", lbl:"minut na celý kvíz"},
         {num:"0", lbl:"znalostí KAIZEN potřeba"}
       ],
@@ -671,9 +671,9 @@ const TOOLS = [
         "Běží k jedné zakázce informace přes e-mail, WhatsApp, papírový lístek i telefon, a nikdo si není jistý, co platí naposled?",
         "Zapisujete stejné údaje o zákazníkovi nebo zakázce ručně na víc míst, protože systémy spolu nemluví?",
         "Čeká někdo pravidelně na informaci nebo pokyn, místo aby mohl rovnou pracovat dál?",
-        "Slyšíte často větu \"to mi nikdo neřekl\", a nikdo přesně neví, čí to byla chyba?",
+        "Slyšíte často větu „to mi nikdo neřekl“, a nikdo přesně neví, čí to byla chyba?",
         "Když se změní termín nebo množství, musíte to ručně obvolat, aby se to vůbec dozvěděli všichni, kterých se to týká?",
-        "Je ve firmě jeden konkrétní člověk, na kterého se všichni obrací s \"jak to vlastně je\", a bez něj by to nikdo nevěděl?"
+        "Je ve firmě jeden konkrétní člověk, na kterého se všichni obrací s „jak to vlastně je“, a bez něj by to nikdo nevěděl?"
       ],
       zaver:[
         "Pokud jste se poznali aspoň v jedné, komunikace vás pravděpodobně stojí víc času, než si myslíte, i když to na první pohled vypadá jako drobnost.",
@@ -689,11 +689,11 @@ const TOOLS = [
       "Pokud chcete podrobnější rozbor, nechte si ho poslat na e-mail."
     ],
     vstupy:"Odpovědi na 11 otázek o tom, jak a kudy si ve firmě předáváte informace, kolik kanálů používáte, kde se nejvíc čeká a jak sdílíte soubory.",
-    vystupy:"Skóre 0 až 33 bodů, zařazení do jedné ze 4 úrovní komunikačního chaosu se slovním vysvětlením, a pojmenování jedné ze 6 konkrétních oblastí, kde vás to nejvíc brzdí (třeba kanálový chaos, přepisování dat nebo závislost na jedné osobě). Volitelně podrobnější rozbor na e-mail.",
-    priklad:"Pavel vede údržbu. Každá akce má svou složku a svůj akční plán plný úkolů, a rozpracovaných projektů běží víc najednou.\n\nJednou dopoledne mu Monika pošle e-mail s připomínkou jednoho z projektů a odkazem na akční plán. Pavel ho otevře a najde 12 úkolů, za které odpovídá. 4 z nich má rozpracované, 2 další navazují na to, co už běží. Ale u zbylých 6 si nepamatuje detaily, a začne obvolávat kolegy, aby zjistil, jak to vlastně bylo.\n\nDohledávání těch 6 úkolů sežere jemu i kolegům desítky minut. A to je jen jeden akční plán, otevřený z jednoho e-mailu. Rozjetých projektů mají 5, každý se svým vlastním plánem.\n\nPřitom by úplně stačilo mít jeden společný akční plán, kde si každý vyfiltruje jen svoje úkoly. Nikdo by na nic nezapomněl, a nikdo by si nemusel nic pamatovat nazpaměť.\n\nJedno pravidlo, a každý vždy ví, kde najde všechny svoje úkoly k projektům.",
+    vystupy:"Skóre 0 až 30 bodů (čím víc, tím větší chaos; otázky s odpovědí „Nevím“ se nezapočítají), zařazení do jedné ze 4 úrovní komunikačního chaosu se slovním vysvětlením, a pojmenování jedné ze 6 konkrétních oblastí, kde vás to nejvíc brzdí (třeba kanálový chaos, přepisování dat nebo závislost na jedné osobě). Volitelně podrobnější rozbor na e-mail. Uložení výsledku a porovnání s dalším vyplněním jsou v Tokva Pro.",
+    priklad:"Pavel vede údržbu. Každá akce má svou složku a svůj akční plán plný úkolů, a rozpracovaných projektů běží víc najednou.\n\nJednou dopoledne mu Monika pošle e-mail s připomínkou jednoho z projektů a odkazem na akční plán. Pavel ho otevře a najde 12 úkolů, za které odpovídá. 4 z nich má rozpracované, 2 další navazují na to, co už běží. Ale u zbylých 6 si nepamatuje detaily, a začne obvolávat kolegy, aby zjistil, jak to vlastně bylo.\n\nDohledávání těch 6 úkolů sežere jemu i kolegům desítky minut. A to je jen jeden akční plán, otevřený z jednoho e-mailu. Rozjetých projektů mají 5, každý se svým vlastním plánem.\n\nŘešením bylo sloučit všech pět akčních plánů do jednoho, kde si každý vyfiltruje jen svoje úkoly. Nikdo na nic nezapomene a nikdo si nemusí nic pamatovat nazpaměť.\n\nJedno pravidlo, a každý vždy ví, kde najde všechny svoje úkoly k projektům.",
     chyby:[
       "Odpovídat, jak by komunikace měla fungovat podle vnitřní směrnice, ne jak to reálně chodí v provozu.",
-      "Zapomenout na kanály, které si lidi zavedli sami mezi sebou, třeba WhatsApp skupinu nebo papírové lístky, protože nejsou \"oficiální\".",
+      "Zapomenout na kanály, které si lidi zavedli sami mezi sebou, třeba WhatsApp skupinu nebo papírové lístky, protože nejsou „oficiální“.",
       "Brát nízké skóre jako důvod komunikaci dál vůbec neřešit, i malé zlepšení dokáže ušetřit hodiny týdně."
     ],
     faq:[
@@ -712,10 +712,10 @@ const TOOLS = [
         {num:"5", lbl:"minut na celý kvíz"}
       ],
       recognizeClose:"Pokud jste se poznali aspoň v jedné, komunikace vás pravděpodobně stojí víc času, než si myslíte.",
-      how:{ chipsLabel:"4 úrovně chaosu", chips:["Komunikace je čistá","Info se začínají ztrácet","Ztráta času mezi odděleními","Hlavní úzké místo firmy"] },
+      how:{ chipsLabel:"4 úrovně chaosu", chips:["Komunikace je poměrně čistá","Info se začínají ztrácet","Ztráta času mezi odděleními","Jedno z hlavních úzkých míst"] },
       example:{
         headline:"Co stojí jeden zapomenutý akční plán?",
-        stat:{ num:"6 z 12", note:"úkolů, u kterých si vedoucí nepamatoval detaily a musel obvolávat kolegy. Jeden společný akční plán, kde si každý vyfiltruje jen svoje úkoly, by stačil, aby se to nestávalo." }
+        stat:{ num:"6 z 12", note:"úkolů, u kterých si vedoucí nepamatoval detaily a musel obvolávat kolegy. Pomohlo sloučit všech pět akčních plánů do jednoho." }
       }
     } },
 
@@ -735,11 +735,11 @@ const TOOLS = [
         "Nástroj je celý zdarma, bez registrace, funguje pro jednu trasu i pro víc zakázek najednou."
       ]
     },
-    ucelMetoda:"Sledujete pohyb člověka a každý krok zaznamenáte čarou do plánku. Po chvíli je na papíře změť čar, která vypadá jako talíř špaget, odtud název. Čím víc čar a čím víc se kříží, tím víc pohybu - vidíte to vizuálně před sebou a můžete se zaměřit na cesty, které nejsou nutné.\n\nTenhle nástroj dělá to samé, jen na počítači, tabletu nebo mobilu. Nahrajete plánek skladu nebo výroby, zadáte jedno měřítko (třeba délku regálu na plánku a jeho skutečnou délku v metrech), a appka pak z vámi zaklikaných bodů trasy sama spočítá reálnou vzdálenost v metrech, ne jen hezký obrázek.",
-    princip:"Klikáte body přesně tam, kudy se při vychystávání pohybujete, každou zatáčku a odbočku. Appka body spojí čarou a podle zadaného měřítka spočítá délku trasy ve metrech. Můžete zaznamenat víc zakázek najednou, každou jinou barvou, a appka spočítá délku každé zvlášť i součet všech.",
+    ucelMetoda:"Sledujete pohyb člověka a každý krok zaznamenáte čarou do plánku. Po chvíli je na papíře změť čar, která vypadá jako talíř špaget, odtud název. Čím víc čar a čím víc se kříží, tím víc pohybu. Vidíte to vizuálně před sebou a můžete se zaměřit na cesty, které nejsou nutné.\n\nTenhle nástroj dělá to samé, jen na počítači, tabletu nebo mobilu. Nahrajete plánek skladu nebo výroby, nastavíte měřítko (označíte na plánku dva body a napíšete, kolik metrů mezi nimi ve skutečnosti je), a appka pak z vámi zaklikaných bodů trasy sama spočítá reálnou vzdálenost v metrech, ne jen hezký obrázek.",
+    princip:"Klikáte body přesně tam, kudy se při vychystávání pohybujete, každou zatáčku a odbočku. Appka body spojí čarou a podle zadaného měřítka spočítá délku trasy v metrech. Můžete zaznamenat víc zakázek najednou, každou jinou barvou, a appka spočítá délku každé zvlášť i součet všech.",
     postup:[
       "Nahrajte plánek skladu nebo výroby, fotku nebo obrázek půdorysu.",
-      "Zadejte měřítko: naměřenou vzdálenost na plánku a odpovídající reálnou délku v metrech (třeba délku regálu).",
+      "Nastavte měřítko: označte na plánku dva body, jejichž vzdálenost znáte (třeba délku regálu), a napište, kolik je to metrů.",
       "Pojmenujte zakázku a klikněte Začít kreslit trasu.",
       "Klikejte body přesně tam, kudy se při vychystávání pohybujete.",
       "Podle potřeby si plánek přibližte, oddalte nebo posuňte, zoom nemění naměřené vzdálenosti.",
@@ -747,7 +747,7 @@ const TOOLS = [
     ],
     vstupy:"Fotka nebo obrázek plánku skladu nebo výroby (JPG, PNG nebo PDF), a jedna známá vzdálenost pro měřítko, třeba délka regálu nebo šířka uličky.",
     vystupy:"Spaghetti diagram ke stažení jako obrázek nebo k vytisknutí, délka trasy v metrech pro každou zakázku i celkem, počet zaznamenaných bodů a zakázek.",
-    priklad:"Andula pracovala na výdeji skladu roky, věděla, kde co je. Nikdo si nestěžoval, nikomu nic nechybělo. Jenže nikdo netušil, kolik toho za směnu nachodí, dokud to nezměřili krokoměrem: 7,5 km za směnu, jen na výdeji.\n\nNakreslily spaghetti diagram jejího pohybu a bylo vidět, kde se trasa zbytečně kříží a prodlužuje. Přesunuly šest položek v regálu, nic víc. Nový výsledek: 4,2 km za směnu, o 44 % míň. Žádný projekt, žádná investice, jen krokoměr, spaghetti diagram a selský rozum. Anduliny nohy přestaly bolet, a od té doby věří změnám, které se ve skladu plánují, protože viděla na vlastní kůži, že to není teorie.",
+    priklad:"Andula pracovala na výdeji skladu roky, věděla, kde co je. Nikdo si nestěžoval, nikomu nic nechybělo. Jenže nikdo netušil, kolik toho za směnu nachodí, dokud to nezměřili krokoměrem: 7,5 km za směnu, jen na výdeji.\n\nNakreslili spaghetti diagram jejího pohybu a bylo vidět, kde se trasa zbytečně kříží a prodlužuje. Přesunuli šest položek v regálu, nic víc. Nový výsledek: 4,2 km za směnu, o 44 % míň. Žádný projekt, žádná investice, jen krokoměr, spaghetti diagram a selský rozum. Anduliny nohy přestaly bolet, a od té doby věří změnám, které se ve skladu plánují, protože viděla na vlastní kůži, že to není teorie.",
     chyby:[
       "Neuvést přesné měřítko. Stačí jedna známá vzdálenost (délka regálu, šířka uličky), appka podle ní přepočítá zbytek, ale bez ní jsou metry jen odhad.",
       "Zaznamenat jen jednu trasu a myslet si, že to vypovídá o celém provozu. Každá zakázka má jiný počet položek, takže jednotlivé trasy nejdou srovnávat 1:1, cíl je najít, kde se ztrácí nejvíc pohybu celkově, ne porovnávat jednu trasu s druhou.",
@@ -756,10 +756,10 @@ const TOOLS = [
     faq:[
       { q:"Je nástroj opravdu celý zdarma?", a:"Ano, bez registrace a bez e-mailu. Nahrajete plánek, zakreslíte trasu, stáhnete nebo vytisknete diagram." },
       { q:"Kolik tras nebo zakázek můžu zaznamenat?", a:"Kolik potřebujete, každá má svou barvu a appka spočítá délku každé zvlášť i součet všech dohromady." },
-      { q:"Co když potřebuju sledovat i zastávky, kde se pracovník u něčeho zastaví, ne jen prochází, nebo víc lidí najednou?", a:"To umí placená appka Spaghetti diagram Pro - zaznamená pohyb víc lidí najednou včetně zastávek, porovná dva návrhy vedle sebe s výpočtem úspory a přepočítá trasu na Kč." }
+      { q:"Co když potřebuju sledovat i zastávky, kde se pracovník u něčeho zastaví, ne jen prochází, nebo víc lidí najednou?", a:"To umí Spaghetti diagram Pro, součást Tokva Pro. Zaznamená pohyb víc lidí najednou včetně zastávek. Do jednoho plánku nakreslíte současný stav a návrh a appka spočítá rozdíl v metrech i procentech. Trasu navíc přepočítá na roční hodiny a koruny." }
     ],
     design2a:{
-      heroLines:["Kolik lidé","reálně nachodí?"],
+      heroLines:["Kolik toho vaši lidé","za směnu nachodí?"],
       heroNote:"Celé zdarma, bez registrace · spaghetti diagram na pár kliknutí",
       ctaLabel:"Nakreslit spaghetti diagram zdarma",
       stats:[
@@ -778,24 +778,24 @@ const TOOLS = [
 
   // PLACENÉ SAMOSTATNĚ
   { id:"meric-pro", group:"paid-solo", name:"Měřič plýtvání Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Změříte čas přesněji, s vlastními kroky procesu a exportem dat.",
-    popis:"Jde do hloubky víc než free verze. Pro výrobní firmy a sklady, co chtějí přesnější čísla a víc kontextu.",
-    proKoho:"Kdo si vyzkoušel Free verzi a chce dál.",
+    popis:"Jde do hloubky víc než bezplatná verze. Pro výrobní firmy a sklady, co chtějí přesnější čísla a víc kontextu.",
+    proKoho:"Kdo si vyzkoušel bezplatnou verzi a chce dál.",
     prodejniStranka:"nastroje/meric-plytvani-pro/", souvisejici:["spaghetti-vyroba","mini-audit"],
     kdyPouzit:{
       otazky:[
         "Vyzkoušeli jste si Měřič plýtvání zdarma a tři cykly vám na jistotu nestačí?",
         "Má váš proces vlastní kroky, třeba „černé pouzdro“ nebo „značení“, a do sedmi základních kategorií se nevejde?",
-        "Chcete plýtvání vidět v korunách a v kusech za směnu, ne jen v procentech času?",
+        "Chcete koruny a kusy za směnu spočítané podle vaší sazby, směny a počtu lidí, ne jen orientačně?",
         "Potřebujete vědět, jak dlouho bude trvat zakázka a kolik času ušetříte, když plýtvání odstraníte?",
         "Měříte opakovaně a chcete porovnat výsledek před změnou a po ní?"
       ],
       zaver:[
-        "Pokud jste se našli aspoň v jedné otázce, Pro verze vám dá čísla, se kterými se dá rozhodovat.",
+        "Pokud jste se našli aspoň v jedné otázce, Měřič plýtvání Pro vám dá čísla, se kterými se dá rozhodovat.",
         "Měřič plýtvání Pro je součást Tokva Pro. Přihlásíte se svým účtem a výsledky máte uložené u firmy."
       ]
     },
-    ucelMetoda:"Měřič plýtvání Pro je časová studie jednoho opakujícího se procesu, stejně jako Free verze. Klikáte na tlačítko podle toho, co pracovník zrovna dělá, a appka měří, kolik času padá na práci a kolik na plýtvání.\n\nPro verze k tomu přidává vlastní kroky procesu, přepočet na koruny a kusy za směnu, výpočet délky zakázky a uložení měření do účtu. Každé měření pak můžete zařadit k projektu, porovnat s dalším a rovnou z něj založit úkol v akčním plánu.",
-    princip:"Nejdřív nastavíte proces: vyberete základní kategorie, přidáte vlastní kroky a určíte, které z nich jsou práce a které plýtvání. Zadáte délku směny, náklad na hodinu práce a počet pracovníků, volitelně i počet kusů v zakázce. Pak měříte stejně jako ve Free verzi, kliknutím na začátku každé činnosti. Appka spočítá průměrný cyklus, cyklus bez plýtvání, kusy za směnu a délku zakázky.",
+    ucelMetoda:"Měřič plýtvání Pro je časová studie jednoho opakujícího se procesu, stejně jako bezplatná verze. Klikáte na tlačítko podle toho, co pracovník zrovna dělá, a appka měří, kolik času padá na práci a kolik na plýtvání.\n\nTokva Pro k tomu přidává vlastní kroky procesu, přepočet na koruny a kusy za směnu podle vaší sazby a směny, výpočet délky zakázky a uložení měření do účtu. Každé měření pak můžete zařadit k projektu, porovnat s dalším a rovnou z něj založit úkol v akčním plánu.",
+    princip:"Nejdřív nastavíte proces: vyberete základní kategorie, přidáte vlastní kroky a určíte, které z nich jsou práce a které plýtvání. Zadáte délku směny, náklad na hodinu práce a počet pracovníků, volitelně i počet kusů v zakázce. Pak měříte stejně jako v bezplatné verzi, kliknutím na začátku každé činnosti. Appka spočítá průměrný cyklus, cyklus bez plýtvání, kusy za směnu a délku zakázky.",
     postup:[
       "Pojmenujte proces a vyberte kategorie, které budete měřit. Přidejte vlastní kroky procesu.",
       "Zadejte délku směny, náklad práce na hodinu a počet pracovníků.",
@@ -813,8 +813,8 @@ const TOOLS = [
       "Změřit jednou a nevrátit se. Skutečný přínos uvidíte až v porovnání měření před změnou a po ní."
     ],
     faq:[
-      { q:"Čím se liší od Free verze?", a:"Free verze měří 3 cykly v sedmi základních kategoriích. Pro přidává vlastní kroky procesu, přepočet na koruny a kusy za směnu, výpočet délky zakázky, poznámky k cyklům, uložení do účtu, historii, porovnání, export a propojení s projekty a akčním plánem." },
-      { q:"Jak se k Pro verzi dostanu?", a:"Je součástí Tokva Pro. Přihlásíte se svým účtem a měření se ukládají k vaší firmě. Ceny najdete na stránce Tokva Pro." },
+      { q:"Čím se liší od bezplatné verze?", a:"Bezplatná verze měří 3 cykly v sedmi základních kategoriích a koruny odhaduje s pevnou sazbou. Měřič plýtvání Pro přidává vlastní kroky procesu, vlastní sazbu, délku směny a počet pracovníků, výpočet délky zakázky, poznámky k cyklům, uložení do účtu, historii, porovnání před a po, export a propojení s projekty a akčním plánem." },
+      { q:"Jak se k Měřiči plýtvání Pro dostanu?", a:"Je součástí Tokva Pro. Přihlásíte se svým účtem a měření se ukládají k vaší firmě. Ceny najdete na stránce Tokva Pro." },
       { q:"Kolik cyklů mám změřit?", a:"Na orientaci stačí 3. Pro spolehlivější průměr doporučujeme 5 až 10 cyklů stejného procesu." }
     ],
     design2a:{
@@ -827,7 +827,7 @@ const TOOLS = [
         {num:"ks", lbl:"kusy za směnu a délka zakázky"},
         {num:"PŘED/PO", lbl:"porovnání uložených měření"}
       ],
-      recognizeClose:"Pokud jste se našli aspoň v jedné otázce, Pro verze vám dá čísla, se kterými se dá rozhodovat.",
+      recognizeClose:"Pokud jste se našli aspoň v jedné otázce, Měřič plýtvání Pro vám dá čísla, se kterými se dá rozhodovat.",
       how:{ chipsLabel:"Co Pro přidává", chips:["Vlastní kroky","Koruny za rok","Kusy za směnu","Délka zakázky","Poznámky k cyklům","Historie a porovnání","Projekt a akční plán","CSV a tisk"] },
       example:{
         headline:"Kolik trvá zakázka bez plýtvání?",
@@ -848,12 +848,12 @@ const TOOLS = [
         "Řešíte tohle na víc místech najednou a chcete si to mít uložené a porovnatelné, ne jen jednorázově na papíře?"
       ],
       zaver:[
-        "Appka umí to samé jako zdarma verze, jen navíc pro víc lidí najednou, se zastávkami a s automatickým porovnáním současného stavu a návrhu.",
+        "Appka umí to samé jako bezplatná verze, jen navíc pro víc lidí najednou, se zastávkami a s automatickým porovnáním současného stavu a návrhu.",
         "Je to součást Tokva Pro, přihlásíte se svým účtem."
       ]
     },
     ucelMetoda:"Spaghetti diagram je starý nástroj z výroby, papír a tužka: sledujete pohyb člověka a každý krok zaznamenáte čarou. Tahle appka dělá to samé digitálně, a navíc umí, co papír s tužkou neumí: zaznamenat víc lidí najednou do stejného půdorysu, označit místa kde se pracovník zastaví a něco dělá (zastávka), a když nakreslíte dvě trasy vedle sebe, sama spočítá, o kolik metrů a procent je jedna kratší než druhá.\n\nTohle poslední, porovnání současného stavu s návrhem, je přesně to, co se dřív dělalo ručně: naměřit současný stav, navrhnout změnu, naměřit ji znovu, a teprve pak spočítat rozdíl na kalkulačce. Appka teď ten poslední krok udělá za vás sama.",
-    princip:"Nahrajete půdorys a kreslíte trasu prvnímu pracovníkovi stejně jako ve zdarma verzi. Tlačítkem Zastávka označíte místo, kde se zrovna zastavil a něco dělá. Tlačítkem + Přidat novou zakázku přidáte dalšího pracovníka, každý má svou barvu. Když chcete porovnat současný stav s návrhem, nakreslíte obě varianty jako dvě samostatné trasy a u jedné kliknete na kroužek S (současný stav) a u druhé na N (návrh) - appka nad tím rovnou zobrazí kartu s úsporou v metrech i procentech.",
+    princip:"Nahrajete půdorys a kreslíte trasu prvnímu pracovníkovi stejně jako v bezplatné verzi. Tlačítkem Zastávka označíte místo, kde se zrovna zastavil a něco dělá. Tlačítkem + Nová trasa přidáte dalšího pracovníka, každý má svou barvu. Když chcete porovnat současný stav s návrhem, nakreslíte obě varianty jako dvě samostatné trasy a u jedné kliknete na kroužek S (současný stav) a u druhé na N (návrh). Appka nad tím rovnou zobrazí kartu s úsporou v metrech i procentech.",
     postup:[
       "Nahrajte půdorys skladu nebo výroby a zadejte měřítko.",
       "Pojmenujte prvního pracovníka a nakreslete jeho trasu, klikejte body přesně tam, kudy se pohybuje.",
@@ -863,28 +863,28 @@ const TOOLS = [
       "Diagram i statistiky stáhněte jako obrázek nebo vytiskněte."
     ],
     vstupy:"Fotka nebo obrázek půdorysu skladu nebo výroby (JPG, PNG nebo PDF), měřítko (jedna známá vzdálenost) a jména pracovníků, které chcete sledovat.",
-    vystupy:"Spaghetti diagram ke stažení nebo k vytisknutí, délka trasy a počet zastávek pro každého pracovníka i celkem za všechny, a když je označené srovnání, i úspora v metrech a procentech mezi současným stavem a návrhem.",
+    vystupy:"Spaghetti diagram ke stažení nebo k vytisknutí, délka trasy a počet zastávek pro každého pracovníka i celkem za všechny, a když je označené srovnání, i úspora v metrech a procentech mezi současným stavem a návrhem. K tomu roční dopad v hodinách a korunách, poznámky ke konkrétním místům v plánku a export tras do CSV.",
     priklad:"Na lince sedadlových senzorů v Takatě Dolní Kalná operátorky chodily kvůli špatně rozmístěnému materiálu 45,5 metru na každý cyklus. Materiál byl rozmístěný tak, jak se to hodilo při stavbě linky, ne tak, aby to dávalo smysl pro práci. Tenhle konkrétní případ se tehdy měřil ještě postaru, papírem a tužkou, appka na to v tu dobu ještě nebyla.\n\nPo přestavbě rozmístění materiálu a pracovišť klesla chůze na 23 metrů na cyklus, bez jediného nového stroje nebo investice do technologie, jen jiné rozmístění toho, co tam už bylo. Přesně tenhle typ srovnání, kolik chodíte teď a kolik byste chodili po změně, appka dneska spočítá sama, jakmile obě trasy označíte jako současný stav a návrh.",
     chyby:[
       "Zaznamenat jen jednoho pracovníka a myslet si, že to platí pro celou linku. Různí lidé dělají stejnou práci trochu jinak, proto appka umí víc pracovníků najednou, ne aby se závěr dělal z jednoho člověka.",
-      "Zastávka ukazuje jen kde se pracovník zastavil, ne jak dlouho tam stráví čas. Pokud potřebujete i časy u zastávek, kombinujte appku se stopkami nebo krokoměrem, stejně jako u zdarma verze.",
+      "Zastávka ukazuje jen kde se pracovník zastavil, ne jak dlouho tam stráví čas. Pokud potřebujete i časy u zastávek, kombinujte appku se stopkami nebo krokoměrem, stejně jako u bezplatné verze.",
       "Nakreslit jen jednu variantu trasy a čekat, že appka porovnání zobrazí sama. Pro srovnání musí existovat dvě trasy, jedna označená jako současný stav a druhá jako návrh, teprve pak se objeví karta s úsporou."
     ],
     faq:[
-      { q:"Jak funguje přístup do appky?", a:"Appka je součástí Tokva Pro. Přihlásíte se svým účtem a diagramy se ukládají k vaší firmě." },
-      { q:"Čím se liší od zdarma verze Spaghetti diagramu?", a:"Zdarma verze umí zaznamenat víc tras (zakázek) a jejich délku. Pro navíc umí zastávky, víc pracovníků najednou ve stejném půdorysu, a přímé porovnání současného stavu s návrhem s automaticky spočítanou úsporou." },
-      { q:"Funguje appka i na mobilu nebo tabletu?", a:"Ano, kreslení trasy, zoom i posun mapy fungují i na dotykovém displeji, ne jen myší na počítači." }
+      { q:"Jak funguje přístup do appky?", a:"Appka je součástí Tokva Pro. Přihlásíte se svým účtem a diagramy se ukládají k vaší firmě. Uložit jde až 20 nákresů." },
+      { q:"Čím se liší od bezplatné verze Spaghetti diagramu?", a:"Bezplatná verze umí zaznamenat víc tras (zakázek) a jejich délku. Pro navíc umí zastávky, víc pracovníků najednou ve stejném půdorysu, a přímé porovnání současného stavu s návrhem s automaticky spočítanou úsporou." },
+      { q:"Funguje appka i na mobilu nebo tabletu?", a:"Ano, kreslení trasy, zoom i posun plánku fungují i na dotykovém displeji, ne jen myší na počítači." }
     ],
     design2a:{
       heroLines:["O kolik je","návrh lepší?"],
-      heroNote:"Placená verze · víc pracovníků, zastávky i přímé srovnání se současným stavem",
+      heroNote:"Součást Tokva Pro · víc pracovníků, zastávky i přímé srovnání se současným stavem",
       stats:[
         {num:"6", lbl:"kroků od nahrání půdorysu po hotové srovnání"},
         {num:"5", lbl:"metrik v reálném čase: body, délka, pracovníci, zastávky, celkem"},
         {num:"2", lbl:"trasy vedle sebe, appka sama spočítá úsporu v m i %"},
         {num:"45", lbl:"m chůze na cyklus, reálný případ z výrobní linky před přestavbou"}
       ],
-      recognizeClose:"Appka umí to samé jako zdarma verze, jen navíc pro víc lidí najednou, se zastávkami a s automatickým porovnáním současného stavu a návrhu.",
+      recognizeClose:"Appka umí to samé jako bezplatná verze, jen navíc pro víc lidí najednou, se zastávkami a s automatickým porovnáním současného stavu a návrhu.",
       how:{ chipsLabel:"6 kroků k hotovému srovnání", chips:["Nahrát půdorys","Nakreslit trasu","Označit zastávky","Přidat další pracovníky","Označit S / N","Stáhnout nebo vytisknout"] },
       example:{
         headline:"Kolik ušetří přestavba pracoviště bez jediné investice?",
@@ -893,9 +893,9 @@ const TOOLS = [
     } },
 
   { id:"5s-audit", group:"free", name:"5S pro každého smrtelníka", krok:3, oblasti:["sklad","vyroba","administrativa"], benefit:"Uspořádáte pracoviště krok za krokem, s fotkami před a po.",
-    popis:"Krok po kroku uspořádáte jedno pracoviště, s fotkami před a po u všech 5 kroků, zdarma bez časového omezení.\n\nVíc pracovišť najednou, přehledný tisk reportu, historie kontrol a úkoly jsou v Tokva Pro.",
+    popis:"Krok po kroku uspořádáte jedno pracoviště, s fotkami před a po, zdarma bez časového omezení.\n\nKontrola pracoviště po čase se skóre, víc pracovišť, tisk reportu a úkoly jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu, výroby nebo dílny, co chce uklidit konkrétní pracoviště podle metody 5S krok za krokem, s fotkami jako důkazem, ne jen na oko.",
-    url:"nastroje/5S_audit/", souvisejici:["meric-free","spaghetti-sklad"], prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Víc najdete v Tokva Pro.",
+    url:"nastroje/5S_audit/", souvisejici:["meric-free","spaghetti-sklad"], prodejniStranka:null, prodejniNote:"Bezplatná verze je dostupná hned výš. Víc najdete v Tokva Pro.",
     kdyPouzit:{
       otazky:[
         "Chcete uklidit konkrétní pracoviště (dílnu, sklad, kancelář) podle osvědčené metody, ne nazdařbůh?",
@@ -904,28 +904,28 @@ const TOOLS = [
       ],
       zaver:[
         "5 kroků metody 5S vychází z japonského systému (Seiri, Seiton, Seiso, Seiketsu, Shitsuke), appka je vede v češtině s konkrétními tipy, ne jen názvy kroků.",
-        "Free verze zvládne jedno pracoviště kompletně a bez omezení, víc pracovišť najednou, standard s fotkou cílového stavu a sledování v čase jsou v Tokva Pro."
+        "Bezplatná verze zvládne jedno pracoviště kompletně a bez omezení, víc pracovišť najednou, standard s fotkou cílového stavu a sledování v čase jsou v Tokva Pro."
       ]
     },
-    ucelMetoda:"5S pro každého smrtelníka appka vás provede pěti kroky metody 5S, vytřídit, uspořádat, uklidit, udržet pořádek a udržovat disciplínu, na jednom konkrétním pracovišti. U každého kroku appka vysvětlí, co přesně dělat a proč, dá vám také užitečné tipy a vyfotíte stav před a po.\n\nPo dokončení appka umí notifikací pracoviště připomenout - provedete kontrolu, jestli standard pořád drží, nebo jestli se stav vrátil do starých kolejí.",
+    ucelMetoda:"Appka vás provede pěti kroky metody 5S, vytřídit, uspořádat, uklidit, udržet pořádek a udržovat disciplínu, na jednom konkrétním pracovišti. U každého kroku appka vysvětlí, co přesně dělat a proč, dá vám také užitečné tipy a můžete vyfotit stav před a po. Povinné jsou jen dvě fotky: před úklidem (1S) a po zavedení standardu (4S).\n\nPo dokončení kroku 4S appka naplánuje připomínku kontroly za 3 dny. Ukáže ji, až appku v tomhle prohlížeči znovu otevřete a povolíte oznámení. Samotná kontrola se skóre, jestli standard pořád drží, je v Tokva Pro.",
     postup:[
-      "Založte nové místo (dílna, sklad, kancelář, konkrétní pracoviště) a projděte prvních pět kroků.",
-      "U každého kroku (Vytřídit, Uspořádat, Uklidit, Udržet pořádek, Udržovat disciplínu) si přečtěte, co dělat, a vyfoťte stav před a po.",
+      "Založte nové místo (dílna, sklad, kancelář, konkrétní pracoviště) a projděte pět kroků.",
+      "U každého kroku (Vytřídit, Uspořádat, Uklidit, Udržet pořádek, Udržovat disciplínu) si přečtěte, co dělat, a vyfoťte stav před a po. Povinně jen u 1S (před) a 4S (po).",
       "Appka počítá postup 0 z 5, po dokončení máte pracoviště uklizené podle metody 5S, s fotkami a poznámkami, ke kterým se kdykoli vrátíte."
     ],
-    vstupy:"Název pracoviště a fotky před a po u každého z pěti kroků. Ve Free verzi jedno pracoviště, v Pro víc pracovišť najednou a fotka cílového (standardního) stavu.",
-    vystupy:"Checklist pěti kroků se stavem hotovo/nehotovo a fotodokumentací před a po. V Pro navíc přehledný tisk reportu, pravidelné kontroly se skóre a trendem v čase a úkoly pro tým.",
-    priklad:"Při zavádění 5S si Mirka při umývání stroje všimla, že jeden šroub je úplně volný. Bez čištění by si toho ale dlouho nikdo nevšiml, pokud by se něco nezadrhlo.\n\nŘešení bylo jednoduché: všechny šrouby na stroji pořádně dotáhli, někde i se speciální utahovací pistolí, a přes matici i šroub nakreslili bílou čáru. Teď stačí při čištění nebo obchůzce mrknout, jestli čára na matici a na šroubu pořád sedí v jedné linii. Když ne, je to vidět hned, ne až za týden při kontrole údržby.\n\nPřesně tohle appka učí u kroku 3S a 4S: úklid odhalí problém dřív, a bílá čára je pak standard, který jde vidět, ne jen předpokládat.",
+    vstupy:"Název pracoviště a fotky před a po (povinně před úklidem u 1S a po zavedení standardu u 4S). V bezplatné verzi jedno pracoviště, v Tokva Pro víc pracovišť najednou a fotka cílového (standardního) stavu.",
+    vystupy:"Checklist pěti kroků se stavem hotovo/nehotovo a fotodokumentací před a po. V Tokva Pro navíc kontroly pracoviště se skóre a vývojem v čase, tisk reportu a úkoly.",
+    priklad:"Při zavádění 5S si Mirka při umývání stroje všimla, že jeden šroub je úplně volný. Bez čištění by si toho ale dlouho nikdo nevšiml, dokud by se něco nezadrhlo.\n\nŘešení bylo jednoduché: všechny šrouby na stroji pořádně dotáhli, někde i se speciální utahovací pistolí, a přes matici i šroub nakreslili bílou čáru. Teď stačí při čištění nebo obchůzce mrknout, jestli čára na matici a na šroubu pořád sedí v jedné linii. Když ne, je to vidět hned, ne až za týden při kontrole údržby.\n\nPřesně tohle appka učí u kroku 3S a 4S: úklid odhalí problém dřív, a bílá čára je pak standard, který jde vidět, ne jen předpokládat.",
     chyby:[
       "Udělat všech pět kroků najednou na celou dílnu nebo sklad. Appka sama radí řešit menší úseky postupně, jeden šuplík, jeden regál, a teprve pak pokračovat dál.",
       "Přeskočit fotky před a po, protože se to zdá zdržující. Bez fotek nemáte důkaz, že se něco změnilo, jen dojem.",
-      "Nezavést pravidelnou kontrolu. Prvních čtyři kroky zvládne skoro každý jednou, bez pravidelné kontroly se pracoviště za pár týdnů vrátí do starého stavu."
+      "Nezavést pravidelnou kontrolu. První tři kroky zvládne skoro každý jednou, bez pravidelné kontroly se pracoviště za pár týdnů vrátí do starého stavu."
     ],
     faq:[
-      { q:"Kolik pracovišť zvládnu zdarma?", a:"Free verze zvládne jedno pracoviště kompletně, se všemi pěti kroky a fotkami před a po, bez časového omezení. Víc pracovišť najednou je v Tokva Pro." },
-      { q:"Musím appku znovu procházet od začátku, nebo si pamatuje rozpracovaný stav?", a:"Appka si pamatuje, který krok máte hotový a fotky u něj, dokud ji nesmažete z prohlížeče nebo se nepřihlásíte v Pro účtu, kde se to ukládá natrvalo." },
-      { q:"Co znamená Kontrola pracoviště?", a:"Krátký pětipoložkový checklist (nehromadí se nepotřebné věci, věci na svém místě, čistota, srozumitelné označení, dodržování standardu), kterým po čase ověříte, jestli standard z prvních čtyř kroků pořád drží." },
-      { q:"Co dostanu navíc v Pro?", a:"Víc pracovišť najednou, standard s fotkou cílového stavu, pravidelné kontroly se skóre a trendem v čase, úkoly pro tým a přehledný tisk reportu." }
+      { q:"Kolik pracovišť zvládnu zdarma?", a:"Bezplatná verze zvládne jedno pracoviště kompletně, se všemi pěti kroky a fotkami, bez časového omezení. Víc pracovišť najednou je v Tokva Pro." },
+      { q:"Musím appku znovu procházet od začátku, nebo si pamatuje rozpracovaný stav?", a:"Appka si pamatuje, který krok máte hotový a fotky u něj, dokud ji nesmažete z prohlížeče nebo se nepřihlásíte účtem s Tokva Pro, kde se to ukládá natrvalo." },
+      { q:"Co znamená Kontrola pracoviště?", a:"Je součástí Tokva Pro. Krátký pětipoložkový checklist (nehromadí se nepotřebné věci, věci na svém místě, čistota, srozumitelné označení, dodržování standardu), kterým po čase ověříte, jestli standard z prvních čtyř kroků pořád drží." },
+      { q:"Co dostanu navíc v Tokva Pro?", a:"Hlavně kontrolu stejného pracoviště po čase se skóre a vývojem. K tomu víc pracovišť, standard s fotkou cílového stavu, úkoly a tisk reportu." }
     ],
     design2a:{
       heroLines:["Uklidit pracoviště,","a udržet to tak"],
@@ -935,54 +935,54 @@ const TOOLS = [
         {num:"5", lbl:"kroků metody 5S"},
         {num:"1", lbl:"pracoviště zdarma bez omezení"},
         {num:"0", lbl:"Kč za základní checklist"},
-        {num:"2", lbl:"fotky u každého kroku, před a po"}
+        {num:"2", lbl:"povinné fotky: před úklidem a po zavedení standardu"}
       ],
       recognizeClose:"Prvních tří kroků dosáhne skoro každý jednou. Ten čtvrtý a pátý, udržet to tak, je ten těžší.",
       example:{
         headline:"Čištění odhalilo povolené šrouby strojů",
-        stat:{ quote:true, text:"Cílem 3.S Uklidit není pouze mít čisto." },
+        stat:{ quote:true, text:"Třetí krok 5S není o tom mít čisto." },
         images:[
-          { src:"nastroje/5S_audit/sroub-bez-znacky.jpg", alt:"Šroub bez bílé značky", caption:"Bez značky nejde často na první pohled poznat, jestli šroub drží jak by měl." },
+          { src:"nastroje/5S_audit/sroub-bez-znacky.jpg", alt:"Šroub bez bílé značky", caption:"Bez značky na první pohled nepoznáte, jestli šroub drží, jak má." },
           { src:"nastroje/5S_audit/sroub-oznaceny.jpg", alt:"Šrouby označené bílou čárou", caption:"Bílá čára na matici i šroubu v jedné linii, standard po zavedení 5S." }
         ]
       }
     } },
 
   { id:"5x-proc", group:"free", name:"5× Proč AI kouč", krok:3, oblasti:["sklad","vyroba","administrativa","lide"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
-    popis:"AI kouč vás provede rozhovorem a dovede ke kořenu problému. Strukturovaný výstup s příčinou a prvním krokem, zdarma.\n\nHistorie analýz a navazující úkoly jsou v Tokva Pro.",
+    popis:"AI kouč vás provede rozhovorem a dovede ke kořenu problému. Strukturovaný výstup s příčinou a prvním krokem, zdarma.\n\nUložené analýzy a navazující úkoly s ověřením výsledku jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu nebo výroby, co řeší furt stejný problém dokola a chce se dostat k tomu, co ho fakt způsobuje, ne jen hasit znovu a znovu.",
-    url:"nastroje/5x-proc-ai-kouc/", souvisejici:["meric-free","casova-studie"], prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Víc najdete v Tokva Pro.",
+    url:"nastroje/5x-proc-ai-kouc/", souvisejici:["meric-free","casova-studie"], prodejniStranka:null, prodejniNote:"Bezplatná verze je dostupná hned výš. Víc najdete v Tokva Pro.",
     kdyPouzit:{
       otazky:[
-        "Řešíte problém, který se pořád vrací, i když jste ho už párkrát \"vyřešili\"?",
+        "Řešíte problém, který se pořád vrací, i když jste ho už párkrát „vyřešili“?",
         "Chcete se dostat od výmluv a prvních dojmů ke skutečné příčině v procesu, ne k viníkovi?",
         "Potřebujete strukturovaný výstup, co si můžete vytisknout nebo poslat dál, ne jen záznam rozhovoru?"
       ],
       zaver:[
         "AI kouč vede rozhovor jako zkušený kaizen konzultant, ptá se dál, dokud odpověď není dost konkrétní, a hlídá, aby analýza nesklouzla k hledání viníka.",
-        "Free verze zahrnuje 1 kompletní analýzu na e-mail, Pro má neomezené analýzy, ukládá historii a z hotové analýzy rovnou založí dva navazující úkoly."
+        "Zdarma je jedna kompletní analýza na jeden e-mail. Výstup vidíte hned na stránce, e-mailem se neposílá. V Tokva Pro spustíte analýz, kolik chcete, uloží se a z hotové analýzy rovnou založíte dva navazující úkoly v Akčním plánu, u kterých pak ověříte výsledek."
       ]
     },
     ucelMetoda:"5× Proč AI kouč vede rozhovor podle metody pěti proč, klasické kaizen techniky pro hledání kořenové příčiny problému. Appka se ptá jednu otázku po druhé, navazuje na vaše odpovědi, rozlišuje fakta od domněnek a emocí, a nedovolí, aby analýza sklouzla k hledání viníka mezi lidmi.\n\nNa konci appka sestaví strukturovaný výstup, původní problém, upřesněný problém, celý řetězec pěti proč, kořenovou příčinu, přispívající faktory, fakta versus domněnky, doporučené opatření, první krok do 24 hodin, jak ověřit výsledek a otevřené otázky.",
     princip:"Nejdřív appka pomůže přesně formulovat problém (co, kdy, kde, koho se to týká, jaký je dopad). Pak vede samotnou analýzu pěti proč, vždy jen jedna otázka, navazující na předchozí odpověď, dokud odpověď není dost konkrétní. Když se odpověď stáčí k vině člověka, appka se vrátí k otázce, co v systému umožnilo, že se to stalo.",
     postup:[
-      "Zadejte e-mail a spusťte analýzu zdarma (1 kompletní analýza), nebo se přihlaste do Pro pro neomezené analýzy.",
+      "Zadejte e-mail a spusťte analýzu zdarma (1 kompletní analýza), nebo se přihlaste do Tokva Pro, kde jich spustíte, kolik chcete.",
       "Popište problém a odpovídejte na otázky AI kouče, jednu po druhé, co nejkonkrétněji.",
-      "Na konci dostanete strukturovaný výstup s kořenovou příčinou a prvním krokem, ke stažení jako TXT (v Pro navíc rovnou založíte 2 navazující úkoly)."
+      "Na konci dostanete strukturovaný výstup s kořenovou příčinou a prvním krokem, ke stažení jako TXT nebo k vytištění (v Tokva Pro navíc rovnou založíte 2 navazující úkoly)."
     ],
-    vstupy:"E-mail (pro spuštění zdarma verze), popis problému a odpovědi na otázky AI kouče v průběhu rozhovoru.",
-    vystupy:"Strukturovaný textový výstup s deseti oddíly, původní a upřesněný problém, celý řetězec pěti proč, kořenová příčina, přispívající faktory, fakta versus domněnky, doporučené opatření, první krok do 24 hodin, jak ověřit výsledek, otevřené otázky. Ke stažení jako TXT, v Pro navíc uložený v historii a rovnou zdroj pro 2 navazující úkoly.",
-    priklad:"Opakovaně chybí položka při expedici. AI kouč se nejdřív doptá na přesnou situaci, kdy, kde, jak často a jaký to má dopad.\n\nPak vede přes otázky proč, proč se stalo tohle konkrétně, proč tomu nic nezabránilo, proč to není vidět dřív, dokud se nedostane za výmluvy typu \"málo lidí\" k jasnému místu v procesu, třeba že kontrola kompletnosti není nikde napsaná jako povinný krok, jen se předpokládá, že to každý udělá po paměti.\n\nVýstupem je kořenová příčina, konkrétní opatření a první krok, co udělat do 24 hodin, ne obecné \"zlepšit komunikaci\".",
+    vstupy:"E-mail (pro spuštění bezplatné verze), popis problému a odpovědi na otázky AI kouče v průběhu rozhovoru.",
+    vystupy:"Strukturovaný textový výstup s deseti oddíly, původní a upřesněný problém, celý řetězec pěti proč, kořenová příčina, přispívající faktory, fakta versus domněnky, doporučené opatření, první krok do 24 hodin, jak ověřit výsledek, otevřené otázky. Ke stažení jako TXT nebo k vytištění, v Tokva Pro navíc uložený v historii a rovnou zdroj pro 2 navazující úkoly.",
+    priklad:"Opakovaně chybí položka při expedici. AI kouč se nejdřív doptá na přesnou situaci, kdy, kde, jak často a jaký to má dopad.\n\nPak vede přes otázky proč, proč se stalo tohle konkrétně, proč tomu nic nezabránilo, proč to není vidět dřív, dokud se nedostane za výmluvy typu „málo lidí“ k jasnému místu v procesu, třeba že kontrola kompletnosti není nikde napsaná jako povinný krok, jen se předpokládá, že to každý udělá po paměti.\n\nVýstupem je kořenová příčina, konkrétní opatření a první krok, co udělat do 24 hodin, ne obecné „zlepšit komunikaci“.",
     chyby:[
-      "Zastavit se u prvního \"proč\" a považovat ho za příčinu. To je většinou jen příznak, appka se ptá dál, dokud se nedostanete k procesu nebo systému za tím.",
+      "Zastavit se u prvního „proč“ a považovat ho za příčinu. To je většinou jen příznak, appka se ptá dál, dokud se nedostanete k procesu nebo systému za tím.",
       "Hledat viníka mezi lidmi. Appka takové odpovědi vrací zpátky k otázce, co v systému umožnilo, že se to stalo.",
-      "Odpovídat obecně (\"komunikace nefunguje\") místo konkrétní situace, appka se pak musí doptávat na příklad, čas a místo, což rozhovor prodlužuje."
+      "Odpovídat obecně („komunikace nefunguje“) místo konkrétní situace, appka se pak musí doptávat na příklad, čas a místo, což rozhovor prodlužuje."
     ],
     faq:[
       { q:"Kolik analýz mám zdarma?", a:"1 kompletní analýzu, stačí zadat e-mail, nic dalšího. Neomezené analýzy a uložená historie jsou v Tokva Pro." },
       { q:"Hledá appka, kdo za problém může?", a:"Ne, naopak. Appka je vedená tak, aby se nezastavila u viníka mezi lidmi, ale hledala příčinu v procesu, systému, komunikaci nebo chybějícím standardu." },
       { q:"Co když nevím, jak přesně otázku zodpovědět?", a:"Appka se doptá na konkrétní situaci, příklad, čas, místo a lidi. Není potřeba znát odpověď dopředu, stačí popisovat, co se skutečně stalo." },
-      { q:"Co dostanu navíc v Pro?", a:"Neomezené analýzy místo jedné, uloženou historii všech analýz a možnost z hotové analýzy rovnou založit 2 navazující úkoly." }
+      { q:"Co dostanu navíc v Tokva Pro?", a:"Z hotové analýzy rovnou založíte 2 navazující úkoly v Akčním plánu a po čase u nich ověříte výsledek. K tomu uloženou historii analýz a neomezený počet analýz místo jedné." }
     ],
     design2a:{
       heroLines:["Od výmluvy","ke skutečné příčině"],
@@ -1002,9 +1002,9 @@ const TOOLS = [
     } },
 
   { id:"casova-studie", group:"free", name:"Časová studie mého dne", krok:3, oblasti:["sklad","vyroba","administrativa","lide"], benefit:"Získáte skutečný přehled svého dne, podklad pro delegování nebo automatizaci.",
-    popis:"Skutečný přehled vašeho dne s činnostmi a intervaly. Podklad pro delegování nebo automatizaci, export do CSV.\n\n1 den zdarma. Historie a trendy mezi dny jsou v Tokva Pro.",
+    popis:"Skutečný přehled vašeho dne s činnostmi a intervaly. Podklad pro delegování nebo automatizaci, export do CSV.\n\n1 den zdarma. Uložení dne a porovnání s dalším měřením jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu, výroby nebo kdokoli, kdo tuší, že mu den nějak utíká, ale neví přesně kam, a chce si to ověřit čísly, ne pocitem.",
-    url:"nastroje/casova-studie/", prodejniStranka:null, prodejniNote:"Free verze je dostupná hned výš. Víc najdete v Tokva Pro.",
+    url:"nastroje/casova-studie/", prodejniStranka:null, prodejniNote:"Bezplatná verze je dostupná hned výš. Víc najdete v Tokva Pro.",
     souvisejici:["5x-proc","kalkulacka","kviz-komunikace"],
     kdyPouzit:{
       otazky:[
@@ -1025,8 +1025,8 @@ const TOOLS = [
       "Na konci dne klepněte na Konec, appka spočítá souhrn podle kategorií, s tabulkou Já/Delegovat/Automatizovat/Zrušit a exportem do CSV nebo tiskem."
     ],
     vstupy:"Aktivity zaznamenané hlasem nebo ručně během dne, volitelně hodinová sazba pro výpočet dopadu delegování nebo automatizace v korunách.",
-    vystupy:"Souhrn dne podle 9 kategorií (hašení problémů, produktivní práce, komunikace, administrativa, přestávka, rodina a péče, přesun, osobní, ostatní), tabulka opakujících se činností s klasifikací Já/Delegovat/Automatizovat/Zrušit a orientačním dopadem v Kč, export do CSV a tisk přehledu. V Pro navíc historie dní se sledováním trendu.",
-    priklad:"Filip přijde ráno do práce s tím, že dneska konečně dokreslí dokumentaci, na kterou čeká výroba. Nedokreslí. Nejdřív přijde mail, pak telefon od klienta, pak volá zaměstnanec z montáže, že mu něco nefunguje. Filip mu radí po telefonu, mezitím mu chodí další mail. V poledne zjistí, že nářadí, co poslal na reklamaci, potřebuje výroba hned teď, takže shání náhradu, telefonuje dodavateli, hledá doklad k reklamaci, nejdřív v kanceláři, pak v mailu, pak si vzpomene, že ho má v autě.\n\nOdpoledne konečně sedne ke kreslení. Po deseti minutách zazvoní telefon, účetní potřebuje něco k fakturám. Filip položí tužku.\n\nVečer sedí doma a má pocit, že se celý den jen honil, a přitom nic pořádného neudělal. Žádnou velkou chybu neudělal. Prostě jenom zase nestihl to jediné, kvůli čemu do práce vlastně chodí.\n\nNechal si tedy jeden den zapisovat od asistentky, každou činnost, každou minutu, chtěl vědět, kam se mu ten den doopravdy poděl. Skoro třetina dne padla na hašení a hledání, reklamace nářadí, dohledávání dokladů, věci, které nikdy neplánoval řešit a přesto mu sežraly půl odpoledne. Kreslení dokumentace, ta jediná práce, na kterou se ráno těšil, se mu vešlo jen v útržcích mezi telefony.",
+    vystupy:"Souhrn dne podle 9 kategorií (hašení problémů, produktivní práce, komunikace, administrativa, přestávka, rodina a péče, přesun, osobní, ostatní), tabulka opakujících se činností s klasifikací Já/Delegovat/Automatizovat/Zrušit a orientačním dopadem v Kč, export do CSV a tisk přehledu. V Tokva Pro navíc uložené dny a porovnání dvou dnů po kategoriích.",
+    priklad:"Filip přijde ráno do práce s tím, že dneska konečně dokreslí dokumentaci, na kterou čeká výroba. Nedokreslí. Nejdřív přijde mail, pak telefon od klienta, pak volá zaměstnanec z montáže, že mu něco nefunguje. Filip mu radí po telefonu, mezitím mu chodí další mail. V poledne zjistí, že nářadí, co poslal na reklamaci, potřebuje výroba hned teď, takže shání náhradu, telefonuje dodavateli, hledá doklad k reklamaci, nejdřív v kanceláři, pak v mailu, pak si vzpomene, že ho má v autě.\n\nOdpoledne konečně sedne ke kreslení. Po deseti minutách zazvoní telefon, účetní potřebuje něco k fakturám. Filip položí tužku.\n\nVečer sedí doma a má pocit, že se celý den jen honil, a přitom nic pořádného neudělal. Žádnou velkou chybu neudělal. Prostě jenom zase nestihl to jediné, kvůli čemu do práce vlastně chodí.\n\nNechal si tedy jeden den zapisovat od asistentky, každou činnost, každou minutu, chtěl vědět, kam se mu ten den doopravdy poděl. Skoro třetina dne padla na hašení a hledání, reklamace nářadí, dohledávání dokladů, věci, které nikdy neplánoval řešit a přesto mu sežraly půl odpoledne. Kreslení dokumentace, ta jediná práce, na kterou se ráno těšil, se mu vešlo jen v útržcích mezi telefony.\n\nPodle přehledu předal část úkonů asistentce a aktualizoval přehledy informací k zakázkám, aby se zaměstnanci nemuseli pořád ptát. Kontrolní měření ho teprve čeká.",
     chyby:[
       "Zaznamenávat jen občas, ne průběžně. Appka umí doplnit záznam i zpětně, ale výsledek pak není tak přesný jako průběžné zaznamenávání.",
       "Nechat appku kategorizovat všechno automaticky a nikdy kategorii nezkontrolovat. Automatické rozpoznání funguje podle klíčových slov v textu, občas se sekne, kategorii jde kdykoli ručně opravit.",
@@ -1036,7 +1036,7 @@ const TOOLS = [
       { q:"K čemu jsou kategorie?", a:"Každý záznam dostane kategorii automaticky podle textu, appka jich rozeznává 9 (hašení problémů, produktivní práce, komunikace, administrativa, přestávka, rodina a péče, přesun, osobní, ostatní). Klepnutím na štítek kategorii změníte." },
       { q:"Jak získat přesnější výsledky?", a:"Zapněte si připomínku přímo v aplikaci, tlačítko Zapnout najdete hned pod mikrofonem, a nastavte interval 15 až 20 minut. Nebo nechte jeden den zaznamenávat kolegu nebo asistentku, výsledek bývá překvapivě jiný než vlastní odhad." },
       { q:"Co je kategorie Hašení problémů?", a:"Samostatná kategorie pro reklamace, poruchy, havárie a další věci, které jste museli vyřešit narychlo a neplánovaně. Vysoký podíl hašení bývá signál, že se řeší jen důsledek, ne kořenová příčina." },
-      { q:"Co dostanu navíc v Pro verzi?", a:"Jeden den zůstává navždy 100% zdarma, přesně jak appka funguje dnes. Pro navíc po přihlášení průběžně ukládá rozpracovaný den do vašeho účtu a v sekci Historie dní ukáže, jak se procento produktivní práce mění napříč dny." }
+      { q:"Co dostanu navíc v Tokva Pro?", a:"Jeden den zůstává navždy zdarma, přesně jak appka funguje dnes. V Tokva Pro se uzavřený den uloží, takže stejný den změříte znovu a uvidíte oba vedle sebe. Rozpracovaný den se navíc průběžně ukládá do vašeho účtu." }
     ],
     design2a:{
       heroLines:["Kam vám","mizí čas?"],
@@ -1071,25 +1071,25 @@ const TOOLS = [
       ]
     },
     ucelMetoda:"Kalkulačka nákladů skladu na m² spočítá, kolik vás sklad měsíčně a ročně stojí, když k nájmu nebo odpisu budovy přičtete energie, povinné revize, pojištění, daň z nemovitosti, odpisy vybavení a provozní služby.\n\nPočítá jen náklady na budovu a její provoz. Mzdové náklady a mobilní techniku (VZV) appka nezahrnuje.",
-    princip:"Appka nabízí rychlý odhad: vyplníte jen to, co znáte (plochu, nájem nebo odpisy budovy). Ostatní kategorie appka nechává na nule, žádné typické průměry netvrdí. Dokud čísla nedoplníte, počítejte s tím, že výsledek je nižší, než reálný náklad na m². Kdykoli můžete kliknout na \"Chci zpřesnit výsledek\" a rozepsat všechny kategorie zvlášť.",
+    princip:"Appka nabízí rychlý odhad: vyplníte jen to, co znáte (plochu, nájem nebo odpisy budovy). Ostatní kategorie appka nechává na nule, žádné typické průměry netvrdí. Dokud čísla nedoplníte, počítejte s tím, že výsledek je nižší než reálný náklad na m². Kdykoli můžete kliknout na „Zpřesnit výsledek“ a rozepsat všechny kategorie zvlášť.",
     postup:[
-      "Zadejte plochu skladu a zvolte, jestli sklad platíte nájmem, nebo vlastníte budovu.",
+      "Zvolte, jestli sklad platíte nájmem, nebo vlastníte budovu, a zadejte plochu.",
       "Doplňte, co znáte, energie, revize, pojištění, odpisy vybavení. Co nevyplníte, appka počítá jako nulu.",
       "Dostanete náklad na m² za měsíc i za rok, s rozpadem podle kategorie, kde se dá nejrychleji ušetřit."
     ],
     vstupy:"Plocha skladu, nájem nebo hodnota budovy a pozemku, energie, revize, pojištění, daň z nemovitosti, hodnota a stáří vybavení. Co nezadáte, appka počítá jako nulu.",
-    vystupy:"Náklad na m² za měsíc i za rok, celkové roční náklady budovy, rozpad podle kategorie (základní náklad, energie, pojištění, revize, provoz, odpisy, ostatní) a podíl základního nákladu na celku.",
+    vystupy:"Náklad na m² za měsíc i za rok, celkové roční náklady budovy, rozpad podle kategorie (základní náklad, energie, pojištění, revize, provoz, odpisy, ostatní) a podíl základního nákladu na celku. Uložení výpočtu a porovnání s dalším je v Tokva Pro.",
     priklad:"Sklad 450 m² v nájmu za 54 000 Kč měsíčně. Samotný nájem vychází na 120 Kč na metr čtvereční.\n\nKdyž se přičtou energie, revize, pojištění, daň z nemovitosti, odpisy vybavení a provozní služby, celkový náklad vyskočí na 204 Kč na m² měsíčně, skoro 1,7× víc než samotný nájem.\n\nRočně to dělá přes 1,1 milionu Kč za budovu, ne jen těch necelých 650 000 Kč za nájem, co je vidět na první pohled.",
     chyby:[
-      "Nezapočítat odpisy vybavení, protože nejsou na měsíční faktuře. Racking za 250 000 Kč rozložený na 15 let stojí přes 1 300 Kč měsíčně, i když ho nikde neplatíte najednou.",
-      "Nechat kategorie na nule, když se rozhodujete o konkrétní investici (stěhování, koupě, pronájem) - výsledek pak bude podhodnocený. Pro rozhodnutí použijte skutečná čísla ze svých smluv a faktur.",
+      "Nezapočítat odpisy vybavení, protože nejsou na měsíční faktuře. Regály za 250 000 Kč rozložené na 15 let stojí přes 1 300 Kč měsíčně, i když ho nikde neplatíte najednou.",
+      "Nechat kategorie na nule, když se rozhodujete o konkrétní investici (stěhování, koupě, pronájem), výsledek pak bude podhodnocený. Pro rozhodnutí použijte skutečná čísla ze svých smluv a faktur.",
       "Zapomenout, že appka nepočítá mzdy ani mobilní techniku (VZV), jen náklady budovy a jejího provozu."
     ],
     faq:[
-      { q:"Je výsledek přesný?", a:"Přesnost záleží na tom, co zadáte. Použijte skutečné číslice z faktur a smluv, pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku." },
-      { q:"Proč jsou tam odpisy vybavení?", a:"Racking za 250 000 Kč rozložený na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad, jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé." },
-      { q:"Co je oportunitní náklad kapitálu u vlastní budovy?", a:"Peníze vázané v nemovitosti mohly být investované jinam. Oportunitní náklad ukazuje, co \"stojí\" vlastnit budovu oproti pronájmu, i když reálně žádné nájemné neplatíte." },
-      { q:"Neznám přesné výše revizí. Co mám zadat?", a:"Pole necháváme na nule - žádné typické průměry přesně neznáme, aby appka netvrdila víc, než ví. Když číslo nemáte, nechte pole na nule a počítejte s tím, že výsledek bude nižší, než reálný náklad na m². Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) použijte skutečná čísla ze svých smluv a faktur." }
+      { q:"Je výsledek přesný?", a:"Přesnost záleží na tom, co zadáte. Použijte skutečná čísla z faktur a smluv, pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku." },
+      { q:"Proč jsou tam odpisy vybavení?", a:"Regály za 250 000 Kč rozložené na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad, jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé." },
+      { q:"Co je oportunitní náklad kapitálu u vlastní budovy?", a:"Peníze vázané v nemovitosti mohly být investované jinam. Oportunitní náklad ukazuje, co „stojí“ vlastnit budovu oproti pronájmu, i když reálně žádné nájemné neplatíte." },
+      { q:"Neznám přesné výše revizí. Co mám zadat?", a:"Žádné typické průměry přesně neznáme, aby appka netvrdila víc, než ví. Když číslo nemáte, nechte pole na nule a počítejte s tím, že výsledek bude nižší než reálný náklad na m². Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) použijte skutečná čísla ze svých smluv a faktur." }
     ],
     design2a:{
       heroLines:["Kolik vás reálně","stojí 1 m² skladu?"],
@@ -1098,12 +1098,12 @@ const TOOLS = [
       stats:[
         {num:"7", lbl:"kategorií nákladů budovy"},
         {num:"2", lbl:"minuty na rychlý odhad"},
-        {num:"0", lbl:"Kč, appka je celá zdarma"},
-        {num:"1,5-2×", lbl:"reálné náklady oproti nájmu"}
+        {num:"0", lbl:"Kč za výpočet, navždy zdarma"},
+        {num:"1,7×", lbl:"víc než samotný nájem, příklad z praxe"}
       ],
       recognizeClose:"Reálné náklady bývají 1,5 až 2× vyšší než samotný nájem.",
       example:{
-        headline:"Kolik je nájem doopravdy?",
+        headline:"Nájem 120 Kč za metr. Skutečný náklad 204.",
         stat:{ num:"204 Kč/m²/měsíc", note:"u skladu 450 m² s nájmem 54 000 Kč, po připočtení energií, revizí, pojištění a odpisů vybavení, skoro 1,7× víc než samotný nájem." }
       }
     } },
@@ -1330,7 +1330,7 @@ function exampleHtml(t, d2) {
   let right = "";
   if (ex.stat) {
     right = ex.stat.quote
-      ? `<div class="d-example-stat quote"><div class="stat-num">"${ex.stat.text}"</div><div class="stat-note">${ex.stat.note || ""}</div></div>`
+      ? `<div class="d-example-stat quote"><div class="stat-num">„${ex.stat.text}“</div><div class="stat-note">${ex.stat.note || ""}</div></div>`
       : `<div class="d-example-stat"><div class="stat-num">${ex.stat.num}</div><div class="stat-note">${ex.stat.note || ""}</div></div>`;
   }
   const photos = (ex.images && ex.images.length)
