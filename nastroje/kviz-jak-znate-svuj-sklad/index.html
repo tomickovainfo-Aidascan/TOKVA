@@ -825,7 +825,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 
     <div class="vysledky-detail" id="projekt-panel" style="display:none;">
       <div class="detail-header" style="margin:-20px -22px 14px;padding:16px 20px;border-bottom:1px solid var(--border);">Zařadit k projektu</div>
-      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Nepovinné. Pomůže vám tenhle výsledek později najít pohromadě s ostatními nástroji.</p>
+      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Výsledek už je uložený v historii. Tady ho jen přiřadíte k projektu, podruhé se neuloží. Nepovinné, pomůže vám ho později najít pohromadě s ostatními nástroji.</p>
       <select id="projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
         <option value="">Bez projektu</option>
         <option value="__novy__">+ Nový projekt…</option>
@@ -1175,6 +1175,8 @@ async function klikNaUcet() {
     vysledekUlozen = false;
     if (document.getElementById('vysledky').classList.contains('active')) renderHistorie();
   } else {
+    // i přihlášení horním tlačítkem má hotový výsledek podržet a po návratu uložit
+    if (typeof oznacitCekaNaUlozeni === 'function') oznacitCekaNaUlozeni();
     try { await vyzadovatPrihlaseni(); } catch (e) { console.warn('Přihlášení se nepodařilo spustit.', e); }
   }
 }
