@@ -9,7 +9,7 @@
 <meta name="author" content="Gabriela Tomíčková">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="Kalkulačka nákladů skladu na m² | Tokva">
-<meta property="og:description" content="Zjistěte, kolik vás reálně stojí 1 m² skladu za měsíc - vč. energií, revizí, pojištění a odpisů vybavení.">
+<meta property="og:description" content="Zjistěte, kolik vás reálně stojí 1 m² skladu za měsíc, vč. energií, revizí, pojištění a odpisů vybavení.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:image" content="https://tokva.cz/og-image.png">
@@ -27,7 +27,7 @@
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "Kalkulačka nákladů provozu skladu na m²",
-  "description": "Interaktivní kalkulačka pro výpočet celkových nákladů provozu skladu na 1 m² za měsíc - vč. nájmu, energií, revizí, pojištění a odpisů vybavení.",
+  "description": "Interaktivní kalkulačka pro výpočet celkových nákladů provozu skladu na 1 m² za měsíc, vč. nájmu, energií, revizí, pojištění a odpisů vybavení.",
   "url": "https://tokva.cz/nastroje/kalkulacka-nakladu-skladu/",
   "applicationCategory": "BusinessApplication",
   "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CZK"},
@@ -39,10 +39,38 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "Je výsledek přesný?", "acceptedAnswer": { "@type": "Answer", "text": "Přesnost záleží na tom, co zadáte. Použijte skutečné číslice z faktur a smluv - pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku." } },
-    { "@type": "Question", "name": "Proč jsou tam odpisy vybavení?", "acceptedAnswer": { "@type": "Answer", "text": "Racking za 250 000 Kč rozložený na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad - jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé." } },
-    { "@type": "Question", "name": "Co je oportunitní náklad kapitálu u vlastní budovy?", "acceptedAnswer": { "@type": "Answer", "text": "Peníze vázané v nemovitosti mohly být investovány jinam. Oportunitní náklad ukazuje, co \"stojí\" vlastnit budovu oproti pronájmu - i když reálně žádné nájemné neplatíte." } },
-    { "@type": "Question", "name": "Neznám přesné výše revizí. Co mám zadat?", "acceptedAnswer": { "@type": "Answer", "text": "Pole necháváme na nule - žádné typické průměry přesně neznáme, aby appka netvrdila víc, než ví. Když číslo nemáte, nechte pole na nule a počítejte s tím, že výsledek bude nižší, než reálný náklad na m². Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) použijte skutečná čísla ze svých smluv a faktur." } }
+    {
+      "@type": "Question",
+      "name": "Je výsledek přesný?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Přesnost záleží na tom, co zadáte. Použijte skutečná čísla z faktur a smluv, pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Proč jsou tam odpisy vybavení?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Regály za 250 000 Kč rozložené na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad, jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co je oportunitní náklad kapitálu u vlastní budovy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Peníze vázané v nemovitosti mohly být investovány jinam. Oportunitní náklad ukazuje, co „stojí“ vlastnit budovu oproti pronájmu, i když reálně žádné nájemné neplatíte."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Neznám přesné výše revizí. Co mám zadat?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Žádné typické průměry přesně neznáme, aby appka netvrdila víc, než ví. Když číslo nemáte, nechte pole na nule a počítejte s tím, že výsledek bude nižší než reálný náklad na m². Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) použijte skutečná čísla ze svých smluv a faktur."
+      }
+    }
   ]
 }
 </script>
@@ -411,7 +439,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   <div class="hero-inner">
     <div class="tool-badge">Vedoucí skladu a provozní manažeři</div>
     <h1>Kolik vás <em>reálně</em> stojí<br>1 m² vašeho skladu?</h1>
-    <p>Zadejte čísla ze svého provozu. Kalkulačka zahrne nájem nebo odpisy, energie, povinné revize, pojištění i odpisy vybavení - a ukáže celkový náklad na metr čtvereční za měsíc.</p>
+    <p>Nájem je jen část účtu. K němu patří energie, povinné revize, pojištění, daň a odpisy regálů, vrat a osvětlení. Kalkulačka to sečte a ukáže náklad na jeden metr čtvereční za měsíc. Zadejte, co znáte, zbytek nechte na nule. Navždy zdarma, bez přihlášení.</p>
     <div class="hero-meta">
       <span>Pár základních čísel</span>
       <span>Do 2 minut</span>
@@ -429,7 +457,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
     <div class="d-example">
       <div class="d-example-eyebrow">Z praxe</div>
-      <h4>Kolik je nájem doopravdy?</h4>
+      <h4>Nájem 120 Kč za metr. Skutečný náklad 204.</h4>
       <div class="d-example-grid">
         <div class="d-example-text">
           <p>Sklad 450 m² v nájmu za 54 000 Kč měsíčně. Samotný nájem vychází na 120 Kč na metr čtvereční.</p>
@@ -448,8 +476,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="content-card">
         <h3 class="content-card-title">Hodí se vám to, pokud:</h3>
         <ul class="check-list">
-          <li>Chcete vědět, kolik vás skutečně stojí 1 m² - ne jen nájem</li>
-          <li>Zvažujete pronájem vs. vlastní budovu a chcete srovnání</li>
+          <li>Chcete vědět, kolik vás skutečně stojí 1 m², ne jen nájem</li>
+          <li>Rozhodujete se mezi pronájmem a vlastní budovou a chcete srovnání</li>
           <li>Fakturujete skladování jiným firmám a potřebujete správně nastavit cenu</li>
           <li>Hledáte, kde ušetřit na provozních nákladech budovy</li>
         </ul>
@@ -472,16 +500,16 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <li>Energie: elektřina, vytápění, voda</li>
           <li>Povinné revize (EPS, EZS, elektro, zdvihací zařízení...)</li>
           <li>Pojištění, daň z nemovitosti</li>
-          <li>Odpisy fixního vybavení: racking, vrata, LED osvětlení</li>
+          <li>Odpisy fixního vybavení: regály, vrata, LED osvětlení</li>
           <li>Provozní služby: úklid, ostraha, odvoz odpadu</li>
         </ul>
       </div>
       <div class="content-card">
         <h3 class="content-card-title">Co k tomu nepotřebujete:</h3>
         <div class="no-need-grid">
-          <div class="no-need-item">Faktury po ruce, jde to i orientačně</div>
+          <div class="no-need-item">Faktury po ruce. Stačí odhad.</div>
           <div class="no-need-item">Registraci</div>
-          <div class="no-need-item">Žádné školení</div>
+          <div class="no-need-item">Školení</div>
           <div class="no-need-item">Excel ani kalkulačku vedle appky</div>
         </div>
       </div>
@@ -505,8 +533,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
       <!-- Rychlý výpočet vs. zpřesnění -->
       <div class="rychly-box">
-        <p><strong>Rychlý odhad:</strong> vyplňte, co znáte. Ostatní položky nechte na nule - počítejte s tím, že výsledek pak bude nižší, než reálný náklad na m², dokud čísla nedoplníte.</p>
-        <button type="button" onclick="otevritVsechnySekce()">Chci zpřesnit výsledek - otevřít všechny kategorie</button>
+        <p><strong>Rychlý odhad:</strong> vyplňte, co znáte. Ostatní položky nechte na nule a počítejte s tím, že výsledek pak bude nižší než reálný náklad na m², dokud čísla nedoplníte.</p>
+        <button type="button" onclick="otevritVsechnySekce()">Zpřesnit výsledek: otevřít všechny kategorie</button>
       </div>
 
       <!-- Toggle: najem / vlastni -->
@@ -565,7 +593,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="panel-section" id="sekce-vlastni" style="display:none;">
         <div class="panel-section-title">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Vlastní budova - odpisy
+          Vlastní budova: odpisy
         </div>
         <div class="input-group">
           <div class="input-label">Pořizovací hodnota budovy <span class="input-hint">bez pozemku</span></div>
@@ -614,7 +642,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </div>
         <div class="section-body hidden">
           <div class="input-group">
-            <div class="input-label">Elektřina <span class="input-hint">Kč/měsíc průměr</span></div>
+            <div class="input-label">Elektřina <span class="input-hint">Kč/měsíc, průměr za celý rok</span></div>
             <div class="input-row">
               <input type="range" id="elektrina" min="0" max="80000" value="0" step="1000" oninput="syncFromRange('elektrina')">
               <input type="number" class="input-val-edit" id="elektrina-num" min="0" max="80000" step="1000" value="0" oninput="syncFromNumber('elektrina')">
@@ -623,7 +651,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
             <div class="input-note">Osvětlení, nabíjení VZV, vrata, alarm, IT</div>
           </div>
           <div class="input-group">
-            <div class="input-label">Vytápění / chlazení <span class="input-hint">Kč/měsíc průměr za rok</span></div>
+            <div class="input-label">Vytápění / chlazení <span class="input-hint">Kč/měsíc, průměr za celý rok</span></div>
             <div class="input-row">
               <input type="range" id="vytapeni" min="0" max="60000" value="0" step="500" oninput="syncFromRange('vytapeni')">
               <input type="number" class="input-val-edit" id="vytapeni-num" min="0" max="60000" step="500" value="0" oninput="syncFromNumber('vytapeni')">
@@ -659,7 +687,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
               <input type="number" class="input-val-edit" id="dan-num" min="0" max="30000" step="500" value="0" oninput="syncFromNumber('dan')">
               <span class="input-val input-val-xl" id="dan-val">0 Kč</span>
             </div>
-            <div class="input-note">Nájemci zpravidla 0 - platí majitel budovy. <a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/1992-338" target="_blank" rel="noopener">Zákon 338/1992 Sb.</a></div>
+            <div class="input-note">Nájemci zpravidla 0, platí majitel budovy. <a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/1992-338" target="_blank" rel="noopener">Zákon 338/1992 Sb.</a></div>
           </div>
           <div class="input-group">
             <div class="input-label">Pojištění budovy <span class="input-hint">Kč/rok</span></div>
@@ -706,7 +734,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
               <input type="number" class="input-val-edit" id="elektrorevize-num" min="0" max="15000" step="500" value="0" oninput="syncFromNumber('elektrorevize')">
               <span class="input-val input-val-xl" id="elektrorevize-val">5 000 Kč</span>
             </div>
-            <div class="input-note"><a class="zdroj-link" href="https://www.technicke-normy-csn.cz/hledani/?search=33+1500" target="_blank" rel="noopener">ČSN 33 1500</a> - každé 3-5 let, zadejte roční průměr</div>
+            <div class="input-note"><a class="zdroj-link" href="https://www.technicke-normy-csn.cz/hledani/?search=33+1500" target="_blank" rel="noopener">ČSN 33 1500</a>, každé 3 až 5 let, zadejte roční průměr</div>
           </div>
           <div class="input-group">
             <div class="input-label">Revize EPS <span class="input-hint">Kč/rok</span></div>
@@ -715,7 +743,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
               <input type="number" class="input-val-edit" id="eps-num" min="0" max="12000" step="500" value="0" oninput="syncFromNumber('eps')">
               <span class="input-val input-val-xl" id="eps-val">4 000 Kč</span>
             </div>
-            <div class="input-note">Elektrická požární signalizace - <a class="zdroj-link" href="https://seznamcsn.agentura-cas.cz/vyhledavani.aspx" target="_blank" rel="noopener">ČSN EN 54-14</a>, 1× ročně</div>
+            <div class="input-note">Elektrická požární signalizace, <a class="zdroj-link" href="https://seznamcsn.agentura-cas.cz/vyhledavani.aspx" target="_blank" rel="noopener">ČSN EN 54-14</a>, 1× ročně</div>
           </div>
           <div class="input-group">
             <div class="input-label">Revize EZS <span class="input-hint">Kč/rok</span></div>
@@ -724,7 +752,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
               <input type="number" class="input-val-edit" id="ezs-num" min="0" max="10000" step="500" value="0" oninput="syncFromNumber('ezs')">
               <span class="input-val input-val-xl" id="ezs-val">3 000 Kč</span>
             </div>
-            <div class="input-note">Elektrické zabezpečovací systémy - <a class="zdroj-link" href="https://seznamcsn.agentura-cas.cz/vyhledavani.aspx" target="_blank" rel="noopener">ČSN P CLC/TS 50131-7</a></div>
+            <div class="input-note">Elektrické zabezpečovací systémy, <a class="zdroj-link" href="https://seznamcsn.agentura-cas.cz/vyhledavani.aspx" target="_blank" rel="noopener">ČSN P CLC/TS 50131-7</a></div>
           </div>
           <div class="input-group">
             <div class="input-label">Revize zdvihacích zařízení <span class="input-hint">Kč/rok</span></div>
@@ -733,7 +761,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
               <input type="number" class="input-val-edit" id="zdvihaci-num" min="0" max="20000" step="500" value="0" oninput="syncFromNumber('zdvihaci')">
               <span class="input-val input-val-xl" id="zdvihaci-val">5 000 Kč</span>
             </div>
-            <div class="input-note">Nakládací rampy, plošiny, sekční vrata - <a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/2001-378" target="_blank" rel="noopener">NV 378/2001 Sb.</a>, 1× ročně</div>
+            <div class="input-note">Nakládací rampy, plošiny, sekční vrata, <a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/2001-378" target="_blank" rel="noopener">NV 378/2001 Sb.</a>, 1× ročně</div>
           </div>
           <div class="input-group">
             <div class="input-label">Revize hasicích přístrojů <span class="input-hint">Kč/rok</span></div>
@@ -742,7 +770,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
               <input type="number" class="input-val-edit" id="hasici-num" min="0" max="8000" step="500" value="0" oninput="syncFromNumber('hasici')">
               <span class="input-val input-val-xl" id="hasici-val">3 000 Kč</span>
             </div>
-            <div class="input-note"><a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/2001-246" target="_blank" rel="noopener">Vyhl. 246/2001 Sb.</a> - 1× ročně</div>
+            <div class="input-note"><a class="zdroj-link" href="https://www.zakonyprolidi.cz/cs/2001-246" target="_blank" rel="noopener">Vyhl. 246/2001 Sb.</a>, 1× ročně</div>
           </div>
           <div class="input-group">
             <div class="input-label">Revize plynových zařízení <span class="input-hint">Kč/rok</span></div>
@@ -802,13 +830,13 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
             <div class="input-note">Komunální, karton, průmyslový odpad</div>
           </div>
           <div class="input-group">
-            <div class="input-label">Správa budovy / facility management <span class="input-hint">Kč/měsíc</span></div>
+            <div class="input-label">Správa budovy externí firmou <span class="input-hint">Kč/měsíc</span></div>
             <div class="input-row">
               <input type="range" id="facility" min="0" max="15000" value="0" step="500" oninput="syncFromRange('facility')">
               <input type="number" class="input-val-edit" id="facility-num" min="0" max="15000" step="500" value="0" oninput="syncFromNumber('facility')">
               <span class="input-val input-val-xl" id="facility-val">0 Kč</span>
             </div>
-            <div class="input-note">Jen pokud je outsourcováno externě</div>
+            <div class="input-note">Jen když to za vás dělá jiná firma</div>
           </div>
           <div class="input-group">
             <div class="input-label">Deratizace a dezinsekce <span class="input-hint">Kč/měsíc</span></div>
@@ -832,7 +860,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </div>
         <div class="section-body hidden">
           <div class="input-group">
-            <div class="input-label">Regálový systém - pořizovací cena <span class="input-hint">Kč</span></div>
+            <div class="input-label">Regálový systém, pořizovací cena <span class="input-hint">Kč</span></div>
             <div class="input-row">
               <input type="range" id="regaly" min="0" max="1500000" value="0" step="10000" oninput="syncFromRange('regaly')">
               <input type="number" class="input-val-edit" id="regaly-num" min="0" max="1500000" step="10000" value="0" oninput="syncFromNumber('regaly')">
@@ -856,7 +884,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
             </div>
           </div>
           <div class="input-group">
-            <div class="input-label">LED osvětlení - instalace <span class="input-hint">Kč</span></div>
+            <div class="input-label">LED osvětlení, instalace <span class="input-hint">Kč</span></div>
             <div class="input-row">
               <input type="range" id="led" min="0" max="300000" value="0" step="5000" oninput="syncFromRange('led')">
               <input type="number" class="input-val-edit" id="led-num" min="0" max="300000" step="5000" value="0" oninput="syncFromNumber('led')">
@@ -910,13 +938,13 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
             </div>
           </div>
           <div class="input-group">
-            <div class="input-label">Certifikace a licence <span class="input-hint">Kč/měsíc průměr</span></div>
+            <div class="input-label">Certifikace a licence <span class="input-hint">Kč/měsíc, průměr za celý rok</span></div>
             <div class="input-row">
               <input type="range" id="certifikace" min="0" max="8000" value="0" step="100" oninput="syncFromRange('certifikace')">
               <input type="number" class="input-val-edit" id="certifikace-num" min="0" max="8000" step="100" value="0" oninput="syncFromNumber('certifikace')">
               <span class="input-val input-val-xl" id="certifikace-val">500 Kč</span>
             </div>
-            <div class="input-note">ISO, ADR, potravinová certifikace - roční poplatek ÷ 12</div>
+            <div class="input-note">ISO, ADR, potravinová certifikace, roční poplatek ÷ 12</div>
           </div>
           <div class="input-group">
             <div class="input-label">Rezerva na nepředvídané náklady <span class="input-hint">% z celku</span></div>
@@ -925,7 +953,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
               <input type="number" class="input-val-edit" id="rezerva-num" min="0" max="15" step="1" value="0" oninput="syncFromNumber('rezerva')">
               <span class="input-val" id="rezerva-val">5 %</span>
             </div>
-            <div class="input-note">Doporučeno 3-7 %. Zahrnuje neplánované opravy a výpadky.</div>
+            <div class="input-note">Doporučujeme 3 až 7 %. Zahrnuje neplánované opravy a výpadky.</div>
           </div>
         </div>
       </div>
@@ -938,10 +966,10 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
       <!-- Pro: uložit / export -->
       <div class="ulozit-row">
-        <button class="btn-gold" onclick="ulozitVypocet()">💾 Uložit tento výpočet <span class="pro-lock-badge">Pro</span></button>
-        <button class="btn-outline" onclick="exportCSV()">⬇ Export CSV <span class="pro-lock-badge">Pro</span></button>
-        <button class="btn-outline" onclick="tisknoutNakladySkladu()">🖨 Vytisknout výsledek</button>
-        <button class="btn-outline" onclick="novyVypocet()">🔄 Nový výpočet</button>
+        <button class="btn-gold" onclick="ulozitVypocet()">Uložit tento výpočet</button>
+        <button class="btn-outline" id="btn-export-csv" style="display:none;" onclick="exportCSV()">Export CSV</button>
+        <button class="btn-outline" onclick="tisknoutNakladySkladu()">Vytisknout výsledek</button>
+        <button class="btn-outline" onclick="novyVypocet()">Nový výpočet</button>
       </div>
 
       <!-- ZAŘADIT K PROJEKTU (Pro) -->
@@ -957,7 +985,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div id="s-premereni-wrap" style="display:none;margin-bottom:10px;">
             <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;">
               <input type="checkbox" id="s-premereni-checkbox" checked style="margin-top:3px;">
-              <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
+              <span>Tím ověříte předchozí výpočet ve stejném projektu.</span>
             </label>
           </div>
           <button class="btn-gold" style="width:100%;" onclick="ulozitZarazeniProjektuVysledek()">Uložit zařazení</button>
@@ -993,10 +1021,10 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="result-hero">
         <div class="result-hero-label">Náklady na 1 m² za měsíc</div>
         <div>
-          <span class="result-hero-num" id="res-m2-mesic">178</span>
+          <span class="result-hero-num" id="res-m2-mesic">105</span>
           <span class="result-hero-unit"> Kč/m²</span>
         </div>
-        <div class="result-hero-sub" id="res-hero-sub">celkové roční náklady budovy: 1 278 000 Kč</div>
+        <div class="result-hero-sub" id="res-hero-sub">celkové roční náklady budovy: 756 000 Kč</div>
         <div class="presnost-vysledku" id="presnost-vysledku"></div>
       </div>
 
@@ -1087,7 +1115,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="breakdown-icon-box"></div>
           <div class="breakdown-text">
             <div class="breakdown-name">Odpisy vybavení</div>
-            <div class="breakdown-desc">racking, vrata, LED, rampy</div>
+            <div class="breakdown-desc">regály, vrata, LED, rampy</div>
           </div>
           <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-odpisy" style="width:0%"></div></div></div>
           <div class="breakdown-val" id="val-odpisy">0 Kč</div>
@@ -1107,14 +1135,14 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="breakdown" id="ulozene-box" style="display:none;">
         <div class="breakdown-title">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18"/></svg>
-          Uložené výpočty <span class="pro-lock-badge">Pro</span>
+          Uložené výpočty
         </div>
         <div id="ulozene-seznam" style="padding:8px 20px 4px;"></div>
         <div class="historie-porovnat-bar" id="historie-porovnat-bar" style="display:none;padding:12px 20px 0;">
           <button class="btn-gold" style="width:100%;" id="btn-porovnat-vybrane" onclick="otevritModalPorovnani()" disabled>Porovnat vybrané (0/2)</button>
         </div>
         <div class="ulozene-export">
-          <button class="btn-outline" style="width:100%;" onclick="exportCSV()">⬇ Export CSV (porovnání)</button>
+          <button class="btn-outline" style="width:100%;" onclick="exportCSV()">Export CSV (porovnání)</button>
         </div>
       </div>
 
@@ -1131,24 +1159,29 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div>
         <h3 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h3>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Překvapilo vás číslo? Nebo potvrdilo, co jste tušili?</p>
-        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Podívejte se na rozpad - která kategorie tvoří největší podíl. Tam se dá nejrychleji ušetřit. Energie? Zkontrolujte tarif a izolaci. Revize? Srovnejte nabídky. Odpisy? Přehodnoťte, co opravdu potřebujete.</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Podívejte se na rozpad, která kategorie tvoří největší podíl. Tam se dá nejrychleji ušetřit. Energie? Zkontrolujte tarif a izolaci. Revize? Srovnejte nabídky. Odpisy? Přehodnoťte, co opravdu potřebujete.</p>
+        <h3 class="content-card-title" style="margin:22px 0 10px;">Co udělat ještě dnes</h3>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Vytiskněte výsledek a vezměte ho na nejbližší poradu.</strong> Číslo za metr je argument, kterému rozumí i ten, kdo o skladu nic neví.</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Vezměte největší kategorii z rozpadu</strong> a zjistěte, kdy se u ní naposledy měnila smlouva nebo dodavatel. U energií a ostrahy to bývá před lety.</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Napište si do kalendáře, kdy výpočet uděláte znovu.</strong> Pololetí stačí, hlavně ať porovnáváte stejně spočítaná čísla.</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Druhý výpočet vedle dnešního drží Tokva Pro.</p>
         <div class="faq-block" style="margin-top:24px;">
           <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
           <div class="faq-item">
             <div class="faq-q">Je výsledek přesný?</div>
-            <div class="faq-a">Přesnost záleží na tom, co zadáte. Použijte skutečné číslice z faktur a smluv - pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku.</div>
+            <div class="faq-a">Přesnost záleží na tom, co zadáte. Použijte skutečná čísla z faktur a smluv, pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku.</div>
           </div>
           <div class="faq-item">
             <div class="faq-q">Proč jsou tam odpisy vybavení?</div>
-            <div class="faq-a">Racking za 250 000 Kč rozložený na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad - jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé.</div>
+            <div class="faq-a">Regály za 250 000 Kč rozložené na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad, jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé.</div>
           </div>
           <div class="faq-item">
             <div class="faq-q">Co je oportunitní náklad kapitálu u vlastní budovy?</div>
-            <div class="faq-a">Peníze vázané v nemovitosti mohly být investovány jinam. Oportunitní náklad ukazuje, co "stojí" vlastnit budovu oproti pronájmu - i když reálně žádné nájemné neplatíte.</div>
+            <div class="faq-a">Peníze vázané v nemovitosti mohly být investovány jinam. Oportunitní náklad ukazuje, co „stojí“ vlastnit budovu oproti pronájmu, i když reálně žádné nájemné neplatíte.</div>
           </div>
           <div class="faq-item">
             <div class="faq-q">Neznám přesné výše revizí. Co mám zadat?</div>
-            <div class="faq-a">Pole necháváme na nule - žádné typické průměry přesně neznáme, aby appka netvrdila víc, než ví. Když číslo nemáte, nechte pole na nule a počítejte s tím, že výsledek bude nižší, než reálný náklad na m². Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) použijte skutečná čísla ze svých smluv a faktur.</div>
+            <div class="faq-a">Žádné typické průměry přesně neznáme, aby appka netvrdila víc, než ví. Když číslo nemáte, nechte pole na nule a počítejte s tím, že výsledek bude nižší než reálný náklad na m². Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) použijte skutečná čísla ze svých smluv a faktur.</div>
           </div>
         </div>
       </div>
@@ -1158,7 +1191,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 
 <div class="dalsi-nastroje-wrap">
   <h2 class="content-card-title">Navazující nástroje</h2>
-  <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Obecný přehled dalších nástrojů - nemusí sedět na to, co konkrétně ukázal váš výsledek výše.</p>
+  <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Číslo za metr víte. Tyhle appky pomohou s tím, proč je takové, jaké je.</p>
   <div class="dalsi-nastroje-grid">
     <div class="dalsi-nastroj-card">
       <div class="dalsi-nastroj-tag">Využíváte prostor dobře?</div>
@@ -1168,9 +1201,15 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
     </div>
     <div class="dalsi-nastroj-card">
       <div class="dalsi-nastroj-tag">Problém je v uspořádání?</div>
-      <div class="dalsi-nastroj-nazev">5S pro každého smrtelníka</div>
+      <div class="dalsi-nastroj-nazev">5S audit</div>
       <div class="dalsi-nastroj-popis">Pokud vysoký náklad souvisí s tím, jak je sklad uspořádaný, tady dáte věcem systém.</div>
       <a href="../5S_audit/" target="_blank" class="dalsi-nastroj-btn">Otevřít 5S audit</a>
+    </div>
+    <div class="dalsi-nastroj-card">
+      <div class="dalsi-nastroj-tag">Platíte za metry, které nevyužíváte?</div>
+      <div class="dalsi-nastroj-nazev">Mini audit skladu</div>
+      <div class="dalsi-nastroj-popis">Ukáže, kde se v provozu ztrácí čas a místo.</div>
+      <a href="../mini-audit-skladu/" target="_blank" class="dalsi-nastroj-btn">Otevřít Mini audit skladu</a>
     </div>
   </div>
 </div>
@@ -1178,22 +1217,10 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 <div class="main-pro-final" id="main-pro-final">
   <div class="pro-final-panel">
     <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
-    <div class="pro-final-title">Co appka umí navíc v Pro</div>
-    <div class="pro-final-list">
-      <div class="pro-final-item">
-        <div class="pro-final-item-icon">✓</div>
-        <div><div class="pro-final-item-title">Uložené výpočty</div><div class="pro-final-item-desc">Uložíte víc výpočtů vedle sebe, různé sklady nebo období.</div></div>
-      </div>
-      <div class="pro-final-item">
-        <div class="pro-final-item-icon">✓</div>
-        <div><div class="pro-final-item-title">Porovnání</div><div class="pro-final-item-desc">Uložené výpočty appka zobrazí vedle sebe, hned vidíte rozdíl.</div></div>
-      </div>
-      <div class="pro-final-item">
-        <div class="pro-final-item-icon">✓</div>
-        <div><div class="pro-final-item-title">Export do CSV</div><div class="pro-final-item-desc">Porovnání výpočtů appka vyexportuje do CSV k dalšímu zpracování.</div></div>
-      </div>
-    </div>
-    <button class="pro-final-cta" onclick="otevritModalPro()">Odemknout v Tokva Pro</button>
+    <div class="pro-final-title">Druhý výpočet vedle prvního</div>
+    <p style="font-size:13.5px;color:rgba(255,255,255,.8);line-height:1.7;margin:-6px 0 18px;">V Tokva Pro výpočet uložíte, a až ho za půl roku spočítáte znovu, appka položí oba vedle sebe. Uvidíte, o kolik šel náklad na metr nahoru nebo dolů a která položka se o to postarala. Stejně porovnáte i dva různé sklady.</p>
+    <button class="pro-final-cta" onclick="ulozitVypocet()">Uložit výpočet a porovnat příště</button>
+    <p style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6;margin:12px 0 0;">Samotný výpočet zůstává navždy zdarma, bez přihlášení.</p>
   </div>
 </div>
 
@@ -1203,18 +1230,18 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 </div>
 
 <footer>
-  <div class="footer-brand">Gabriela <span>Tomíčková</span> - AI a Procesní konzultant</div>
-  <div class="footer-legal">Příčná 49, Vrchlabí - IČO: 75905311 &nbsp;·&nbsp; <a href="https://tokva.cz/ochrana-osobnich-udaju/">Zásady ochrany osobních údajů</a></div>
+  <div class="footer-brand">Gabriela <span>Tomíčková</span>, AI a Procesní konzultant</div>
+  <div class="footer-legal">Příčná 49, Vrchlabí, IČO: 75905311 &nbsp;·&nbsp; <a href="https://tokva.cz/ochrana-osobnich-udaju/">Zásady ochrany osobních údajů</a></div>
 </footer>
 
 <!-- Modal Pro odemčení -->
 <div class="modal-overlay" id="modal-pro" style="display:none;">
   <div class="modal-box">
     <div class="modal-box-head">
-      <h3>Odemknout v Tokva Pro</h3>
+      <h3>A kolik to bude stát za rok?</h3>
       <button class="modal-box-close" onclick="zavritModalPro()">×</button>
     </div>
-    <p>Pro verze umí uložit víc výpočtů (různé sklady nebo období), porovnat je vedle sebe a exportovat do CSV. Samotný výpočet zůstává navždy zdarma, bez přihlášení.</p>
+    <p>Tokva Pro vám tenhle výpočet uloží, a až ho za půl roku spočítáte znovu, položí oba vedle sebe. Uvidíte, o kolik šel náklad na metr nahoru nebo dolů a která položka se o to postarala. Samotný výpočet zůstává navždy zdarma, bez přihlášení.</p>
     <div class="modal-err" id="pro-err" style="color:var(--mid);"></div>
     <button class="btn-gold" id="pro-btn" style="width:100%;" onclick="klikVModaluPro()">Přihlásit se</button>
     <div class="modal-box-link" id="pro-link-wrap">Ještě nemáte Pro? <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'kalkulacka_nakladu_skladu',placement:'modal'})">Zjistit víc o Tokva Pro</a></div>
@@ -1372,8 +1399,8 @@ function oznacitPresnost() {
   const presnostEl = document.getElementById('presnost-vysledku');
   if (!presnostEl) return;
   presnostEl.textContent = vasich === 0
-    ? 'Zatím máte vyplněná jen základní čísla (plocha, nájem/odpisy). Zbylých ' + celkem + ' položek je na nule - výsledek proto bude nižší, než reálný náklad na m².'
-    : 'Vyplněno ' + vasich + ' z ' + celkem + ' položek. Zbylých ' + (celkem - vasich) + ' je na nule - výsledek proto bude nižší, než reálný náklad na m².';
+    ? 'Zatím máte vyplněná jen základní čísla (plocha, nájem/odpisy). Zbylých ' + celkem + ' položek je na nule, výsledek proto bude nižší než reálný náklad na m².'
+    : 'Vyplněno ' + vasich + ' z ' + celkem + ' položek. Zbylých ' + (celkem - vasich) + ' je na nule, výsledek proto bude nižší než reálný náklad na m².';
 }
 
 // Čte z číselného pole, ne z posuvníku - posuvník kvůli kroku zaokrouhlí
@@ -1754,7 +1781,7 @@ const VSTUPY_NAZVY = {
   dan: 'Daň z nemovitosti', poj_budova: 'Pojištění budovy', poj_odp: 'Pojištění odpovědnosti',
   udrzba: 'Údržba', elektrorevize: 'Revize elektro', eps: 'Revize EPS', ezs: 'Revize EZS',
   zdvihaci: 'Revize zdvihacích zařízení', hasici: 'Revize hasicích přístrojů', plyn: 'Revize plynu', ostatni_rev: 'Ostatní revize',
-  uklid: 'Úklid', ostraha: 'Ostraha', odpad: 'Odpad', facility: 'Facility management', deratizace: 'Deratizace',
+  uklid: 'Úklid', ostraha: 'Ostraha', odpad: 'Odpad', facility: 'Správa budovy externí firmou', deratizace: 'Deratizace',
   regaly: 'Hodnota regálů', dok_technika: 'Dokovací technika', led: 'LED osvětlení', vrata: 'Vrata', ostatni_vyb: 'Ostatní vybavení',
   internet: 'Internet a IT', certifikace: 'Certifikace'
 };
@@ -1824,6 +1851,8 @@ function aktualizovatProBtn() {
   }
 }
 function renderUcetNav() {
+  var btnExp = document.getElementById('btn-export-csv');
+  if (btnExp) btnExp.style.display = jePro ? '' : 'none';
   const proOdkazEl = document.getElementById('nav-pro-odkaz');
   if (proOdkazEl) proOdkazEl.style.display = session ? 'none' : '';
   const btn = document.getElementById('nav-ucet-btn');
@@ -1959,7 +1988,7 @@ document.addEventListener('click', function(e) {
 
 function ulozitVypocet() {
   if (!jePro) { proZUlozeni = true; otevritModalPro(); return; }
-  var navrh = (posledniVysledek.mode === 'najem' ? 'Sklad - pronájem' : 'Sklad - vlastní budova') + ', ' + fmt(posledniVysledek.plocha) + ' m²';
+  var navrh = (posledniVysledek.mode === 'najem' ? 'Sklad, pronájem' : 'Sklad, vlastní budova') + ', ' + fmt(posledniVysledek.plocha) + ' m²';
   zeptatSeNaNazev('Pojmenujte si výpočet, ať ho pak snadno najdete a porovnáte s dalším.', navrh, function(nazev) {
     nazev = (nazev || '').trim() || navrh;
     var polozka = {
@@ -2435,7 +2464,7 @@ function otevritModalDetailVysledku(i) {
       '<th style="text-align:right;padding:6px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--light);">Kč/měsíc</th>' +
       '</tr></thead><tbody>' + radkyKat + '</tbody></table></div>' : '') +
     (u.vstupy ? '<button class="btn-gold" style="width:100%;margin-top:16px;" onclick="nacistUlozenyDoFormulare(' + i + ')">Načíst do kalkulačky</button>' :
-      '<p style="font-size:12px;color:var(--light);margin-top:14px;">Tenhle výpočet byl uložený ještě předtím, než appka uměla vrátit celý formulář zpátky - jednotlivé položky proto nejde znovu načíst, jen souhrn nahoře.</p>') +
+      '<p style="font-size:12px;color:var(--light);margin-top:14px;">Tenhle výpočet byl uložený ještě předtím, než appka uměla vrátit celý formulář zpátky, jednotlivé položky proto nejde znovu načíst, jen souhrn nahoře.</p>') +
     (u.toolRunId ? '<button class="btn-gold" style="width:100%;margin-top:10px;" onclick="zavritModalDetailVysledku();otevritModalAkcniPlan(\'' + u.id + '\')">+ Přidat do akčního plánu</button>' : '');
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
 }
@@ -2510,7 +2539,7 @@ function otevritModalPorovnani() {
       if (va != null && vb != null) radky += radek(VSTUPY_NAZVY[k], va, vb, 'Kč', true);
     });
   } else {
-    radky += '<tr><td colspan="4" style="padding:10px 6px;font-size:12px;color:var(--light);">Jeden z vybraných výpočtů byl uložený ještě předtím, než appka uměla porovnat jednotlivé položky - u něj je k dispozici jen souhrn kategorií výše.</td></tr>';
+    radky += '<tr><td colspan="4" style="padding:10px 6px;font-size:12px;color:var(--light);">Jeden z vybraných výpočtů byl uložený ještě předtím, než appka uměla porovnat jednotlivé položky, u něj je k dispozici jen souhrn kategorií výše.</td></tr>';
   }
 
   const tabulka = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;">' +
