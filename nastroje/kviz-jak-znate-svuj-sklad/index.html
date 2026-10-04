@@ -1970,6 +1970,9 @@ function zobrazVysledky() {
 
   vysledekUlozen = false;
   if (!zobrazenoZOdkazu) ulozitVysledekDoSupabase(skore, oblasti).then(renderHistorie);
+  // Hotový výsledek si appka odloží hned, ne až při otevření nabídky Pro.
+  // Přežije tak i obnovení stránky nebo zahození karty na mobilu.
+  if (!session && !zobrazenoZOdkazu && typeof oznacitCekaNaUlozeni === 'function') oznacitCekaNaUlozeni();
   renderHistorie();
   prepnoutOdkazyNaPro(jePro);
   zobrazitOdkazAkcniPlan(jePro);

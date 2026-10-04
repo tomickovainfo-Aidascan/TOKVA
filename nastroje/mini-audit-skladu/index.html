@@ -1506,6 +1506,9 @@ function zobrazVysledky() {
 
   vysledekUlozen = false;
   if (!zobrazenoZOdkazu) ulozitVysledekDoSupabase(skore, maxS).then(renderHistorie);
+  // Hotový výsledek si appka odloží hned, ne až při otevření nabídky Pro.
+  // Přežije tak i obnovení stránky nebo zahození karty na mobilu.
+  if (!session && !zobrazenoZOdkazu && typeof oznacitCekaNaUlozeni === 'function') oznacitCekaNaUlozeni();
   renderHistorie();
   prepnoutOdkazyNaPro(jePro);
   zobrazitOdkazAkcniPlan(jePro);
@@ -1550,6 +1553,7 @@ function zacitZnovu() {
 }
 
 function zacitZnovuSkutecne() {
+  try { localStorage.removeItem('mini_audit_skladu_ceka_na_ulozeni'); } catch (e) {}
   Object.keys(odpovedi).forEach(k => delete odpovedi[k]);
   nevimSet.clear();
   ['akce-nazev', 'akce-osoba', 'akce-investice', 'akce-prinos', 'akce-termin'].forEach(id => {
