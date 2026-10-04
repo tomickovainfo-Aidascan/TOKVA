@@ -564,7 +564,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       <div class="uloz-btn-row" style="margin-top:16px;">
         <input id="s-nazev-vypoctu" type="text" class="uloz-panel-vstup" placeholder="Název výpočtu (nepovinné), např. Sklad A, září" style="display:none;">
         <button class="btn-gold" id="btn-ulozit-vychozi" style="width:100%;" onclick="ulozitVypocetZtrat()">Uložit jako výchozí stav <span class="pro-lock-badge">Pro</span></button>
-        <div class="uloz-hint">Za měsíc spočítáte to samé znovu a uvidíte rozdíl v korunách.</div>
+        <div class="uloz-hint" id="uloz-hint-vychozi">Za měsíc spočítáte to samé znovu a uvidíte rozdíl v korunách.</div>
         <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="tisknoutZtraty()">🖨 Vytisknout výsledek</button>
         <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="novyVypocetZtrat()">🔄 Nový výpočet</button>
         <div id="s-ulozeno-stav" style="font-size:12.5px;margin-top:8px;display:none;"></div>
@@ -681,7 +681,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Ve skladu s pěti lidmi, o kterém je příběh výš, stála práce, která nikam nevedla, 303 100 Kč ročně. Přeskládali jsme zboží a zjednodušili jeden formulář. Ze 40 minut denně zbylo 15. Druhé měření ukázalo úsporu zhruba 189 400 Kč ročně. Ne odhad. Rozdíl dvou měření, tehdy ještě ručně se stopkami, bez appky.</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Kalkulačka počítá vždycky jen dnešek. Druhé měření a porovnání před a po drží Tokva Pro: výpočty zůstanou ve vašem účtu u projektu a rozdíl vidíte vedle sebe.</p>
         <p style="font-size:14px;line-height:1.75;margin-bottom:14px;"><a href="https://tokva.cz/pro/" target="_blank" onclick="trackTokvaEvent('pro_click',{source_tool:'kalkulacka_ztrat',placement:'result'})" style="color:var(--gold-dark);font-weight:700;">Co umí Tokva Pro a kolik stojí →</a></p>
-        <a href="#btn-ulozit-vychozi" class="vysledek-cta" onclick="event.preventDefault();document.getElementById('btn-ulozit-vychozi').scrollIntoView({behavior:'smooth',block:'center'});">Uložit tenhle výpočet jako výchozí stav →</a>
+        <a href="#btn-ulozit-vychozi" id="cta-ulozit-dole" class="vysledek-cta" onclick="event.preventDefault();document.getElementById('btn-ulozit-vychozi').scrollIntoView({behavior:'smooth',block:'center'});">Uložit tenhle výpočet jako výchozí stav →</a>
         <div class="faq-block" style="margin-top:24px;">
           <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
           <div class="faq-item">
@@ -1337,7 +1337,30 @@ const VYSLEDKY_ZTRAT = [
 function fmtD(n, des) { return (Math.round(n * Math.pow(10, des)) / Math.pow(10, des)).toLocaleString('cs-CZ'); }
 function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
+// Po uložení tlačítko neříká znovu "Uložit", ale že je hotovo. Jakmile se
+// čísla změní (nebo se výpočet smaže), vrátí se zpátky.
+let ulozitBtnPuvodniHtml = null;
+function nastavitTlacitkoUlozeno(ano) {
+  const btn = document.getElementById('btn-ulozit-vychozi');
+  if (btn) {
+    if (ulozitBtnPuvodniHtml === null) ulozitBtnPuvodniHtml = btn.innerHTML;
+    btn.disabled = !!ano;
+    btn.style.opacity = ano ? '.65' : '';
+    btn.style.cursor = ano ? 'default' : '';
+    if (ano) btn.textContent = '✓ Uloženo jako výchozí stav';
+    else {
+      btn.innerHTML = ulozitBtnPuvodniHtml;
+      const odznak = btn.querySelector('.pro-lock-badge');
+      if (odznak) odznak.style.display = (typeof jePro !== 'undefined' && jePro) ? 'none' : '';
+    }
+  }
+  const hint = document.getElementById('uloz-hint-vychozi');
+  if (hint) hint.textContent = ano ? 'Až něco změníte, spočítejte to samé znovu a uvidíte rozdíl v korunách.' : 'Za měsíc spočítáte to samé znovu a uvidíte rozdíl v korunách.';
+  const cta = document.getElementById('cta-ulozit-dole');
+  if (cta) cta.style.display = ano ? 'none' : '';
+}
 function zobrazitPanelyPoUlozeni(ano) {
+  nastavitTlacitkoUlozeno(ano);
   document.getElementById('s-projekt-panel').style.display = ano ? 'block' : 'none';
   document.getElementById('s-akce-panel').style.display = ano ? 'block' : 'none';
 }
