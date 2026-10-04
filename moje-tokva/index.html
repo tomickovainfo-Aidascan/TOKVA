@@ -466,6 +466,20 @@ const RENDER_DETAIL = {
       return radekOtazky(text, znaceni, trida);
     }).join('');
   },
+  'kviz-komunikacniho-chaosu': function (d) {
+    // Šest oblastí a (u výsledků uložených od 4. 10. 2026) i všech 11 odpovědí.
+    // Text odpovědí si kvíz ukládá sám (odpovedi_text), ať se tu nemusí
+    // držet kopie otázek.
+    const NAZVY = { 'chaos-zmen': 'Chaos při změnách', 'zavislost': 'Závislost na jedné osobě', 'cekani': 'Čekání a dohledávání', 'uloziste': 'Roztříštěné úložiště', 'kanalovy-chaos': 'Kanálový chaos', 'prepisovani': 'Přepisování dat' };
+    const ov = d.oblastiVysledky || {};
+    let html = Object.keys(NAZVY).filter(k => ov[k]).map(k => {
+      const p = ov[k].pct;
+      if (p === null || p === undefined) return radekOtazky(NAZVY[k], 'Nezjištěno', 'nevim');
+      return radekOtazky(NAZVY[k], p + ' %', p >= 67 ? 'spatne' : p >= 34 ? 'stredni' : 'dobre');
+    }).join('');
+    (Array.isArray(d.odpovedi_text) ? d.odpovedi_text : []).forEach(o => { html += radekOtazky(o.otazka, o.odpoved || '-', 'nevim'); });
+    return html;
+  },
   '5s': function (d) {
     const checklist = d.checklist || {};
     let html = Object.keys(CHECKLIST_5S).map(k =>

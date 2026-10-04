@@ -1991,6 +1991,13 @@ async function ulozitZarazeniProjektu() {
     if (chybaUpdate) throw chybaUpdate;
     stav.textContent = projektId ? 'Uloženo, výsledek patří k projektu.' : 'Uloženo, bez projektu.';
     await nacistProjekty();
+    // Po založení nového projektu přepnout výběr na něj. Jinak by další
+    // kliknutí na Uložit zařazení založilo stejný projekt podruhé.
+    if (select.value === '__novy__' && projektId) {
+      select.value = projektId;
+      const novyVstup = document.getElementById('projekt-novy-nazev');
+      if (novyVstup) { novyVstup.value = ''; novyVstup.style.display = 'none'; }
+    }
   } catch (e) {
     console.warn('Zařazení k projektu se nepodařilo uložit.', e);
     stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';

@@ -1340,7 +1340,9 @@ async function ulozitVysledek() {
       hlavni_hodnota_cislo: skore,
       hlavni_hodnota_jednotka: 'z ' + maxSkore + ' bodů',
       hlavni_hodnota_typ: 'skore',
-      data: { skore, maxSkore, nejslabsiKey, oblastiVysledky, odpovedi: odpovediNaUlozeni, vybranaIndexy: vybranaIndexyNaUlozeni, jine_texty: jineTextyNaUlozeni }
+      data: { skore, maxSkore, nejslabsiKey, oblastiVysledky, odpovedi: odpovediNaUlozeni, vybranaIndexy: vybranaIndexyNaUlozeni, jine_texty: jineTextyNaUlozeni,
+        // čitelné znění otázek a odpovědí pro Akční plán, Projekty a Moje Tokva
+        odpovedi_text: OTAZKY.map(o => ({ otazka: o.text, odpoved: popisOdpovedZaznamChaos(o, { odpovedi: odpovediNaUlozeni, vybranaIndexy: vybranaIndexyNaUlozeni, jine_texty: jineTextyNaUlozeni }) })) }
     }).select().single();
     if (error) throw error;
     posledniToolRunId = data ? data.id : null;
@@ -1469,6 +1471,13 @@ async function ulozitZarazeniProjektu() {
     if (chybaUpdate) throw chybaUpdate;
     stav.textContent = projektId ? 'Uloženo, výsledek patří k projektu.' : 'Uloženo, bez projektu.';
     await nacistProjekty();
+    // Po založení nového projektu přepnout výběr na něj. Jinak by další
+    // kliknutí na Uložit zařazení založilo stejný projekt podruhé.
+    if (select.value === '__novy__' && projektId) {
+      select.value = projektId;
+      const novyVstup = document.getElementById('projekt-novy-nazev');
+      if (novyVstup) { novyVstup.value = ''; novyVstup.style.display = 'none'; }
+    }
   } catch (e) {
     console.warn('Zařazení k projektu se nepodařilo uložit.', e);
     stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
