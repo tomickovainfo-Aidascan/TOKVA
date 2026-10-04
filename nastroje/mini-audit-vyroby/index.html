@@ -1377,8 +1377,17 @@ function zobrazVysledkyFinale() {
 // číslo = odpověď, n = nevím). Stránka z nich znovu poskládá celý výsledek,
 // nic se neukládá a neposílá se analytika dokončení.
 let zobrazenoZOdkazu = false;
+const EMAIL_ODESLAN_KEY = 'tokva_email_odeslan_mini_audit_vyroby';
+function kodPoOdeslaniEmailu() {
+  let z = null;
+  try { z = JSON.parse(localStorage.getItem(EMAIL_ODESLAN_KEY) || 'null'); localStorage.removeItem(EMAIL_ODESLAN_KEY); } catch (e) {}
+  if (!z || !z.kod || Date.now() - Number(z.cas) > 5 * 60 * 1000) return null;
+  return String(z.kod);
+}
 function obnovitVysledekZOdkazu() {
-  const kod = new URLSearchParams(window.location.search).get('odpovedi');
+  let kod = new URLSearchParams(window.location.search).get('odpovedi');
+  const poEmailu = !kod ? kodPoOdeslaniEmailu() : null;
+  if (poEmailu) kod = poEmailu;
   if (!kod || !/^[0-2n]{10}$/.test(kod)) return;
   zobrazenoZOdkazu = true;
   for (let q = 1; q <= 10; q++) {
@@ -1388,6 +1397,10 @@ function obnovitVysledekZOdkazu() {
   document.querySelectorAll('.otazka-wrap.active').forEach(el => el.classList.remove('active'));
   const pn = document.querySelector('.progress-nav'); if (pn) pn.style.display = 'none';
   zobrazVysledky();
+  if (poEmailu) {
+    const b = document.getElementById('btn-poslat-email-audit');
+    if (b) { b.textContent = '✓ Výsledek jsme vám poslali na e-mail'; b.disabled = true; b.style.opacity = '.7'; b.style.cursor = 'default'; }
+  }
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', obnovitVysledekZOdkazu); else setTimeout(obnovitVysledekZOdkazu, 0);
 
@@ -1645,6 +1658,9 @@ function zkratitNaVety(t, max) {
   return cut.replace(/\s+\S*$/, '') + '…';
 }
 function pripravitEmailAudit() {
+  // Brevo po odeslání stránku načte znovu. Odpovědi si proto odložíme,
+  // ať se výsledek po návratu sám ukáže a nezačíná se od první otázky.
+  try { localStorage.setItem(EMAIL_ODESLAN_KEY, JSON.stringify({ cas: Date.now(), kod: kodOdpovediProUlozeni() })); } catch (e) {}
   // Kód odpovědí pro odkaz „Zobrazit celý výsledek“ v e-mailu (?odpovedi=...)
   var poleOdp = document.getElementById('ODPOVEDI');
   if (poleOdp) poleOdp.value = Array.from({length:10},(_,i)=>{const q=i+1;if(nevimSet.has(q))return 'n';return odpovedi[q]!=null?String(odpovedi[q]):'n';}).join('');
@@ -1789,6 +1805,7 @@ function dokoncitCekajiciUlozeni() {
     if (z === 'n') { if (typeof nevimSet !== 'undefined') nevimSet.add(q); } else { odpovedi[q] = parseInt(z, 10); }
   }
   toolDokoncenoOdeslanoPoPrihlaseni();
+  if (typeof zobrazenoZOdkazu !== 'undefined') zobrazenoZOdkazu = false;
   document.querySelectorAll('.otazka-wrap.active').forEach(el => el.classList.remove('active'));
   const pn = document.querySelector('.progress-nav'); if (pn) pn.style.display = 'none';
   zobrazVysledky();
