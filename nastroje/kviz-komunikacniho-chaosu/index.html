@@ -1323,6 +1323,14 @@ async function ulozitVysledek() {
     const inp = document.getElementById('other-' + o.id);
     if (inp && inp.value && inp.value.trim()) jineTextyNaUlozeni[o.id] = inp.value.trim();
   });
+  // Pole "Jinak" je v stránce jen u právě zobrazené otázky, takže při
+  // ukládání z výsledku už neexistuje. Vlastní text bereme z odpovědí.
+  OTAZKY.forEach(o => {
+    const t = odpovedi[o.id + '_text'];
+    const vi = vybranaIndexy[o.id];
+    const jeJine = vi === 'other' || (vi instanceof Set && vi.has('other'));
+    if (jeJine && !jineTextyNaUlozeni[o.id] && typeof t === 'string' && t.trim()) jineTextyNaUlozeni[o.id] = t.trim();
+  });
   try {
     const { data, error } = await supabaseClient.from('tool_runs').insert({
       organization_id: clenstvi.organization_id,
@@ -1606,7 +1614,7 @@ function popisOdpovedZaznamChaos(o, d) {
     if (pole.length === 0) return '';
     const texty = pole.map(x => {
       if (x === 'other') {
-        const jine = (d.jine_texty || {})[o.id];
+        const jine = (d.jine_texty || {})[o.id] || (d.odpovedi || {})[o.id + '_text'];
         return jine ? ('Jiné: ' + jine) : 'Jiné';
       }
       return o.opts[x] ? o.opts[x].t : '';
@@ -1615,7 +1623,7 @@ function popisOdpovedZaznamChaos(o, d) {
   }
   const idx = (d.vybranaIndexy || {})[o.id];
   if (idx === 'other') {
-    const jine = (d.jine_texty || {})[o.id];
+    const jine = (d.jine_texty || {})[o.id] || (d.odpovedi || {})[o.id + '_text'];
     return jine ? ('Jiné: ' + jine) : 'Jiné';
   }
   if (idx !== undefined) {
