@@ -27,7 +27,7 @@
   {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Spaghetti diagram - měření tras",
+      "name": "Spaghetti diagram: měření tras",
       "description": "Nástroj pro kreslení spaghetti diagramu tras ve skladu i výrobě. Nahrajte plánek, klikejte body trasy, měřte délku cesty.",
       "url": "https://tokva.cz/nastroje/spaghetti-free/",
       "applicationCategory": "BusinessApplication",
@@ -37,26 +37,51 @@
   </script>
   <script type="application/ld+json">
   {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Musím appku umět kalibrovat, aby čísla dávala smysl?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Ano, bez kalibrace appka neví, jaké vzdálenosti na plánku odpovídají skutečným metrům. Stačí ale označit dva body, jejichž reálnou vzdálenost znáte (třeba délku regálu), a appka si dopočítá zbytek sama." }
-      },
-      {
-        "@type": "Question",
-        "name": "Jde appka použít i na mobilu nebo tabletu?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Ano, ovládá se dotykem stejně jako myší. Jedním prstem přidáváte body trasy klepnutím, dvěma prsty plánek přibližujete a posouváte." }
-      },
-      {
-        "@type": "Question",
-        "name": "Můžu zaznamenat víc tras najednou?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Ano, tlačítkem \"+ Nová zakázka\" přidáte do stejného plánku další trasu, každá dostane vlastní barvu, takže je uvidíte vedle sebe." }
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Musím nastavit měřítko, aby čísla dávala smysl?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ano, bez měřítka appka neví, jaké vzdálenosti na plánku odpovídají skutečným metrům. Stačí ale označit dva body, jejichž reálnou vzdálenost znáte (třeba délku regálu), a appka si dopočítá zbytek sama."
       }
-    ]
-  }
+    },
+    {
+      "@type": "Question",
+      "name": "Jde appka použít i na mobilu nebo tabletu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ano, ovládá se dotykem stejně jako myší. Jedním prstem přidáváte body trasy klepnutím, dvěma prsty plánek přibližujete a posouváte."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Můžu zaznamenat víc tras najednou?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ano, tlačítkem „+ Nová zakázka“ přidáte do stejného plánku další trasu, každá dostane vlastní barvu, takže je uvidíte vedle sebe."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co se stane s plánkem, který nahraju?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "V bezplatné verzi zůstává plánek jen ve vašem prohlížeči, nikam se neposílá. Rozpracovaný nákres si prohlížeč pamatuje, dokud nedáte Začít znovu. V Tokva Pro se nákres i s plánkem ukládá do účtu vaší firmy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jak si výsledek ověřím krokoměrem?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Před vychystáváním si poznačte hodnotu krokoměru a po skončení ji odečtěte. Stačí Google Fit na Androidu nebo vestavěná aplikace Zdraví na iPhonu."
+      }
+    }
+  ]
+}
   </script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -412,9 +437,9 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 
 <div class="hero" id="page-header">
   <div class="hero-inner">
-    <div class="tool-badge">Vedoucí skladu nebo výroby, co chce čísla, ne odhad</div>
-    <h1>Kolik lidé <em>reálně nachodí?</em></h1>
-    <p>Nahrajte plánek skladu nebo výroby, klikejte body trasy a po jednoduché kalibraci plánku appka spočítá i délku každé cesty v metrech. Celé zdarma, bez registrace.</p>
+    <div class="tool-badge">Vedoucí skladu nebo výroby, který chce čísla, ne odhad</div>
+    <h1>Kolik toho vaši lidé <em>za směnu nachodí?</em></h1>
+    <p>Nahrajte plánek skladu nebo výroby, klikejte body trasy a po jednoduchém nastavení měřítka appka spočítá i délku každé cesty v metrech. Celé zdarma, bez registrace.</p>
     <div class="hero-meta">
       <span>Zdarma</span>
       <span>Vlastní plánek</span>
@@ -435,7 +460,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
           <div class="d-example-grid">
             <div class="d-example-text">
               <p>Andula pracovala na výdeji skladu roky, věděla, kde co je. Nikdo netušil, kolik toho za směnu nachodí, dokud to nezměřili krokoměrem: 7,5 km, jen na výdeji.</p>
-              <p>Nakreslily spaghetti diagram jejího pohybu, přesunuly šest položek v regálu, nic víc. Nový výsledek: 4,2 km za směnu, o 44&nbsp;% míň. Anduliny nohy přestaly bolet.</p>
+              <p>Nakreslili diagram jejího pohybu a přesunuli šest položek v regálu. Nic víc. Nový výsledek: 4,2 km za směnu, o 44&nbsp;% míň. Anduliny nohy přestaly bolet.</p>
             </div>
             <div class="d-example-stat">
               <div class="stat-num">44 %</div>
@@ -473,34 +498,35 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
           </div>
         </div>
 
-        <div class="howto-divider-title">Jak appka funguje krok za krokem</div>
+        <details class="podrobny-postup"><summary class="howto-divider-title" style="cursor:pointer;">Podrobný postup</summary>
         <video class="howto-video" src="demo-gesta.mp4" poster="demo-gesta-poster.jpg" controls playsinline preload="metadata"></video>
         <div class="howto-steps">
           <div class="howto-step">
             <div class="howto-step-num">1</div>
-            <div class="howto-step-text"><strong>Nahrajte nebo vyfoťte plánek</strong> skladu či výroby - klikněte na plochu nahoře nebo přetáhněte soubor.</div>
+            <div class="howto-step-text"><strong>Nahrajte nebo vyfoťte plánek</strong> skladu či výroby. Klikněte na plochu nahoře nebo přetáhněte soubor.</div>
           </div>
           <div class="howto-step">
             <div class="howto-step-num">2</div>
-            <div class="howto-step-text"><strong>Nastavte měřítko.</strong> Klikněte na "Kalibrovat kliknutím na plánek", označte na plánku dva body známé vzdálenosti (např. délku regálu) a napište, kolik metrů to ve skutečnosti je. Appka pak počítá reálné vzdálenosti bez ohledu na zoom.</div>
+            <div class="howto-step-text"><strong>Nastavte měřítko.</strong> Klikněte na „Nastavit měřítko (dva body na plánku)“, označte na plánku dva body známé vzdálenosti (např. délku regálu) a napište, kolik metrů to ve skutečnosti je. Appka pak počítá reálné vzdálenosti bez ohledu na zoom.</div>
           </div>
           <div class="howto-step">
             <div class="howto-step-num">3</div>
-            <div class="howto-step-text"><strong>Klikněte na "Začít kreslit trasu".</strong></div>
+            <div class="howto-step-text"><strong>Klikněte na „Začít kreslit trasu“.</strong></div>
           </div>
           <div class="howto-step">
             <div class="howto-step-num">4</div>
-            <div class="howto-step-text"><strong>Jedním prstem nebo kliknutím myší</strong> přidáváte body trasy - každou změnu směru, odbočení nebo uličku mezi regály.</div>
+            <div class="howto-step-text"><strong>Jedním prstem nebo kliknutím myší</strong> přidáváte body trasy: každou změnu směru, odbočení nebo uličku mezi regály.</div>
           </div>
           <div class="howto-step">
             <div class="howto-step-num">5</div>
-            <div class="howto-step-text"><strong>Dvěma prsty</strong> (na mobilu či tabletu) plánek přibližujete, oddalujete a posouváte - na počítači kolečkem myši a tlačítky + / −. Zoom nemění naměřené vzdálenosti.</div>
+            <div class="howto-step-text"><strong>Dvěma prsty</strong> (na mobilu či tabletu) plánek přibližujete, oddalujete a posouváte, na počítači kolečkem myši a tlačítky + / −. Zoom nemění naměřené vzdálenosti.</div>
           </div>
           <div class="howto-step">
             <div class="howto-step-num">6</div>
-            <div class="howto-step-text"><strong>Přidejte další zakázku</strong> tlačítkem "+ Nová zakázka", pokud chcete do stejného plánku zaznamenat víc tras - každá dostane vlastní barvu.</div>
+            <div class="howto-step-text"><strong>Přidejte další zakázku</strong> tlačítkem „+ Nová zakázka“, pokud chcete do stejného plánku zaznamenat víc tras. Každá dostane vlastní barvu.</div>
           </div>
         </div>
+        </details>
       </div>
     
     <div class="collapse-back">
@@ -516,7 +542,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
     <div class="upload-zone-icon">📷</div>
     <p><strong>Klikněte nebo přetáhněte plánek skladu či výroby</strong></p>
-    <small>JPG, PNG, PDF - obrázek layoutu nebo fotka plánku</small>
+    <small>JPG, PNG, PDF: obrázek půdorysu nebo fotka plánku</small>
     <input type="file" id="file-input" accept="image/*,application/pdf" onchange="nahratLayout(this)">
   </div>
   <div id="upload-notice" style="display:none;margin:-6px 0 16px;padding:9px 14px;border-radius:8px;font-size:12.5px;line-height:1.6;"></div>
@@ -525,9 +551,9 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   <div class="setup-panel" id="setup-panel" style="display:none;">
     <div class="setup-group" style="margin-bottom:16px;">
       <label>Měřítko plánku</label>
-      <div id="kalibrace-status" style="font-size:13px;color:var(--mid);margin-bottom:8px;">Zatím není nastavené - klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.</div>
+      <div id="kalibrace-status" style="font-size:13px;color:var(--mid);margin-bottom:8px;">Zatím není nastavené. Klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.</div>
       <button class="tool-btn" id="btn-kalibrovat" onclick="spustitKalibraci()" style="width:100%;justify-content:center;background:var(--gold-light);border-color:var(--gold);color:var(--gold-dark);">
-        Kalibrovat kliknutím na plánek
+        Nastavit měřítko (dva body na plánku)
       </button>
     </div>
     <div class="setup-grid">
@@ -542,7 +568,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
       </div>
     </div>
     <div style="font-size:12px;color:var(--light);margin-top:10px;">
-      1. Klikněte na tlačítko Kalibrovat. 2. Klikněte na plánku na začátek a konec známé vzdálenosti (např. délka regálu). 3. Napište, kolik metrů to ve skutečnosti je. Měřítko pak platí pro všechny výpočty bez ohledu na zoom.
+      1. Klikněte na tlačítko Nastavit měřítko. 2. Klikněte na plánku na začátek a konec známé vzdálenosti (např. délka regálu). 3. Napište, kolik metrů to ve skutečnosti je. Měřítko pak platí pro všechny výpočty bez ohledu na zoom.
     </div>
   </div>
 
@@ -576,14 +602,14 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
         <div style="width:14px;height:9px;background:#e9a91b;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
         <div>
           <div style="font-size:12px;font-weight:700;color:#111;margin-bottom:2px;">Kreslit trasu</div>
-          <div style="font-size:11px;color:#a8a6a6;line-height:1.55;">Bodově označujte trasu vychystávání - každou změnu směru, odbočení nebo uličku mezi regály. Čím víc bodů, tím věrnější spaghetti.</div>
+          <div style="font-size:11px;color:#a8a6a6;line-height:1.55;">Bodově označujte trasu vychystávání: každou změnu směru, odbočení nebo uličku mezi regály. Čím víc bodů, tím věrnější trasa.</div>
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:flex-start;">
         <div style="width:14px;height:9px;background:#545454;clip-path:polygon(0 0,62% 0,100% 50%,62% 100%,0 100%);flex-shrink:0;margin-top:3px;"></div>
         <div>
           <div style="font-size:12px;font-weight:700;color:#111;margin-bottom:2px;">Zoom a posun</div>
-          <div style="font-size:11px;color:#a8a6a6;line-height:1.55;">Mapu přibližujte tlačítky + / − nebo kolečkem myši, na mobilu i dvěma prsty. Zoom nemění měřítko - vzdálenosti se počítají vždy stejně bez ohledu na přiblížení.</div>
+          <div style="font-size:11px;color:#a8a6a6;line-height:1.55;">Plánek přibližujte tlačítky + / − nebo kolečkem myši, na mobilu i dvěma prsty. Zoom nemění měřítko, vzdálenosti se počítají vždy stejně bez ohledu na přiblížení.</div>
         </div>
       </div>
       <div style="display:flex;gap:10px;align-items:flex-start;">
@@ -594,7 +620,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
         </div>
         <div>
           <div style="font-size:12px;font-weight:700;color:#111;margin-bottom:2px;">Více zakázek</div>
-          <div style="font-size:11px;color:#a8a6a6;line-height:1.55;">Do stejného plánku nakreslete trasy víc zakázek nebo vychystávacích cyklů. Každá zakázka má svou barvu - přidejte je tlačítkem + Nová zakázka.</div>
+          <div style="font-size:11px;color:#a8a6a6;line-height:1.55;">Do stejného plánku nakreslete trasy víc zakázek nebo vychystávacích cyklů. Každá zakázka má svou barvu, přidejte je tlačítkem + Nová zakázka.</div>
         </div>
       </div>
     </div>
@@ -606,11 +632,11 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
       <span class="btn-icon"></span> Kreslit trasu
     </button>
     <button class="tool-btn" id="btn-posouvat" onclick="setMod('posouvat')">
-      Posouvat mapu
+      Posouvat plánek
     </button>
     <button class="tool-btn" onclick="zoomIn()" title="Přiblížit">+</button>
     <button class="tool-btn" onclick="zoomOut()" title="Oddálit">−</button>
-    <button class="tool-btn" onclick="resetZoom()" title="Původní velikost">Celá mapa</button>
+    <button class="tool-btn" onclick="resetZoom()" title="Původní velikost">Celý plánek</button>
     <button class="tool-btn" onclick="zpetKrok()" title="Vrátit poslední bod" style="width:40px;justify-content:center;padding:10px;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.87 5.12-1.87 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
     </button>
@@ -620,7 +646,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <button class="tool-btn danger" onclick="smazatAktualniTrasu()" style="margin-left:8px;">
       Smazat trasu
     </button>
-    <button class="tool-btn" onclick="spustitKalibraci()" title="Zadali jste špatné měřítko? Kalibrujte znovu, appka přepočítá délky u všech tras.">
+    <button class="tool-btn" onclick="spustitKalibraci()" title="Zadali jste špatné měřítko? Nastavte ho znovu, appka přepočítá délky u všech tras.">
       Upravit měřítko
     </button>
   </div>
@@ -640,13 +666,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   </div>
 
   <!-- TIP KROKOMERY -->
-  <div class="tip-box" id="tip-krokomery" style="display:none;">
-    <strong>Tip: kombinujte s krokoměrem</strong> pro přesné číslo v metrech.
-    Před vychystáváním si poznačte hodnotu krokoměru a po skončení odečtěte.<br>
-    Stáhněte:
-    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.fitness" target="_blank">Google Fit (Android)</a>
-    nebo použijte vestavěnou aplikaci <strong>Zdraví</strong> na iPhone.
-  </div>
+  <span id="tip-krokomery" hidden></span>
 
   <!-- EXPORT -->
   <div class="export-bar" id="export-bar" style="display:none;">
@@ -661,45 +681,28 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 <div class="post-app">
   <div class="post-app-inner">
 
+    <div>
+      <h2 class="content-card-title">Co udělat ještě dnes</h2>
+      <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Vytiskněte diagram</strong> a položte ho na stůl tomu, kdo po té trase chodí. Jediná otázka: které kolečko je tady zbytečné?</p>
+      <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Vyberte tři nejčastěji vychystávané položky</strong> a přesuňte je blíž k výdeji. Nic se nekupuje, jen se přerovnává.</p>
+      <p style="font-size:14px;color:var(--mid);line-height:1.75;"><strong style="color:var(--dark);">Za týden nakreslete tutéž trasu znovu</strong> a porovnejte metry. U Anduly stačilo přesunout šest položek a trasa byla o 44&nbsp;% kratší.</p>
+    </div>
+
     <div class="pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
-      <h2 class="pro-final-title">Máte metry. Kolik je to za rok v korunách?</h2>
-      <p class="pro-final-text">Trasa, kterou jste právě nakreslili, se v provozu opakuje každý den. Zadáte, kolikrát denně se po ní jde a co stojí hodina pracovníka, a Spaghetti diagram Pro dopočítá roční kilometry, hodiny i částku, kterou ta chůze spolkne.</p>
-      <p class="pro-final-text">Ve stejné mapě pak nakreslíte návrh nového rozmístění vedle současného stavu. Úsporu v metrech i procentech spočítá appka sama, takže na poradu nejdete s pocitem, ale s číslem.</p>
-      <div class="pro-final-list">
-        <div class="pro-final-item">
-          <div class="pro-final-item-icon">✓</div>
-          <div>
-            <div class="pro-final-item-title">Přepočet na koruny</div>
-            <div class="pro-final-item-desc">Zadáte frekvenci trasy a náklady na zaměstnance, appka spočítá roční km, hodiny i korunovou úsporu.</div>
-          </div>
-        </div>
-        <div class="pro-final-item">
-          <div class="pro-final-item-icon">✓</div>
-          <div>
-            <div class="pro-final-item-title">Současný stav a návrh v jedné mapě</div>
-            <div class="pro-final-item-desc">Nakreslíte obě varianty vedle sebe, appka sama spočítá úsporu v metrech i procentech.</div>
-          </div>
-        </div>
-        <div class="pro-final-item">
-          <div class="pro-final-item-icon">✓</div>
-          <div>
-            <div class="pro-final-item-title">Poznámky do plánku</div>
-            <div class="pro-final-item-desc">Ke konkrétnímu místu na půdorysu si napíšete poznámku (třeba „vybudovat dveře“), nezávisle na trase. Objeví se i v exportu a na tisku.</div>
-          </div>
-        </div>
-      </div>
-      <p class="pro-final-proof">U Anduly na výdeji to bylo 7,5&nbsp;km za směnu. Po přesunu šesti položek v regálu 4,2&nbsp;km, o 44&nbsp;% míň. Bez investice.</p>
-      <a href="../spaghetti-pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'spaghetti_free',placement:'result'})" class="pro-final-cta">Spočítat, co ta chůze stojí</a>
-      <p class="pro-final-note">Dnešní nákres si Pro po přihlášení převezme samo, nic nekreslíte znovu. Bezplatný Spaghetti diagram zůstává navždy zdarma.</p>
+      <h2 class="pro-final-title">Současný stav a návrh v jednom plánku. A rozdíl v metrech.</h2>
+      <p class="pro-final-text">Co jste právě nakreslili, je současný stav. V Pro nakreslíte do stejného plánku návrh nového rozmístění vedle něj a appka spočítá rozdíl v metrech i procentech. Na poradu pak nejdete s pocitem, ale s číslem.</p>
+      <a href="../spaghetti-pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'spaghetti_free',placement:'result'})" class="pro-final-cta">Nakreslit návrh a porovnat</a>
+      <p class="pro-final-note">Dnešní nákres si Pro po přihlášení převezme samo, nic nekreslíte znovu. Samotný nákres zůstává navždy zdarma, bez přihlášení.</p>
+      <p class="pro-final-note">V Pro navíc: přepočet tras na roční hodiny a koruny, poznámky ke konkrétnímu místu v plánku.</p>
     </div>
 
     <div>
-      <h2 class="content-card-title">Časté otázky</h2>
+      <h2 class="content-card-title">Nejčastější otázky</h2>
       <div class="faq-block">
         <div class="faq-item">
-          <div class="faq-q">Musím appku umět kalibrovat, aby čísla dávala smysl?</div>
-          <div class="faq-a">Ano, bez kalibrace appka neví, jaké vzdálenosti na plánku odpovídají skutečným metrům. Stačí ale označit dva body, jejichž reálnou vzdálenost znáte (třeba délku regálu), a appka si dopočítá zbytek sama.</div>
+          <div class="faq-q">Musím nastavit měřítko, aby čísla dávala smysl?</div>
+          <div class="faq-a">Ano, bez měřítka appka neví, jaké vzdálenosti na plánku odpovídají skutečným metrům. Stačí ale označit dva body, jejichž reálnou vzdálenost znáte (třeba délku regálu), a appka si dopočítá zbytek sama.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q">Jde appka použít i na mobilu nebo tabletu?</div>
@@ -707,15 +710,25 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
         </div>
         <div class="faq-item">
           <div class="faq-q">Můžu zaznamenat víc tras najednou?</div>
-          <div class="faq-a">Ano, tlačítkem "+ Nová zakázka" přidáte do stejného plánku další trasu, každá dostane vlastní barvu, takže je uvidíte vedle sebe.</div>
+          <div class="faq-a">Ano, tlačítkem „+ Nová zakázka“ přidáte do stejného plánku další trasu, každá dostane vlastní barvu, takže je uvidíte vedle sebe.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Co se stane s plánkem, který nahraju?</div>
+          <div class="faq-a">V bezplatné verzi zůstává plánek jen ve vašem prohlížeči, nikam se neposílá. Rozpracovaný nákres si prohlížeč pamatuje, dokud nedáte Začít znovu. V Tokva Pro se nákres i s plánkem ukládá do účtu vaší firmy.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Jak si výsledek ověřím krokoměrem?</div>
+          <div class="faq-a">Před vychystáváním si poznačte hodnotu krokoměru a po skončení ji odečtěte. Stačí Google Fit na Androidu nebo vestavěná aplikace Zdraví na iPhonu.</div>
         </div>
       </div>
     </div>
 
     <div class="navazujici-odkazy">
       <h2 class="content-card-title">Kam dál</h2>
-      <p>Chcete pracoviště přerovnat tak, aby se zbytečně nechodilo? <a href="../5S_audit/">5S pro každého smrtelníka →</a></p>
+      <p>Chcete pracoviště přerovnat tak, aby se zbytečně nechodilo? <a href="../5S_audit/">5S audit →</a></p>
       <p>Chcete znát čas, ne jen metry? <a href="../meric-plytvani-free/">Měřič plýtvání →</a></p>
+      <p>Kolik vás to rozmístění stojí za rok? <a href="../kalkulacka-nakladu-skladu/">Kalkulačka nákladů skladu →</a></p>
+      <p>Není to jen v chůzi? <a href="../mini-audit-skladu/">Mini audit skladu →</a></p>
     </div>
 
   </div>
@@ -867,7 +880,7 @@ function zkusitObnovitRozpracovanyNakres() {
     meritkoNastaveno = !!draft.meritkoNastaveno;
     inicializovat();
     const status = document.getElementById('kalibrace-status');
-    if (status && meritkoNastaveno) status.textContent = 'Měřítko nastavené. Klidně zkalibrujte znovu, pokud se spletete.';
+    if (status && meritkoNastaveno) status.textContent = 'Měřítko nastavené. Klidně ho nastavte znovu, pokud se spletete.';
     const btn = document.getElementById('btn-zacit-kreslit');
     if (btn) btn.disabled = !meritkoNastaveno;
     if (meritkoNastaveno) {
@@ -1151,7 +1164,7 @@ function ulozitKalibraci() {
     return;
   }
   if (kalibracePxDist <= 0) {
-    if (errEl) { errEl.textContent = 'Oba klikací body vyšly na stejném místě, zkuste kalibraci znovu.'; errEl.style.display = 'block'; }
+    if (errEl) { errEl.textContent = 'Oba klikací body vyšly na stejném místě, zkuste nastavit měřítko znovu.'; errEl.style.display = 'block'; }
     return;
   }
   if (errEl) errEl.style.display = 'none';
@@ -1160,7 +1173,7 @@ function ulozitKalibraci() {
   meritkoNastaveno = true;
   kalibraceBody = [];
   const status = document.getElementById('kalibrace-status');
-  if (status) status.textContent = 'Měřítko nastavené (' + realM.toLocaleString('cs-CZ') + ' m). Klidně zkalibrujte znovu, pokud se spletete.';
+  if (status) status.textContent = 'Měřítko nastavené (' + realM.toLocaleString('cs-CZ') + ' m). Klidně ho nastavte znovu, pokud se spletete.';
   hlaskaKalibrace('Měřítko upravené (' + realM.toLocaleString('cs-CZ') + ' m). Délky všech tras jsou přepočítané.', true);
   const btn = document.getElementById('btn-zacit-kreslit');
   if (btn) btn.disabled = false;
@@ -1174,7 +1187,7 @@ function ulozitKalibraci() {
 
 
 function spustitKresleni() {
-  if (!meritkoNastaveno) { upozornit('Nejdřív zkalibrujte měřítko kliknutím na plánek.'); return; }
+  if (!meritkoNastaveno) { upozornit('Nejdřív nastavte měřítko kliknutím na plánek.'); return; }
   const nazev = document.getElementById('nazev-zakazky').value || 'Zakázka 1';
   zakazky[0].nazev = nazev;
 
@@ -1645,7 +1658,7 @@ function tisknout() {
     const expCanvas = vytvoritExportCanvas();
     const printWin = window.open('', '_blank');
     if (!printWin) {
-      upozornit('Tisk se nepodařilo otevřít - prohlížeč asi zablokoval vyskakovací okno. Povolte ho pro tuhle stránku a zkuste to znovu.', 'Tisk se nepodařilo otevřít');
+      upozornit('Tisk se nepodařilo otevřít, prohlížeč asi zablokoval vyskakovací okno. Povolte ho pro tuhle stránku a zkuste to znovu.', 'Tisk se nepodařilo otevřít');
       return;
     }
     const img = expCanvas.toDataURL('image/png');
@@ -1705,7 +1718,7 @@ function potvrditReset() {
   meritkoNastaveno = false;
   kalibraceBody = [];
   const status = document.getElementById('kalibrace-status');
-  if (status) status.textContent = 'Zatím není nastavené - klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.';
+  if (status) status.textContent = 'Zatím není nastavené. Klikněte na tlačítko níž a označte na plánku dva body známé vzdálenosti.';
   const btn = document.getElementById('btn-zacit-kreslit');
   if (btn) btn.disabled = true;
   mod = null; // stejna pojistka jako po prvnim nahrani - nekreslit driv, nez se potvrdi meritko
