@@ -693,17 +693,17 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   <!-- PRO CTA -->
   <div class="pro-cta" id="pro-cta">
     <div class="pro-cta-badge">Tokva Pro</div><span class="pro-cta-soon">Zakladatelský program</span>
-    <h3>Změřili jste, kde čas mizí. Zabrala ta změna?</h3>
-    <p>Bezplatný měřič ukáže jedno měření: procenta a orientační odhad v korunách. Tokva Pro postaví dvě měření vedle sebe, před změnou a po ní, a rozdíl ukáže v procentech i v korunách podle vaší sazby. To je číslo, se kterým se chodí za majitelem podruhé.</p>
-    <div class="pro-cta-features">
+    <h3 id="pro-cta-nadpis">Teď víte, kde čas mizí. Poznáte, jestli změna zabere?</h3>
+    <p id="pro-cta-text">Bezplatný měřič ukáže jedno měření: procenta a orientační odhad v korunách. Tokva Pro postaví dvě měření vedle sebe, před změnou a po ní, a rozdíl ukáže v procentech i v korunách podle vaší sazby. To je číslo, se kterým se chodí za majitelem podruhé.</p>
+    <div class="pro-cta-features" id="pro-cta-vyhody">
       <span>Porovnání měření před a po vedle sebe</span>
       <span>Výpočet ztráty v korunách</span>
       <span>Neomezený počet cyklů a vlastní názvy operací</span>
       <span>Historie měření u projektu, export do PDF a CSV</span>
     </div>
-    <a href="../meric-plytvani-pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'meric_plytvani_free',placement:'result'})" class="btn-pro">Otevřít Měřič plýtvání Pro</a>
-    <p style="font-size:13px;line-height:1.6;margin:12px 0 0;text-align:center;"><a href="https://tokva.cz/pro/" target="_blank" onclick="trackTokvaEvent('pro_click',{source_tool:'meric_plytvani_free',placement:'result_pro_page'})" style="color:var(--gold);font-weight:700;text-decoration:none;">Co umí Tokva Pro a kolik stojí →</a></p>
-    <p style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;margin:10px 0 0;text-align:center;">Bezplatný měřič zůstává navždy zdarma, bez přihlášení. Dnešní měření si Pro po přihlášení v tomhle prohlížeči převezme samo, nic neměříte znovu.</p>
+    <a href="../meric-plytvani-pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'meric_plytvani_free',placement:'result'})" class="btn-pro" id="pro-cta-btn">Otevřít Měřič plýtvání Pro</a>
+    <p id="pro-cta-cena" style="font-size:13px;line-height:1.6;margin:12px 0 0;text-align:center;"><a href="https://tokva.cz/pro/" target="_blank" onclick="trackTokvaEvent('pro_click',{source_tool:'meric_plytvani_free',placement:'result_pro_page'})" style="color:var(--gold);font-weight:700;text-decoration:none;">Co umí Tokva Pro a kolik stojí →</a></p>
+    <p id="pro-cta-pozn" style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;margin:10px 0 0;text-align:center;">Bezplatný měřič zůstává navždy zdarma, bez přihlášení. Dnešní měření si Pro po přihlášení v tomhle prohlížeči převezme samo, nic neměříte znovu.</p>
   </div>
 </div>
 
@@ -1253,6 +1253,18 @@ async function nacistPrihlaseniStav() {
   prepnoutOdkazyNaPro(maAktivniPro(ucetClenstvi));
   zobrazitOdkazAkcniPlan(maAktivniPro(ucetClenstvi));
   zobrazitOdkazProjekty(maAktivniPro(ucetClenstvi));
+  upravitProBlok(maAktivniPro(ucetClenstvi));
+}
+
+// Kdo už Tokva Pro má, tomu blok pod výsledkem nic neprodává. Řekne mu,
+// že si dnešní měření vezme do Pro a co s ním tam může dělat dál.
+function upravitProBlok(jePro) {
+  if (!jePro) return;
+  const el = function (id) { return document.getElementById(id); };
+  if (el('pro-cta-nadpis')) el('pro-cta-nadpis').textContent = 'Tohle měření si vezměte do Tokva Pro.';
+  if (el('pro-cta-text')) el('pro-cta-text').textContent = 'Tokva Pro už máte. Po kliknutí se dnešní měření samo uloží do historie Měřiče Pro. Tam k němu přidáte úkol, zařadíte ho k projektu a po změně změříte znovu a porovnáte.';
+  if (el('pro-cta-btn')) el('pro-cta-btn').textContent = 'Pokračovat s tímhle měřením v Pro';
+  ['pro-cta-vyhody', 'pro-cta-cena', 'pro-cta-pozn'].forEach(function (id) { if (el(id)) el(id).style.display = 'none'; });
 }
 
 function renderUcetNav() {

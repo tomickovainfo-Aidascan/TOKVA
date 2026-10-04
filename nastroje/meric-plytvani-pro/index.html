@@ -870,14 +870,18 @@ function prevzitMereniZFree() {
     localStorage.setItem('meric_pro_hist', JSON.stringify(hist));
     localStorage.setItem('meric_free_prevzato', znacka);
   } catch (e) {}
+  const textBezUctu = 'Vaše měření z bezplatného měřiče „' + (free.nazev || 'Měření') + '“ je teď v historii. Až po změně změříte ten samý proces znovu, zaškrtněte obě měření a porovnejte je jako PŘED × PO.';
   ulozitDoSupabase(zaznam, plyKcRok).then(runId => {
-    if (!runId) return;
+    if (!runId) { upozornit(textBezUctu, 'Měření převzato'); return; }
     let hist2 = [];
     try { hist2 = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]'); } catch (e) {}
     const polozka = hist2.find(z => z.id === zaznam.id);
     if (polozka) { polozka.toolRunId = runId; localStorage.setItem('meric_pro_hist', JSON.stringify(hist2)); nacistHistorii(); }
-  });
-  upozornit('Vaše měření z bezplatného měřiče „' + (free.nazev || 'Měření') + '“ je teď v historii. Až po změně změříte ten samý proces znovu, zaškrtněte obě měření a porovnejte je jako PŘED × PO.', 'Měření převzato');
+    // Rovnou ukázat převzaté měření s tlačítkem na úkol a projekt, ať se
+    // s ním dá hned pracovat a nemusí se hledat v historii.
+    otevritModalDetailVysledkuZeZaznamu(polozka || Object.assign({}, zaznam, { toolRunId: runId }),
+      '<strong>Měření z bezplatného měřiče je uložené ve vašem účtu.</strong> Tlačítkem dole k němu přidáte úkol a zařadíte ho k projektu. Až po změně změříte ten samý proces znovu, zaškrtněte v historii obě měření a porovnejte je jako PŘED × PO.');
+  }).catch(() => upozornit(textBezUctu, 'Měření převzato'));
 }
 
 function vstoupitDoAplikace() {
@@ -928,7 +932,7 @@ function nazevKategorieZeZaznamu(z, k) {
   return vlastni && vlastni.nazev ? vlastni.nazev : k;
 }
 
-function otevritModalDetailVysledkuZeZaznamu(z) {
+function otevritModalDetailVysledkuZeZaznamu(z, uvod) {
   const avg = z.kategorie_avg || {};
   const radky = Object.keys(avg).map(function (k) {
     const nazevKat = nazevKategorieZeZaznamu(z, k);
@@ -942,6 +946,7 @@ function otevritModalDetailVysledkuZeZaznamu(z) {
   }).join('');
   const maNaklady = z.hodinovaSazba != null && z.pocetPracovniku != null;
   document.getElementById('detail-vysledku-obsah').innerHTML =
+    (uvod ? '<div style="background:#fdf6e3;border:1px solid var(--gold);border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.55;margin-bottom:14px;">' + uvod + '</div>' : '') +
     '<div style="font-size:12px;color:var(--light);margin-bottom:4px;">' + (z.datum || '') + ' · ' + (z.cyklu || 0) + ' cyklů' + (z.smena ? ' · směna ' + z.smena + ' h' : '') + '</div>' +
     '<div style="font-size:15px;font-weight:800;color:var(--dark);margin-bottom:14px;">' + z.nazev + '</div>' +
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">' +
@@ -958,7 +963,7 @@ function otevritModalDetailVysledkuZeZaznamu(z) {
       '</tr></thead><tbody>' + radkyCyklu + '</tbody></table></div>' : '') +
     (maNaklady ? '<div style="margin-top:14px;font-size:12.5px;color:var(--light);">Zadaný náklad práce: ' + z.hodinovaSazba + ' Kč/h × ' + z.pocetPracovniku + (z.pocetPracovniku === 1 ? ' pracovník' : ' pracovníků') + (z.pocetKusu ? ' · Objem zakázky: ' + z.pocetKusu + ' ks' : '') + '</div>' :
       '<p style="font-size:12px;color:var(--light);margin-top:14px;">Tenhle výpočet byl uložený ještě předtím, než appka uměla zapamatovat i zadané náklady a vlastní kroky - k dispozici je jen rozpad kategorií výše.</p>') +
-    (z.toolRunId ? '<button class="btn-modal-ok" style="width:100%;margin-top:16px;" onclick="zavritModalDetailVysledku();otevritModalAkcniPlanZId(\'' + z.toolRunId + '\')">+ Přidat do akčního plánu</button>' : '');
+    (z.toolRunId ? '<button class="btn-modal-ok" style="width:100%;margin-top:16px;" onclick="zavritModalDetailVysledku();otevritModalAkcniPlanZId(\'' + z.toolRunId + '\')">' + (uvod ? '+ Přidat úkol a zařadit k projektu' : '+ Přidat do akčního plánu') + '</button>' : '');
   document.getElementById('modal-detail-vysledku').classList.add('visible');
 }
 function zavritModalDetailVysledku() {
