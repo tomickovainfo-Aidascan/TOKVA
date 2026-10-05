@@ -173,6 +173,8 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:13px 24
 .moznost{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;background:var(--paper);}
 .moznost:hover{border-color:var(--gold);background:var(--gold-light);}
 .moznost.selected{border-color:var(--gold);background:var(--gold-light);}
+.moznost:focus-visible{outline:3px solid var(--blue,#2f6fed);outline-offset:2px;}
+
 .moznost-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px;}
 .moznost.selected .moznost-dot{background:var(--gold);border-color:var(--gold);}
 .moznost.selected .moznost-dot::after{content:"";width:8px;height:8px;border-radius:50%;background:white;display:block;}
@@ -2176,6 +2178,32 @@ document.addEventListener('keydown', function(e){
   }
   upravit();
   new MutationObserver(function () { if (modal.style.display !== 'none') upravit(); }).observe(modal, { attributes: true, attributeFilter: ['style', 'class'] });
+})();
+
+// oprava klavesnice (P1, faze 4+7): odpovedi byly jen <div onclick>, bez
+// role a tabindexu - Tab je preskakoval rovnou na dalsi tlacitko/odkaz,
+// mys fungovala, klavesnice ne. Appka ted kazdou moznost udela
+// dosazitelnou Tabem a ovladatelnou Enterem/mezernikem jako radiove tlacitko.
+(function () {
+  document.querySelectorAll('.moznosti').forEach(function (group) {
+    group.setAttribute('role', 'radiogroup');
+    group.addEventListener('click', function () {
+      group.querySelectorAll('.moznost').forEach(function (m) {
+        m.setAttribute('aria-checked', m.classList.contains('selected') ? 'true' : 'false');
+      });
+    });
+  });
+  document.querySelectorAll('.moznost').forEach(function (opt) {
+    opt.setAttribute('role', 'radio');
+    opt.setAttribute('tabindex', '0');
+    opt.setAttribute('aria-checked', 'false');
+    opt.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        opt.click();
+      }
+    });
+  });
 })();
 </script>
 

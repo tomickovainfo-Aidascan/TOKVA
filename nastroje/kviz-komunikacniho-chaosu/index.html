@@ -201,6 +201,7 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 .q-num{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
 .q-text{font-family:"Poppins",sans-serif;font-size:15px;font-weight:700;color:var(--dark);margin-bottom:12px;line-height:1.4;}
 .q-opt{display:block;background:var(--paper);border:1px solid var(--border);border-radius:8px;padding:11px 14px;margin-bottom:7px;font-size:13px;color:var(--dark);cursor:pointer;transition:all .15s;}
+.q-opt:focus-visible{outline:3px solid var(--gold-dark);outline-offset:2px;}
 .q-opt:last-child{margin-bottom:0;}
 .q-opt:hover{border-color:var(--gold);}
 .q-opt.on{background:var(--gold-light);border-color:var(--gold);font-weight:600;color:var(--gold-dark);}
@@ -2174,13 +2175,18 @@ function vykreslitOtazky(){
   const i = aktualniOtazka;
   const q = OTAZKY[i];
   const vybIdx = vybranaIndexy[q.id];
+  // oprava klavesnice (P1, faze 4+7): odpovedi byly jen <div onclick>, bez
+  // role a tabindexu - Tab je preskakoval rovnou na dalsi tlacitko/odkaz.
+  // Appka ted kazdou moznost oznaci jako radio/checkbox s tabindexem,
+  // takze je dosazitelna Tabem (klavesnici drzi delegovany listener nize).
+  const roleOpt = q.typ === 'checkbox' ? 'checkbox' : 'radio';
   const opts = q.opts.map((o,oi)=>{
     const on = (q.typ==='checkbox') ? (vybIdx instanceof Set && vybIdx.has(oi)) : (vybIdx===oi);
-    return `<div class="q-opt${on?' on':''}" data-q="${q.id}" data-points="${o.b!==undefined?o.b:''}" data-nevim="${o.nevim?'1':''}" data-oi="${oi}" onclick="vybrat('${q.id}','${q.typ}',${oi},this)">${o.t}</div>`;
+    return `<div class="q-opt${on?' on':''}" data-q="${q.id}" data-points="${o.b!==undefined?o.b:''}" data-nevim="${o.nevim?'1':''}" data-oi="${oi}" role="${roleOpt}" tabindex="0" aria-checked="${on?'true':'false'}" onclick="vybrat('${q.id}','${q.typ}',${oi},this)">${o.t}</div>`;
   }).join('');
   const otherOn = vybIdx==='other';
   const otherVal = odpovedi[q.id+'_text'] || '';
-  const otherField = q.other ? `<div class="q-opt${otherOn?' on':''}" data-q="${q.id}" data-oi="other" onclick="vybratJine('${q.id}',this)">Jinak (napsat vlastní)</div>
+  const otherField = q.other ? `<div class="q-opt${otherOn?' on':''}" data-q="${q.id}" data-oi="other" role="checkbox" tabindex="0" aria-checked="${otherOn?'true':'false'}" onclick="vybratJine('${q.id}',this)">Jinak (napsat vlastní)</div>
       <div class="q-opt-other"><input type="text" id="other-${q.id}" class="${otherOn?'show':''}" value="${otherVal.replace(/"/g,'&quot;')}" placeholder="Napište vlastní odpověď" oninput="zapsatJine('${q.id}',this.value)"></div>` : '';
   const hint = q.hint ? `<div class="q-hint">${q.hint}</div>` : '';
   const jePosledni = i === OTAZKY.length - 1;
@@ -2198,6 +2204,17 @@ function vykreslitOtazky(){
     <div class="otazka-nav">${navZpet}${navDal}</div>`;
   document.getElementById('progres-bar').style.width = Math.round(i/OTAZKY.length*100)+'%';
 }
+
+// #otazky se při každé otázce přepíše (innerHTML), ale samotný wrap div
+// v DOM zůstává - listener na klávesnici proto stačí připojit jednou,
+// delegovaně, místo ho znovu věšet na každé jednotlivé tlačítko po
+// každém překreslení.
+document.getElementById('otazky').addEventListener('keydown', function (e) {
+  if ((e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') && e.target.classList.contains('q-opt')) {
+    e.preventDefault();
+    e.target.click();
+  }
+});
 
 // Rolování jen na začátek karty s otázkou (ne na úplný vrch stránky), ať
 // se po každé otázce nemusí znovu rolovat dolů přes hero a navigaci.
@@ -2254,8 +2271,9 @@ function kanalyVeVete(){
 function vybrat(qid, typ, oi, el){
   oznamitZahajeni();
   if(typ==='radio'){
-    document.querySelectorAll(`.q-opt[data-q="${qid}"]`).forEach(o=>o.classList.remove('on'));
+    document.querySelectorAll(`.q-opt[data-q="${qid}"]`).forEach(o=>{o.classList.remove('on'); o.setAttribute('aria-checked','false');});
     el.classList.add('on');
+    el.setAttribute('aria-checked','true');
     vybranaIndexy[qid] = oi;
     if(el.getAttribute('data-nevim')==='1'){
       odpovedi[qid] = 'NEVIM';
@@ -2265,6 +2283,7 @@ function vybrat(qid, typ, oi, el){
     }
   } else if(typ==='checkbox'){
     el.classList.toggle('on');
+    el.setAttribute('aria-checked', el.classList.contains('on') ? 'true' : 'false');
     if(!odpovedi[qid]) odpovedi[qid] = new Set();
     if(!(vybranaIndexy[qid] instanceof Set)) vybranaIndexy[qid] = new Set();
     if(odpovedi[qid] instanceof Set){
@@ -2286,6 +2305,7 @@ function vybratJine(qid, el){
     // smazala vizuálně ostatní zaškrtnuté možnosti bez smazání jejich dat -
     // tlačítko Další pak umělo zůstat zakázané, i když bylo pole vyplněné.
     el.classList.toggle('on');
+    el.setAttribute('aria-checked', el.classList.contains('on') ? 'true' : 'false');
     if(!(odpovedi[qid] instanceof Set)) odpovedi[qid] = new Set();
     if(!(vybranaIndexy[qid] instanceof Set)) vybranaIndexy[qid] = new Set();
     if(el.classList.contains('on')){ odpovedi[qid].add('other'); vybranaIndexy[qid].add('other'); }
@@ -2293,8 +2313,9 @@ function vybratJine(qid, el){
     const inp = document.getElementById(`other-${qid}`);
     if(inp) inp.classList.toggle('show', el.classList.contains('on'));
   } else {
-    document.querySelectorAll(`.q-opt[data-q="${qid}"]`).forEach(o=>o.classList.remove('on'));
+    document.querySelectorAll(`.q-opt[data-q="${qid}"]`).forEach(o=>{o.classList.remove('on'); o.setAttribute('aria-checked','false');});
     el.classList.add('on');
+    el.setAttribute('aria-checked','true');
     vybranaIndexy[qid] = 'other';
     const inp = document.getElementById(`other-${qid}`);
     if(inp) inp.classList.add('show');
