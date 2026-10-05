@@ -1079,18 +1079,33 @@ function vykreslitSouhrn() {
   const minC = Math.min(...cykly.map(c=>c.celkem));
   const maxC = Math.max(...cykly.map(c=>c.celkem));
   const plyC = PLYTVANI.reduce((s,k)=>s+(avg[k]||0),0);
-  // Procenta počítáme ze stejných zaokrouhlených hodnot, jaké appka zobrazuje
-  // - dřív appka zaokrouhlovala na celé sekundy, takže u krátkých operací
-  // (v řádu jednotek sekund) mohly VŠECHNY kategorie vyjít jako "00:00" a 0 %,
-  // i když dohromady tvořily desítky procent. Zaokrouhlení na desetiny
-  // sekundy zachová konzistenci (čas i procento u sebe pořád sedí), ale
-  // krátké hodnoty už nezmizí.
-  const avgCZaokr = Math.round(avgC*10)/10;
-  function pctZObrazenych(sekundy) {
-    const z = Math.round(sekundy*10)/10;
-    return avgCZaokr > 0 ? Math.round(z/avgCZaokr*100) : 0;
+  // oprava (P2, fáze 7): dřív appka procenta zaokrouhlovala u každé kategorie
+  // zvlášť, takže při rychlém průchodu mohlo vyjít 7× 15 % = 105 % celkem.
+  // Teď se počítá z PŘESNÝCH (nezaokrouhlených) časů a na celá procenta se
+  // zaokrouhluje až na konci, metodou największího zbytku - zaokrouhlené
+  // hodnoty vždycky sednou přesně na 100 %, a "Plýtvání" je prostý součet
+  // už zaokrouhlených kategorií, ne vlastní nezávislé zaokrouhlení.
+  function procentaSNormalizaci(klice, celkem) {
+    const vysledek = {};
+    if (!(celkem > 0)) { klice.forEach(k => vysledek[k] = 0); return vysledek; }
+    const presne = {};
+    klice.forEach(k => presne[k] = (avg[k] || 0) / celkem * 100);
+    let zbyvaDoSta = 100;
+    klice.forEach(k => { vysledek[k] = Math.floor(presne[k]); zbyvaDoSta -= vysledek[k]; });
+    klice.map(k => [k, presne[k] - Math.floor(presne[k])])
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, Math.max(0, zbyvaDoSta))
+      .forEach(([k]) => vysledek[k] += 1);
+    return vysledek;
   }
-  const plyPct = pctZObrazenych(plyC);
+  const pctKat = procentaSNormalizaci(KAT, avgC);
+  // pro jednotlivou kategorii v grafu i tabulce - vrací normalizované %,
+  // bere klíč kategorie přímo (ne hodnotu), ať dvě stejně dlouhé kategorie
+  // nikdy neukážou procento té druhé po zaokrouhlení największího zbytku.
+  function pctZObrazenych(klic) {
+    return pctKat[klic] || 0;
+  }
+  const plyPct = PLYTVANI.reduce((s,k) => s + (pctKat[k] || 0), 0);
 
   document.getElementById('s-nazev').textContent = nazev;
   document.getElementById('s-meta').textContent = n + ' cyklů · ' + new Date().toLocaleDateString('cs-CZ');
@@ -1108,7 +1123,7 @@ function vykreslitSouhrn() {
   // Graf
   const graf = document.getElementById('graf');
   graf.innerHTML = KAT.map(k => {
-    const pct = pctZObrazenych(avg[k]);
+    const pct = pctZObrazenych(k);
     return `<div class="g-row">
       <div class="g-lbl" style="color:${KAT_BARVY[k]};font-size:11px;">${KAT_NAZVY[k]}</div>
       <div class="g-bg"><div class="g-bar" style="width:${pct}%;background:${KAT_BARVY[k]}"></div></div>
@@ -1174,17 +1189,17 @@ function vykreslitSouhrn() {
   const ins = document.getElementById('insights');
   const PRAHY = {presun:20,hledani:10,cekani:10,papiry:10,priprava:15,kontrola:10};
   const TIPY = {
-    presun:`Přesuny tvoří ${pctZObrazenych(avg.presun)}% času. <a href="../spaghetti-free/" target="_blank" style="color:var(--gold-dark);font-weight:700;">Nakreslit Spaghetti diagram</a> a uvidíte, kde se trasy kříží a opakují.`,
-    hledani:`Hledání tvoří ${pctZObrazenych(avg.hledani)}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
-    cekani:`Čekání tvoří ${pctZObrazenych(avg.cekani)}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
-    papiry:`Administrativa tvoří ${pctZObrazenych(avg.papiry)}% času. Kolik z toho je nutné? Tady je prostor pro digitalizaci nebo zjednodušení.`,
-    priprava:`Příprava tvoří ${pctZObrazenych(avg.priprava)}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
-    kontrola:`Kontrola tvoří ${pctZObrazenych(avg.kontrola)}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
+    presun:`Přesuny tvoří ${pctZObrazenych('presun')}% času. <a href="../spaghetti-free/" target="_blank" style="color:var(--gold-dark);font-weight:700;">Nakreslit Spaghetti diagram</a> a uvidíte, kde se trasy kříží a opakují.`,
+    hledani:`Hledání tvoří ${pctZObrazenych('hledani')}% času. Vizuální řízení, označení míst a standardizace umístění eliminují hledání rychle a levně.`,
+    cekani:`Čekání tvoří ${pctZObrazenych('cekani')}% času. Hledejte příčinu - chybí informace, materiál nebo rozhodnutí? Odstraňte příčinu, ne jen symptom.`,
+    papiry:`Administrativa tvoří ${pctZObrazenych('papiry')}% času. Kolik z toho je nutné? Tady je prostor pro digitalizaci nebo zjednodušení.`,
+    priprava:`Příprava tvoří ${pctZObrazenych('priprava')}% času. Může ji dělat méně kvalifikovaný pracovník? Oddělte přípravu od samotné operace.`,
+    kontrola:`Kontrola tvoří ${pctZObrazenych('kontrola')}% času. Je jako samostatná operace nutná? Evidujete nalezené neshody a hledáte příčiny?`
   };
   let insHtml = '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);margin-bottom:10px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;">Kde začít</div>';
   let maNeco = false;
   Object.keys(PRAHY).forEach(k => {
-    const pct = pctZObrazenych(avg[k]);
+    const pct = pctZObrazenych(k);
     if (pct >= PRAHY[k]) {
       maNeco = true;
       insHtml += `<div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;">
