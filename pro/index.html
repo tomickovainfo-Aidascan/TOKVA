@@ -463,6 +463,10 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
         <div class="obj-field"><label>Heslo znovu *</label><input type="password" id="obj-heslo2" required minlength="6"></div>
       </div>
       <div class="obj-field"><label>Poznámka</label><textarea id="obj-poznamka" rows="2"></textarea></div>
+      <label class="obj-souhlas" style="display:flex;align-items:flex-start;gap:10px;margin:14px 0 4px;font-size:13px;line-height:1.5;color:rgba(255,255,255,.8);cursor:pointer;">
+        <input type="checkbox" id="obj-souhlas" required style="margin-top:3px;width:16px;height:16px;flex-shrink:0;">
+        <span>Přečetl(a) jsem si <a href="https://tokva.cz/obchodni-podminky/" target="_blank" rel="noopener" style="color:var(--gold);">obchodní podmínky</a> a souhlasím s nimi. *</span>
+      </label>
       <div class="objednavka-err" id="objednavka-err"></div>
       <button type="submit" class="objednavka-submit" id="objednavka-btn">Odeslat objednávku</button>
     </form>
