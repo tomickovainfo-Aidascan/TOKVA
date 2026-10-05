@@ -857,15 +857,19 @@ function update() {
     zobrazitPanelyPoUlozeni(false);
     const st = document.getElementById('s-ulozeno-stav'); if (st) st.style.display = 'none';
   }
-  const lide = +document.getElementById("lide").value;
-  const smeny = +document.getElementById("smeny").value;
-  const delkaSmeny = +document.getElementById("delka-smeny").value;
-  const mzda = +document.getElementById("mzda").value;
-  const chuze = +document.getElementById("chuze").value;
-  const admin = +document.getElementById("admin").value;
-  const kamionu = +document.getElementById("kamionu").value;
-  const kamionCas = +document.getElementById("kamion-cas").value;
-  const prostoje = +document.getElementById("prostoje").value;
+  // oprava: čte se z číselných polí ("-num"), ne z posuvníků. Posuvník se
+  // "step" (třeba 5) při nastavení hodnoty přes JS sám zaokrouhlí na
+  // nejbližší krok - zadaných 17 se tak ve výpočtu tiše změnilo na 15,
+  // i když číselné pole vedle správně drželo 17.
+  const lide = +document.getElementById("lide-num").value;
+  const smeny = +document.getElementById("smeny-num").value;
+  const delkaSmeny = +document.getElementById("delka-smeny-num").value;
+  const mzda = +document.getElementById("mzda-num").value;
+  const chuze = +document.getElementById("chuze-num").value;
+  const admin = +document.getElementById("admin-num").value;
+  const kamionu = +document.getElementById("kamionu-num").value;
+  const kamionCas = +document.getElementById("kamion-cas-num").value;
+  const prostoje = +document.getElementById("prostoje-num").value;
 
   const chuzeh = (chuze / 60) * smeny * lide * 5;
   const adminh = (admin / 60) * smeny * lide * 5;
