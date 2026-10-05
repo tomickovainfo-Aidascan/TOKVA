@@ -900,13 +900,20 @@ function setKat(kat, nazevKat, barva) {
     clearInterval(draftInt);
     draftInt = setInterval(ulozitRozpracovaneMereni, 3000);
   }
+  // Pořadí je důležité: nejdřív se musí vědět, která kategorie běží,
+  // až pak se tenhle stav uloží do localStorage. Dřív appka ukládala
+  // rozpracované měření ještě PŘED přepsáním aktivniKat/katOd, takže
+  // hned po prvním kliknutí na kategorii se uložilo "žádná aktivní
+  // kategorie" - po obnovení stránky z téhle chvíle appka nevěděla,
+  // kterou kategorii dál počítat, a kategorie přestaly přibývat, i
+  // když celkový čas cyklu (nezávislý na kategorii) běžel dál.
   pripsatBeziciKat();
-  ulozitRozpracovaneMereni();
   document.querySelectorAll('.kat-btn').forEach(b => b.classList.remove('on'));
   const btn = document.querySelector('.k-'+kat);
   if (btn) btn.classList.add('on');
   aktivniKat = kat;
   katOd = Date.now();
+  ulozitRozpracovaneMereni();
   document.getElementById('timer-kat').textContent = nazevKat;
   document.getElementById('timer-kat').style.background = barva;
   document.getElementById('timer').style.color = barva;
