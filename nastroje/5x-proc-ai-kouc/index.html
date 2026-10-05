@@ -1299,13 +1299,24 @@ function formatText(text) {
 // udělá (##, hvězdičky, odrážka před číslem) - appka na přesný tvar řádku
 // spoléhá strojově (uložení do historie, založení úkolů), tak radši
 // ošetřit i tuhle odchylku, než aby se celý výstup tiše ztratil.
+const KANON_SEKCE = { '1': '1. PŮVODNÍ PROBLÉM', '2': '2. UPŘESNĚNÝ PROBLÉM', '3': '3. ŘETĚZEC 5× PROČ',
+  '4': '4. KOŘENOVÁ PŘÍČINA', '5': '5. PŘISPÍVAJÍCÍ FAKTORY', '6': '6. FAKTA VS. DOMNĚNKY',
+  '7': '7. DOPORUČENÉ OPATŘENÍ', '8': '8. PRVNÍ KROK DO 24 HODIN', '9': '9. JAK OVĚŘIT VÝSLEDEK',
+  '10': '10. OTEVŘENÉ OTÁZKY' };
 function ocistitRadek(line) {
   return line.replace(/^[\s#*_>\-=]+/, '').replace(/\*\*/g, '')
     // AI občas napíše "5x PROČ" místo instruovaného "5× PROČ" - bez týhle
     // normalizace by se sekce "3. ŘETĚZEC 5× PROČ" nenašla podle přesného
     // řetězce a celý nadpis i s markdownem by skončil jako obyčejný text
     // v předchozí sekci.
-    .replace(/\b5[xX]\b(?=\s*PROČ)/, '5×');
+    .replace(/\b5[xX]\b(?=\s*PROČ)/, '5×')
+    // AI občas nadpis sekce napíše trochu jinak ("7. DOPORUČENÁ OPATŘENÍ" místo
+    // "7. DOPORUČENÉ OPATŘENÍ"). Nadpis psaný velkými písmeny se proto pozná podle
+    // čísla a převede na přesný tvar, jinak by sekce splynula s tou předchozí.
+    .replace(/^(\d{1,2})\.\s+([^a-záčďéěíňóřšťúůýž:]{6,}?)(:|$)/, function (m, n, txt, kon) {
+      const k = KANON_SEKCE[n];
+      return k ? k + kon : m;
+    });
 }
 
 // Vytáhne text jedné očíslované sekce z výstupu (podle stejných klíčů
@@ -1444,12 +1455,26 @@ async function vytvoritUkolyZAnalyzy(raw, btn) {
     console.warn('Projekt se nepodařilo založit, úkoly se založí bez projektu.', e);
     projektId = null;
   }
+  // Bez vybraného projektu úkoly zdědí projekt, do kterého je zařazená analýza.
+  if (!projektId) {
+    try {
+      const { data: rr } = await supabaseClient.from('tool_runs').select('project_id').eq('id', aktivniRunId).maybeSingle();
+      if (rr && rr.project_id) projektId = rr.project_id;
+    } catch (e) {}
+  }
+  // Název úkolu = první věta, celý text jde do poznámky (dřív byl název 300 znaků přes několik řádků).
+  const kratkyNazev = function (t) {
+    let prvni = (t.split('\n').map(x => x.trim()).filter(Boolean)[0] || t).replace(/^(Akce|Krok|Opatření)\s*:\s*/i, '').replace(/^\d+\.\s*/, '').replace(/^[A-Z]\)\s*/, '');
+    if (prvni.length > 140) prvni = prvni.slice(0, 140).replace(/\s+\S*$/, '') + '…';
+    return prvni;
+  };
   const ukoly = [opatreni, prvniKrok].filter(t => t).map(t => ({
     organization_id: clenstvi.organization_id,
     project_id: projektId,
     tool_run_id: aktivniRunId,
     reason,
-    title: t.slice(0, 300),
+    title: kratkyNazev(t),
+    note: t.length > kratkyNazev(t).length + 5 ? t.slice(0, 2000) : null,
     estimated_investment: investice,
     expected_benefit: prinos,
     status: 'novy'
@@ -1457,7 +1482,7 @@ async function vytvoritUkolyZAnalyzy(raw, btn) {
   try {
     const { error } = await supabaseClient.from('actions').insert(ukoly);
     if (error) throw error;
-    btn.textContent = 'Úkoly založeny ✓';
+    btn.textContent = ukoly.length === 1 ? 'Založen 1 úkol ✓' : 'Úkoly založeny ✓';
   } catch (e) {
     console.warn('Úkoly se nepodařilo založit v Supabase.', e);
     btn.disabled = false;
