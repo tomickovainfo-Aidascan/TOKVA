@@ -2515,6 +2515,9 @@ function pokracovatVAnalyze(radek) {
     addMsg(m.role === 'assistant' ? 'ai' : 'user', m.content);
   });
   addMsg('ai', 'Pokračujete v rozpracované analýze z ' + new Date(radek.created_at).toLocaleString('cs-CZ') + '.');
+  // bez tohohle zůstalo pole pro psaní skryté a v rozpracované analýze nešlo pokračovat
+  const iw = document.querySelector('.input-wrap');
+  if (iw) iw.style.display = 'block';
   document.getElementById('input').focus();
 }
 

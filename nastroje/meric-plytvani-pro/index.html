@@ -1685,7 +1685,7 @@ async function synchronizovatHistoriiSeSupabase() {
   try {
     const { data, error } = await supabaseClient
       .from('tool_runs')
-      .select('data')
+      .select('id, data')
       .eq('organization_id', clenstvi.organization_id)
       .eq('nastroj', 'meric-plytvani-pro')
       .order('created_at', { ascending: false })
@@ -1697,10 +1697,16 @@ async function synchronizovatHistoriiSeSupabase() {
     let pribylo = false;
     data.forEach(radek => {
       const z = radek.data;
-      if (z && z.id && !zname.has(z.id)) {
+      if (!z || !z.id) return;
+      if (!zname.has(z.id)) {
+        // záznam z účtu si nese id řádku, jinak by u něj chybělo tlačítko na úkol
+        z.toolRunId = radek.id;
         hist.push(z);
         zname.add(z.id);
         pribylo = true;
+      } else {
+        const mistni = hist.find(x => x.id === z.id);
+        if (mistni && !mistni.toolRunId) { mistni.toolRunId = radek.id; pribylo = true; }
       }
     });
     if (!pribylo) return;
