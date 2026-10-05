@@ -27,6 +27,7 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tokva.cz/ochrana-osobnich-udaju/">
 <meta property="og:title" content="Zásady ochrany osobních údajů | Tokva">
+<meta property="og:url" content="https://tokva.cz/ochrana-osobnich-udaju/">
 <meta property="og:description" content="Jaké údaje appky a účet Tokva zpracovávají, proč, a komu je předávám.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
@@ -115,14 +116,15 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,34px); font-weig
     <h2>2. Jaké osobní údaje zpracovávám</h2>
     <p>Zpracovávám jen údaje, které mi sami poskytnete používáním appek nebo účtu Tokva:</p>
     <ul>
-      <li><strong>E-mailová adresa a heslo</strong> - při založení účtu Tokva Pro. Účty a data k appkám ukládám u zpracovatele Supabase.</li>
+      <li><strong>E-mailová adresa a heslo</strong> - při založení účtu Tokva Pro. Účty a data k appkám ukládám u zpracovatele Supabase. Heslo zpracovává přihlašovací služba Supabase Auth v zabezpečené podobě, já k jeho čitelné podobě přístup nemám.</li>
       <li><strong>Jméno a název firmy</strong> - pokud je vyplníte při registraci, objednávce nebo pozvánce kolegy do firmy.</li>
+      <li><strong>Údaje o týmu</strong> - e-mail pozvaného kolegy, stav pozvánky, jeho role a oprávnění ve firmě a to, ke které firmě patří.</li>
       <li><strong>Fakturační údaje</strong> - firma, IČO, DIČ a adresa, pokud si objednáte Tokva Pro. Slouží jen k vystavení faktury a domluvě kolem objednávky.</li>
-      <li><strong>Data z appek</strong> - odpovědi, naměřené hodnoty, projekty a další obsah, který si v appkách sami uložíte pod svým účtem.</li>
+      <li><strong>Data z appek</strong> - odpovědi, naměřené hodnoty, projekty, úkoly v akčním plánu (včetně toho, komu jsou přiřazené) a další obsah, který si v appkách sami uložíte pod svým účtem.</li>
       <li><strong>Obsah rozhovoru s AI koučem</strong> - appka 5× Proč odesílá popis problému a vaše odpovědi během rozhovoru ke zpracování AI modelu (Anthropic Claude), aby mohla vést analýzu a sestavit výstup.</li>
-      <li><strong>Anonymizovaná data o návštěvnosti</strong> - přes Google Analytics, jen pokud na appce odsouhlasíte cookies.</li>
+      <li><strong>Údaje o používání webu a appek</strong> - například navštívené stránky, události v appkách, přibližná lokalita, typ zařízení, prohlížeč a pseudonymní identifikátor návštěvy. Měří je Google Analytics.</li>
     </ul>
-    <p>Nezpracovávám žádné citlivé osobní údaje.</p>
+    <p>Tokva není určená ke zpracování zvláštních kategorií osobních údajů, například údajů o zdravotním stavu. Nezadávejte je prosím do volných textových polí (poznámky, popisy problémů, rozhovor s AI koučem). Pokud je přesto zadáte, zpracuji je jen v rozsahu nezbytném k tomu, aby služba fungovala.</p>
   </div>
 
   <div class="legal-section">
@@ -152,22 +154,26 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,34px); font-weig
     <ul>
       <li><strong>Supabase Inc.</strong> - hosting účtů a dat appek Tokva, se zpracováním dat v EU, na základě zpracovatelské smlouvy.</li>
       <li><strong>Anthropic</strong> - poskytovatel AI modelu Claude, který zpracovává obsah rozhovoru u appky 5× Proč, aby appka mohla vést analýzu a sestavit výstup.</li>
-      <li><strong>Google</strong> - Google Analytics pro anonymizovanou analýzu návštěvnosti, a u appky 5× Proč navíc Google Apps Script a Google Sheets pro technické ověření, že jde o vaši první bezplatnou zkoušku appky.</li>
-      <li><strong>Brevo (Sendinblue SAS)</strong>, se sídlem ve Francii - u appek s možností poslat si podrobný výsledek e-mailem (Mini audit skladu, Mini audit výroby, Kvíz: Jak dobře znáte svůj sklad, Kvíz komunikačního chaosu). Brevo vystupuje jako zpracovatel na základě zpracovatelské smlouvy.</li>
+      <li><strong>Google</strong> - Google Analytics pro analýzu návštěvnosti, a u appky 5× Proč navíc Google Apps Script a Google Sheets pro technické ověření, že jde o vaši první bezplatnou zkoušku appky.</li>
+      <li><strong>Brevo (Sendinblue SAS)</strong>, se sídlem ve Francii - u appek s možností poslat si podrobný výsledek e-mailem (Mini audit skladu, Mini audit výroby, Kvíz: Jak dobře znáte svůj sklad, Kvíz komunikačního chaosu) a také k odesílání e-mailů k účtu Tokva Pro (potvrzení objednávky, pozvánky kolegů, upozornění na konec předplatného). Brevo vystupuje jako zpracovatel na základě zpracovatelské smlouvy.</li>
+      <li><strong>iDoklad</strong> - online fakturace. Fakturační údaje (firma, IČO, DIČ, adresa) se zapisují do faktury, kterou vám vystavuji.</li>
+      <li><strong>GitHub Pages</strong> - hosting webu tokva.cz. Při návštěvě webu se technicky zpracovává vaše IP adresa.</li>
     </ul>
-    <p>Žádné jiné třetí strany vaše údaje nezpracovávají.</p>
+    <p>Kdyby se okruh zpracovatelů změnil, aktualizuji tyto zásady.</p>
   </div>
 
   <div class="legal-section">
     <h2>6. Vaše práva</h2>
     <p>Máte právo kdykoliv:</p>
     <ul>
-      <li>Odvolat souhlas, který jste dříve udělili.</li>
+      <li>Odvolat souhlas, který jste dříve udělili. Odvolání nemá vliv na zákonnost zpracování před jeho odvoláním.</li>
       <li>Požádat o přístup k osobním údajům, které o vás zpracovávám.</li>
       <li>Požádat o opravu nepřesných údajů.</li>
       <li>Požádat o výmaz vašich údajů (právo být zapomenut).</li>
+      <li>Požádat o omezení zpracování.</li>
+      <li>Požádat o přenos údajů, které jste mi poskytli.</li>
       <li>Vznést námitku proti zpracování.</li>
-      <li>Podat stížnost u Úřadu pro ochranu osobních údajů (<a href="https://www.uoou.cz" target="_blank" rel="noopener">uoou.cz</a>).</li>
+      <li>Podat stížnost u Úřadu pro ochranu osobních údajů (<a href="https://uoou.gov.cz/" target="_blank" rel="noopener">uoou.gov.cz</a>).</li>
     </ul>
     <p>Pro uplatnění jakéhokoliv práva mě kontaktujte na <a href="mailto:tomickova.info@gmail.com">tomickova.info@gmail.com</a>. Odpovím do 30 dnů.</p>
   </div>
