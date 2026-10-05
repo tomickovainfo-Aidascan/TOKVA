@@ -2558,7 +2558,6 @@ function pripravitEmailChaos(){
   }
   popis = zkratitNaVety(popis, 195);
   document.getElementById('SKORE_POPIS').value = popis;
-  if(typeof fbq === 'function') fbq('track', 'Lead');
   if(typeof gtag === 'function') { gtag('event', 'lead_email_submit', { source: 'kviz_komunikacniho_chaosu' }); }
 }
 
@@ -2620,20 +2619,10 @@ function spustitGA() {
   gtag('js', new Date());
   gtag('config', 'G-NJWW5ZX4J9');
 }
-function spustitPixel() {
-  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-  document,'script','https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '1562360565487039');
-  fbq('track', 'PageView');
-}
 function cookiesSouhlasit() {
   localStorage.setItem('cookies_souhlas', 'ano');
   document.getElementById('cookies-bar').style.display = 'none';
   spustitGA();
-  spustitPixel();
 }
 function cookiesOdmitnout() {
   localStorage.setItem('cookies_souhlas', 'ne');
