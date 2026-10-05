@@ -851,7 +851,11 @@ function naplanovatUlozeniRozpracovanehoNakresu() {
   draftUlozeniTimeout = setTimeout(ulozitRozpracovanyNakresIhned, 1500);
 }
 function ulozitRozpracovanyNakresIhned() {
-  if (!layout || zakazky.every(z => z.body.length < 2)) { smazatRozpracovanyNakres(); return; }
+  // oprava (P2, fáze 7): dřív se draft neuložil, dokud nemela aspon jedna
+  // zakázka 2 body trasy - takže nahraný plánek bez rozkreslené trasy
+  // (třeba hned po uploadu, před kalibrací měřítka) při obnovení stránky
+  // zmizel. Teď se ukládá, kdykoli je nahraný nějaký plánek.
+  if (!layout) { smazatRozpracovanyNakres(); return; }
   try {
     localStorage.setItem(DRAFT_KEY_SPAGHETTI_FREE, JSON.stringify({
       layoutSrc: layout.src,
