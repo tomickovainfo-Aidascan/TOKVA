@@ -88,6 +88,9 @@ input:focus { border-color:var(--gold); }
     <p class="podnadpis" id="pozvanka-popis">Načítám pozvánku…</p>
 
     <div id="pozvanka-obsah" style="display:none;">
+      <label for="pozvanka-jmeno">Jméno a příjmení</label>
+      <input id="pozvanka-jmeno" type="text" placeholder="např. Jana Nováková" autocomplete="name" maxlength="80">
+      <div style="font-size:12px;color:var(--mid);margin-top:4px;">Uvidí ho kolegové u úkolů, které vám přidělí.</div>
       <label for="pozvanka-heslo">Nové heslo</label>
       <input id="pozvanka-heslo" type="password" placeholder="min. 6 znaků" autocomplete="new-password">
       <button class="btn-gold" id="btn-pozvanka" onclick="prijmoutPozvankuNoveHeslo()">Vytvořit účet a přijmout pozvánku</button>
@@ -410,7 +413,13 @@ async function prijmoutPozvankuNoveHeslo() {
   const btn = document.getElementById('btn-pozvanka');
   const zprava = document.getElementById('zprava-pozvanka');
   zprava.className = 'zprava';
+  const jmeno = (document.getElementById('pozvanka-jmeno').value || '').replace(/\s+/g, ' ').trim();
 
+  if (jmeno.length < 2) {
+    zprava.textContent = 'Napište prosím své jméno a příjmení.';
+    zprava.className = 'zprava chyba';
+    return;
+  }
   if (!heslo || heslo.length < 6) {
     zprava.textContent = 'Heslo musí mít aspoň 6 znaků.';
     zprava.className = 'zprava chyba';
@@ -421,9 +430,15 @@ async function prijmoutPozvankuNoveHeslo() {
   try {
     const { error: chybaRegistrace } = await supabaseClient.auth.signUp({
       email: window.__pozvankaEmail,
-      password: heslo
+      password: heslo,
+      options: { data: { full_name: jmeno } } // databáze si jméno při založení účtu zapíše do profilu
     });
     if (chybaRegistrace) throw chybaRegistrace;
+    // pojistka, kdyby se jméno do profilu nezapsalo samo
+    try {
+      const { data: { session: sNova } } = await supabaseClient.auth.getSession();
+      if (sNova) await supabaseClient.from('profiles').update({ full_name: jmeno }).eq('id', sNova.user.id);
+    } catch (eJm) { console.warn('Jméno se nepodařilo zapsat do profilu.', eJm); }
     trackTokvaEvent('sign_up', { method: 'invite' });
 
     const { error: chybaPrijeti } = await supabaseClient.rpc('prijmout_pozvanku', { p_token: window.__pozvankaToken });

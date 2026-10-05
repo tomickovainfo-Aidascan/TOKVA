@@ -188,6 +188,16 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
     Tahle firma zatím nemá aktivní Tokva Pro - vidíte jen omezený přehled. Diagnostické nástroje zdarma fungují naplno dál, Pro propojuje výsledky do akčního plánu a ukládá historii. Víc na <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'moje_tokva',placement:'banner'})">stránce Tokva Pro</a>.
   </div>
 
+  <div class="sekce" id="karta-jmeno" style="display:none;margin-bottom:20px;border-color:var(--gold);">
+    <h2>Jak se jmenujete?</h2>
+    <div class="sekce-pod">Jméno uvidí kolegové u úkolů, které vám přidělí. Teď se místo něj ukazuje začátek vašeho e-mailu.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+      <input id="jmeno-pole" type="text" placeholder="např. Jana Nováková" autocomplete="name" maxlength="80" style="flex:1;min-width:200px;border:2px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;font-family:inherit;">
+      <button class="prih-btn" style="margin:0;" onclick="ulozitSveJmeno()">Uložit</button>
+    </div>
+    <div id="jmeno-stav" style="font-size:12.5px;margin-top:8px;color:var(--mid);"></div>
+  </div>
+
   <div class="souhrn-grid">
     <div class="souhrn-tile"><div class="cislo" id="souhrn-akce">0</div><div class="popis">Otevřených akcí</div></div>
     <div class="souhrn-tile"><div class="cislo" id="souhrn-projekty">0</div><div class="popis">Rozpracovaných projektů</div></div>
@@ -343,7 +353,32 @@ function renderStav() {
 let vsechnyVysledky = [];
 let limitVysledku = 8;
 
+// Kdo nemá v profilu jméno (účty založené před zavedením pole, majitelé z objednávky),
+// toho se appka jednou zeptá. Jméno se pak nabízí u pole Odpovědná osoba.
+async function zkontrolovatSveJmeno() {
+  try {
+    const { data } = await supabaseClient.from('profiles').select('full_name').eq('id', session.user.id).maybeSingle();
+    document.getElementById('karta-jmeno').style.display = (data && (data.full_name || '').trim()) ? 'none' : '';
+  } catch (e) { console.warn('Jméno v profilu se nepodařilo ověřit.', e); }
+}
+async function ulozitSveJmeno() {
+  const stav = document.getElementById('jmeno-stav');
+  const jmeno = (document.getElementById('jmeno-pole').value || '').replace(/\s+/g, ' ').trim();
+  if (jmeno.length < 2) { stav.style.color = '#c0392b'; stav.textContent = 'Napište prosím jméno a příjmení.'; return; }
+  try {
+    const { data, error } = await supabaseClient.from('profiles').update({ full_name: jmeno }).eq('id', session.user.id).select('id');
+    if (error) throw error;
+    if (!data || !data.length) throw new Error('profil nenalezen');
+    document.getElementById('karta-jmeno').style.display = 'none';
+  } catch (e) {
+    console.warn('Jméno se nepodařilo uložit.', e);
+    stav.style.color = '#c0392b';
+    stav.textContent = 'Uložení se nepovedlo, zkuste to prosím znovu.';
+  }
+}
+
 async function nacistData() {
+  zkontrolovatSveJmeno();
   const orgId = clenstvi.organization_id;
 
   const [projektyRes, akceRes] = await Promise.all([
