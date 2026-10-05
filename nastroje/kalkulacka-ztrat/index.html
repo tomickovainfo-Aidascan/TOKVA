@@ -427,20 +427,20 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           Váš provoz
         </div>
         <div class="input-group">
-          <div class="input-label">Počet pracovníků na jedné směně <span class="input-hint">fyzická práce</span></div>
-          <div class="input-row"><input type="range" id="lide" min="1" max="150" value="8" oninput="syncFromRange('lide')"><input type="number" class="input-val-edit" id="lide-num" min="1" max="150" value="8" oninput="syncFromNumber('lide')"></div>
+          <div class="input-label" id="lbl-lide">Počet pracovníků na jedné směně <span class="input-hint">fyzická práce</span></div>
+          <div class="input-row"><input type="range" id="lide" aria-labelledby="lbl-lide" min="1" max="150" value="8" oninput="syncFromRange('lide')"><input type="number" class="input-val-edit" id="lide-num" aria-labelledby="lbl-lide" min="1" max="150" value="8" oninput="syncFromNumber('lide')"></div>
         </div>
         <div class="input-group">
-          <div class="input-label">Počet směn denně</div>
-          <div class="input-row"><input type="range" id="smeny" min="1" max="3" value="2" step="1" oninput="syncFromRange('smeny')"><input type="number" class="input-val-edit" id="smeny-num" min="1" max="3" value="2" oninput="syncFromNumber('smeny')"></div>
+          <div class="input-label" id="lbl-smeny">Počet směn denně</div>
+          <div class="input-row"><input type="range" id="smeny" aria-labelledby="lbl-smeny" min="1" max="3" value="2" step="1" oninput="syncFromRange('smeny')"><input type="number" class="input-val-edit" id="smeny-num" aria-labelledby="lbl-smeny" min="1" max="3" value="2" oninput="syncFromNumber('smeny')"></div>
         </div>
         <div class="input-group">
-          <div class="input-label">Délka směny <span class="input-hint">hodin</span></div>
-          <div class="input-row"><input type="range" id="delka-smeny" min="4" max="12" value="8" step="0.5" oninput="syncFromRange('delka-smeny')"><input type="number" class="input-val-edit" id="delka-smeny-num" min="4" max="12" step="0.5" value="8" oninput="syncFromNumber('delka-smeny')"></div>
+          <div class="input-label" id="lbl-delka-smeny">Délka směny <span class="input-hint">hodin</span></div>
+          <div class="input-row"><input type="range" id="delka-smeny" aria-labelledby="lbl-delka-smeny" min="4" max="12" value="8" step="0.5" oninput="syncFromRange('delka-smeny')"><input type="number" class="input-val-edit" id="delka-smeny-num" aria-labelledby="lbl-delka-smeny" min="4" max="12" step="0.5" value="8" oninput="syncFromNumber('delka-smeny')"></div>
         </div>
         <div class="input-group">
-          <div class="input-label">Kolik vás stojí hodina pracovníka celkem? <span class="input-hint">Kč/hod</span></div>
-          <div class="input-row"><input type="range" id="mzda" min="150" max="1200" value="300" step="10" oninput="syncFromRange('mzda')"><input type="number" class="input-val-edit" id="mzda-num" min="150" max="1200" step="10" value="300" oninput="syncFromNumber('mzda')"></div>
+          <div class="input-label" id="lbl-mzda">Kolik vás stojí hodina pracovníka celkem? <span class="input-hint">Kč/hod</span></div>
+          <div class="input-row"><input type="range" id="mzda" aria-labelledby="lbl-mzda" min="150" max="1200" value="300" step="10" oninput="syncFromRange('mzda')"><input type="number" class="input-val-edit" id="mzda-num" aria-labelledby="lbl-mzda" min="150" max="1200" step="10" value="300" oninput="syncFromNumber('mzda')"></div>
           <div class="settings-hint">Mzda + odvody zaměstnavatele + případné další přímé náklady na hodinu.</div>
         </div>
       </div>
@@ -452,24 +452,24 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </div>
         <div class="settings-hint" style="margin-bottom:14px;">Stejný čas započítejte jen v jedné kategorii - pokud administrativa nebo čekání probíhá právě během expedice, nepočítejte ho dvakrát.</div>
         <div class="input-group">
-          <div class="input-label">Zbytečná chůze a přesuny <span class="input-hint">min / směna / člověk</span></div>
-          <div class="input-row"><input type="range" id="chuze" min="0" max="120" value="60" step="5" oninput="syncFromRange('chuze')"><input type="number" class="input-val-edit" id="chuze-num" min="0" max="120" step="5" value="60" oninput="syncFromNumber('chuze')"></div>
+          <div class="input-label" id="lbl-chuze">Zbytečná chůze a přesuny <span class="input-hint">min / směna / člověk</span></div>
+          <div class="input-row"><input type="range" id="chuze" aria-labelledby="lbl-chuze" min="0" max="120" value="60" step="5" oninput="syncFromRange('chuze')"><input type="number" class="input-val-edit" id="chuze-num" aria-labelledby="lbl-chuze" min="0" max="120" step="5" value="60" oninput="syncFromNumber('chuze')"></div>
         </div>
         <div class="input-group">
-          <div class="input-label">Ruční administrativa <span class="input-hint">min / směna / člověk</span></div>
-          <div class="input-row"><input type="range" id="admin" min="0" max="120" value="30" step="5" oninput="syncFromRange('admin')"><input type="number" class="input-val-edit" id="admin-num" min="0" max="120" step="5" value="30" oninput="syncFromNumber('admin')"></div>
+          <div class="input-label" id="lbl-admin">Ruční administrativa <span class="input-hint">min / směna / člověk</span></div>
+          <div class="input-row"><input type="range" id="admin" aria-labelledby="lbl-admin" min="0" max="120" value="30" step="5" oninput="syncFromRange('admin')"><input type="number" class="input-val-edit" id="admin-num" aria-labelledby="lbl-admin" min="0" max="120" step="5" value="30" oninput="syncFromNumber('admin')"></div>
         </div>
         <div class="input-group">
-          <div class="input-label">Čekání a prostoje <span class="input-hint">min / směna / člověk</span></div>
-          <div class="input-row"><input type="range" id="prostoje" min="0" max="120" value="20" step="5" oninput="syncFromRange('prostoje')"><input type="number" class="input-val-edit" id="prostoje-num" min="0" max="120" step="5" value="20" oninput="syncFromNumber('prostoje')"></div>
+          <div class="input-label" id="lbl-prostoje">Čekání a prostoje <span class="input-hint">min / směna / člověk</span></div>
+          <div class="input-row"><input type="range" id="prostoje" aria-labelledby="lbl-prostoje" min="0" max="120" value="20" step="5" oninput="syncFromRange('prostoje')"><input type="number" class="input-val-edit" id="prostoje-num" aria-labelledby="lbl-prostoje" min="0" max="120" step="5" value="20" oninput="syncFromNumber('prostoje')"></div>
         </div>
         <div class="input-group">
-          <div class="input-label">Počet dodávek a expedic týdně</div>
-          <div class="input-row"><input type="range" id="kamionu" min="0" max="30" value="5" step="1" oninput="syncFromRange('kamionu')"><input type="number" class="input-val-edit" id="kamionu-num" min="0" max="30" value="5" oninput="syncFromNumber('kamionu')"></div>
+          <div class="input-label" id="lbl-kamionu">Počet dodávek a expedic týdně</div>
+          <div class="input-row"><input type="range" id="kamionu" aria-labelledby="lbl-kamionu" min="0" max="30" value="5" step="1" oninput="syncFromRange('kamionu')"><input type="number" class="input-val-edit" id="kamionu-num" aria-labelledby="lbl-kamionu" min="0" max="30" value="5" oninput="syncFromNumber('kamionu')"></div>
         </div>
         <div class="input-group">
-          <div class="input-label">Zbytečný čas u dodávky / expedice <span class="input-hint">min / dodávka, jde odstranit nebo zkrátit</span></div>
-          <div class="input-row"><input type="range" id="kamion-cas" min="0" max="120" value="45" step="5" oninput="syncFromRange('kamion-cas')"><input type="number" class="input-val-edit" id="kamion-cas-num" min="0" max="120" step="5" value="45" oninput="syncFromNumber('kamion-cas')"></div>
+          <div class="input-label" id="lbl-kamion-cas">Zbytečný čas u dodávky / expedice <span class="input-hint">min / dodávka, jde odstranit nebo zkrátit</span></div>
+          <div class="input-row"><input type="range" id="kamion-cas" aria-labelledby="lbl-kamion-cas" min="0" max="120" value="45" step="5" oninput="syncFromRange('kamion-cas')"><input type="number" class="input-val-edit" id="kamion-cas-num" aria-labelledby="lbl-kamion-cas" min="0" max="120" step="5" value="45" oninput="syncFromNumber('kamion-cas')"></div>
           <div class="settings-hint">Ne celý čas zpracování - jen ta část, která je zbytečná (čekání, přepisování, hledání), ne nutná manipulace se zbožím.</div>
         </div>
       </div>
