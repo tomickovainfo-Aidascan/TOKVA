@@ -533,6 +533,12 @@ nav {
   color:var(--dark);
   flex:1;
   line-height:1.5;
+  /* oprava (P2, fáze 7): dlouhé slovo bez mezer (např. slepené URL nebo
+     název bez diakritiky a mezer) jako flex položka natahovalo celý řádek
+     a tím i stránku do šířky. min-width:0 dovolí položce zmenšit se pod
+     obsah a overflow-wrap ji donutí zalomit dlouhé slovo. */
+  min-width:0;
+  overflow-wrap:anywhere;
 }
 .zaznam-duration {
   font-family:'DM Mono',monospace;
