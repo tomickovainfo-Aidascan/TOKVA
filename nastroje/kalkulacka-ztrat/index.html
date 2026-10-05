@@ -76,6 +76,10 @@
 <style>
 :root {
   --gold: #e9a91b; --gold-dark: #c48e10; --gold-light: #fdf3d9;
+  /* oprava (P2, fáze 4): --gold-dark na --gold-light měl kontrast jen 2,63:1,
+     málo pro běžný text (potřeba aspoň 4,5:1) - číslo v poli šlo špatně
+     přečíst. Tahle tmavší varianta na stejném pozadí vychází na ~5,5:1. */
+  --gold-text-dark: #86590a;
   --black: #000; --dark: #111; --mid: #545454; --light: #a8a6a6;
   --white: #fff; --paper: #f5f4f0; --border: #e2e2e2; --red: #d63c3c;
 }
@@ -122,8 +126,8 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 input[type=range] { flex:1; -webkit-appearance:none; height:3px; border-radius:2px; background:var(--border); outline:none; cursor:pointer; }
 input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:var(--gold); border:2px solid var(--white); box-shadow:0 1px 4px rgba(233,169,27,0.5); cursor:pointer; transition:transform 0.15s; }
 input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
-.input-val { font-family:"DM Mono",monospace; font-size:13px; font-weight:500; color:var(--gold-dark); min-width:56px; text-align:right; background:var(--gold-light); padding:3px 8px; border-radius:3px; }
-.input-val-edit { font-family:"DM Mono",monospace; font-size:13px; font-weight:600; color:var(--gold-dark); width:60px; text-align:right; background:var(--gold-light); border:1px solid rgba(233,169,27,0.35); border-radius:3px; padding:3px 6px; }
+.input-val { font-family:"DM Mono",monospace; font-size:13px; font-weight:500; color:var(--gold-text-dark); min-width:56px; text-align:right; background:var(--gold-light); padding:3px 8px; border-radius:3px; }
+.input-val-edit { font-family:"DM Mono",monospace; font-size:13px; font-weight:600; color:var(--gold-text-dark); width:60px; text-align:right; background:var(--gold-light); border:1px solid rgba(233,169,27,0.35); border-radius:3px; padding:3px 6px; }
 .input-val-edit:focus { outline:none; border-color:var(--gold); }
 .settings-hint { font-size:11px; color:var(--light); margin-top:8px; line-height:1.5; }
 
