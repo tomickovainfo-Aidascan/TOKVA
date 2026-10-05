@@ -1386,11 +1386,15 @@ function oznacitPresnost() {
     const el = document.getElementById(id);
     if (!el) return;
     celkem++;
-    // Nulová hodnota se do "vyplněno" nepočítá, i když se liší od výchozí
-    // hodnoty pole - nula do výsledku nic nepřidá, takže by ukazatel po
-    // ručním zadání dvou nul tvrdil "vyplněno 2 z 31", přestože byl součet
-    // pořád stejný, jako by položky zůstaly nedotčené.
-    const jeVase = (dotcenaPole.has(id) || +el.value !== +el.defaultValue) && +el.value !== 0;
+    // oprava (P2, fáze 7): dřív appka nulovou hodnotu z "vyplněno" vždycky
+    // vyřadila, i když ji tam uživatel sám vědomě napsal (např. "revize
+    // zdvihacích zařízení: 0 Kč, sklad žádné nemá"). Appka tak takovou
+    // položku ukazovala stejně jako tu, které se vůbec nedotkl - a tvrdila
+    // "zbylé položky jsou na nule", přestože šlo o potvrzenou nulu, ne o
+    // chybějící údaj. Rozhoduje teď jen to, jestli uživatel pole fakt
+    // dotkl (dotcenaPole) nebo ho ručně změnil oproti výchozí hodnotě -
+    // ne, na jakém čísle skončilo.
+    const jeVase = dotcenaPole.has(id) || +el.value !== +el.defaultValue;
     if (jeVase) vasich++;
     const valEl = document.getElementById(id + '-val');
     if (valEl) valEl.classList.toggle('zadano', jeVase);
