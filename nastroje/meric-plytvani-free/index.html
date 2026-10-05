@@ -514,7 +514,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
     <div class="krok-title">Zvolte si proces, který chcete měřit</div>
     <div class="krok-popis">Vyberte jednu konkrétní opakující se operaci - vychystávání objednávky, montáž dílu, příjem zboží.</div>
     <div class="field">
-      <label>Název procesu</label>
+      <label for="inp-nazev">Název procesu</label>
       <input type="text" id="inp-nazev" placeholder="např. Vychystávání objednávky">
     </div>
   </div>
@@ -754,7 +754,10 @@ let timerInt = null, katInt = null, cyklusStart = null, draftInt = null;
 // Appka teď průběžně ukládá i tady.
 const DRAFT_KEY_MERIC_FREE = 'meric_free_rozpracovano';
 function ulozitRozpracovaneMereni() {
-  if (cykly.length === 0 && !cyklusStart) { smazatRozpracovaneMereni(); return; }
+  // oprava: dřív appka koncept smazala, dokud nebyl rozjetý cyklus - i
+  // jen vyplněný název procesu (bez kliknuté kategorie) se tak po F5 ztratil.
+  const maJenNazev = nazev && nazev !== 'Proces';
+  if (cykly.length === 0 && !cyklusStart && !maJenNazev) { smazatRozpracovaneMereni(); return; }
   try {
     localStorage.setItem(DRAFT_KEY_MERIC_FREE, JSON.stringify({
       nazev, cykly, aktCyklusCas: aktCyklus ? (pripsatBeziciKat(), aktCyklus.cas) : null, cas: Date.now(),
@@ -806,12 +809,20 @@ document.getElementById('inp-nazev').addEventListener('input', function() {
   // I samotné vyplnění názvu procesu je práce, co jde ztratit - dřív appka
   // varovala před odchodem, až když se klikla první kategorie.
   hasUnsavedMereni = true;
+  // oprava (P2, fáze 4+7): popisek "Název procesu" byl dřív nepropojený
+  // s polem (viz label výš) a rozepsaná hodnota se navíc do localStorage
+  // vůbec neukládala, dokud nezačalo měření - po F5 před kliknutím na
+  // první kategorii appka název beze varování zahodila.
+  ulozitRozpracovaneMereni();
 });
 
 function zkusitObnovitRozpracovaneMereni() {
   let draft;
   try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY_MERIC_FREE) || 'null'); } catch (e) { draft = null; }
-  if (!draft || (!(draft.cykly && draft.cykly.length) && !draft.aktCyklusCas)) return false;
+  // oprava: koncept jen s vyplněným názvem (bez rozjetého cyklu) se dřív
+  // nebral jako nic k obnovení a zahodil se - viz ulozitRozpracovaneMereni.
+  const majNazev = draft && draft.nazev && draft.nazev !== 'Proces';
+  if (!draft || (!(draft.cykly && draft.cykly.length) && !draft.aktCyklusCas && !majNazev)) return false;
 
   nazev = draft.nazev || 'Proces';
 
@@ -857,6 +868,11 @@ function zkusitObnovitRozpracovaneMereni() {
   hasUnsavedMereni = true;
   if (obnovitBeziciCyklus(draft)) {
     upozornit('Prohlížeč stránku mezitím zavřel, ale měření „' + nazev + '" běží dál. Čas cyklu i právě měřené činnosti se počítal i během zamčení.', 'Měření pokračuje');
+    return true;
+  }
+  if (cykly.length === 0 && !cyklusStart) {
+    // jen vyplneny nazev, zadne mereni jeste nezacalo
+    upozornit('Obnovili jsme název procesu „' + nazev + '" z předchozí návštěvy.', 'Název obnoven');
     return true;
   }
   upozornit('Obnovili jsme rozpracované měření „' + nazev + '" (' + cykly.length + ' dokončených cyklů). Rozjetý cyklus pokračuje tam, kde jste přestali - klikněte znovu na činnost a měřte dál.', 'Měření obnoveno');
