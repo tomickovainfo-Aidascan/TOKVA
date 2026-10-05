@@ -1396,11 +1396,22 @@ function zobrazVysledky() {
   const label = document.getElementById('skore-label');
   const popis = document.getElementById('skore-popis');
 
+  // oprava: deset odpovedi "nevim" dá maxS 0, a appka dřív pomer 0/0
+  // spočítala jako 0 - "nejlepší možná hodnota", takže appka chybějící
+  // data ukázala jako "Sklad je v zásadě pod kontrolou". Stejný vzor
+  // opravy jako v Mini auditu výroby: chybějící data jsou vlastní stav,
+  // ne automaticky "bez problémů".
+  if (maxS === 0) {
+    cislo.innerHTML = '?';
+    hero.className = 'skore-hero oranzova';
+    label.textContent = 'Zatím jen "nevím"';
+    popis.textContent = 'Na všechny otázky jste odpověděli "nevím" - to je samo o sobě důležité zjištění, viz níž.';
+  } else {
   cislo.innerHTML = skore + '<span class="skore-max">/' + maxS + '</span>';
 
   // Prahy pocitane z puvodni skaly 0-30, prevedene na aktualni maxS,
   // aby "nevim" odpovedi skore nezredily ani nenafoukly
-  const pomer = maxS > 0 ? skore / maxS : 0;
+  const pomer = skore / maxS;
 
   if (pomer <= 7/30) {
     hero.className = 'skore-hero zelena';
@@ -1419,8 +1430,9 @@ function zobrazVysledky() {
     label.textContent = 'Firma ztrácí významnou kapacitu každý týden';
     popis.textContent = 'Výsledek ukazuje na systémové problémy, které stojí čas, peníze a energii. Provozní diagnostika by rychle odhalila kde začít.';
   }
+  }
 
-  if (nevimSet.size > 0) {
+  if (nevimSet.size > 0 && maxS > 0) {
     popis.textContent += ' Skóre je orientační: ' + nevimSet.size + ' ' + (nevimSet.size === 1 ? 'oblast jste' : 'oblasti jste') + ' označili jako "nevím", to je samo o sobě důležité zjištění, viz níž.';
   }
 
