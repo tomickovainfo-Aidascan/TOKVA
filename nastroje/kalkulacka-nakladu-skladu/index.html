@@ -1541,7 +1541,17 @@ function syncFromNumber(id) {
   // svoje maximum, ale číselné pole (a tedy i výpočet, viz getVal výš) si
   // ponechá přesně to, co uživatel zadal.
   num.value = v;
+  // oprava (P2, fáze 7): posuvník má atribut "step" (např. 1000 u elektřiny),
+  // takže zadané číslo mezi dvěma kroky (třeba 12345) appka při přiřazení
+  // range.value sama tiše zaokrouhlila na nejbližší krok (12000) - výpočet
+  // v tichosti seděl přesně (viz getVal výš, počítá se z číselného pole),
+  // ale posuvník vizuálně neodpovídal zadanému číslu. Step jen na dobu
+  // nastavení hodnoty vypneme, ať posuvník sedí přesně, a pak ho vrátíme,
+  // ať ruční tažení myší/prstem dál funguje po krocích jako dřív.
+  const puvodniStep = range.step;
+  range.step = 'any';
   range.value = Math.min(v, max);
+  range.step = puvodniStep;
   oznamitZahajeni();
   update();
   oznamitDokonceni();
