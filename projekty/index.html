@@ -523,13 +523,14 @@ const FAZE_RADY = [
 ];
 
 const FAZE_TOOL_DEFAULT = {
-  '5s': 'videt', '5x-proc': 'videt', 'kviz-sklad': 'videt', 'kviz-komunikacniho-chaosu': 'videt',
+  '5s': 'videt', '5s-pracoviste': 'videt', '5x-proc': 'videt', 'kviz-sklad': 'videt', 'kviz-komunikacniho-chaosu': 'videt',
   'mini-audit-skladu': 'videt', 'mini-audit-vyroby': 'videt',
   'casova-studie': 'zmerit', 'kalkulacka-m2': 'zmerit', 'meric-plytvani-pro': 'zmerit', 'spaghetti-pro': 'zmerit'
 };
 
 const NASTROJ_URL = {
   '5s': 'https://tokva.cz/nastroje/5S_audit/',
+  '5s-pracoviste': 'https://tokva.cz/nastroje/5S_audit/',
   '5x-proc': 'https://tokva.cz/nastroje/5x-proc-ai-kouc/',
   'casova-studie': 'https://tokva.cz/nastroje/casova-studie/',
   'kalkulacka-m2': 'https://tokva.cz/nastroje/kalkulacka-nakladu-skladu/',
@@ -638,7 +639,7 @@ async function nacistSeznamProjektu() {
   const orgId = clenstvi.organization_id;
   const [projRes, trRes, akceRes] = await Promise.all([
     supabaseClient.from('projects').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
-    supabaseClient.from('tool_runs').select('id,project_id,created_at').eq('organization_id', orgId).neq('nastroj', '5s-pracoviste').not('project_id', 'is', null),
+    supabaseClient.from('tool_runs').select('id,project_id,created_at').eq('organization_id', orgId).not('project_id', 'is', null),
     supabaseClient.from('actions').select('id,project_id,created_at').eq('organization_id', orgId).not('project_id', 'is', null)
   ]);
 
@@ -695,7 +696,7 @@ async function otevritDetailProjektu(id) {
   aktualniProjekt = projekt;
 
   const [trRes, akceRes] = await Promise.all([
-    supabaseClient.from('tool_runs').select('*').eq('project_id', id).neq('nastroj', '5s-pracoviste').order('created_at', { ascending: true }),
+    supabaseClient.from('tool_runs').select('*').eq('project_id', id).order('created_at', { ascending: true }),
     supabaseClient.from('actions').select('*').eq('project_id', id).order('created_at', { ascending: true })
   ]);
   aktualniToolRuny = trRes.error ? [] : (trRes.data || []);
@@ -880,6 +881,14 @@ const RENDER_DETAIL = {
       return radekOtazky(NAZVY[k], p + ' %', p >= 67 ? 'spatne' : p >= 34 ? 'stredni' : 'dobre');
     }).join('');
     (Array.isArray(d.odpovedi_text) ? d.odpovedi_text : []).forEach(o => { html += radekOtazky(o.otazka, o.odpoved || '-', 'nevim'); });
+    return html;
+  },
+  '5s-pracoviste': function (d) {
+    const KROKY = { s1: '1S Vytřídit', s2: '2S Uspořádat', s3: '3S Uklidit', s4: '4S Udržet pořádek', s5: '5S Udržovat disciplínu' };
+    const spl = d.splneno || {}, pozn = d.poznamky || {};
+    let html = Object.keys(KROKY).map(k => radekOtazky(KROKY[k] + (pozn[k] ? ': ' + pozn[k] : ''), spl[k] ? 'Hotovo' : 'Čeká', spl[k] ? 'dobre' : 'nevim')).join('');
+    const ukoly = Array.isArray(d.ukoly) ? d.ukoly.length : 0;
+    html += '<div class="detail-fallback" style="margin-top:12px;">Fotky před a po, standard a úkoly' + (ukoly ? ' (' + ukoly + ')' : '') + ' najdete přímo v nástroji 5S u tohohle pracoviště.</div>';
     return html;
   },
   '5s': function (d) {

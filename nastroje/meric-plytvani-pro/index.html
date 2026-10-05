@@ -766,6 +766,8 @@ async function nacistPrihlaseniStav() {
     session = await ziskatSession();
     clenstvi = session ? await ziskatMojiOrganizaci() : null;
     jePro = maAktivniPro(clenstvi);
+    // historie patří firmě: po přihlášení jiné firmy (nebo odhlášení) ukázat jen její data
+    if (typeof oddelitMistniDataPodleFirmy === 'function' && oddelitMistniDataPodleFirmy(['meric_pro_hist'], clenstvi ? clenstvi.organization_id : null)) { location.reload(); return; }
     prepnoutOdkazyNaPro(jePro);
     zobrazitOdkazAkcniPlan(jePro);
     zobrazitOdkazProjekty(jePro);

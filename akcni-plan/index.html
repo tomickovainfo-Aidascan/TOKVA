@@ -832,6 +832,7 @@ function renderKarty(seznam) {
 // =============================================
 const NASTROJ_URL = {
   '5s': 'https://tokva.cz/nastroje/5S_audit/',
+  '5s-pracoviste': 'https://tokva.cz/nastroje/5S_audit/',
   '5x-proc': 'https://tokva.cz/nastroje/5x-proc-ai-kouc/',
   'casova-studie': 'https://tokva.cz/nastroje/casova-studie/',
   'kalkulacka-m2': 'https://tokva.cz/nastroje/kalkulacka-nakladu-skladu/',
@@ -904,6 +905,14 @@ const RENDER_DETAIL = {
       return radekOtazky(NAZVY[k], p + ' %', p >= 67 ? 'spatne' : p >= 34 ? 'stredni' : 'dobre');
     }).join('');
     (Array.isArray(d.odpovedi_text) ? d.odpovedi_text : []).forEach(o => { html += radekOtazky(o.otazka, o.odpoved || '-', 'nevim'); });
+    return html;
+  },
+  '5s-pracoviste': function (d) {
+    const KROKY = { s1: '1S Vytřídit', s2: '2S Uspořádat', s3: '3S Uklidit', s4: '4S Udržet pořádek', s5: '5S Udržovat disciplínu' };
+    const spl = d.splneno || {}, pozn = d.poznamky || {};
+    let html = Object.keys(KROKY).map(k => radekOtazky(KROKY[k] + (pozn[k] ? ': ' + pozn[k] : ''), spl[k] ? 'Hotovo' : 'Čeká', spl[k] ? 'dobre' : 'nevim')).join('');
+    const ukoly = Array.isArray(d.ukoly) ? d.ukoly.length : 0;
+    html += '<div class="detail-fallback" style="margin-top:12px;">Fotky před a po, standard a úkoly' + (ukoly ? ' (' + ukoly + ')' : '') + ' najdete přímo v nástroji 5S u tohohle pracoviště.</div>';
     return html;
   },
   '5s': function (d) {

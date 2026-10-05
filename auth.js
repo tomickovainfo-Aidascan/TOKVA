@@ -150,3 +150,89 @@ async function odhlasit() {
   await supabaseClient.auth.signOut();
   window.location.href = KOREN_TOKVA + 'prihlaseni.html';
 }
+
+// Místní data nástrojů (historie měření, uložené výpočty, nákresy, pracoviště 5S)
+// patří firmě, ne prohlížeči. Pravdivý zdroj je účet firmy v databázi, prohlížeč
+// drží jen pracovní kopii. Aby na sdíleném počítači jedna firma neviděla kopii
+// druhé, má každá firma (a nepřihlášený návštěvník zvlášť) svou vlastní přihrádku.
+// Vrací true, když se zobrazená data změnila a stránka se má načíst znovu.
+function oddelitMistniDataPodleFirmy(klice, orgId) {
+  var ted = orgId || 'anon';
+  var zmena = false;
+  function slouceni(a, b) {
+    try {
+      var x = JSON.parse(a), y = JSON.parse(b);
+      var podleId = function (pole, dalsi) {
+        var mam = {}; pole.forEach(function (z) { if (z && z.id != null) mam[z.id] = 1; });
+        return pole.concat(dalsi.filter(function (z) { return !(z && z.id != null && mam[z.id]); }));
+      };
+      if (Array.isArray(x) && Array.isArray(y)) return JSON.stringify(podleId(x, y));
+      if (x && y && Array.isArray(x.mista) && Array.isArray(y.mista)) { x.mista = podleId(x.mista, y.mista); return JSON.stringify(x); }
+    } catch (e) {}
+    return a;
+  }
+  (klice || []).forEach(function (klic) {
+    try {
+      var znacka = localStorage.getItem(klic + '__firma');
+      if (znacka === ted) return;
+      var aktualni = localStorage.getItem(klic);
+      if (!znacka) { localStorage.setItem(klic + '__firma', ted); return; } // první spuštění po téhle úpravě
+      var ulozene = localStorage.getItem(klic + '__' + ted);
+      if (znacka === 'anon') {
+        // nepřihlášený návštěvník se přihlásil: jeho rozdělaná data si firma vezme s sebou
+        if (ulozene != null) {
+          localStorage.setItem(klic, aktualni != null ? slouceni(ulozene, aktualni) : ulozene);
+          localStorage.removeItem(klic + '__' + ted);
+          zmena = true;
+        }
+      } else {
+        // odhlášení nebo jiná firma: data té předchozí schovat do její přihrádky
+        if (aktualni != null) localStorage.setItem(klic + '__' + znacka, aktualni);
+        if (ulozene != null) { localStorage.setItem(klic, ulozene); localStorage.removeItem(klic + '__' + ted); }
+        else localStorage.removeItem(klic);
+        if (aktualni != null || ulozene != null) zmena = true;
+      }
+      localStorage.setItem(klic + '__firma', ted);
+    } catch (e) {}
+  });
+  return zmena;
+}
+
+// Našeptávání členů firmy u pole „Odpovědná osoba". Jde dál napsat i jméno
+// člověka, který v Tokvě účet nemá (brigádník, údržbář), jen se nabídnou ti, co ho mají.
+var TOKVA_POLE_OSOBA = '#akce-osoba,#s-akce-osoba,#ap-osoba,#ak-osoba,#ukol-kdo,#hl-osoba';
+var tokvaClenoveStav = null;
+async function nacistNaseptavaniClenu() {
+  if (tokvaClenoveStav) return tokvaClenoveStav;
+  tokvaClenoveStav = (async function () {
+    try {
+      var session = await ziskatSession();
+      if (!session) { tokvaClenoveStav = null; return; }
+      var cl = await supabaseClient.from('organization_members').select('user_id');
+      var ids = (cl.data || []).map(function (c) { return c.user_id; });
+      if (!ids.length) return;
+      var pr = await supabaseClient.from('profiles').select('id, email, full_name').in('id', ids);
+      var jmena = [];
+      (pr.data || []).forEach(function (p) {
+        var j = (p.full_name || '').trim() || (p.email || '').split('@')[0];
+        if (j && jmena.indexOf(j) === -1) jmena.push(j);
+      });
+      if (!jmena.length) return;
+      var dl = document.getElementById('tokva-clenove');
+      if (!dl) { dl = document.createElement('datalist'); dl.id = 'tokva-clenove'; document.body.appendChild(dl); }
+      dl.innerHTML = '';
+      jmena.sort(function (a, b) { return a.localeCompare(b, 'cs'); }).forEach(function (j) {
+        var o = document.createElement('option'); o.value = j; dl.appendChild(o);
+      });
+    } catch (e) { console.warn('Členy firmy se nepodařilo načíst pro našeptávání.', e); tokvaClenoveStav = null; }
+  })();
+  return tokvaClenoveStav;
+}
+if (typeof document !== 'undefined') {
+  document.addEventListener('focusin', function (e) {
+    var t = e.target;
+    if (!t || !t.matches || !t.matches(TOKVA_POLE_OSOBA)) return;
+    if (!t.getAttribute('list')) { t.setAttribute('list', 'tokva-clenove'); t.setAttribute('autocomplete', 'off'); }
+    nacistNaseptavaniClenu();
+  });
+}
