@@ -487,8 +487,16 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-client.js"></script>
 <script>
-let aktualniCenaKc = 690;
+let aktualniCenaKc = null;
 let zbyvaZakladatelskych = 0;
+// oprava (právní/GDPR audit, 6.10.2026): dřív appka hned při načtení
+// spočítala cenu z "zbyvaZakladatelskych = 0" (výchozí hodnota, než se
+// stihne zeptat Supabase) - cenové pole tak krátce, a při selhání dotazu
+// i natrvalo, ukazovalo běžnou cenu 690 Kč, zatímco text nad formulářem
+// slibuje zakladatelských 499 Kč. Appka teď cenu neukáže (a tlačítko
+// Odeslat objednávku nechá vypnuté), dokud fakt nezjistí, kolik
+// zakladatelských míst zbývá - ať se nikdy neukáže ani nepošle špatná cena.
+let cenaUrcena = false;
 
 // Zakladatelská cena platí pro prvních 20 firem napořád, u všech tří
 // variant (jednotlivec i oba týmy) - ne jen u jednotlivce jako dřív.
@@ -498,8 +506,16 @@ const NAZEV_VARIANTY = { '1': 'Pro jednotlivce (1 osoba)', '5': 'Tým 2 až 5 li
 
 function prepocitatCenu() {
   const varianta = document.getElementById('obj-varianta').value;
+  const cenaEl = document.getElementById('obj-cena');
+  const btn = document.getElementById('objednavka-btn');
+  if (!cenaUrcena) {
+    cenaEl.value = 'zjišťuji cenu…';
+    if (btn) btn.disabled = true;
+    return;
+  }
   aktualniCenaKc = zbyvaZakladatelskych > 0 ? CENA_ZAKLADATELSKA[varianta] : CENA_BEZNA[varianta];
-  document.getElementById('obj-cena').value = aktualniCenaKc + ' Kč/měsíc';
+  cenaEl.value = aktualniCenaKc + ' Kč/měsíc';
+  if (btn) btn.disabled = false;
 }
 prepocitatCenu();
 
@@ -513,8 +529,13 @@ async function nacistZbyvajiciMista() {
     zbyvaZakladatelskych = Math.max(0, 20 - (data || 0));
   } catch (ex) {
     console.warn('Počet zakladajících členů se nepodařilo zjistit.', ex);
+    // bezpečný předpoklad při selhání dotazu: radši běžná cena, než omylem
+    // nabídnout zakladatelskou slevu, když appka doopravdy neví, kolik míst zbývá
+    zbyvaZakladatelskych = 0;
+  } finally {
+    cenaUrcena = true;
+    prepocitatCenu();
   }
-  prepocitatCenu();
 }
 nacistZbyvajiciMista();
 
