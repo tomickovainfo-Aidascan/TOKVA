@@ -471,6 +471,29 @@ const datumCZ = (d) => d ? new Date(d).toLocaleDateString('cs-CZ') : '';
 const STAV_AKCE_CZ = { novy: 'Nový', probiha: 'Probíhá', hotovo: 'Hotovo', overit_vysledek: 'Ověřit výsledek', uzavreno: 'Uzavřeno' };
 const STAV_PROJEKTU_CZ = { aktivni: 'Probíhá', dokonceny: 'Dokončeno', archivovany: 'Archivováno' };
 const ROLE_CZ = { majitel: 'Majitel', spravce: 'Správce', clen: 'Člen', konzultant: 'Konzultant' };
+const STAV_POZVANKY_CZ = { cekajici: 'Čeká na přijetí', prijato: 'Přijato', zruseno: 'Zrušeno' };
+// Stejné názvy jako v Přehledu (moje-tokva), ať v tabulce není technický kód nástroje.
+const NAZEV_NASTROJE_CZ = {
+  '5s': '5S pro každého smrtelníka', '5s-pracoviste': '5S pracoviště', '5x-proc': '5× Proč AI kouč', 'casova-studie': 'Časová studie mého dne',
+  'kalkulacka-m2': 'Kalkulačka nákladů skladu', 'kalkulacka-ztrat': 'Kalkulačka ztrát',
+  'kviz-sklad': 'Jak dobře znáte svůj sklad?', 'kviz-komunikacniho-chaosu': 'Kvíz komunikačního chaosu',
+  'meric-plytvani-pro': 'Měřič plýtvání Pro', 'mini-audit-skladu': 'Mini audit skladu',
+  'mini-audit-vyroby': 'Mini audit výroby', 'spaghetti-pro': 'Spaghetti diagram Pro'
+};
+
+// Supabase vrací nejvýš 1000 řádků na dotaz. Tohle si je dotahá po stránkách,
+// ať větší firmě v záloze potichu nechybí starší data.
+async function nacistVse(sestavitDotaz) {
+  const KROK = 1000;
+  let vse = [];
+  for (let od = 0; ; od += KROK) {
+    const { data, error } = await sestavitDotaz().range(od, od + KROK - 1);
+    if (error) return { data: null, error };
+    vse = vse.concat(data || []);
+    if (!data || data.length < KROK) break;
+  }
+  return { data: vse, error: null };
+}
 
 // Najde v uložených datech výsledku obrázky (půdorys ve Spaghetti, fotky)
 // uložené přímo jako data:image/... a nahradí je odkazem na soubor v ZIPu.
@@ -502,26 +525,68 @@ async function exportovatVsechnaData() {
 
   try {
     const orgId = clenstvi.organization_id;
-    const [vysledky, akce, projekty, soubory, clenove] = await Promise.all([
-      supabaseClient.from('tool_runs').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
-      supabaseClient.from('actions').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
-      supabaseClient.from('projects').select('*').eq('organization_id', orgId).order('created_at', { ascending: false }),
-      supabaseClient.from('files').select('*').eq('organization_id', orgId),
-      supabaseClient.from('organization_members').select('user_id, role, created_at').eq('organization_id', orgId)
+    const tab = (nazev, sloupce, radit) => nacistVse(() => supabaseClient.from(nazev).select(sloupce || '*').eq('organization_id', orgId).order(radit || 'created_at', { ascending: false }).order('id'));
+    const [vysledky, akce, projekty, soubory, clenove, mereni, provozy, pozvanky, tymKola] = await Promise.all([
+      tab('tool_runs'),
+      tab('actions'),
+      tab('projects'),
+      tab('files'),
+      tab('organization_members', 'id, user_id, role, created_at'),
+      tab('measurements', '*', 'measured_at'),
+      tab('locations'),
+      // Bez sloupce token - odkaz z pozvánky do zálohy nepatří.
+      tab('organization_invites', 'id, email, role, status, created_at, expires_at'),
+      tab('kviz_tym_kola')
     ]);
     if (vysledky.error) throw vysledky.error;
     if (akce.error) throw akce.error;
     if (projekty.error) throw projekty.error;
 
+    // Odpovědi z týmových kol kvízu (anonymní, visí na kole, ne přímo na firmě)
+    const K = tymKola.data || [];
+    let tymOdpovedi = { data: [], error: null };
+    if (K.length) {
+      const idKol = K.map(k => k.id);
+      tymOdpovedi = await nacistVse(() => supabaseClient.from('kviz_tym_odpovedi').select('*').in('kolo_id', idKol).order('id'));
+    }
+
+    // Co se nepodařilo načíst, export nezastaví, ale řekne to nahlas.
+    const nenacteno = [];
+    if (soubory.error) nenacteno.push('fotky a soubory');
+    if (clenove.error) nenacteno.push('lidé ve firmě');
+    if (mereni.error) nenacteno.push('měření');
+    if (provozy.error) nenacteno.push('provozy');
+    if (pozvanky.error) nenacteno.push('pozvánky');
+    if (tymKola.error || tymOdpovedi.error) nenacteno.push('týmová kola kvízu');
+    if (nenacteno.length) console.warn('Export: část dat se nepodařilo načíst.', { soubory: soubory.error, clenove: clenove.error, mereni: mereni.error, provozy: provozy.error, pozvanky: pozvanky.error, tymKola: tymKola.error, tymOdpovedi: tymOdpovedi.error });
+
     const zip = new JSZip();
     const V = vysledky.data || [], A = akce.data || [], P = projekty.data || [];
+    const M = mereni.data || [], L = provozy.data || [], POZ = pozvanky.data || [], KO = tymOdpovedi.data || [];
     const nazevProjektu = {}; P.forEach(p => { nazevProjektu[p.id] = p.name; });
     const nazevVysledku = {}; V.forEach(v => { nazevVysledku[v.id] = v.nazev; });
+    const nazevProvozu = {}; L.forEach(l => { nazevProvozu[l.id] = l.name; });
+    const kodKola = {}; K.forEach(k => { kodKola[k.id] = k.kod; });
 
     // 1) Čitelné tabulky pro Excel
     zip.file('vysledky-nastroju.csv', tabulkaNaCSV(
       ['Datum', 'Nástroj', 'Název', 'Shrnutí', 'Hlavní hodnota', 'Jednotka', 'Projekt', 'ID'],
-      V.map(v => [datumCZ(v.created_at), v.nastroj, v.nazev, v.shrnuti, v.hlavni_hodnota_cislo != null ? v.hlavni_hodnota_cislo : (v.hlavni_hodnota_text || ''), v.hlavni_hodnota_jednotka, nazevProjektu[v.project_id] || '', v.id])));
+      V.map(v => [datumCZ(v.created_at), NAZEV_NASTROJE_CZ[v.nastroj] || v.nastroj, v.nazev, v.shrnuti, v.hlavni_hodnota_cislo != null ? v.hlavni_hodnota_cislo : (v.hlavni_hodnota_text || ''), v.hlavni_hodnota_jednotka, nazevProjektu[v.project_id] || '', v.id])));
+    if (M.length) {
+      zip.file('mereni.csv', tabulkaNaCSV(
+        ['Datum', 'Ukazatel', 'Hodnota', 'Jednotka', 'Projekt', 'Provoz', 'Zdrojový výsledek'],
+        M.map(m => [datumCZ(m.measured_at), m.metric_name, m.metric_value, m.unit, nazevProjektu[m.project_id] || '', nazevProvozu[m.location_id] || '', nazevVysledku[m.tool_run_id] || ''])));
+    }
+    if (POZ.length) {
+      zip.file('pozvanky.csv', tabulkaNaCSV(['E-mail', 'Role', 'Stav', 'Pozváno', 'Platí do'],
+        POZ.map(p => [p.email, ROLE_CZ[p.role] || p.role, STAV_POZVANKY_CZ[p.status] || p.status, datumCZ(p.created_at), datumCZ(p.expires_at)])));
+    }
+    if (K.length) {
+      zip.file('tymovy-kviz.csv', tabulkaNaCSV(['Kód kola', 'Nástroj', 'Stav kola', 'Spuštěno', 'Skóre', 'Maximum', 'Výsledky po oblastech'],
+        KO.length
+          ? KO.map(o => { const k = K.find(x => x.id === o.kolo_id) || {}; return [kodKola[o.kolo_id] || '', NAZEV_NASTROJE_CZ[k.nastroj] || k.nastroj || '', k.uzavreno ? 'Uzavřené' : 'Otevřené', datumCZ(k.created_at), o.skore, o.max_skore, o.oblastni_vysledky]; })
+          : K.map(k => [k.kod, NAZEV_NASTROJE_CZ[k.nastroj] || k.nastroj, k.uzavreno ? 'Uzavřené' : 'Otevřené', datumCZ(k.created_at), '', '', ''])));
+    }
     zip.file('akcni-plan.csv', tabulkaNaCSV(
       ['Úkol', 'Projekt', 'Stav', 'Odpovídá', 'Termín', 'Důvod', 'Poznámka', 'Investice (Kč)', 'Očekávaný přínos (Kč/rok)', 'Skutečný stav', 'Skutečný přínos (Kč/rok)', 'Datum ověření', 'Ověřeno', 'Zdrojový výsledek', 'Vytvořeno'],
       A.map(a => [a.title, nazevProjektu[a.project_id] || '', STAV_AKCE_CZ[a.status] || a.status, a.responsible_person, datumCZ(a.due_date), a.reason, a.note, a.estimated_investment, a.expected_benefit, a.actual_state, a.actual_benefit, datumCZ(a.verification_date), a.verification_confirmed === true ? 'Ano' : (a.verification_confirmed === false ? 'Ne' : ''), nazevVysledku[a.tool_run_id] || '', datumCZ(a.created_at)])));
@@ -540,7 +605,10 @@ async function exportovatVsechnaData() {
     zip.file('kompletni-data.json', JSON.stringify({
       exportovano: new Date().toISOString(),
       firma: clenstvi.organizations ? clenstvi.organizations.name : '',
-      vysledky: vysledkyKompletni, akcni_plan: A, projekty: P, soubory: soubory.data || []
+      vysledky: vysledkyKompletni, akcni_plan: A, projekty: P, soubory: soubory.data || [],
+      mereni: M, provozy: L, clenove: clenove.data || [], pozvanky: POZ,
+      tymovy_kviz: { kola: K, odpovedi: KO },
+      nepodarilo_se_nacist: nenacteno
     }, null, 2));
     obrazky.forEach(o => zip.file(o.nazev, o.base64, { base64: true }));
 
@@ -561,10 +629,10 @@ async function exportovatVsechnaData() {
 
     // 4) Záloha 5S z tohoto prohlížeče (pro jistotu, kdyby se něco ještě nestihlo uložit do účtu)
     let ma5s = false;
+    const obr5s = [];
     try {
       const d5s = JSON.parse(localStorage.getItem('5s_data') || 'null');
       if (d5s && d5s.mista && d5s.mista.length) {
-        const obr5s = [];
         zip.file('5s-zaloha-z-tohoto-prohlizece.json', JSON.stringify(vytahnoutObrazky(d5s, '5s', obr5s), null, 2));
         obr5s.forEach(o => zip.file(o.nazev, o.base64, { base64: true }));
         ma5s = true;
@@ -577,12 +645,16 @@ async function exportovatVsechnaData() {
       'akcni-plan.csv          všechny úkoly\r\n' +
       'projekty.csv            všechny projekty\r\n' +
       'clenove.csv             lidé ve firmě a jejich role\r\n' +
+      (POZ.length ? 'pozvanky.csv            pozvánky do firmy a jejich stav\r\n' : '') +
+      (M.length ? 'mereni.csv              jednotlivé naměřené hodnoty (5S skóre, časová studie, náklady skladu)\r\n' : '') +
+      (K.length ? 'tymovy-kviz.csv         týmová kola kvízu a anonymní odpovědi kolegů\r\n' : '') +
       'kompletni-data.json     úplná data včetně všech odpovědí, vstupů, tras a poznámek\r\n' +
       'obrazky/                obrázky uložené u výsledků (třeba půdorysy ze Spaghetti diagramu)\r\n' +
       'fotky-akcniho-planu/    fotky přiložené k úkolům\r\n' +
       'fotky-5s/               fotky z pracovišť 5S (před, po, standard)\r\n' +
       (ma5s ? '5s-zaloha-z-tohoto-prohlizece.json   záloha 5S z prohlížeče, ve kterém jste export stáhli\r\n' : '') +
-      '\r\nPracoviště 5S (kroky, poznámky, standard, kontroly) najdete v kompletni-data.json u nástroje 5s-pracoviste.\r\n');
+      '\r\nPracoviště 5S (kroky, poznámky, standard, kontroly) najdete v kompletni-data.json u nástroje 5s-pracoviste.\r\n' +
+      (nenacteno.length ? '\r\nPOZOR: tuhle část dat se nepodařilo načíst a v exportu chybí: ' + nenacteno.join(', ') + '. Zkuste export znovu.\r\n' : ''));
 
     const blob = await zip.generateAsync({ type: 'blob' });
     const nazevFirmy = (clenstvi.organizations && clenstvi.organizations.name || 'firma').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
@@ -595,8 +667,10 @@ async function exportovatVsechnaData() {
     a.remove();
 
     hlaska.className = 'hlaska ok';
-    hlaska.textContent = 'Export stažen: ' + V.length + ' výsledků, ' + A.length + ' úkolů, ' + P.length + ' projektů, ' + (obrazky.length + fotekOk) + ' obrázků a fotek.' +
-      (fotekChyba ? ' ' + fotekChyba + ' fotek se nepodařilo stáhnout, zkuste export znovu.' : '');
+    hlaska.textContent = 'Export stažen: ' + V.length + ' výsledků, ' + A.length + ' úkolů, ' + P.length + ' projektů, ' + (obrazky.length + obr5s.length + fotekOk) + ' obrázků a fotek.' +
+      (fotekChyba ? ' ' + fotekChyba + ' fotek se nepodařilo stáhnout, zkuste export znovu.' : '') +
+      (nenacteno.length ? ' Nepodařilo se načíst: ' + nenacteno.join(', ') + '. Zkuste export znovu.' : '');
+    if (fotekChyba || nenacteno.length) hlaska.className = 'hlaska chyba';
   } catch (e) {
     console.warn('Export všech dat se nepodařil.', e);
     hlaska.className = 'hlaska chyba';
