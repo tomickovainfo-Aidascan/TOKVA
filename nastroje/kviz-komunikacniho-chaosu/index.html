@@ -1899,6 +1899,7 @@ async function nacistStavTymu() {
     if (!kola || kola.length === 0) {
       aktivniKolo = null;
       renderTymStart(obsah);
+      await pridatPosledniUzavreneKolo(obsah);
       return;
     }
     aktivniKolo = kola[0];
@@ -1919,6 +1920,46 @@ function renderTymStart(obsah) {
   btn.textContent = 'Spustit kolo pro tým';
   btn.onclick = () => spustitTymoveKolo(btn);
   obsah.appendChild(btn);
+}
+
+// Dřív po zavření kola porovnání z okna Tým úplně zmizelo (appka hledala
+// jen otevřené kolo) a majitel se k odpovědím týmu už nedostal. Teď pod
+// tlačítkem pro nové kolo ukáže to poslední uzavřené.
+async function pridatPosledniUzavreneKolo(obsah) {
+  try {
+    const { data: kola, error } = await supabaseClient
+      .from('kviz_tym_kola')
+      .select('id, kod, uzavreno, created_at')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'kviz-komunikacniho-chaosu')
+      .eq('uzavreno', true)
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (error) throw error;
+    if (!kola || !kola.length) return;
+    const kolo = kola[0];
+    const { data: odpovedi } = await supabaseClient.from('kviz_tym_odpovedi').select('id').eq('kolo_id', kolo.id);
+    const pocet = odpovedi ? odpovedi.length : 0;
+    const box = document.createElement('div');
+    box.style.cssText = 'margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);';
+    const p = document.createElement('p');
+    p.style.color = 'rgba(255,255,255,.7)';
+    const d = new Date(kolo.created_at);
+    p.textContent = 'Poslední uzavřené kolo (spuštěné ' + d.getDate() + '. ' + (d.getMonth() + 1) + '. ' + d.getFullYear() + '): ' +
+      pocet + (pocet === 1 ? ' odpověď.' : (pocet >= 2 && pocet <= 4) ? ' odpovědi.' : ' odpovědí.');
+    box.appendChild(p);
+    if (pocet >= MIN_ZOBRAZIT_TYM) {
+      const btn = document.createElement('button');
+      btn.className = 'modal-save';
+      btn.style.cssText = 'background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);';
+      btn.textContent = 'Zobrazit porovnání uzavřeného kola';
+      btn.onclick = () => zobrazitPorovnani(obsah, kolo);
+      box.appendChild(btn);
+    }
+    obsah.appendChild(box);
+  } catch (e) {
+    console.warn('Uzavřené kolo se nepodařilo načíst.', e);
+  }
 }
 
 async function spustitTymoveKolo(btn) {
@@ -1993,7 +2034,7 @@ async function renderTymStav(obsah) {
   const stav = document.createElement('p');
   stav.style.fontWeight = '600';
   stav.style.color = 'white';
-  stav.textContent = pocet + (pocet === 1 ? ' odpověď zatím přišla.' : ' odpovědí zatím přišlo.');
+  stav.textContent = pocet + (pocet === 1 ? ' odpověď zatím přišla.' : (pocet >= 2 && pocet <= 4) ? ' odpovědi zatím přišly.' : ' odpovědí zatím přišlo.');
   obsah.appendChild(stav);
 
   if (pocet >= MIN_ZOBRAZIT_TYM) {
@@ -2058,13 +2099,14 @@ function zavritKolo(btn) {
   });
 }
 
-async function zobrazitPorovnani(obsah) {
+async function zobrazitPorovnani(obsah, kolo) {
+  const koloProPorovnani = kolo || aktivniKolo;
   obsah.innerHTML = '<div class="historie-prazdno">Počítám průměr...</div>';
   try {
     const { data: odpovedi, error } = await supabaseClient
       .from('kviz_tym_odpovedi')
       .select('oblastni_vysledky')
-      .eq('kolo_id', aktivniKolo.id);
+      .eq('kolo_id', koloProPorovnani.id);
     if (error) throw error;
 
     // Průměr týmu za oblast, jen z odpovědí kde daná oblast nebyla "nevím"
@@ -2130,6 +2172,35 @@ async function zobrazitPorovnani(obsah) {
     console.warn('Porovnání se nepodařilo spočítat.', e);
     obsah.innerHTML = '<div class="historie-prazdno">Porovnání se teď nepodařilo spočítat. Zkuste to prosím později.</div>';
   }
+}
+
+// Kolega, který otevře odkaz už uzavřeného (nebo neexistujícího) kola, se to
+// dřív dozvěděl až po vyplnění všech 11 otázek, při odeslání. Appka to teď
+// zkontroluje hned po otevření a kvíz místo toho rovnou schová.
+async function zkontrolovatTymoveKoloPriOtevreni() {
+  if (!tymKod) return;
+  let text = null;
+  try {
+    const { data: kolo, error } = await supabaseClient.rpc('najit_tym_kolo', { p_kod: tymKod });
+    if (error) throw error;
+    const nalezene = kolo && kolo[0];
+    if (!nalezene) text = 'Tenhle odkaz na týmové kolo appka nenašla. Zkontrolujte ho prosím, nebo si řekněte o nový.';
+    else if (nalezene.uzavreno) text = 'Tohle týmové kolo je už uzavřené a další odpovědi nesbírá. Díky, že jste to chtěli vyplnit.';
+  } catch (e) {
+    console.warn('Stav týmového kola se nepodařilo ověřit, kvíz zůstává otevřený.', e);
+    return;
+  }
+  if (!text) return;
+  const hero = document.querySelector('.hero-inner');
+  if (hero) {
+    const box = document.createElement('div');
+    box.id = 'tym-kolo-uzavreno';
+    box.style.cssText = 'margin-top:18px;background:rgba(233,169,27,.12);border:1px solid #e9a91b;border-radius:10px;padding:14px 16px;color:#fff;font-size:15px;font-weight:600;line-height:1.5;';
+    box.textContent = text;
+    hero.appendChild(box);
+  }
+  const otazky = document.getElementById('otazky');
+  if (otazky) otazky.style.display = 'none';
 }
 
 // Zaměstnanecká strana - appka otevřená přes odkaz s ?tym=KOD po vyplnění
@@ -2591,6 +2662,7 @@ function zacitZnovuSkutecne(){
 nacistRozpracovanyKviz();
 vykreslitOtazky();
 nacistPrihlaseniStav();
+zkontrolovatTymoveKoloPriOtevreni();
 </script>
 <script>
 // Sdílené odesílání vlastních událostí do GA4 - no-op, dokud gtag
