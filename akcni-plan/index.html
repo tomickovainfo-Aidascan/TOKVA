@@ -925,19 +925,22 @@ const RENDER_DETAIL = {
   },
   '5x-proc': function (d) {
     if (!d.raw) return '';
-    return '<div class="detail-raw">' + escapovat(d.raw) + '</div>';
+    // AI výstup je psaný v Markdownu - hvězdičky, mřížky a oddělovače se tu
+    // dřív ukazovaly doslova, i s useknutým "##" po značce konce.
+    const cisty = String(d.raw).replace(/\*\*|__/g, '').replace(/^[ \t]*#{1,6}[ \t]*/gm, '').replace(/^[ \t]*-{3,}[ \t]*$/gm, '').replace(/^[ \t]*=*[ \t]*KONEC[ \t]*=*[ \t]*$/gm, '').replace(/\n{3,}/g, '\n\n').trim();
+    return '<div class="detail-raw">' + escapovat(cisty) + '</div>';
   },
   'kalkulacka-ztrat': function (d) {
     if (!d.vysledky) return '';
     const v = d.vstupy || {}, r = d.vysledky, dop = d.doporuceni || {};
     const fmtKc = n => Math.round(n).toLocaleString('cs-CZ') + ' Kč';
     let html = '<div class="detail-fallback"><strong>Roční potenciál úspory: ' + fmtKc(r.rok) + '</strong><br>' +
-      'Měsíčně: ' + fmtKc(r.mesic) + ' · Hodin/týden: ' + r.celkem.toFixed(1) + ' · Km/rok: ' + Math.round(r.km).toLocaleString('cs-CZ') + ' · Úvazků: ' + r.uvazek.toFixed(1) + '</div>';
+      'Měsíčně: ' + fmtKc(r.mesic) + ' · Hodin/týden: ' + r.celkem.toFixed(1).replace('.', ',') + ' · Km/rok: ' + Math.round(r.km).toLocaleString('cs-CZ') + ' · Úvazků: ' + r.uvazek.toFixed(1).replace('.', ',') + '</div>';
     html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Vstupy</strong><br>' +
       'Počet lidí: ' + escapovat(String(v.lide)) + ' · Směn: ' + escapovat(String(v.smeny)) + ' · Délka směny: ' + escapovat(String(v.delkaSmeny)) + ' h · Sazba: ' + fmtKc(v.mzda) + '/h<br>' +
       'Zbytečná chůze: ' + escapovat(String(v.chuze)) + ' min/směnu · Administrativa: ' + escapovat(String(v.admin)) + ' min/den · Čekání: ' + escapovat(String(v.prostoje)) + ' min/směnu · Kamiony: ' + escapovat(String(v.kamionu)) + '× po ' + escapovat(String(v.kamionCas)) + ' min</div>';
     html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Rozpad ztrát (h/týden)</strong><br>' +
-      'Chůze: ' + r.chuzeh.toFixed(1) + ' · Administrativa: ' + r.adminh.toFixed(1) + ' · Kamiony: ' + r.kamionh.toFixed(1) + ' · Čekání: ' + r.prostojes.toFixed(1) + '</div>';
+      'Chůze: ' + r.chuzeh.toFixed(1).replace('.', ',') + ' · Administrativa: ' + r.adminh.toFixed(1).replace('.', ',') + ' · Kamiony: ' + r.kamionh.toFixed(1).replace('.', ',') + ' · Čekání: ' + r.prostojes.toFixed(1).replace('.', ',') + '</div>';
     if (dop.nazev) {
       html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Doporučení</strong><br>' + escapovat(dop.nazev) + (dop.popis ? '<br>' + escapovat(dop.popis) : '') + '</div>';
     }
@@ -969,18 +972,18 @@ const RENDER_DETAIL = {
       return vlastni && vlastni.nazev ? vlastni.nazev : k;
     };
     let html = '<div class="detail-fallback"><strong>' + escapovat(String(d.plyPct)) + ' % mimo přímou práci</strong><br>' +
-      'Cyklů: ' + escapovat(String(d.cyklu)) + ' · Průměrný cyklus: ' + (d.avgC != null ? d.avgC.toFixed(1) : '?') + ' s' +
+      'Cyklů: ' + escapovat(String(d.cyklu)) + ' · Průměrný cyklus: ' + (d.avgC != null ? d.avgC.toFixed(1).replace('.', ',') : '?') + ' s' +
       (d.plyKcRok != null ? ' · Potenciál: ' + Math.round(d.plyKcRok).toLocaleString('cs-CZ') + ' Kč/rok' : '') + '</div>';
     html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Kategorie (průměr/cyklus)</strong><br>' +
-      Object.keys(d.kategorie_avg).map(function (k) { return nazevKat(k) + ': ' + d.kategorie_avg[k].toFixed(1) + ' s'; }).join(' · ') +
+      Object.keys(d.kategorie_avg).map(function (k) { return nazevKat(k) + ': ' + d.kategorie_avg[k].toFixed(1).replace('.', ',') + ' s'; }).join(' · ') +
       '</div>';
     if (d.cykly && d.cykly.length) {
       html += '<div class="detail-fallback" style="margin-top:10px;"><strong>Jednotlivé cykly</strong><br>' +
-        d.cykly.map(function (c, i) { return 'C' + (i + 1) + ': ' + Math.round(c.celkem) + ' s'; }).join(' · ') +
+        d.cykly.map(function (c, i) { return 'C' + (i + 1) + ': ' + (Math.round(c.celkem * 10) / 10).toFixed(1).replace('.', ',') + ' s'; }).join(' · ') +
         '</div>';
     }
     if (d.hodinovaSazba != null) {
-      html += '<div class="detail-fallback" style="margin-top:10px;">Zadaný náklad práce: ' + d.hodinovaSazba + ' Kč/h × ' + d.pocetPracovniku + (d.pocetPracovniku === 1 ? ' pracovník' : ' pracovníků') + (d.pocetKusu ? ' · Objem zakázky: ' + d.pocetKusu + ' ks' : '') + '</div>';
+      html += '<div class="detail-fallback" style="margin-top:10px;">Zadaný náklad práce: ' + d.hodinovaSazba + ' Kč/h × ' + d.pocetPracovniku + (d.pocetPracovniku === 1 ? ' pracovník' : (d.pocetPracovniku >= 2 && d.pocetPracovniku <= 4 ? ' pracovníci' : ' pracovníků')) + (d.pocetKusu ? ' · Objem zakázky: ' + d.pocetKusu + ' ks' : '') + '</div>';
     }
     return html;
   }

@@ -761,7 +761,7 @@ nav {
   <div class="hero-inner">
     <div class="tool-badge">Vedoucí skladu nebo výroby, kteří řeší furt stejný problém dokola</div>
     <h1>Od výmluvy <em>ke skutečné příčině</em></h1>
-    <p>AI kouč se vás postupně zeptá pětkrát proč a nenechá vás skončit u výmluvy. Na konci dostanete kořenovou příčinu a první krok černé na bílém. Jedna kompletní analýza zdarma, stačí e-mail.</p>
+    <p>AI kouč se vás postupně zeptá pětkrát proč a nenechá vás skončit u výmluvy. Na konci dostanete kořenovou příčinu a první krok černé na bílém. <span id="hero-zdarma">Jedna kompletní analýza zdarma, stačí e-mail.</span></p>
     <div class="hero-meta">
       <span>Problém</span>
       <span>Logická analýza</span>
@@ -1115,6 +1115,9 @@ async function nacistPrihlaseniStav() {
     prepnoutOdkazyNaPro(jePro);
     zobrazitOdkazAkcniPlan(jePro);
     zobrazitOdkazProjekty(jePro);
+    // V Pro neplatí věta o jedné analýze zdarma, analýzy se ukládají do účtu firmy.
+    const heroZdarma = document.getElementById('hero-zdarma');
+    if (heroZdarma && jePro) heroZdarma.textContent = 'Analýzy se ukládají do účtu firmy.';
   } catch (e) {
     console.warn('Přihlašovací stav se nepodařilo zjistit, appka jede dál (Free přes Apps Script funguje beze změny).', e);
     session = null;
@@ -1215,8 +1218,11 @@ function addMsg(role, text, neuplne) {
 
   // Detekce výstupu
   if (role === 'ai' && text.includes('===VÝSTUP===')) {
-    const before = text.split('===VÝSTUP===')[0].trim();
-    const outputRaw = text.split('===VÝSTUP===')[1].split('===KONEC===')[0].trim();
+    // AI občas obalí značky Markdownem ("## ===VÝSTUP===", "---") - zbytek
+    // "##" nebo "---" pak visel na konci úvodní zprávy i uloženého výstupu.
+    const bezZbytkuZnacek = s => s.replace(/(\s*(#{1,6}|-{3,}|\*{3,}|_{3,}|={3,}))+\s*$/, '').replace(/^(\s*(#{1,6}|-{3,}|\*{3,}|_{3,}|={3,})\s*\n)+/, '').trim();
+    const before = bezZbytkuZnacek(text.split('===VÝSTUP===')[0]);
+    const outputRaw = bezZbytkuZnacek(text.split('===VÝSTUP===')[1].split('===KONEC===')[0]);
     const vystupNeuplny = !!neuplne || !text.includes('===KONEC===');
 
     if (before) {
@@ -1463,8 +1469,16 @@ async function vytvoritUkolyZAnalyzy(raw, btn) {
     } catch (e) {}
   }
   // Název úkolu = první věta, celý text jde do poznámky (dřív byl název 300 znaků přes několik řádků).
+  // Přeskočí řádky, které jsou jen nadpisem skupiny ("Krátkodobě (do 2 týdnů):",
+  // "**Okamžitě:**") - dřív se z nich stal název úkolu místo samotné akce.
+  const jeNadpis = function (r) {
+    return /:$/.test(r) && r.length <= 60;
+  };
   const kratkyNazev = function (t) {
-    let prvni = (t.split('\n').map(x => x.trim()).filter(Boolean)[0] || t).replace(/^(Akce|Krok|Opatření)\s*:\s*/i, '').replace(/^\d+\.\s*/, '').replace(/^[A-Z]\)\s*/, '');
+    const radky = t.split('\n')
+      .map(x => x.replace(/\*\*|__/g, '').replace(/^[\s#>*•\-]+/, '').trim())
+      .filter(Boolean);
+    let prvni = (radky.find(r => !jeNadpis(r)) || radky[0] || t).replace(/^(Akce|Krok|Opatření)\s*:\s*/i, '').replace(/^\d+\.\s*/, '').replace(/^[A-Z]\)\s*/, '');
     if (prvni.length > 140) prvni = prvni.slice(0, 140).replace(/\s+\S*$/, '') + '…';
     return prvni;
   };
