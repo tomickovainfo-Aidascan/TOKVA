@@ -941,7 +941,7 @@ function otevritModalDetailVysledkuZeZaznamu(z, uvod) {
     const nazevKat = nazevKategorieZeZaznamu(z, k);
     const sec = avg[k];
     return '<tr><td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;">' + nazevKat + '</td>' +
-      '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + sec.toFixed(1) + ' s</td></tr>';
+      '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + sec.toFixed(1).replace('.', ',') + ' s</td></tr>';
   }).join('');
   const radkyCyklu = (z.cykly || []).map(function (c, idx) {
     return '<tr><td style="padding:6px;border-bottom:1px solid #f0f0f0;">Cyklus ' + (idx + 1) + '</td>' +
@@ -2007,7 +2007,7 @@ function nacistHistorii() {
       <div class="hist-row" onclick="otevritModalDetailVysledku(${i})">
         <input type="checkbox" class="hist-check" id="hist-check-${i}" onclick="event.stopPropagation()" onchange="prepnoutVyber(${i})">
         <div class="hist-nazev">${z.nazev}</div>
-        <div class="hist-meta">${z.datum} · ${z.cyklu} cyklů</div>
+        <div class="hist-meta">${z.datum} · ${z.cyklu} ${z.cyklu === 1 ? 'cyklus' : (z.cyklu >= 2 && z.cyklu <= 4) ? 'cykly' : 'cyklů'}</div>
         <div class="hist-ply" style="color:${z.plyPct>40?'#c0392b':z.plyPct>20?'#d97706':'#2a7a4f'}">${z.plyPct}%</div>
         ${z.toolRunId ? `<div class="hist-del" onclick="otevritModalAkcniPlan(${i}, event)" title="Přidat do akčního plánu" style="color:var(--gold-dark);">+</div>` : ''}
         <div class="hist-del" onclick="smazatHistorii(${i}, event)" title="Smazat">×</div>
@@ -2100,7 +2100,7 @@ function porovnatVybrane() {
       return '<tr><td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;">' + nazevKat + '</td>' +
         '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + (va != null ? va.toFixed(1) : '-') + ' s</td>' +
         '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-family:\'DM Mono\',monospace;">' + (vb != null ? vb.toFixed(1) : '-') + ' s</td>' +
-        '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-weight:700;color:' + barva + ';">' + (va != null && vb != null ? (rozdil > 0 ? '+' : '') + rozdil.toFixed(1) + ' s' : '') + '</td></tr>';
+        '<td style="padding:7px 6px;border-bottom:1px solid #f0f0f0;text-align:right;font-weight:700;color:' + barva + ';">' + (va != null && vb != null ? (rozdil > 0 ? '+' : '') + rozdil.toFixed(1).replace('.', ',') + ' s' : '') + '</td></tr>';
     }).join('');
     const tabKat = document.createElement('div');
     tabKat.style.cssText = 'overflow-x:auto;margin-top:14px;';
@@ -2447,7 +2447,7 @@ function fmtC(s) { const r = Math.round(s); return pad(Math.floor(r/60)) + ':' +
 // U krátkých hodnot appka zobrazí desetinu sekundy (např. "3.4 s") místo
 // MM:SS, ať rychlé operace nezmizí jako "00:00" - viz procenta výš, počítaná
 // se stejnou přesností (desetiny sekundy, ne celé sekundy).
-function fmtCJemne(s) { return s < 10 ? s.toFixed(1) + ' s' : fmtC(s); }
+function fmtCJemne(s) { return s < 10 ? s.toFixed(1).replace('.', ',') + ' s' : fmtC(s); }
 
 // Obnoví rozpracované měření uložené v localStorage (viz DRAFT_KEY_MERIC
 // výš) - přeskočí Krok 1-4 a appku rovnou nastaví do stavu, ve kterém
