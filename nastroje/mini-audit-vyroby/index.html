@@ -1208,6 +1208,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
 <script src="../../auth.js"></script>
+<script src="../../prvni-krok.js"></script>
 <script>
 const TIPY = {
   1: "Zkuste se na chvíli postavit vedle libovolného pracoviště a zeptat se operátora: co teď vyrábíte a proč zrovna tohle? Pokud odpověď zabere víc než pár vteřin, nebo musí zavolat mistrovi, priorita není vidět, je jen v hlavě někoho jiného. Pomůže jednoduchá tabule nebo štítek u linky, ne složitý systém - stačí, aby bylo jasné co, kolik a v jakém pořadí.",
@@ -2354,6 +2355,7 @@ function otevritModalDetailVysledku(i) {
     return '<div class="detail-otazka"><div class="detail-otazka-text">' + text + '</div>' +
       '<div class="detail-otazka-odp ' + trida + '">' + znacka + '</div></div>';
   }).join('');
+  if (typeof tokvaVlozitPrvniKrok === 'function') tokvaVlozitPrvniKrok(document.getElementById('modal-detail-vysledku'), 'mini-audit-vyroby', d);
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
 }
 

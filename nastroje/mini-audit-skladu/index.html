@@ -1207,6 +1207,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
 <script src="../../auth.js"></script>
+<script src="../../prvni-krok.js"></script>
 <script>
 const TIPY = {
   1: "Má každá položka svoji přesnou pozici v systému i fyzicky ve skladu? Je místo viditelně označené? Sedí to, co systém říká, s tím, co tam reálně leží? Zkuste se na chvíli vcítit do nového skladníka první den v práci. Chápe váš systém bez vysvětlování? Dává mu logiku a smysl? Nebo se zorientuje jen ten, kdo tam pracuje roky?",
@@ -2266,6 +2267,7 @@ function otevritModalDetailVysledku(i) {
     return '<div class="detail-otazka"><div class="detail-otazka-text">' + text + '</div>' +
       '<div class="detail-otazka-odp ' + trida + '">' + znacka + '</div></div>';
   }).join('');
+  if (typeof tokvaVlozitPrvniKrok === 'function') tokvaVlozitPrvniKrok(document.getElementById('modal-detail-vysledku'), 'mini-audit-skladu', d);
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
 }
 

@@ -1555,6 +1555,8 @@ function detailDoporuceniChaos(d) {
     '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#e9a91b;margin-bottom:6px;">Nejslabší oblast</div>' +
     '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;">' + escapeHtml(OBLASTI[k].nazev) + '</div>' +
     (rada ? '<div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.6;">' + escapeHtml(rada) + '</div>' : '') +
+    // První krok z obrazovky výsledku, ať je z historie jasné, jak pokračovat.
+    (PRVNI_KROK_OBLAST[k] ? '<div style="font-size:13.5px;color:#fff;line-height:1.6;margin-top:10px;"><strong style="color:#e9a91b;">Jak pokračovat, první krok:</strong> ' + escapeHtml(PRVNI_KROK_OBLAST[k]) + '</div>' : '') +
     '</div>';
 }
 function detailOdpovediChaos(d) {

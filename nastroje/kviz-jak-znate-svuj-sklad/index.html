@@ -1072,6 +1072,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
 <script src="../../auth.js"></script>
+<script src="../../prvni-krok.js"></script>
 <script>
 // MODALY - jednotne upozorneni/potvrzeni misto browser alert()/confirm()
 let _noticeConfirmCb = null;
@@ -1329,6 +1330,7 @@ function otevritModalDetailVysledku(i) {
     return '<div class="detail-otazka"><div class="detail-otazka-text">' + nazev + '</div>' +
       '<div class="detail-otazka-odp ' + trida + '">' + popisky[b] + '</div></div>';
   }).join('');
+  if (typeof tokvaVlozitPrvniKrok === 'function') tokvaVlozitPrvniKrok(document.getElementById('modal-detail-vysledku'), 'kviz-sklad', (r.data || {}));
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
 }
 

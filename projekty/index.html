@@ -465,6 +465,7 @@ body.prezentace footer{display:none;}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-client.js"></script>
 <script src="../auth.js"></script>
+<script src="../prvni-krok.js"></script>
 <script>
 // MODALY - jednotne upozorneni/potvrzeni misto browser alert()/confirm()
 let _noticeConfirmCb = null;
@@ -979,6 +980,8 @@ function otevritDetailVysledku(id) {
       (tr.hlavni_hodnota_text ? escapovat(tr.hlavni_hodnota_text) : '') +
       '</div>';
   }
+  // Doporučený první krok, ať je z historie jasné, jak pokračovat (prvni-krok.js).
+  if (typeof tokvaPrvniKrokHtml === 'function') html = tokvaPrvniKrokHtml(tr.nastroj, d) + html;
   // Karta v projektu dřív ukázala jen tenhle souhrn a nešlo se z ní dostat
   // k celému zdrojovému výsledku v appce - stejný odkaz "Otevřít v appce"
   // už appky Moje Tokva a Akční plán mají.

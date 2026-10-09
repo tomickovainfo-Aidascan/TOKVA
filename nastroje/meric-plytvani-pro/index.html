@@ -753,6 +753,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
 <script src="../../auth.js"></script>
+<script src="../../prvni-krok.js"></script>
 <script>
 // =============================================
 // PŘIHLAŠOVÁNÍ - Tokva Pro (Supabase), celá appka je Pro
@@ -967,6 +968,7 @@ function otevritModalDetailVysledkuZeZaznamu(z, uvod) {
     (maNaklady ? '<div style="margin-top:14px;font-size:12.5px;color:var(--light);">Zadaný náklad práce: ' + z.hodinovaSazba + ' Kč/h × ' + z.pocetPracovniku + (z.pocetPracovniku === 1 ? ' pracovník' : ' pracovníků') + (z.pocetKusu ? ' · Objem zakázky: ' + z.pocetKusu + ' ks' : '') + '</div>' :
       '<p style="font-size:12px;color:var(--light);margin-top:14px;">Tenhle výpočet byl uložený ještě předtím, než appka uměla zapamatovat i zadané náklady a vlastní kroky - k dispozici je jen rozpad kategorií výše.</p>') +
     (z.toolRunId ? '<button class="btn-modal-ok" style="width:100%;margin-top:16px;" onclick="zavritModalDetailVysledku();otevritModalAkcniPlanZId(\'' + z.toolRunId + '\')">' + (uvod ? '+ Přidat úkol a zařadit k projektu' : '+ Přidat do akčního plánu') + '</button>' : '');
+  if (typeof tokvaVlozitPrvniKrok === 'function') tokvaVlozitPrvniKrok(document.getElementById('modal-detail-vysledku'), 'meric-plytvani-pro', z);
   document.getElementById('modal-detail-vysledku').classList.add('visible');
 }
 function zavritModalDetailVysledku() {

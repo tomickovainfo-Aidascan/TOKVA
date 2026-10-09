@@ -245,6 +245,7 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-client.js"></script>
 <script src="../auth.js"></script>
+<script src="../prvni-krok.js"></script>
 <script>
 let session = null, clenstvi = null, jePro = false;
 
@@ -605,6 +606,8 @@ async function otevritDetailVysledku(id) {
       (r.hlavni_hodnota_text ? escapovat(r.hlavni_hodnota_text) : '') +
       '</div>';
   }
+  // Doporučený první krok, ať je z historie jasné, jak pokračovat (prvni-krok.js).
+  if (typeof tokvaPrvniKrokHtml === 'function') html = tokvaPrvniKrokHtml(r.nastroj, d) + html;
   const podporuje = NASTROJ_PODPORUJE_ODKAZ.includes(r.nastroj) && NASTROJ_URL[r.nastroj];
   if (podporuje) {
     html += '<a class="detail-odkaz" href="' + NASTROJ_URL[r.nastroj] + '?vysledek=' + r.id + '">Otevřít v appce →</a>';
