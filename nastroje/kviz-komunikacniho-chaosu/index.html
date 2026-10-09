@@ -2131,6 +2131,15 @@ async function zobrazitPorovnani(obsah, kolo) {
     const mujVysledek = mujRadek && mujRadek.data ? mujRadek.data.oblastiVysledky : null;
 
     obsah.innerHTML = '';
+    // Varování o malém počtu odpovědí patří i přímo k porovnání - u
+    // uzavřeného kola se obrazovka se stavem kola vůbec neukazuje.
+    const pocetOdpovedi = (odpovedi || []).length;
+    if (pocetOdpovedi < MIN_DOPORUCENY_TYM) {
+      const varovani = document.createElement('p');
+      varovani.style.color = '#e9a91b';
+      varovani.textContent = 'Porovnání je jen z ' + pocetOdpovedi + ' odpovědí' + '. S tak málo odpověďmi je snazší uhodnout, kdo co napsal, berte výsledek s rezervou.';
+      obsah.appendChild(varovani);
+    }
     if (!mujVysledek) {
       const p = document.createElement('p');
       p.textContent = 'Pro porovnání ještě nemáte uložený svůj vlastní výsledek. Vyplňte kvíz a klikněte na „Uložit tento výsledek“, pak sem zase přijďte.';
