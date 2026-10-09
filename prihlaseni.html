@@ -477,7 +477,19 @@ function prelozitChybu(msg) {
 (async function () {
   const paramsInit = new URLSearchParams(window.location.search);
   if (paramsInit.get('pozvanka')) return; // pozvánku řeší inicializovatPozvanku() níž - nesmí ji přebít tichým přesměrováním podle cizí, už přihlášené session
+  // Odkaz z e-mailu na obnovu hesla člověka dočasně přihlásí. Dřív ho tahle
+  // pojistka hned poslala do Moje Tokva a formulář na nové heslo se vůbec
+  // neukázal, takže si nové heslo nešlo nastavit. U obnovy appka zůstane
+  // na formuláři pro nové heslo.
+  const jeObnova = paramsInit.get('obnova') === '1' || /type=recovery/.test(window.location.hash);
   const session = await ziskatSession();
+  if (jeObnova) {
+    if (session) {
+      skrytVsechnyKroky();
+      document.getElementById('krok-nove-heslo').classList.add('aktivni');
+    }
+    return;
+  }
   if (session) await poPrihlaseni();
 })();
 </script>
