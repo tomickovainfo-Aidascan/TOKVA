@@ -471,6 +471,18 @@ const datumCZ = (d) => d ? new Date(d).toLocaleDateString('cs-CZ') : '';
 const STAV_AKCE_CZ = { novy: 'Nový', probiha: 'Probíhá', hotovo: 'Hotovo', overit_vysledek: 'Ověřit výsledek', uzavreno: 'Uzavřeno' };
 const STAV_PROJEKTU_CZ = { aktivni: 'Probíhá', dokonceny: 'Dokončeno', archivovany: 'Archivováno' };
 const ROLE_CZ = { majitel: 'Majitel', spravce: 'Správce', clen: 'Člen', konzultant: 'Konzultant' };
+// Ukazatele měření a oblasti týmového kvízu česky - v tabulkách dřív
+// zůstávaly technické kódy (cs_produktivni_pct) a surový JSON.
+const UKAZATEL_CZ = { '5s_skore': 'Skóre kontroly 5S', 'cs_produktivni_pct': 'Podíl produktivní práce (Časová studie)', 'kalk_m2_kc_mesic': 'Náklad skladu na m² za měsíc' };
+const OBLAST_KVIZU_CZ = { 'chaos-zmen': 'Chaos při změnách', 'zavislost': 'Závislost na jedné osobě', 'cekani': 'Čekání a dohledávání', 'uloziste': 'Roztříštěné úložiště', 'kanalovy-chaos': 'Kanálový chaos', 'prepisovani': 'Přepisování dat' };
+function oblastiKvizuText(ov) {
+  if (!ov || typeof ov !== 'object') return '';
+  return Object.keys(OBLAST_KVIZU_CZ).filter(k => ov[k]).map(k => {
+    const p = ov[k].pct;
+    return OBLAST_KVIZU_CZ[k] + ': ' + (typeof p === 'number' ? p + ' %' : 'nezjištěno');
+  }).join(', ');
+}
+const tvar = (n, jeden, dva, pet) => n + ' ' + (n === 1 ? jeden : (n >= 2 && n <= 4 ? dva : pet));
 const STAV_POZVANKY_CZ = { cekajici: 'Čeká na přijetí', prijato: 'Přijato', zruseno: 'Zrušeno' };
 // Stejné názvy jako v Přehledu (moje-tokva), ať v tabulce není technický kód nástroje.
 const NAZEV_NASTROJE_CZ = {
@@ -575,7 +587,7 @@ async function exportovatVsechnaData() {
     if (M.length) {
       zip.file('mereni.csv', tabulkaNaCSV(
         ['Datum', 'Ukazatel', 'Hodnota', 'Jednotka', 'Projekt', 'Provoz', 'Zdrojový výsledek'],
-        M.map(m => [datumCZ(m.measured_at), m.metric_name, m.metric_value, m.unit, nazevProjektu[m.project_id] || '', nazevProvozu[m.location_id] || '', nazevVysledku[m.tool_run_id] || ''])));
+        M.map(m => [datumCZ(m.measured_at), UKAZATEL_CZ[m.metric_name] || m.metric_name, m.metric_value, m.unit, nazevProjektu[m.project_id] || '', nazevProvozu[m.location_id] || '', nazevVysledku[m.tool_run_id] || ''])));
     }
     if (POZ.length) {
       zip.file('pozvanky.csv', tabulkaNaCSV(['E-mail', 'Role', 'Stav', 'Pozváno', 'Platí do'],
@@ -584,7 +596,7 @@ async function exportovatVsechnaData() {
     if (K.length) {
       zip.file('tymovy-kviz.csv', tabulkaNaCSV(['Kód kola', 'Nástroj', 'Stav kola', 'Spuštěno', 'Skóre', 'Maximum', 'Výsledky po oblastech'],
         KO.length
-          ? KO.map(o => { const k = K.find(x => x.id === o.kolo_id) || {}; return [kodKola[o.kolo_id] || '', NAZEV_NASTROJE_CZ[k.nastroj] || k.nastroj || '', k.uzavreno ? 'Uzavřené' : 'Otevřené', datumCZ(k.created_at), o.skore, o.max_skore, o.oblastni_vysledky]; })
+          ? KO.map(o => { const k = K.find(x => x.id === o.kolo_id) || {}; return [kodKola[o.kolo_id] || '', NAZEV_NASTROJE_CZ[k.nastroj] || k.nastroj || '', k.uzavreno ? 'Uzavřené' : 'Otevřené', datumCZ(k.created_at), o.skore, o.max_skore, oblastiKvizuText(o.oblastni_vysledky)]; })
           : K.map(k => [k.kod, NAZEV_NASTROJE_CZ[k.nastroj] || k.nastroj, k.uzavreno ? 'Uzavřené' : 'Otevřené', datumCZ(k.created_at), '', '', ''])));
     }
     zip.file('akcni-plan.csv', tabulkaNaCSV(
@@ -657,7 +669,7 @@ async function exportovatVsechnaData() {
       (nenacteno.length ? '\r\nPOZOR: tuhle část dat se nepodařilo načíst a v exportu chybí: ' + nenacteno.join(', ') + '. Zkuste export znovu.\r\n' : ''));
 
     const blob = await zip.generateAsync({ type: 'blob' });
-    const nazevFirmy = (clenstvi.organizations && clenstvi.organizations.name || 'firma').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+    const nazevFirmy = (clenstvi.organizations && clenstvi.organizations.name || 'firma').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase();
     const datum = new Date().toISOString().slice(0, 10);
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -667,7 +679,7 @@ async function exportovatVsechnaData() {
     a.remove();
 
     hlaska.className = 'hlaska ok';
-    hlaska.textContent = 'Export stažen: ' + V.length + ' výsledků, ' + A.length + ' úkolů, ' + P.length + ' projektů, ' + (obrazky.length + obr5s.length + fotekOk) + ' obrázků a fotek.' +
+    hlaska.textContent = 'Export stažen: ' + tvar(V.length, 'výsledek', 'výsledky', 'výsledků') + ', ' + tvar(A.length, 'úkol', 'úkoly', 'úkolů') + ', ' + tvar(P.length, 'projekt', 'projekty', 'projektů') + ', ' + tvar(obrazky.length + obr5s.length + fotekOk, 'obrázek nebo fotka', 'obrázky a fotky', 'obrázků a fotek') + '.' +
       (fotekChyba ? ' ' + fotekChyba + ' fotek se nepodařilo stáhnout, zkuste export znovu.' : '') +
       (nenacteno.length ? ' Nepodařilo se načíst: ' + nenacteno.join(', ') + '. Zkuste export znovu.' : '');
     if (fotekChyba || nenacteno.length) hlaska.className = 'hlaska chyba';
