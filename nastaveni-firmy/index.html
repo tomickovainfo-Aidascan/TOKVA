@@ -429,6 +429,12 @@ async function init() {
   clenstvi = session ? await ziskatMojiOrganizaci() : null;
   jePro = maAktivniPro(clenstvi);
   jsemMajitel = !!clenstvi && clenstvi.role === 'majitel';
+  // Správce dřív nesměl povýšit stávajícího člověka na správce, ale nového
+  // jako správce pozvat mohl. Správce teď zakládá jen majitel, i v pozvánce.
+  if (!jsemMajitel) {
+    const optSpravcePozvanka = document.getElementById('opt-role-spravce');
+    if (optSpravcePozvanka) optSpravcePozvanka.remove();
+  }
 
   zobrazitOdkazMojeTokva(!!clenstvi);
   zobrazitOdkazAkcniPlan(jePro);
