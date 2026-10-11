@@ -588,9 +588,15 @@ async function odeslatObjednavku(e) {
 
   btn.disabled = true;
   try {
-    const { error: signUpError } = await supabaseClient.auth.signUp({ email, password: heslo, options: { data: { company_name: firma } } });
+    const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({ email, password: heslo, options: { data: { company_name: firma } } });
     if (signUpError) throw signUpError;
-    trackTokvaEvent('sign_up', { method: 'email' });
+    // signup_completed jen když účet opravdu vznikl. Supabase u e-mailu,
+    // který už účet má, může vrátit "úspěch" bez identity, to nová
+    // registrace není. Kliknutí ani chyba sem vůbec nedojdou.
+    if (signUpData && signUpData.user && Array.isArray(signUpData.user.identities) && signUpData.user.identities.length > 0) {
+      trackTokvaEvent('sign_up', { method: 'email' });
+      trackTokvaEvent('signup_completed', { method: 'email', placement: 'pro_page', plan_variant: varianta });
+    }
 
     const { data: variabilniSymbol, error: orderError } = await supabaseClient.rpc('vytvorit_objednavku', {
       p_email: email,

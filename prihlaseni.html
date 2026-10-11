@@ -428,7 +428,7 @@ async function prijmoutPozvankuNoveHeslo() {
 
   btn.disabled = true;
   try {
-    const { error: chybaRegistrace } = await supabaseClient.auth.signUp({
+    const { data: dataRegistrace, error: chybaRegistrace } = await supabaseClient.auth.signUp({
       email: window.__pozvankaEmail,
       password: heslo,
       options: { data: { full_name: jmeno } } // databáze si jméno při založení účtu zapíše do profilu
@@ -439,7 +439,12 @@ async function prijmoutPozvankuNoveHeslo() {
       const { data: { session: sNova } } = await supabaseClient.auth.getSession();
       if (sNova) await supabaseClient.from('profiles').update({ full_name: jmeno }).eq('id', sNova.user.id);
     } catch (eJm) { console.warn('Jméno se nepodařilo zapsat do profilu.', eJm); }
-    trackTokvaEvent('sign_up', { method: 'invite' });
+    // signup_completed jen když účet opravdu vznikl (viz /pro/). method
+    // 'invite' odliší pozvané členy týmu od nových zákazníků.
+    if (dataRegistrace && dataRegistrace.user && Array.isArray(dataRegistrace.user.identities) && dataRegistrace.user.identities.length > 0) {
+      trackTokvaEvent('sign_up', { method: 'invite' });
+      trackTokvaEvent('signup_completed', { method: 'invite', placement: 'pozvanka' });
+    }
 
     const { error: chybaPrijeti } = await supabaseClient.rpc('prijmout_pozvanku', { p_token: window.__pozvankaToken });
     if (chybaPrijeti) throw chybaPrijeti;
