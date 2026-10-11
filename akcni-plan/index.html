@@ -516,6 +516,15 @@ function ukazatPotvrzeni(text, onConfirm, potvrditLabel) {
   };
   document.getElementById('notice-overlay').style.display = 'flex';
 }
+function ukazatUpozorneniSmazani() {
+  document.getElementById('notice-icon').textContent = '!';
+  document.getElementById('notice-text').textContent = 'Akci se nepodařilo smazat. Mazat úkoly může jen majitel nebo správce firmy.';
+  document.getElementById('notice-btn-cancel').style.display = 'none';
+  const btnOk = document.getElementById('notice-btn-ok');
+  btnOk.textContent = 'Rozumím';
+  btnOk.onclick = () => zavritUpozorneni();
+  document.getElementById('notice-overlay').style.display = 'flex';
+}
 function zavritUpozorneni() {
   document.getElementById('notice-overlay').style.display = 'none';
   _noticeConfirmCb = null;
@@ -821,7 +830,7 @@ function renderKarty(seznam) {
         '</select>' +
         '<div class="akce-tlacitka">' +
           '<button class="ikona-btn" title="Upravit" aria-label="Upravit" onclick="otevritModalUpravitAkce(\'' + a.id + '\')">' + IKONA_UPRAVIT + '</button>' +
-          '<button class="ikona-btn smazat" title="Smazat" aria-label="Smazat" onclick="smazatAkci(\'' + a.id + '\')">' + IKONA_SMAZAT + '</button>' +
+          (jsemAdmin() ? '<button class="ikona-btn smazat" title="Smazat" aria-label="Smazat" onclick="smazatAkci(\'' + a.id + '\')">' + IKONA_SMAZAT + '</button>' : '') +
         '</div>' +
       '</div>' +
     '</div>';
@@ -1147,8 +1156,14 @@ async function zmenitStatus(id, novyStatus) {
 
 function smazatAkci(id) {
   ukazatPotvrzeni('Opravdu smazat tuhle akci? Nejde vrátit zpět.', async () => {
-    const { error } = await supabaseClient.from('actions').delete().eq('id', id);
-    if (error) { console.warn('Smazání se nepodařilo.', error); return; }
+    // Databáze smazání bez oprávnění neodmítne chybou, jen nic nesmaže. Dřív
+    // appka i tak úkol ze seznamu schovala, jako by byl smazaný.
+    const { data: smazane, error } = await supabaseClient.from('actions').delete().eq('id', id).select('id');
+    if (error || !smazane || !smazane.length) {
+      if (error) console.warn('Smazání se nepodařilo.', error);
+      ukazatUpozorneniSmazani();
+      return;
+    }
     akce = akce.filter(a => a.id !== id);
     renderSeznam();
   });
