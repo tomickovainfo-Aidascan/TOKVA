@@ -1666,6 +1666,11 @@ async function ulozitZarazeniProjektu() {
       const novyVstup = document.getElementById('projekt-novy-nazev');
       if (novyVstup) { novyVstup.value = ''; novyVstup.style.display = 'none'; }
     }
+    // Úkol pod tímhle výsledkem patří nejspíš do stejného projektu. Dřív
+    // zůstával výběr projektu u úkolu na "Bez projektu" a úkol se snadno
+    // založil mimo projekt, kam patří výsledek.
+    const akceSelect = document.getElementById('akce-projekt-select');
+    if (akceSelect && projektId && [...akceSelect.options].some(o => o.value === projektId)) akceSelect.value = projektId;
   } catch (e) {
     console.warn('Zařazení k projektu se nepodařilo uložit.', e);
     stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';

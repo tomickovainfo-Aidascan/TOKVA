@@ -1501,7 +1501,9 @@ function zobrazVysledky() {
     // Dřív appka pole nepřepsala, když už v něm něco bylo - při opakování
     // kvízu tak zůstal návrh z předchozího běhu, i když nový výsledek
     // ukazoval úplně jinou nejhorší oblast.
-    if (akceNazevPole) akceNazevPole.value = 'Zlepšit: ' + OTAZKY[serazene[0][0]-1].toLowerCase();
+    // Otázky jsou ve tvaru otázky ("Nechodí lidé…?"), z "Zlepšit: nechodí lidé…?" byl
+    // nesrozumitelný název úkolu. Předvyplní se konkrétní první krok k nejhorší otázce.
+    if (akceNazevPole) akceNazevPole.value = PRVNI_KROK[serazene[0][0]] || ('Zlepšit: ' + OTAZKY[serazene[0][0]-1].toLowerCase());
     const akceTerminPole = document.getElementById('akce-termin');
     if (akceTerminPole && !akceTerminPole.value) { const dTermin = new Date(); dTermin.setDate(dTermin.getDate() + 30); akceTerminPole.value = dTermin.toISOString().slice(0, 10); }
   } else {
@@ -1928,6 +1930,11 @@ async function ulozitZarazeniProjektu() {
       const novyVstup = document.getElementById('projekt-novy-nazev');
       if (novyVstup) { novyVstup.value = ''; novyVstup.style.display = 'none'; }
     }
+    // Úkol pod tímhle výsledkem patří nejspíš do stejného projektu. Dřív
+    // zůstával výběr projektu u úkolu na "Bez projektu" a úkol se snadno
+    // založil mimo projekt, kam patří výsledek.
+    const akceSelect = document.getElementById('akce-projekt-select');
+    if (akceSelect && projektId && [...akceSelect.options].some(o => o.value === projektId)) akceSelect.value = projektId;
   } catch (e) {
     console.warn('Zařazení k projektu se nepodařilo uložit.', e);
     stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
