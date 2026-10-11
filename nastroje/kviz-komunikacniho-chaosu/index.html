@@ -1338,6 +1338,9 @@ async function ulozitVysledek() {
   try {
     const { data, error } = await supabaseClient.from('tool_runs').insert({
       organization_id: clenstvi.organization_id,
+      // Kdo kvíz vyplnil - týmové porovnání podle toho bere "Vy" od toho,
+      // kdo se dívá, ne poslední výsledek kohokoli z firmy.
+      user_id: session.user.id,
       nastroj: 'kviz-komunikacniho-chaosu',
       nazev: 'Kvíz komunikačního chaosu - ' + skore + '/' + maxSkore,
       shrnuti: 'Skóre ' + skore + '/' + maxSkore + ', nejslabší oblast: ' + nazevNejslabsi,
@@ -2122,15 +2125,30 @@ async function zobrazitPorovnani(obsah, kolo) {
       });
     });
 
-    // Majitelův poslední uložený výsledek jako srovnávací bod
-    const { data: mujRadek } = await supabaseClient
+    // Srovnávací bod "Vy" = poslední výsledek člověka, který se dívá. Dřív
+    // appka brala poslední výsledek kohokoli z firmy, takže když kvíz uložil
+    // kolega, majitel viděl jako "Vy" jeho odpovědi. Starší výsledky autora
+    // uložený nemají, pro ně zůstává záloha na poslední výsledek firmy.
+    let { data: mujRadek } = await supabaseClient
       .from('tool_runs')
       .select('data')
       .eq('organization_id', clenstvi.organization_id)
       .eq('nastroj', 'kviz-komunikacniho-chaosu')
+      .eq('user_id', session.user.id)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
+    if (!mujRadek) {
+      ({ data: mujRadek } = await supabaseClient
+        .from('tool_runs')
+        .select('data')
+        .eq('organization_id', clenstvi.organization_id)
+        .eq('nastroj', 'kviz-komunikacniho-chaosu')
+        .is('user_id', null)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle());
+    }
     const mujVysledek = mujRadek && mujRadek.data ? mujRadek.data.oblastiVysledky : null;
 
     obsah.innerHTML = '';
