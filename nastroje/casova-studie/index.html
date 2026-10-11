@@ -1644,6 +1644,30 @@ let denMereniZapsano = localStorage.getItem('cs_den_mereni_zapsano') === '1';
 let synchronizaceProbiha = false;
 let autosaveTimer = null;
 
+// Rozpracovaný den patří firmě, ne prohlížeči. Když se na stejném počítači
+// přihlásí jiná firma (nebo se člověk odhlásí), den předchozí firmy se schová
+// do její přihrádky a nová firma vidí jen to svoje (viz auth.js).
+const CS_KLICE_FIRMY = ['cs_zaznamy', 'cs_den_run_id', 'cs_den_mereni_zapsano', 'cs_klasifikace', 'cs_hodnota_hodiny'];
+async function oddelitDenPodleFirmy() {
+  if (typeof oddelitMistniDataPodleFirmy !== 'function') return false;
+  const orgId = clenstvi ? clenstvi.organization_id : null;
+  // Před touhle úpravou se data nijak neoznačovala. Když v prohlížeči leží
+  // den uložený v účtu jiné firmy, poznáme to podle jeho záznamu v historii.
+  if (orgId && denRunId && !localStorage.getItem('cs_zaznamy__firma')) {
+    const { data: r, error } = await supabaseClient.from('tool_runs').select('id, organization_id').eq('id', denRunId).maybeSingle();
+    if (!error && (!r || r.organization_id !== orgId)) {
+      const cizi = r ? r.organization_id : 'jina-firma';
+      CS_KLICE_FIRMY.forEach(k => {
+        const v = localStorage.getItem(k);
+        if (v != null) localStorage.setItem(k + '__' + cizi, v);
+        localStorage.setItem(k + '__firma', cizi);
+      });
+    }
+  }
+  if (oddelitMistniDataPodleFirmy(CS_KLICE_FIRMY, orgId)) { location.reload(); return true; }
+  return false;
+}
+
 async function nacistPrihlaseniStav() {
   // Zabaleno v try/catch schválně: appka je pořád zdarma použitelná i offline,
   // nebo když se z jakéhokoli důvodu nenačte Supabase/auth.js (výpadek, adblock,
@@ -1653,6 +1677,7 @@ async function nacistPrihlaseniStav() {
     session = await ziskatSession();
     clenstvi = session ? await ziskatMojiOrganizaci() : null;
     jePro = maAktivniPro(clenstvi);
+    if (await oddelitDenPodleFirmy()) return;
     prepnoutOdkazyNaPro(jePro);
     zobrazitOdkazAkcniPlan(jePro);
     zobrazitOdkazProjekty(jePro);
@@ -2436,7 +2461,7 @@ function sestavitPayloadDne(s) {
 // Novém dni, protože se týkají opakujících se činností napříč dny, ne
 // jednoho dne.
 async function ulozitNeboAktualizovatDen(zapsatMereni) {
-  if (!jePro || !clenstvi) return false;
+  if (!jePro || !clenstvi || window.tokvaPrepinaFirmu) return false;
   const s = spocitatSouhrnDne();
   if (!s) return false;
   if (synchronizaceProbiha) return false;

@@ -169,7 +169,7 @@ function oddelitMistniDataPodleFirmy(klice, orgId) {
       if (Array.isArray(x) && Array.isArray(y)) return JSON.stringify(podleId(x, y));
       if (x && y && Array.isArray(x.mista) && Array.isArray(y.mista)) { x.mista = podleId(x.mista, y.mista); return JSON.stringify(x); }
     } catch (e) {}
-    return a;
+    return b != null ? b : a; // rozdělaný koncept apod.: přednost má to, co člověk dělal teď
   }
   (klice || []).forEach(function (klic) {
     try {
@@ -195,6 +195,19 @@ function oddelitMistniDataPodleFirmy(klice, orgId) {
       localStorage.setItem(klic + '__firma', ted);
     } catch (e) {}
   });
+  if (zmena) {
+    // Stránka se po přepnutí hned načte znovu. Do té doby ale v paměti pořád
+    // běží data předchozí firmy a nástroj by je (autosave, interval, zavření
+    // stránky) mohl zapsat zpátky pod novou firmu. Proto zápisy do těchhle
+    // klíčů až do načtení stránky ignorujeme.
+    window.tokvaPrepinaFirmu = true;
+    try {
+      var blok = {}; (klice || []).forEach(function (k) { blok[k] = 1; });
+      var puvSet = Storage.prototype.setItem, puvRemove = Storage.prototype.removeItem;
+      Storage.prototype.setItem = function (k) { if (this === window.localStorage && blok[k]) return; return puvSet.apply(this, arguments); };
+      Storage.prototype.removeItem = function (k) { if (this === window.localStorage && blok[k]) return; return puvRemove.apply(this, arguments); };
+    } catch (e) {}
+  }
   return zmena;
 }
 

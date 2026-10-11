@@ -1375,7 +1375,10 @@ async function nacistPrihlaseniStav() {
     clenstvi = session ? await ziskatMojiOrganizaci() : null;
     jePro = maAktivniPro(clenstvi);
     // historie patří firmě: po přihlášení jiné firmy (nebo odhlášení) ukázat jen její data
-    if (typeof oddelitMistniDataPodleFirmy === 'function' && oddelitMistniDataPodleFirmy(['5s_data'], clenstvi ? clenstvi.organization_id : null)) { location.reload(); return; }
+    if (typeof oddelitMistniDataPodleFirmy === 'function' && oddelitMistniDataPodleFirmy(['5s_data'], clenstvi ? clenstvi.organization_id : null)) { prepinamFirmu = true; location.reload(); return; }
+    // Pojistka: pracoviště jiné firmy v prohlížeči nesmí zůstat vidět (P1 z testu
+    // 11. 10.: po přepnutí na jinou firmu tu zůstala pracoviště Matěj a.s.).
+    if (odsunoutCiziPracoviste()) { prepinamFirmu = true; location.reload(); return; }
     document.body.classList.toggle('je-pro', !!jePro);
     // V Pro neplatí věta o jednom pracovišti zdarma bez registrace.
     const heroZdarma = document.getElementById('hero-zdarma');
@@ -1599,7 +1602,36 @@ function nastavitSyncStav(stav) {
 
 // Zapíše data do prohlížeče. Když dojde místo (fotky jsou velké), nechá
 // v prohlížeči jen fotky, které ještě nejsou v účtu. Ostatní se stáhnou z účtu.
+// Během přepnutí firmy se stránka hned načítá znovu. Do té doby se nesmí nic
+// zapsat, jinak by se data předchozí firmy vrátila do prohlížeče pod novou firmou.
+let prepinamFirmu = false;
+
+// Pracoviště, která patří jiné firmě (podle cloud.orgId), přesune do přihrádky
+// té firmy v prohlížeči a z aktuálních dat je odebere. Vrací true, když něco přesunula.
+function odsunoutCiziPracoviste() {
+  if (!clenstvi || !data || !Array.isArray(data.mista)) return false;
+  const cizi = data.mista.filter(patriDoJineFirmy);
+  if (!cizi.length) return false;
+  const podleFirmy = {};
+  cizi.forEach(m => { (podleFirmy[m.cloud.orgId] = podleFirmy[m.cloud.orgId] || []).push(m); });
+  Object.keys(podleFirmy).forEach(org => {
+    const klic = '5s_data__' + org;
+    let schovana = null;
+    try { schovana = JSON.parse(localStorage.getItem(klic) || 'null'); } catch (e) {}
+    if (!schovana || !Array.isArray(schovana.mista)) schovana = { mista: [], aktivniMisto: null };
+    const mam = new Set(schovana.mista.map(m => m.id));
+    podleFirmy[org].forEach(m => { if (!mam.has(m.id)) schovana.mista.push(m); });
+    if (!schovana.aktivniMisto && schovana.mista[0]) schovana.aktivniMisto = schovana.mista[0].id;
+    try { localStorage.setItem(klic, JSON.stringify(schovana)); } catch (e) {}
+  });
+  data.mista = data.mista.filter(m => !patriDoJineFirmy(m));
+  if (!data.mista.find(m => m.id === data.aktivniMisto)) data.aktivniMisto = data.mista[0] ? data.mista[0].id : null;
+  try { localStorage.setItem('5s_data', JSON.stringify(data)); } catch (e) {}
+  return true;
+}
+
 function ulozitLokalne() {
+  if (prepinamFirmu) return false;
   try {
     localStorage.setItem('5s_data', JSON.stringify(data));
     return true;
