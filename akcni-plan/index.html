@@ -371,6 +371,8 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
   <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'akcni_plan',placement:'back'})" class="back-to-card-link">← Zpět na Tokva Pro</a>
 </div>
 
+<div class="zv-samostatne" data-tokva-zpetna-vazba data-nastroj="tokva-pro"></div>
+
 <footer>
   <div class="footer-brand">Gabriela <span>Tomíčková</span></div>
   <div class="footer-legal"><a href="https://tokva.cz/ochrana-osobnich-udaju/">Zásady ochrany osobních údajů</a></div>
@@ -1553,5 +1555,6 @@ function tisknoutAkcniPlan() {
   tokvaTiskOkno('Akční plán', '<b>' + tokvaEsc((clenstvi && clenstvi.organizations && clenstvi.organizations.name) || '') + '</b>' + (filtrText ? tokvaEsc(filtrText) + ' · ' : '') + new Date().toLocaleDateString('cs-CZ'), telo);
 }
 </script>
+<script src="../zpetna-vazba.js"></script>
 </body>
 </html>
