@@ -734,6 +734,18 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
               </div>
             </div>
             <div class="tokva-sib-hide">
+              <div class="sib-input sib-form-block">
+                <div class="form__entry entry_block">
+                  <div class="form__label-row">
+                    <label class="entry__label" for="ODPOVEDI">ODPOVEDI</label>
+                    <div class="entry__field"><input class="input" maxlength="200" type="text" id="ODPOVEDI" name="ODPOVEDI" autocomplete="off" placeholder="ODPOVEDI"></div>
+                  </div>
+                  <label class="entry__error entry__error--primary"></label>
+                  <label class="entry__specification"></label>
+                </div>
+              </div>
+            </div>
+            <div class="tokva-sib-hide">
               <div class="sib-form-block"><div class="sib-text-form-block">
                 <p>Odesláním formuláře souhlasíte s tím, že vám budu posílat praktické tipy k procesům, komunikaci a automatizaci.</p>
                 <p>Z odběru se odhlásíte kdykoli jedním kliknutím.</p>
@@ -1287,7 +1299,8 @@ function renderUlozitNeboTym() {
     // neměl vůbec jak výsledek uložit (jen v FAQ/upsellu bylo napsáno, že to
     // appka umí). Karta teď zůstává vidět vždy, klikUlozitVysledek() sama
     // řeší jak Pro (uloží), tak Free (nabídne Pro) případ.
-    card.style.display = jePro ? '' : 'none';
+    // Výsledek otevřený z odkazu v e-mailu je jen náhled, znovu se neukládá (stejně jako u mini auditů).
+    card.style.display = (jePro && !zobrazenoZOdkazu) ? '' : 'none';
     // Popisek tlačítka odpovídá tomu, co doopravdy udělá - Free appka jím
     // jen otevře nabídku Pro, teprve přihlášená Pro appka jím opravdu uloží.
     const btnUlozit = document.getElementById('btn-ulozit-vysledek');
@@ -2562,7 +2575,7 @@ function vykreslitOdpovediRecap(){
 // ============ ZOBRAZENÍ VÝSLEDKU ============
 function zobrazitVysledek(){
   oznamitDokonceni();
-  smazatRozpracovanyKviz();
+  if (!zobrazenoZOdkazu) smazatRozpracovanyKviz();
   const {skore, maxSkore, nejslabsiKey, oblastiVysledky, nevimOtazky, zadnyProblem} = spocitatSkore();
   vykreslitOdpovediRecap();
   posledniVysledek = { skore, maxSkore, nejslabsiKey, oblastiVysledky };
@@ -2659,7 +2672,77 @@ function zkratitNaVety(t, max) {
   if (i > 40) return cut.slice(0, i + 1);
   return cut.replace(/\s+\S*$/, '') + '…';
 }
+// Odkaz „Zobrazit celý výsledek“ z e-mailu: ?odpovedi=1.0-2-j.3...
+// Jedna část za otázku, oddělené tečkou: u otázky s jednou odpovědí číslo
+// možnosti, u vícevýběrové čísla spojená pomlčkou, „j“ = Jinak (vlastní text
+// se do odkazu nedává), „x“ = bez odpovědi. Stránka z toho poskládá celý
+// výsledek, nic neukládá a neposílá analytiku dokončení.
+let zobrazenoZOdkazu = false;
+const EMAIL_ODESLAN_KEY_CHAOS = 'tokva_email_odeslan_kviz_chaos';
+function kodOdpovediChaos(){
+  return OTAZKY.map(q=>{
+    const v = vybranaIndexy[q.id];
+    if(q.typ==='checkbox'){
+      if(!(v instanceof Set) || !v.size) return 'x';
+      return Array.from(v).map(i=>i==='other'?'j':String(i)).join('-');
+    }
+    if(v==='other') return 'j';
+    return typeof v==='number' ? String(v) : 'x';
+  }).join('.');
+}
+function obnovitOdpovediZKodu(kod){
+  const casti = String(kod||'').split('.');
+  if(casti.length !== OTAZKY.length) return false;
+  if(!casti.every(c=>/^(x|(\d{1,2}|j)(-(\d{1,2}|j))*)$/.test(c))) return false;
+  const odp = {}, vyb = {};
+  for(let i=0;i<OTAZKY.length;i++){
+    const q = OTAZKY[i], c = casti[i];
+    if(c==='x') continue;
+    const polozky = c.split('-').map(x=>x==='j'?'other':parseInt(x,10));
+    for(const it of polozky){ if(it==='other' ? !q.other : !(it>=0 && it<q.opts.length)) return false; }
+    if(q.typ==='checkbox'){
+      odp[q.id] = new Set(polozky); vyb[q.id] = new Set(polozky);
+    } else {
+      const it = polozky[0];
+      vyb[q.id] = it;
+      if(it==='other'){ odp[q.id] = 2; }
+      else { const o = q.opts[it]; odp[q.id] = o.nevim ? 'NEVIM' : (o.b!==undefined ? o.b : 0); }
+    }
+  }
+  Object.keys(odpovedi).forEach(k=>delete odpovedi[k]);
+  Object.keys(vybranaIndexy).forEach(k=>delete vybranaIndexy[k]);
+  Object.assign(odpovedi, odp); Object.assign(vybranaIndexy, vyb);
+  return true;
+}
+function kodPoOdeslaniEmailuChaos(){
+  let z = null;
+  try { z = JSON.parse(localStorage.getItem(EMAIL_ODESLAN_KEY_CHAOS) || 'null'); localStorage.removeItem(EMAIL_ODESLAN_KEY_CHAOS); } catch (e) {}
+  if (!z || !z.kod || Date.now() - Number(z.cas) > 5 * 60 * 1000) return null;
+  return String(z.kod);
+}
+function obnovitVysledekZOdkazuChaos(){
+  if (tymKod) return false;
+  let kod = new URLSearchParams(window.location.search).get('odpovedi');
+  const poEmailu = !kod ? kodPoOdeslaniEmailuChaos() : null;
+  if (poEmailu) kod = poEmailu;
+  if (!kod || !obnovitOdpovediZKodu(kod)) return false;
+  zobrazenoZOdkazu = true;
+  toolDokoncenoOdeslano = true; // otevření odkazu není nové vyplnění
+  zobrazitVysledek();
+  if (poEmailu) {
+    const b = document.getElementById('btn-poslat-email-chaos');
+    if (b) { b.textContent = '✓ Výsledek jsme vám poslali na e-mail'; b.disabled = true; b.style.opacity = '.7'; b.style.cursor = 'default'; }
+  }
+  return true;
+}
+
 function pripravitEmailChaos(){
+  // Brevo po odeslání stránku načte znovu. Odpovědi si odložíme, ať se
+  // výsledek po návratu sám ukáže a nezačíná se od první otázky.
+  const kod = kodOdpovediChaos();
+  try { localStorage.setItem(EMAIL_ODESLAN_KEY_CHAOS, JSON.stringify({ cas: Date.now(), kod })); } catch (e) {}
+  const poleOdp = document.getElementById('ODPOVEDI');
+  if (poleOdp) poleOdp.value = kod;
   document.getElementById('SKORE').value = document.getElementById('v-skore').textContent.trim();
   const pasmo = document.getElementById('v-pasmo').textContent.trim();
   const doporuceni = document.getElementById('v-doporuceni').textContent.trim();
@@ -2679,6 +2762,10 @@ function zacitZnovu(){
 
 function zacitZnovuSkutecne(){
   smazatRozpracovanyKviz();
+  if (zobrazenoZOdkazu) {
+    zobrazenoZOdkazu = false;
+    try { const u = new URL(window.location.href); u.searchParams.delete('odpovedi'); history.replaceState(null, '', u.toString()); } catch (e) {}
+  }
   Object.keys(odpovedi).forEach(k=>delete odpovedi[k]);
   posledniVysledek = null;
   posledniToolRunId = null;
@@ -2700,8 +2787,10 @@ function zacitZnovuSkutecne(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-nacistRozpracovanyKviz();
-vykreslitOtazky();
+if (!obnovitVysledekZOdkazuChaos()) {
+  nacistRozpracovanyKviz();
+  vykreslitOtazky();
+}
 nacistPrihlaseniStav();
 zkontrolovatTymoveKoloPriOtevreni();
 </script>
