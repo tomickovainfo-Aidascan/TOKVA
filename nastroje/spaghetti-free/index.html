@@ -1480,11 +1480,18 @@ function novaZakazka() {
   document.getElementById('modal-nazev').value = 'Trasa ' + (zakazky.length + 1);
   document.getElementById('modal').classList.add('visible');
   // Reset barvy picker
+  // Nabídne první barvu, kterou ještě žádná trasa nemá. Použité barvy jsou
+  // zašedlé, ať je hned vidět, které jsou volné (vybrat jdou dál, kdyby došly).
   const picker = document.getElementById('barvy-picker');
-  const nextBarva = BARVY[zakazky.length % BARVY.length];
+  const pouzite = new Set(zakazky.map(z => String(z.barva || '').toLowerCase()));
+  const volna = BARVY.find(b => !pouzite.has(b.toLowerCase()));
+  const nextBarva = volna || BARVY[zakazky.length % BARVY.length];
   vybranaBarva = nextBarva;
   picker.querySelectorAll('div').forEach((d, i) => {
+    const jePouzita = pouzite.has(BARVY[i].toLowerCase());
     d.style.border = BARVY[i] === nextBarva ? '3px solid #000' : '3px solid transparent';
+    d.style.opacity = jePouzita ? '0.25' : '1';
+    d.title = jePouzita ? 'Tuhle barvu už má jiná trasa' : '';
   });
 }
 
