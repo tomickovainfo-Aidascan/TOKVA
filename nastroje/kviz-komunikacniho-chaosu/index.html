@@ -557,7 +557,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
               <div class="step-item"><div class="step-num">1</div><div>Spustíte kvíz, žádný e-mail na start nepotřebujete</div></div>
               <div class="step-item"><div class="step-num">2</div><div>Odpovíte na 11 otázek o tom, jak si ve firmě předáváte informace</div></div>
               <div class="step-item"><div class="step-num">3</div><div>Podíváte se na skóre, pásmo a pojmenovanou oblast, kde to bolí nejvíc</div></div>
-              <div class="step-item"><div class="step-num">4</div><div>Pokud chcete podrobnější rozbor, necháte si ho poslat na e-mail. Kvíz ani výsledek to nepotřebují</div></div>
+              <div class="step-item"><div class="step-num">4</div><div>Když chcete, pošlete si výsledek na e-mail, ať se k němu můžete vrátit. Kvíz ani výsledek to nepotřebují</div></div>
             </div>
           </div>
         </div>
@@ -658,10 +658,10 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
   </div>
   <div class="email-card">
-    <h3>Chcete podrobnější rozbor?</h3>
-    <p style="font-size:12px;color:var(--mid);margin-bottom:6px;">Výsledek nahoře máte celý zdarma a bez přihlášení, tohle je jen nadstavba.</p>
-    <p>Na e-mail vám pošlu váš výsledek i s doporučením, co dělat jako první.</p>
-    <button type="button" class="btn-spustit" id="btn-poslat-email-chaos" onclick="ukazatEmailFormChaos()">Poslat podrobný výsledek na e-mail</button>
+    <h3>Chcete mít výsledek v e-mailu?</h3>
+    <p style="font-size:12px;color:var(--mid);margin-bottom:6px;">Výsledek nahoře máte celý zdarma a bez přihlášení. E-mail je jen pro pohodlí.</p>
+    <p>Pošlu vám skóre, co znamená a kde začít, ať se k tomu můžete vrátit nebo to přeposlat kolegům.</p>
+    <button type="button" class="btn-spustit" id="btn-poslat-email-chaos" onclick="ukazatEmailFormChaos()">Poslat výsledek na e-mail</button>
     <div id="email-form-wrap-chaos" style="display:none;margin-top:10px;">
       <div id="sib-form-container" class="sib-form-container">
         <div id="error-message" class="sib-form-message-panel" style="font-family:'DM Sans',sans-serif; color:#661d1d; background-color:#ffeded; border:1px solid #ff4949;">
@@ -673,16 +673,16 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
         <div id="success-message" class="sib-form-message-panel" style="font-family:'DM Sans',sans-serif; color:#085229; background-color:#e7faf0; border:1px solid #13ce66;">
           <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
             <svg viewBox="0 0 512 512" class="sib-icon sib-notification__icon"><path d="M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 464c-118.664 0-216-96.055-216-216 0-118.663 96.055-216 216-216 118.664 0 216 96.055 216 216 0 118.663-96.055 216-216 216zm141.63-274.961L217.15 376.071c-4.705 4.667-12.303 4.637-16.97-.068l-85.878-86.572c-4.667-4.705-4.637-12.303.068-16.97l8.52-8.451c4.705-4.667 12.303-4.637 16.97.068l68.976 69.533 163.441-162.13c4.705-4.667 12.303-4.637 16.97.068l8.451 8.52c4.668 4.705 4.637 12.303-.068 16.97z"/></svg>
-            <span class="sib-form-message-panel__inner-text">Díky, posíláme vám podrobný rozbor na e-mail.</span>
+            <span class="sib-form-message-panel__inner-text">Díky, výsledek vám posíláme na e-mail.</span>
           </div>
         </div>
         <div id="sib-container" class="sib-container--large sib-container--vertical">
           <form id="sib-form" method="POST" action="https://2f524664.sibforms.com/serve/MUIFAAZSh_d9R9x2DkfCoFwGuwnffSfr9H_TVd-cRK8togquhMeGPysYWxwxka3uQylxclCyIBNOn-vYsismU-ZWxQUyAUGLAwM3ML1vaXKMeRYCJCg4OijBXECTPj_ndl2ALGMldyRLECjgxmLVyEuPRMcDlP7lMXX9LAfrgdt5x-bXob6hUl0EcDqHttODmGuyQ7EmV5_AI2VEjQ==" data-type="subscription" onsubmit="pripravitEmailChaos()">
             <div class="tokva-sib-hide">
-              <div class="sib-form-block"><p>Chcete podrobnější rozbor?</p></div>
+              <div class="sib-form-block"><p>Chcete mít výsledek v e-mailu?</p></div>
             </div>
             <div class="tokva-sib-hide">
-              <div class="sib-form-block"><div class="sib-text-form-block"><p>Na e-mail vám pošlu váš výsledek i s doporučením, co dělat jako první.</p></div></div>
+              <div class="sib-form-block"><div class="sib-text-form-block"><p>Pošlu vám skóre, co znamená a kde začít.</p></div></div>
             </div>
             <div class="tokva-sib-email-field">
               <div class="sib-input sib-form-block">
@@ -747,7 +747,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
               <div class="sib-form-block" style="text-align:center">
                 <button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
                   <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512"><path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z"/></svg>
-                  Poslat rozbor
+                  Poslat výsledek
                 </button>
               </div>
             </div>
