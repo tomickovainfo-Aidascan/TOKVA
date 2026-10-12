@@ -3646,10 +3646,14 @@ function exportovatTrasyCSV() {
   if (s) {
     radky.push([]);
     radky.push(['Srovnání současný stav × návrh']);
-    radky.push(['Současný stav (m)', Math.round(s.dSoucasny)]);
-    radky.push(['Návrh (m)', Math.round(s.dNavrh)]);
-    radky.push(['Úspora (m)', Math.round(s.dSoucasny) - Math.round(s.dNavrh)]);
-    radky.push(['Úspora (%)', Math.round(s.procento * 10) / 10]);
+    // Metry na jedno desetinné místo, stejně jako v tabulce tras nahoře, a procento
+    // z těchže čísel. Dřív byly celé metry (112 a 81, úspora 31), zatímco v tabulce
+    // stálo 111,6 a 81,4, takže si čtenář ručně spočítal jinou úsporu (30,2).
+    const mS = Math.round(s.dSoucasny * 10) / 10, mN = Math.round(s.dNavrh * 10) / 10;
+    radky.push(['Současný stav (m)', mS]);
+    radky.push(['Návrh (m)', mN]);
+    radky.push(['Úspora (m)', Math.round((mS - mN) * 10) / 10]);
+    radky.push(['Úspora (%)', mS > 0 ? Math.round((mS - mN) / mS * 1000) / 10 : 0]);
     if (s.dopadSoucasny && s.dopadNavrh) {
       radky.push(['Úspora hodin za rok', Math.round((s.dopadSoucasny.hRok - s.dopadNavrh.hRok) * 10) / 10]);
       radky.push(['Úspora Kč za rok', Math.round(s.dopadSoucasny.kcRok - s.dopadNavrh.kcRok)]);
