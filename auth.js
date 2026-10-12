@@ -50,6 +50,8 @@ async function ziskatMojiOrganizaci() {
 
   if (error) { console.error('ziskatMojiOrganizaci chyba:', error, 'pro user_id:', session.user.id); return null; }
   if (!data) { console.warn('ziskatMojiOrganizaci: zadna organizace pro user_id:', session.user.id); return null; }
+  // Menu si z toho bere, jestli ukázat Nastavení firmy (jen majitel a správce).
+  window.tokvaClenstvi = data;
   return data;
 }
 
@@ -132,6 +134,7 @@ function zobrazitOdkazProjekty(jePro) {
   // Přehled (Moje Tokva) patří v menu hned před Projekty - Pro ho vidí v každém nástroji.
   const prehled = document.getElementById('nav-moje-tokva');
   if (prehled && !prehled.classList.contains('nav-aktivni') && jePro) prehled.style.display = '';
+  zobrazitOdkazNastaveniFirmy(jePro, window.tokvaClenstvi || null);
   const el = document.getElementById('nav-projekty');
   if (!el || el.classList.contains('nav-aktivni')) return;
   el.style.display = jePro ? '' : 'none';
@@ -157,9 +160,12 @@ function jsemAdminFirmy(clenstvi) {
 // vzorec jako zobrazitOdkazAkcniPlan/Projekty výš, ale navíc jen pro
 // majitele/správce (ne pro běžné členy - ti nemají co spravovat).
 function zobrazitOdkazNastaveniFirmy(jePro, clenstvi) {
+  const ukazat = !!(jePro && jsemAdminFirmy(clenstvi));
+  const karta = document.getElementById('karta-nastaveni-firmy');
+  if (karta) karta.style.display = ukazat ? '' : 'none';
   const el = document.getElementById('nav-nastaveni-firmy');
-  if (!el) return;
-  el.style.display = (jePro && jsemAdminFirmy(clenstvi)) ? '' : 'none';
+  if (!el || el.classList.contains('nav-aktivni')) return;
+  el.style.display = ukazat ? '' : 'none';
 }
 
 // Odhlášení, s přesměrováním zpátky na přihlašovací stránku.
