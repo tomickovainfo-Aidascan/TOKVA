@@ -1322,8 +1322,14 @@ function klikUlozitVysledek() {
 
 // Best-effort uložení výsledku do Supabase (jen Pro). Appka jede dál i bez
 // tohohle - výsledek na obrazovce a e-mailový rozbor fungují vždy stejně.
+let ukladanyKodChaos = null; // odpovědi, které už tahle stránka uložila (nebo právě ukládá)
 async function ulozitVysledek() {
   if (!posledniVysledek || !jePro || !clenstvi) return;
+  // Stejné odpovědi se na jedné stránce uloží jen jednou (automatické uložení
+  // po zobrazení výsledku, návrat po přihlášení, ruční tlačítko).
+  const kodUkladani = kodOdpovediChaos();
+  if (ukladanyKodChaos === kodUkladani) return;
+  ukladanyKodChaos = kodUkladani;
   const btn = document.getElementById('btn-ulozit-vysledek');
   btn.disabled = true;
   btn.textContent = 'Ukládám...';
@@ -1378,6 +1384,8 @@ async function ulozitVysledek() {
     if (error) throw error;
     posledniToolRunId = data ? data.id : null;
     btn.textContent = 'Uloženo ✓';
+    const kartaText = document.querySelector('#v-ulozit-card p');
+    if (kartaText) kartaText.textContent = 'Výsledek je uložený v historii. Příště uvidíte, jestli se komunikace ve firmě zlepšuje.';
     const projektPanel = document.getElementById('projekt-panel');
     const akcniPanel = document.getElementById('akcni-panel');
     if (projektPanel) { projektPanel.style.display = 'block'; nacistProjekty(); }
@@ -1390,6 +1398,7 @@ async function ulozitVysledek() {
     }
   } catch (e) {
     console.warn('Výsledek se nepodařilo uložit do historie (Supabase).', e);
+    ukladanyKodChaos = null;
     btn.disabled = false;
     btn.textContent = 'Nepodařilo se, zkusit znovu';
   }
@@ -2650,6 +2659,11 @@ function zobrazitVysledek(){
     </div>`;
   }).join('');
 
+  // S Tokva Pro se výsledek uloží do historie sám, stejně jako u mini auditů,
+  // a hned jde zařadit k projektu a přidat do akčního plánu. Ne u výsledku
+  // otevřeného z odkazu v e-mailu a ne u anonymní odpovědi do týmového kola.
+  if (jePro && clenstvi && !zobrazenoZOdkazu && !tymKod) ulozitVysledek();
+
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -2762,6 +2776,7 @@ function zacitZnovu(){
 
 function zacitZnovuSkutecne(){
   smazatRozpracovanyKviz();
+  ukladanyKodChaos = null;
   if (zobrazenoZOdkazu) {
     zobrazenoZOdkazu = false;
     try { const u = new URL(window.location.href); u.searchParams.delete('odpovedi'); history.replaceState(null, '', u.toString()); } catch (e) {}
@@ -2784,6 +2799,8 @@ function zacitZnovuSkutecne(){
   document.getElementById('EMAIL').value='';
   const ulozitBtn = document.getElementById('btn-ulozit-vysledek');
   if (ulozitBtn) { ulozitBtn.disabled = false; ulozitBtn.textContent = 'Uložit tento výsledek'; }
+  const kartaTextReset = document.querySelector('#v-ulozit-card p');
+  if (kartaTextReset) kartaTextReset.textContent = 'Uložte si tenhle výsledek a příště uvidíte, jestli se komunikace ve firmě zlepšuje.';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
