@@ -95,10 +95,14 @@ input:focus { border-color:var(--gold); }
       <input id="pozvanka-heslo" type="password" placeholder="min. 6 znaků" autocomplete="new-password">
       <button class="btn-gold" id="btn-pozvanka" onclick="prijmoutPozvankuNoveHeslo()">Vytvořit účet a přijmout pozvánku</button>
       <div class="zprava" id="zprava-pozvanka"></div>
-      <a href="#" class="zapomenute-link" style="text-align:center;margin-top:14px;" onclick="pouzitStavajiciUcetProPozvanku(event)">Už mám účet Tokva - přihlásit se</a>
+      <a href="#" class="zapomenute-link" style="text-align:center;margin-top:14px;" onclick="pouzitStavajiciUcetProPozvanku(event)">Už mám účet v Tokvě? Přihlásit se</a>
     </div>
 
     <div id="pozvanka-chyba" class="zprava chyba" style="display:none;"></div>
+    <div id="pozvanka-po-chybe" style="display:none;margin-top:14px;text-align:center;">
+      <button class="btn-gold" onclick="presmerovatPoPrihlaseni()">Pokračovat do své Tokvy</button>
+      <a href="#" class="zapomenute-link" style="text-align:center;margin-top:12px;" onclick="odhlasitPoChybePozvanky(event)">Odhlásit se a přihlásit jiným účtem</a>
+    </div>
   </div>
 
   <!-- KROK 1: přihlášení / registrace -->
@@ -223,6 +227,12 @@ async function poPrihlaseni() {
     window.__pozvankaChybaText = chybaPrijeti.message;
   }
   const organizace = await ziskatMojiOrganizaci();
+  // Pozvánka se nepřijala, ale účet už nějakou firmu má: dřív appka člověka
+  // potichu přesměrovala do jeho firmy a on vůbec nevěděl, že pozvánka neprošla.
+  if (tokenPoz && window.__pozvankaChybaText && organizace) {
+    ukazatChybuPozvanky(window.__pozvankaChybaText, organizace);
+    return;
+  }
   if (organizace) {
     presmerovatPoPrihlaseni();
   } else {
@@ -434,6 +444,14 @@ async function prijmoutPozvankuNoveHeslo() {
       options: { data: { full_name: jmeno } } // databáze si jméno při založení účtu zapíše do profilu
     });
     if (chybaRegistrace) throw chybaRegistrace;
+    // E-mail už účet má: Supabase pak nic nezaloží a vrátí uživatele bez
+    // identit. Místo matoucí chyby rovnou nabídnout přihlášení stávajícím heslem.
+    if (dataRegistrace && dataRegistrace.user && Array.isArray(dataRegistrace.user.identities) && dataRegistrace.user.identities.length === 0) {
+      pouzitStavajiciUcetProPozvanku();
+      ukazatZpravuUcet('Tenhle e-mail už v Tokvě účet má. Přihlaste se svým heslem, pozvánka se přijme sama.', false);
+      btn.disabled = false;
+      return;
+    }
     // pojistka, kdyby se jméno do profilu nezapsalo samo
     try {
       const { data: { session: sNova } } = await supabaseClient.auth.getSession();
@@ -451,10 +469,48 @@ async function prijmoutPozvankuNoveHeslo() {
 
     presmerovatPoPrihlaseni();
   } catch (ex) {
-    zprava.textContent = prelozitChybu(ex.message || String(ex));
+    const m = ex.message || String(ex);
+    if (m.includes('already registered')) {
+      pouzitStavajiciUcetProPozvanku();
+      ukazatZpravuUcet('Tenhle e-mail už v Tokvě účet má. Přihlaste se svým heslem, pozvánka se přijme sama.', false);
+      btn.disabled = false;
+      return;
+    }
+    zprava.textContent = prelozitChybu(m);
     zprava.className = 'zprava chyba';
     btn.disabled = false;
   }
+}
+
+// Srozumitelná hláška, proč pozvánka neprošla, místo tichého přesměrování.
+function textChybyPozvanky(msg, organizace) {
+  msg = String(msg || '');
+  if (msg.includes('patří k jiné firmě')) {
+    const nazev = organizace && organizace.organizations ? organizace.organizations.name : '';
+    return 'Pozvánku se nepodařilo přijmout. Tenhle účet už patří do firmy' + (nazev ? ' „' + nazev + '“' : '') +
+      ' a v Tokvě může být jeden účet zatím jen v jedné firmě. Požádejte prosím o pozvánku na jiný e-mail.';
+  }
+  if (msg.includes('Pozvánka je na e-mail')) return msg.replace(/-/g, ' ');
+  if (msg.includes('limit') || msg.includes('Limit')) return 'Pozvánku se nepodařilo přijmout: firma už má plný počet lidí. Dejte prosím vědět tomu, kdo vás zval.';
+  return 'Pozvánku se nepodařilo přijmout (' + msg + '). Požádejte prosím o novou pozvánku.';
+}
+function ukazatChybuPozvanky(msg, organizace) {
+  skrytVsechnyKroky();
+  document.getElementById('krok-pozvanka').classList.add('aktivni');
+  document.getElementById('pozvanka-obsah').style.display = 'none';
+  const chyba = document.getElementById('pozvanka-chyba');
+  chyba.textContent = textChybyPozvanky(msg, organizace);
+  chyba.style.display = 'block';
+  document.getElementById('pozvanka-po-chybe').style.display = organizace ? '' : 'none';
+}
+async function odhlasitPoChybePozvanky(e) {
+  if (e) e.preventDefault();
+  try { await supabaseClient.auth.signOut(); } catch (err) { console.warn('Odhlášení se nepovedlo.', err); }
+  window.__pozvankaChybaText = null;
+  document.getElementById('pozvanka-chyba').style.display = 'none';
+  document.getElementById('pozvanka-po-chybe').style.display = 'none';
+  document.getElementById('heslo').value = '';
+  pouzitStavajiciUcetProPozvanku();
 }
 
 // "Už mám účet Tokva" - přepne na běžný přihlašovací formulář, e-mail
@@ -471,7 +527,7 @@ inicializovatPozvanku();
 
 function prelozitChybu(msg) {
   if (msg.includes('Invalid login credentials')) return 'Nesprávný e-mail nebo heslo.';
-  if (msg.includes('already registered')) return 'Tenhle e-mail už má účet - zkuste se přihlásit.';
+  if (msg.includes('already registered')) return 'Tenhle e-mail už má účet. Zkuste se přihlásit.';
   if (msg.includes('Password should be')) return 'Heslo musí mít aspoň 6 znaků.';
   if (msg.includes('Email not confirmed')) return 'Nejdřív potvrďte registraci v e-mailu, který jsme vám poslali.';
   return 'Něco se nepovedlo: ' + msg;
