@@ -886,7 +886,7 @@ function prevzitMereniZFree() {
     // Rovnou ukázat převzaté měření s tlačítkem na úkol a projekt, ať se
     // s ním dá hned pracovat a nemusí se hledat v historii.
     otevritModalDetailVysledkuZeZaznamu(polozka || Object.assign({}, zaznam, { toolRunId: runId }),
-      '<strong>Měření z bezplatného měřiče je uložené ve vašem účtu.</strong> Tlačítkem dole k němu přidáte úkol a zařadíte ho k projektu. Až po změně změříte ten samý proces znovu, zaškrtněte v historii obě měření a porovnejte je jako PŘED × PO.');
+      '<strong>Měření z bezplatného měřiče je uložené ve vašem účtu.</strong> Dole ho zařadíte k projektu a můžete k němu přidat úkol. Až po změně změříte ten samý proces znovu, zaškrtněte v historii obě měření a porovnejte je jako PŘED × PO.');
   }).catch(() => upozornit(textBezUctu, 'Měření převzato'));
 }
 
@@ -969,12 +969,71 @@ function otevritModalDetailVysledkuZeZaznamu(z, uvod) {
       '</tr></thead><tbody>' + radkyCyklu + '</tbody></table></div>' : '') +
     (maNaklady ? '<div style="margin-top:14px;font-size:12.5px;color:var(--light);">Zadaný náklad práce: ' + z.hodinovaSazba + ' Kč/h × ' + z.pocetPracovniku + (z.pocetPracovniku === 1 ? ' pracovník' : ' pracovníků') + (z.pocetKusu ? ' · Objem zakázky: ' + z.pocetKusu + ' ks' : '') + '</div>' :
       '<p style="font-size:12px;color:var(--light);margin-top:14px;">Tenhle výpočet byl uložený ještě předtím, než appka uměla zapamatovat i zadané náklady a vlastní kroky - k dispozici je jen rozpad kategorií výše.</p>') +
-    (z.toolRunId ? '<button class="btn-modal-ok" style="width:100%;margin-top:16px;" onclick="zavritModalDetailVysledku();otevritModalAkcniPlanZId(\'' + z.toolRunId + '\')">' + (uvod ? '+ Přidat úkol a zařadit k projektu' : '+ Přidat do akčního plánu') + '</button>' : '');
+    (z.toolRunId ?
+      // Zařadit k projektu jde i bez úkolu (dřív jen přes nový úkol).
+      '<div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);">' +
+        '<div style="font-size:13px;font-weight:800;color:var(--dark);margin-bottom:4px;">Zařadit k projektu</div>' +
+        '<div style="font-size:12.5px;color:var(--mid);line-height:1.55;margin-bottom:8px;">Měření už je uložené v historii. Tady ho jen přiřadíte k projektu, podruhé se neuloží.</div>' +
+        '<select id="d-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:8px;font-family:\'DM Sans\',sans-serif;"><option value="">Bez projektu</option><option value="__novy__">+ Nový projekt…</option></select>' +
+        '<input id="d-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;box-sizing:border-box;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:8px;">' +
+        '<button class="btn-modal-ok" style="width:100%;" onclick="zaraditMereniKProjektu(\'' + z.toolRunId + '\')">Uložit zařazení</button>' +
+        '<div id="d-projekt-stav" style="font-size:12.5px;color:var(--mid);margin-top:6px;"></div>' +
+      '</div>' +
+      '<button class="btn-modal-ok" style="width:100%;margin-top:12px;background:transparent;color:var(--dark);border:1px solid var(--border);" onclick="zavritModalDetailVysledku();otevritModalAkcniPlanZId(\'' + z.toolRunId + '\')">+ Přidat úkol do akčního plánu</button>'
+    : '');
+  if (z.toolRunId) naplnitProjektyDetailu(z.toolRunId);
   if (typeof tokvaVlozitPrvniKrok === 'function') tokvaVlozitPrvniKrok(document.getElementById('modal-detail-vysledku'), 'meric-plytvani-pro', z);
   document.getElementById('modal-detail-vysledku').classList.add('visible');
 }
 function zavritModalDetailVysledku() {
   document.getElementById('modal-detail-vysledku').classList.remove('visible');
+}
+async function naplnitProjektyDetailu(runId) {
+  const select = document.getElementById('d-projekt-select');
+  if (!select || !clenstvi) return;
+  try {
+    const [{ data: projekty }, { data: run }] = await Promise.all([
+      supabaseClient.from('projects').select('id, name').eq('organization_id', clenstvi.organization_id).order('created_at', { ascending: false }),
+      supabaseClient.from('tool_runs').select('project_id').eq('id', runId).maybeSingle()
+    ]);
+    (projekty || []).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id; opt.textContent = p.name;
+      select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+    });
+    if (run && run.project_id && [...select.options].some(o => o.value === run.project_id)) select.value = run.project_id;
+    select.onchange = function () {
+      const vstup = document.getElementById('d-projekt-novy-nazev');
+      if (vstup) vstup.style.display = select.value === '__novy__' ? 'block' : 'none';
+    };
+  } catch (e) { console.warn('Projekty se nepodařilo načíst.', e); }
+}
+async function zaraditMereniKProjektu(runId) {
+  const select = document.getElementById('d-projekt-select');
+  const stav = document.getElementById('d-projekt-stav');
+  if (!select || !clenstvi) return;
+  stav.textContent = 'Ukládám…';
+  try {
+    let projektId = select.value || null;
+    if (projektId === '__novy__') {
+      const nazev = (document.getElementById('d-projekt-novy-nazev').value || '').trim();
+      if (!nazev) { stav.textContent = 'Zadejte název nového projektu.'; return; }
+      const { data, error } = await supabaseClient.from('projects').insert({ organization_id: clenstvi.organization_id, name: nazev }).select('id, name').single();
+      if (error) throw error;
+      projektId = data.id;
+      const opt = document.createElement('option'); opt.value = data.id; opt.textContent = data.name;
+      select.insertBefore(opt, select.querySelector('option[value="__novy__"]'));
+      select.value = data.id;
+      const vstup = document.getElementById('d-projekt-novy-nazev'); if (vstup) { vstup.value = ''; vstup.style.display = 'none'; }
+    }
+    const { data: hotovo, error } = await supabaseClient.from('tool_runs').update({ project_id: projektId }).eq('id', runId).select('id');
+    if (error) throw error;
+    if (!hotovo || !hotovo.length) { stav.textContent = 'Zařazení se neuložilo, měření se v účtu nenašlo. Obnovte prosím stránku a zkuste to znovu.'; return; }
+    stav.textContent = projektId ? 'Uloženo, měření patří k projektu.' : 'Uloženo, bez projektu.';
+  } catch (e) {
+    console.warn('Zařazení k projektu se nepodařilo uložit.', e);
+    stav.textContent = 'Nepodařilo se uložit, zkuste to prosím znovu.';
+  }
 }
 // Detail může zobrazovat i záznam stažený přímo ze Supabase (jiné zařízení),
 // který nemusí mít index v místní historii - najde se přes toolRunId, ne přes i.
