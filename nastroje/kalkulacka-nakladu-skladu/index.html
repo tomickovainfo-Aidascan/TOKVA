@@ -1475,6 +1475,7 @@ async function novyVypocet() {
   dotcenaPole.clear();
   try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
   setMode('najem');
+  hasUnsavedVypocet = false; // prázdný formulář už není rozdělaná práce, odchod ze stránky nemá varovat
 }
 
 function fmt(n) { return Math.round(n).toLocaleString("cs-CZ"); }
@@ -1512,9 +1513,9 @@ window.addEventListener('beforeunload', function (e) {
   }
 });
 function oznamitZahajeni() {
+  hasUnsavedVypocet = true; // i po „Nový výpočet“, kdy se událost do analytiky znovu neposílá
   if (toolStartedOdeslano) return;
   toolStartedOdeslano = true;
-  hasUnsavedVypocet = true;
   trackTokvaEvent('tool_started', { tool_name: 'kalkulacka_nakladu_skladu', tool_version: 'free' });
 }
 let toolDokoncenoOdeslano = false;
