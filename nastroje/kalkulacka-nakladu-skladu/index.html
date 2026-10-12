@@ -1464,8 +1464,8 @@ function nacistRozpracovanyVstup() {
 
 // Appka rozpracovaný výpočet po refreshi schválně zachovává (viz výš), ale
 // chyběl způsob, jak začít úplně od nuly bez ručního mazání desítek polí.
-function novyVypocet() {
-  if (!confirm('Vymazat všechny zadané údaje a začít nový výpočet od začátku?')) return;
+async function novyVypocet() {
+  if (!(await tokvaPotvrdit('Vymazat všechny zadané údaje a začít nový výpočet od začátku?', 'Vymazat', true))) return;
   document.querySelectorAll('input.input-val-edit').forEach(function (num) {
     num.value = num.defaultValue;
     const id = num.id.replace(/-num$/, '');
@@ -2672,7 +2672,7 @@ document.addEventListener('keydown', function(e){
 function tokvaEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function tokvaTiskOkno(nazevNastroje, info, telo) {
   const w = window.open('', '_blank');
-  if (!w) { alert('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
+  if (!w) { tokvaUpozornit('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
   w.document.write('<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><title>' + tokvaEsc(nazevNastroje) + '</title><style>' +
     '*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;font-size:13px;color:#111;max-width:800px;margin:0 auto;padding:32px;}' +
     '.hl{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:3px solid #e9a91b;padding-bottom:12px;margin-bottom:22px;}' +

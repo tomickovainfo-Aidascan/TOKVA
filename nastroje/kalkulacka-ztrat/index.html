@@ -809,8 +809,8 @@ function nacistRozpracovanyVstup() {
   }
 }
 
-function novyVypocetZtrat() {
-  if (!confirm('Vymazat všechny zadané údaje a začít nový výpočet od začátku?')) return;
+async function novyVypocetZtrat() {
+  if (!(await tokvaPotvrdit('Vymazat všechny zadané údaje a začít nový výpočet od začátku?', 'Vymazat', true))) return;
   document.querySelectorAll('input.input-val-edit').forEach(function (num) {
     num.value = num.defaultValue;
     const id = num.id.replace(/-num$/, '');
@@ -1513,7 +1513,7 @@ function otevritPorovnaniZtrat() {
 }
 
 async function smazatVypocetZtrat(id) {
-  if (!confirm('Smazat tenhle uložený výpočet? Úkoly v akčním plánu zůstanou, jen ztratí odkaz na výpočet.')) return;
+  if (!(await tokvaPotvrdit('Smazat tenhle uložený výpočet? Úkoly v akčním plánu zůstanou, jen ztratí odkaz na výpočet.', 'Smazat', true))) return;
   try {
     const { error } = await supabaseClient.from('tool_runs').delete().eq('id', id);
     if (error) throw error;
@@ -1522,7 +1522,7 @@ async function smazatVypocetZtrat(id) {
     nacistHistoriiZtrat();
   } catch (e) {
     console.warn('Výpočet se nepodařilo smazat.', e);
-    alert('Výpočet se nepodařilo smazat, zkuste to prosím znovu.');
+    tokvaUpozornit('Výpočet se nepodařilo smazat, zkuste to prosím znovu.');
   }
 }
 
@@ -1540,7 +1540,7 @@ function otevritVypocetZAdresy() {
 function tokvaEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function tokvaTiskOkno(nazevNastroje, info, telo) {
   const w = window.open('', '_blank');
-  if (!w) { alert('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
+  if (!w) { tokvaUpozornit('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
   w.document.write('<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><title>' + tokvaEsc(nazevNastroje) + '</title><style>' +
     '*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;font-size:13px;color:#111;max-width:800px;margin:0 auto;padding:32px;}' +
     '.hl{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:3px solid #e9a91b;padding-bottom:12px;margin-bottom:22px;}' +
@@ -1591,7 +1591,7 @@ function tisknoutZtraty() {
   tokvaTiskOkno('Kalkulačka ztrát', (nazev ? '<b>' + tokvaEsc(nazev) + '</b>' : '') + new Date().toLocaleDateString('cs-CZ'), telo);
 }
 function exportovatHistoriiZtratCSV() {
-  if (!historieZtrat.length) { alert('Zatím nemáte žádný uložený výpočet k exportu.'); return; }
+  if (!historieZtrat.length) { tokvaUpozornit('Zatím nemáte žádný uložený výpočet k exportu.'); return; }
   const hlav = ['Název', 'Datum'].concat(VYSLEDKY_ZTRAT.map(function (x) { return x[1] + (x[2] ? ' (' + x[2] + ')' : ''); }), VSTUPY_ZTRAT.map(function (x) { return x[2] + (x[3] ? ' (' + x[3] + ')' : ''); }));
   const radky = [hlav].concat(historieZtrat.map(function (r) {
     const v = (r.data || {}).vysledky || {}, vs = (r.data || {}).vstupy || {};

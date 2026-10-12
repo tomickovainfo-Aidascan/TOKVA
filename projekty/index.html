@@ -201,7 +201,7 @@ footer{max-width:1080px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
 .footer-brand{font-family:"Poppins",sans-serif;font-size:12px;font-weight:800;color:var(--dark);}
 .footer-brand span{color:var(--gold);}
 body.prezentace footer{display:none;}
-/* UPOZORNENI - vlastni vystredeny modal misto browser alert()/confirm() */
+/* UPOZORNENI - vlastni vystredeny modal misto browser tokvaUpozornit()/confirm() */
 .notice-overlay {
   position: fixed;
   inset: 0;
@@ -469,7 +469,7 @@ body.prezentace footer{display:none;}
 <script src="../auth.js"></script>
 <script src="../prvni-krok.js"></script>
 <script>
-// MODALY - jednotne upozorneni/potvrzeni misto browser alert()/confirm()
+// MODALY - jednotne upozorneni/potvrzeni misto browser tokvaUpozornit()/confirm()
 let _noticeConfirmCb = null;
 function ukazatUpozorneni(text, icon) {
   document.getElementById('notice-icon').textContent = icon || '!';
@@ -1332,7 +1332,7 @@ function cookiesOdmitnout() {
 function tokvaEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function tokvaTiskOkno(nazevNastroje, info, telo) {
   const w = window.open('', '_blank');
-  if (!w) { alert('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
+  if (!w) { tokvaUpozornit('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
   w.document.write('<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><title>' + tokvaEsc(nazevNastroje) + '</title><style>' +
     '*{margin:0;padding:0;box-sizing:border-box;}body{font-family:Arial,sans-serif;font-size:13px;color:#111;max-width:800px;margin:0 auto;padding:32px;}' +
     '.hl{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:3px solid #e9a91b;padding-bottom:12px;margin-bottom:22px;}' +

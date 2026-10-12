@@ -405,22 +405,22 @@ async function odeslatPozvanku() {
 }
 
 async function zrusitPozvanku(id) {
-  if (!confirm('Zrušit tuhle pozvánku?')) return;
+  if (!(await tokvaPotvrdit('Zrušit tuhle pozvánku? Odkaz v e-mailu pak přestane platit.', 'Zrušit pozvánku', true))) return;
   const { error } = await supabaseClient.from('organization_invites').update({ status: 'zruseno' }).eq('id', id);
-  if (error) { alert('Nepodařilo se zrušit pozvánku: ' + error.message); return; }
+  if (error) { tokvaUpozornit('Nepodařilo se zrušit pozvánku: ' + error.message); return; }
   nacistData();
 }
 
 async function zmenitRoli(clenskyId, novaRole, jmeno) {
   const { error } = await supabaseClient.from('organization_members').update({ role: novaRole }).eq('id', clenskyId);
-  if (error) { alert('Nepodařilo se změnit roli u ' + jmeno + ': ' + error.message); nacistData(); return; }
+  if (error) { tokvaUpozornit('Nepodařilo se změnit roli u ' + jmeno + ': ' + error.message); nacistData(); return; }
   nacistData();
 }
 
 async function odebratClena(clenskyId, jmeno) {
-  if (!confirm('Odebrat ' + jmeno + ' z firmy? Ztratí přístup k datům firmy v Tokvě.')) return;
+  if (!(await tokvaPotvrdit('Odebrat ' + jmeno + ' z firmy? Ztratí přístup k datům firmy v Tokvě.', 'Odebrat', true))) return;
   const { error } = await supabaseClient.from('organization_members').delete().eq('id', clenskyId);
-  if (error) { alert('Nepodařilo se odebrat: ' + error.message); return; }
+  if (error) { tokvaUpozornit('Nepodařilo se odebrat: ' + error.message); return; }
   nacistData();
 }
 

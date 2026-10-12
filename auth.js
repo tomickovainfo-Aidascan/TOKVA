@@ -249,3 +249,81 @@ if (typeof document !== 'undefined') {
     nacistNaseptavaniClenu();
   });
 }
+
+// Vlastní okno pro potvrzení a upozornění místo okna prohlížeče
+// („Web tokva.cz říká…“), které vypadá cize a nejde nastylovat.
+// tokvaPotvrdit vrací Promise<boolean>, tokvaUpozornit jen ukáže zprávu.
+(function () {
+  var styl = null;
+  function pripravit() {
+    if (!styl) {
+      styl = document.createElement('style');
+      styl.textContent =
+        '.tk-dlg-pozadi{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px}' +
+        '.tk-dlg{background:#fff;color:#1a1a1a;border:1px solid rgba(233,169,27,.35);border-radius:16px;padding:26px 22px 20px;width:100%;max-width:400px;text-align:center;font-family:inherit;box-shadow:0 12px 40px rgba(0,0,0,.25);animation:tkDlgIn .16s ease}' +
+        '@keyframes tkDlgIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}' +
+        '.tk-dlg-ikona{width:42px;height:42px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;background:rgba(233,169,27,.15);color:#b7800f}' +
+        '.tk-dlg-text{font-size:15px;line-height:1.5;margin:0 0 20px;white-space:pre-line}' +
+        '.tk-dlg-tlacitka{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}' +
+        '.tk-dlg-tlacitka button{font:inherit;font-weight:700;font-size:14px;border-radius:10px;padding:11px 20px;cursor:pointer;min-width:110px}' +
+        '.tk-dlg-ok{background:#E9A91B;border:1px solid #E9A91B;color:#1a1a1a}' +
+        '.tk-dlg-ok.tk-nebezpecne{background:#c0392b;border-color:#c0392b;color:#fff}' +
+        '.tk-dlg-zrusit{background:#fff;border:1px solid #d6d6d6;color:#1a1a1a}';
+      document.head.appendChild(styl);
+    }
+  }
+  function okno(text, moznosti) {
+    pripravit();
+    return new Promise(function (hotovo) {
+      var pozadi = document.createElement('div');
+      pozadi.className = 'tk-dlg-pozadi';
+      var box = document.createElement('div');
+      box.className = 'tk-dlg';
+      box.setAttribute('role', 'dialog');
+      box.setAttribute('aria-modal', 'true');
+      var ikona = document.createElement('div');
+      ikona.className = 'tk-dlg-ikona';
+      ikona.textContent = moznosti.potvrzeni ? '?' : '!';
+      var p = document.createElement('p');
+      p.className = 'tk-dlg-text';
+      p.textContent = text;
+      var radek = document.createElement('div');
+      radek.className = 'tk-dlg-tlacitka';
+      function zavrit(vysledek) {
+        document.removeEventListener('keydown', klavesy);
+        pozadi.remove();
+        hotovo(vysledek);
+      }
+      function klavesy(e) {
+        if (e.key === 'Escape') zavrit(false);
+        if (e.key === 'Enter') { e.preventDefault(); zavrit(true); }
+      }
+      if (moznosti.potvrzeni) {
+        var zrusit = document.createElement('button');
+        zrusit.type = 'button';
+        zrusit.className = 'tk-dlg-zrusit';
+        zrusit.textContent = moznosti.zrusit || 'Zpět';
+        zrusit.onclick = function () { zavrit(false); };
+        radek.appendChild(zrusit);
+      }
+      var ok = document.createElement('button');
+      ok.type = 'button';
+      ok.className = 'tk-dlg-ok' + (moznosti.nebezpecne ? ' tk-nebezpecne' : '');
+      ok.textContent = moznosti.ok || (moznosti.potvrzeni ? 'Ano' : 'Rozumím');
+      ok.onclick = function () { zavrit(true); };
+      radek.appendChild(ok);
+      pozadi.onclick = function (e) { if (e.target === pozadi) zavrit(false); };
+      box.appendChild(ikona); box.appendChild(p); box.appendChild(radek);
+      pozadi.appendChild(box);
+      document.body.appendChild(pozadi);
+      document.addEventListener('keydown', klavesy);
+      ok.focus();
+    });
+  }
+  window.tokvaPotvrdit = function (text, ok, nebezpecne) {
+    return okno(text, { potvrzeni: true, ok: ok, nebezpecne: !!nebezpecne });
+  };
+  window.tokvaUpozornit = function (text) {
+    return okno(text, { potvrzeni: false });
+  };
+})();
