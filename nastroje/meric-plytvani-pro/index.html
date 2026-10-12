@@ -1041,6 +1041,14 @@ function otevritModalAkcniPlanZId(toolRunId) {
   const hist = JSON.parse(localStorage.getItem('meric_pro_hist') || '[]');
   const idx = hist.findIndex(function (z) { return z.toolRunId === toolRunId; });
   if (idx > -1) otevritModalAkcniPlan(idx, null);
+  // Když měření už patří k projektu, úkol se do něj rovnou předvybere.
+  supabaseClient.from('tool_runs').select('project_id').eq('id', toolRunId).maybeSingle().then(function (r) {
+    const pid = r && r.data && r.data.project_id;
+    const sel = document.getElementById('ap-projekt-select');
+    if (!pid || !sel) return;
+    const nastavit = function () { if ([...sel.options].some(function (o) { return o.value === pid; })) { sel.value = pid; return true; } return false; };
+    if (!nastavit()) setTimeout(nastavit, 1500);
+  });
 }
 
 // =============================================
@@ -1980,6 +1988,8 @@ async function ulozitZarazeniProjektuVysledek() {
       .eq('id', posledniToolRunId);
     if (chybaUpdate) throw chybaUpdate;
     stav.textContent = projektId ? 'Uloženo, výsledek patří k projektu.' : 'Uloženo, bez projektu.';
+    // Úkol pod tímhle výsledkem patří nejspíš do stejného projektu, ať se nemusí vybírat znovu.
+    if (projektId) { const akceSel = document.getElementById('s-akce-projekt-select'); const nastavitAkci = () => { if (akceSel && [...akceSel.options].some(o => o.value === projektId)) { akceSel.value = projektId; return true; } return false; }; if (!nastavitAkci()) setTimeout(nastavitAkci, 1500); }
     await nacistProjektyMeric();
   } catch (e) {
     console.warn('Zařazení k projektu se nepodařilo uložit.', e);

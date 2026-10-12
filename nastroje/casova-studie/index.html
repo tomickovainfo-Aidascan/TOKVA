@@ -2897,6 +2897,8 @@ async function ulozitZarazeniProjektu() {
       .eq('id', denRunId);
     if (chybaUpdate) throw chybaUpdate;
     stav.textContent = projektId ? 'Uloženo, den patří k projektu.' : 'Uloženo, bez projektu.';
+    // Úkol pod tímhle výsledkem patří nejspíš do stejného projektu, ať se nemusí vybírat znovu.
+    if (projektId) { const akceSel = document.getElementById('akce-projekt-select'); const nastavitAkci = () => { if (akceSel && [...akceSel.options].some(o => o.value === projektId)) { akceSel.value = projektId; return true; } return false; }; if (!nastavitAkci()) setTimeout(nastavitAkci, 1500); }
     await nacistProjekty();
   } catch (e) {
     console.warn('Zařazení k projektu se nepodařilo uložit.', e);

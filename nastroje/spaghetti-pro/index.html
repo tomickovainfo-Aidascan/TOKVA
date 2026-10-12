@@ -1959,6 +1959,8 @@ async function ulozitZarazeniProjektuVysledek() {
       .eq('id', posledniToolRunId);
     if (chybaUpdate) throw chybaUpdate;
     stav.textContent = projektId ? 'Uloženo, nákres patří k projektu.' : 'Uloženo, bez projektu.';
+    // Úkol pod tímhle výsledkem patří nejspíš do stejného projektu, ať se nemusí vybírat znovu.
+    if (projektId) { const akceSel = document.getElementById('s-akce-projekt-select'); const nastavitAkci = () => { if (akceSel && [...akceSel.options].some(o => o.value === projektId)) { akceSel.value = projektId; return true; } return false; }; if (!nastavitAkci()) setTimeout(nastavitAkci, 1500); }
     await nacistProjektySpaghetti();
   } catch (e) {
     console.warn('Zařazení k projektu se nepodařilo uložit.', e);
@@ -3099,6 +3101,25 @@ function kresliSrovnaniProTisk(ctx, srov, canvasW, y) {
   }
 }
 
+// Tisk má ukázat to, co je právě vidět na plánku (přiblížený výřez), ne vždy
+// celý plánek. Vrací výřez v souřadnicích plánku; cely=true, když je vidět celý.
+function viditelnyVyrezPlanku() {
+  const outer = document.getElementById('canvas-outer');
+  const Z = zoom * fitZoom;
+  if (!outer || !canvas || !canvas.width || !Z) return { x: 0, y: 0, w: canvas.width, h: canvas.height, cely: true };
+  const x0 = Math.max(0, -offsetX / Z), y0 = Math.max(0, -offsetY / Z);
+  const x1 = Math.min(canvas.width, (outer.clientWidth - offsetX) / Z), y1 = Math.min(canvas.height, (outer.clientHeight - offsetY) / Z);
+  const w = x1 - x0, h = y1 - y0;
+  // skoro celý plánek (rámeček, zaokrouhlení) se tiskne celý
+  const cely = w <= 0 || h <= 0 || (w >= canvas.width * 0.97 && h >= canvas.height * 0.97);
+  return cely ? { x: 0, y: 0, w: canvas.width, h: canvas.height, cely: true } : { x: x0, y: y0, w: w, h: h, cely: false };
+}
+function nakreslitVyrezMapy(cilCtx, v, dx, dy, dW, dH) {
+  const tmp = document.createElement('canvas');
+  tmp.width = canvas.width; tmp.height = canvas.height;
+  kresliNaExportCanvas(tmp.getContext('2d'), canvas.width, canvas.height);
+  cilCtx.drawImage(tmp, v.x, v.y, v.w, v.h, dx, dy, dW, dH);
+}
 function tisknout() {
   oznamitDokonceni();
   // Vytvorit novy canvas pro tisk - bez CSS transformace
@@ -3110,13 +3131,15 @@ function tisknout() {
     upozornit('Tisk se nepodařilo otevřít - prohlížeč asi zablokoval vyskakovací okno. Povolte ho pro tuhle stránku a zkuste to znovu.', 'Tisk se nepodařilo otevřít');
     return;
   }
+  const vyrez = viditelnyVyrezPlanku();
+  const mapH = Math.round(canvas.width * vyrez.h / vyrez.w);
   const expCanvas = document.createElement('canvas');
   const srov = zjistiSrovnani();
   const measureCtx = document.createElement('canvas').getContext('2d');
   const legendH = zakazky.length * 22 + 50 + vyskaPoznamek(measureCtx, canvas.width) + vyskaSrovnaniProTisk(srov, measureCtx, canvas.width);
   const statsH = 36;
   expCanvas.width = canvas.width;
-  expCanvas.height = canvas.height + legendH + statsH;
+  expCanvas.height = mapH + legendH + statsH;
   const expCtx = expCanvas.getContext('2d');
 
   expCtx.fillStyle = '#fff';
@@ -3133,20 +3156,24 @@ function tisknout() {
   expCtx.fillText(nadpisTisk + 'Celkem: ' + celkem.toFixed(0) + ' m  |  Zastávek: ' + zastPoc + '  |  Pracovníků: ' + zakazky.length + '  |  Měřítko 1:' + Math.round(1/meritko), 14, 22);
 
   // Mapa
-  expCtx.save();
-  expCtx.translate(0, statsH);
-  kresliNaExportCanvas(expCtx, canvas.width, canvas.height);
-  expCtx.restore();
+  if (vyrez.cely) {
+    expCtx.save();
+    expCtx.translate(0, statsH);
+    kresliNaExportCanvas(expCtx, canvas.width, canvas.height);
+    expCtx.restore();
+  } else {
+    nakreslitVyrezMapy(expCtx, vyrez, 0, statsH, canvas.width, mapH);
+  }
 
   // Legenda
   expCtx.fillStyle = '#111';
-  expCtx.fillRect(0, canvas.height + statsH, expCanvas.width, legendH);
+  expCtx.fillRect(0, mapH + statsH, expCanvas.width, legendH);
   expCtx.fillStyle = '#e9a91b';
   expCtx.font = 'bold 11px Arial';
-  expCtx.fillText('PRACOVNÍCI A TRASY', 14, canvas.height + statsH + 20);
+  expCtx.fillText('PRACOVNÍCI A TRASY', 14, mapH + statsH + 20);
   const vicTypuTisk = pouzivaSeViceTypu();
   zakazky.forEach((z, i) => {
-    const y = canvas.height + statsH + 36 + i * 22;
+    const y = mapH + statsH + 36 + i * 22;
     expCtx.beginPath();
     expCtx.arc(18, y, 6, 0, Math.PI * 2);
     expCtx.fillStyle = z.barva; expCtx.fill();
@@ -3158,7 +3185,7 @@ function tisknout() {
     const skrytoTxt = z.viditelna === false ? '  (skryto z plánku)' : '';
     expCtx.fillText(z.nazev + ': ' + delka.toFixed(0) + ' m' + (zastN > 0 ? ' (' + zastN + ' zastávek)' : '') + typTxt + skrytoTxt, 32, y + 4);
   });
-  let yPoTisk = canvas.height + statsH + 36 + zakazky.length * 22 + 4;
+  let yPoTisk = mapH + statsH + 36 + zakazky.length * 22 + 4;
   yPoTisk = kresliPoznamky(expCtx, expCanvas.width, yPoTisk);
   if (srov) {
     kresliSrovnaniProTisk(expCtx, srov, expCanvas.width, yPoTisk);
