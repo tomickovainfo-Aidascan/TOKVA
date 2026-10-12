@@ -615,6 +615,7 @@ async function otevritDetailVysledku(id) {
     html += '<a class="detail-odkaz" href="' + NASTROJ_URL[r.nastroj] + '?vysledek=' + r.id + '">Otevřít v appce →</a>';
   }
   obsah.innerHTML = html;
+  if (typeof tokvaPridatSmazaniVysledku === 'function') tokvaPridatSmazaniVysledku(document.getElementById('modal-detail-vysledku'), r.id, function () { zavritDetailVysledku(); nacistData(); });
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
 }
 

@@ -2279,6 +2279,7 @@ function otevritModalDetailVysledku(i) {
       '<div class="detail-otazka-odp ' + trida + '">' + znacka + '</div></div>';
   }).join('');
   if (typeof tokvaVlozitPrvniKrok === 'function') tokvaVlozitPrvniKrok(document.getElementById('modal-detail-vysledku'), 'mini-audit-skladu', d);
+  if (typeof tokvaPridatSmazaniVysledku === 'function') tokvaPridatSmazaniVysledku(document.getElementById('modal-detail-vysledku'), r.id, function () { zavritModalDetailVysledku(); renderHistorie(); });
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
 }
 

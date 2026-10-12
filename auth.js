@@ -327,3 +327,40 @@ if (typeof document !== 'undefined') {
     return okno(text, { potvrzeni: false });
   };
 })();
+
+// Tlačítko „Smazat tento výsledek“ do okna s detailem uloženého výsledku.
+// Ukáže se jen majiteli a správci (stejně jako mazání úkolů). Databáze to
+// hlídá taky: odmítnuté smazání vrátí 0 řádků a appka to řekne.
+window.tokvaPridatSmazaniVysledku = function (modal, runId, poSmazani) {
+  if (!modal) return;
+  modal.querySelectorAll('.tokva-smazat-vysledek').forEach(function (el) { el.remove(); });
+  if (!runId) return;
+  (async function () {
+    var cl = null;
+    try { cl = await ziskatMojiOrganizaci(); } catch (e) {}
+    if (!cl || (cl.role !== 'majitel' && cl.role !== 'spravce')) return;
+    var box = modal.firstElementChild || modal;
+    if (box.querySelector('.tokva-smazat-vysledek')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'tokva-smazat-vysledek';
+    wrap.style.cssText = 'margin-top:18px;padding-top:12px;border-top:1px solid rgba(0,0,0,.08);text-align:center;';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = 'Smazat tento výsledek';
+    btn.style.cssText = 'background:none;border:none;color:#c0392b;font:inherit;font-size:13px;font-weight:700;cursor:pointer;padding:6px 10px;';
+    btn.onclick = async function () {
+      if (!(await tokvaPotvrdit('Smazat tenhle výsledek z historie? Úkoly a projekty zůstanou, jen ztratí odkaz na něj. Nejde vrátit zpět.', 'Smazat', true))) return;
+      btn.disabled = true; btn.textContent = 'Mažu…';
+      var res = { data: null, error: null };
+      try { res = await supabaseClient.from('tool_runs').delete().eq('id', runId).select('id'); } catch (e) { res.error = e; }
+      if (res.error || !res.data || !res.data.length) {
+        btn.disabled = false; btn.textContent = 'Smazat tento výsledek';
+        tokvaUpozornit(res.error ? 'Výsledek se nepodařilo smazat. Zkuste to prosím znovu.' : 'Výsledek se nepodařilo smazat. Mazat výsledky může jen majitel nebo správce firmy.');
+        return;
+      }
+      if (typeof poSmazani === 'function') poSmazani();
+    };
+    wrap.appendChild(btn);
+    box.appendChild(wrap);
+  })();
+};

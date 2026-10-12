@@ -1335,6 +1335,7 @@ function otevritModalDetailVysledku(i) {
       '<div class="detail-otazka-odp ' + trida + '">' + popisky[b] + '</div></div>';
   }).join('');
   if (typeof tokvaVlozitPrvniKrok === 'function') tokvaVlozitPrvniKrok(document.getElementById('modal-detail-vysledku'), 'kviz-sklad', (r.data || {}));
+  if (typeof tokvaPridatSmazaniVysledku === 'function') tokvaPridatSmazaniVysledku(document.getElementById('modal-detail-vysledku'), r.id, function () { zavritModalDetailVysledku(); renderHistorie(); });
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
 }
 
