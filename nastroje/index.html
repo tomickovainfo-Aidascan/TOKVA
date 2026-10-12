@@ -294,6 +294,7 @@ a.krok-row { text-decoration:none; }
 #nav-ucet-info,#nav-ucet-email{white-space:nowrap;border:none!important;background:none!important;padding:0!important;font-weight:400!important;color:var(--mid)!important;}
 @media (max-width:600px){#nav-ucet-info{display:none!important;}}
 </style>
+<style id="tokva-menu-css">.topbar-login.nav-aktivni{background:var(--gold,#e9a91b)!important;border-color:var(--gold,#e9a91b)!important;color:#0a0a0a!important;}</style>
 </head>
 <body>
 
@@ -306,15 +307,16 @@ a.krok-row { text-decoration:none; }
 </div>
 
 <div class="topbar">
-  <a class="brand" href="https://tokva.cz/">Tokva <span>Gabriela Tomíčková</span></a>
+  <a class="brand" href="https://tokva.cz/">Tokva</a>
   <div class="topbar-right">
+    <a class="topbar-login nav-aktivni" href="https://tokva.cz/nastroje/" id="nav-vsechny-nastroje" aria-current="page">Všechny nástroje</a>
+    <a class="topbar-login" href="https://tokva.cz/moje-tokva/" id="nav-moje-tokva" style="display:none;">Přehled</a>
+    <a class="topbar-login" href="https://tokva.cz/projekty/" id="nav-projekty" style="display:none;">Projekty</a>
+    <a class="topbar-login" href="https://tokva.cz/akcni-plan/" id="nav-akcni-plan" style="display:none;">Akční plán</a>
+    <a class="topbar-login" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'katalog',placement:'nav'})" id="nav-pro-odkaz">Víc o Tokva Pro</a>
     <span class="topbar-login" id="nav-ucet-info" style="display:none;cursor:default;"></span>
     <span class="topbar-login" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
-    <a class="topbar-login" href="https://tokva.cz/akcni-plan/" id="nav-akcni-plan" style="display:none;">Akční plán</a>
-    <a class="topbar-login" href="https://tokva.cz/projekty/" id="nav-projekty" style="display:none;">Projekty</a>
-    <a class="topbar-login" href="https://tokva.cz/nastaveni-firmy/" id="nav-nastaveni-firmy" style="display:none;">Nastavení firmy</a>
-    <a class="topbar-login" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'katalog',placement:'nav'})" id="nav-pro-odkaz">Víc o Tokva Pro</a>
-    <a class="topbar-login" href="../prihlaseni.html" id="nav-ucet-btn">Moje Tokva</a>
+    <a class="topbar-login" href="../prihlaseni.html" id="nav-ucet-btn">Přihlásit se</a>
   </div>
 </div>
 
@@ -378,7 +380,7 @@ window.tokvaJeProPromise = (async function nacistUcetIndex() {
     if (infoEmail) { infoEmail.style.display = 'inline-block'; infoEmail.textContent = zkratitEmail(session.user.email); }
     if (typeof zobrazitOdkazAkcniPlan === 'function') zobrazitOdkazAkcniPlan(jePro);
     if (typeof zobrazitOdkazProjekty === 'function') zobrazitOdkazProjekty(jePro);
-    if (typeof zobrazitOdkazNastaveniFirmy === 'function') zobrazitOdkazNastaveniFirmy(jePro, clenstvi);
+    if (typeof zobrazitOdkazMojeTokva === 'function') zobrazitOdkazMojeTokva(true);
     btn.textContent = 'Odhlásit';
     btn.removeAttribute('href');
     btn.style.cursor = 'pointer';

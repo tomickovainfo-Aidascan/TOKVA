@@ -318,6 +318,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 .cookies-no:hover{color:rgba(255,255,255,.7);}
 </style>
 <style id="tokva-pro-texty-css">html:not(.tokva-ma-pro) .jen-s-pro, html.tokva-ma-pro .jen-bez-pro{display:none !important;}</style>
+<style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
 </head>
 <body>
 
@@ -330,13 +331,15 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 </div>
 
 <nav>
-  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/" class="nav-brand" style="text-decoration:none;">Tokva <span>Gabriela Tomíčková</span></a><span class="nav-tool">Kalkulačka ztrát</span></div>
+  <div style="display:flex;align-items:center;"><a href="https://tokva.cz/" class="nav-brand" style="text-decoration:none;">Tokva</a><span class="nav-tool">Kalkulačka ztrát</span></div>
   <div class="nav-right">
+    <a href="https://tokva.cz/nastroje/" class="nav-btn" id="nav-vsechny-nastroje">Všechny nástroje</a>
+    <a href="https://tokva.cz/moje-tokva/" class="nav-btn" id="nav-moje-tokva" style="display:none;">Přehled</a>
+    <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;">Projekty</a>
+    <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;">Akční plán</a>
+    <a class="nav-btn" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'kalkulacka_ztrat',placement:'nav'})" id="nav-pro-odkaz">Víc o Tokva Pro</a>
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
-    <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;text-decoration:none;">Akční plán</a>
-    <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;text-decoration:none;">Projekty</a>
-    <a class="nav-btn" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'kalkulacka_ztrat',placement:'nav'})" id="nav-pro-odkaz" style="text-decoration:none;">Víc o Tokva Pro</a>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
   </div>
 </nav>

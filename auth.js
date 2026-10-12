@@ -122,15 +122,18 @@ function nastavitTextyProPro(jePro) {
 // přihlášený Pro uživatel nedostal vůbec.
 function zobrazitOdkazAkcniPlan(jePro) {
   const el = document.getElementById('nav-akcni-plan');
-  if (!el) return;
+  if (!el || el.classList.contains('nav-aktivni')) return;
   el.style.display = jePro ? '' : 'none';
 }
 
 // Ukáže/schová trvalý odkaz na Projekty v horní liště appky - stejný vzorec jako
 // zobrazitOdkazAkcniPlan výš, jen pro appku Projekty (souhrn projektu + prezentační mód).
 function zobrazitOdkazProjekty(jePro) {
+  // Přehled (Moje Tokva) patří v menu hned před Projekty - Pro ho vidí v každém nástroji.
+  const prehled = document.getElementById('nav-moje-tokva');
+  if (prehled && !prehled.classList.contains('nav-aktivni') && jePro) prehled.style.display = '';
   const el = document.getElementById('nav-projekty');
-  if (!el) return;
+  if (!el || el.classList.contains('nav-aktivni')) return;
   el.style.display = jePro ? '' : 'none';
 }
 
@@ -140,7 +143,7 @@ function zobrazitOdkazProjekty(jePro) {
 // firmě - stačí, že vůbec existuje firma (clenstvi), ne že má aktivní Pro.
 function zobrazitOdkazMojeTokva(maFirmu) {
   const el = document.getElementById('nav-moje-tokva');
-  if (!el) return;
+  if (!el || el.classList.contains('nav-aktivni')) return;
   el.style.display = maFirmu ? '' : 'none';
 }
 
