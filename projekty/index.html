@@ -991,8 +991,20 @@ function otevritDetailVysledku(id) {
   if (podporuje) {
     html += '<a class="detail-odkaz" href="' + NASTROJ_URL[tr.nastroj] + '?vysledek=' + tr.id + '">Otevřít v appce →</a>';
   }
+  // Výsledek, který do projektu nepatří, jde z projektu odebrat (zůstane
+  // v historii nástroje), majitel a správce ho můžou i úplně smazat.
+  html += '<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);text-align:center;">' +
+    '<button type="button" onclick="odebratVysledekZProjektu(\'' + tr.id + '\')" style="background:none;border:none;color:var(--mid);font:inherit;font-size:13px;font-weight:700;cursor:pointer;padding:6px 10px;text-decoration:underline;">Odebrat z projektu</button></div>';
   document.getElementById('detail-vysledku-obsah').innerHTML = html;
+  if (typeof tokvaPridatSmazaniVysledku === 'function') tokvaPridatSmazaniVysledku(document.getElementById('modal-detail-vysledku-overlay'), tr.id, function () { zavritDetailVysledku(); if (aktualniProjekt) otevritDetailProjektu(aktualniProjekt.id); });
   document.getElementById('modal-detail-vysledku-overlay').classList.add('visible');
+}
+async function odebratVysledekZProjektu(id) {
+  if (!(await tokvaPotvrdit('Odebrat tenhle výsledek z projektu? V historii nástroje zůstane, jen už nebude patřit k projektu.', 'Odebrat'))) return;
+  const { data, error } = await supabaseClient.from('tool_runs').update({ project_id: null, premereni_pro: null }).eq('id', id).select('id');
+  if (error || !data || !data.length) { tokvaUpozornit('Výsledek se nepodařilo odebrat z projektu. Zkuste to prosím znovu.'); return; }
+  zavritDetailVysledku();
+  if (aktualniProjekt) otevritDetailProjektu(aktualniProjekt.id);
 }
 function zavritDetailVysledku() {
   document.getElementById('modal-detail-vysledku-overlay').classList.remove('visible');
