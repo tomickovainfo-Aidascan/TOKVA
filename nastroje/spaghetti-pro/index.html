@@ -1450,9 +1450,17 @@ async function synchronizovatProjektySeSupabase() {
     let pribylo = false;
     data.forEach(radek => {
       const p = radek.data;
-      if (p && p.id && !zname.has(p.id)) {
+      if (!p || !p.id) return;
+      if (!zname.has(p.id)) {
         seznam.push(p);
         zname.add(p.id);
+        pribylo = true;
+        return;
+      }
+      // Nákres upravený na jiném zařízení: dřív tu zůstala stará místní kopie.
+      const idx = seznam.findIndex(x => x.id === p.id);
+      if (idx > -1 && p.ulozenoAt && (!seznam[idx].ulozenoAt || p.ulozenoAt > seznam[idx].ulozenoAt)) {
+        seznam[idx] = p;
         pribylo = true;
       }
     });
