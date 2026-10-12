@@ -391,7 +391,10 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
   body::after { margin-top:12px !important; }
   .vysledky-detail-header, .top3-header, .nemereno-header { break-after:avoid; }
   #vysledky-rows > *, #top3-rows > *, #nemereno-rows > * { break-inside:avoid; }
-  @page { margin:20mm; }
+  /* Kompaktní tisk: výsledek přes celou šířku stránky, přehled odpovědí ve dvou sloupcích */
+  .main, #vysledky, .vysledky-wrap { max-width:none !important; padding-left:0 !important; padding-right:0 !important; }
+  #vysledky-rows { display:grid; grid-template-columns:1fr 1fr; column-gap:16px; }
+  @page { margin:15mm; }
 }
 
 /* CONTENT BLOCK - příběh, pro koho, jak funguje */
