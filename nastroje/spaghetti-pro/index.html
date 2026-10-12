@@ -441,8 +441,8 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     </div>
     <div class="setup-grid">
       <div class="setup-group">
-        <label>Jméno pracovníka</label>
-        <input type="text" class="setup-input" id="nazev-zakazky" placeholder="např. Pracovník #1" value="Pracovník 1">
+        <label>Název trasy</label>
+        <input type="text" class="setup-input" id="nazev-zakazky" placeholder="např. Vychystání objednávky" value="Trasa 1">
       </div>
       <div class="setup-group" style="display:flex;align-items:flex-end;">
         <button class="tool-btn active" id="btn-zacit-kreslit" style="width:100%;justify-content:center;" onclick="spustitKresleni()" title="Nejdřív nastavte měřítko" disabled>
@@ -711,7 +711,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <h3>Nová trasa</h3>
-    <p>Pojmenujte zakázku a zvolte barvu trasy. Aktuální trasa bude uložena.</p>
+    <p>Pojmenujte trasu (třeba podle zakázky nebo pracovníka) a zvolte její barvu. Aktuální trasa zůstane uložená.</p>
     <input type="text" class="modal-input" id="modal-nazev" placeholder="např. Trasa 2">
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;" id="barvy-picker">
     </div>
@@ -1137,7 +1137,7 @@ function inicializovat() {
 
   // Prva pracovník
   if (zakazky.length === 0) {
-    zakazky.push({ nazev: 'Pracovník 1', barva: BARVY[0], body: [], role: null, frek: { opakovani: 0, smeny: 0, dny: 0 }, typ: 'clovek', viditelna: true });
+    zakazky.push({ nazev: 'Trasa 1', barva: BARVY[0], body: [], role: null, frek: { opakovani: 0, smeny: 0, dny: 0 }, typ: 'clovek', viditelna: true });
     aktivniZakazka = 0;
   }
   kreslit();
@@ -1241,7 +1241,7 @@ function ulozitKalibraci() {
 
 function spustitKresleni() {
   if (!meritkoNastaveno) { upozornit('Nejdřív nastavte měřítko kliknutím na plánek.'); return; }
-  const nazev = document.getElementById('nazev-zakazky').value || 'Pracovník 1';
+  const nazev = document.getElementById('nazev-zakazky').value || 'Trasa 1';
   zakazky[0].nazev = nazev;
 
   document.getElementById('setup-panel').style.display = 'none';
@@ -2354,7 +2354,7 @@ function smazatAktualniTrasu() {
 }
 
 function novyPracovnik() {
-  document.getElementById('modal-nazev').value = 'Pracovník ' + (zakazky.length + 1);
+  document.getElementById('modal-nazev').value = 'Trasa ' + (zakazky.length + 1);
   document.getElementById('modal').classList.add('visible');
   // Reset barvy picker
   const picker = document.getElementById('barvy-picker');
@@ -2368,7 +2368,7 @@ function novyPracovnik() {
 function zavritModal() { document.getElementById('modal').classList.remove('visible'); }
 
 function potvrditNovehoPracovnika() {
-  const nazev = document.getElementById('modal-nazev').value || ('Pracovník ' + (zakazky.length + 1));
+  const nazev = document.getElementById('modal-nazev').value || ('Trasa ' + (zakazky.length + 1));
   zakazky.push({ nazev, barva: vybranaBarva, body: [], role: null, frek: { opakovani: 0, smeny: 0, dny: 0 }, typ: 'clovek', viditelna: true });
   aktivniZakazka = zakazky.length - 1;
   zavritModal();
@@ -3210,7 +3210,7 @@ function resetovat() {
   potvrdit('Začít úplně znovu? Všechny trasy budou smazány.', 'Smazat a začít znovu', function() {
     hasUnsavedPrace = false;
     smazatRozpracovanyNakres();
-    zakazky = [{ nazev: 'Pracovník 1', barva: BARVY[0], body: [], role: null, frek: { opakovani: 0, smeny: 0, dny: 0 }, typ: 'clovek', viditelna: true }];
+    zakazky = [{ nazev: 'Trasa 1', barva: BARVY[0], body: [], role: null, frek: { opakovani: 0, smeny: 0, dny: 0 }, typ: 'clovek', viditelna: true }];
     aktivniZakazka = 0;
     zastavky = [];
     poznamky = [];

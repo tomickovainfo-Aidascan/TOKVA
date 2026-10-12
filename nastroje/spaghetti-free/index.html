@@ -561,8 +561,8 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     </div>
     <div class="setup-grid">
       <div class="setup-group">
-        <label>Název zakázky</label>
-        <input type="text" class="setup-input" id="nazev-zakazky" placeholder="např. Zakázka #1" value="Zakázka 1">
+        <label>Název trasy</label>
+        <input type="text" class="setup-input" id="nazev-zakazky" placeholder="např. Vychystání objednávky" value="Trasa 1">
       </div>
       <div class="setup-group" style="display:flex;align-items:flex-end;">
         <button class="tool-btn active" id="btn-zacit-kreslit" style="width:100%;justify-content:center;" onclick="spustitKresleni()" title="Nejdřív nastavte měřítko" disabled>
@@ -741,9 +741,9 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 <!-- MODAL NOVA ZAKAZKA -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <h3>Nová zakázka</h3>
-    <p>Pojmenujte zakázku a zvolte barvu trasy. Aktuální trasa bude uložena.</p>
-    <input type="text" class="modal-input" id="modal-nazev" placeholder="např. Zakázka #2">
+    <h3>Nová trasa</h3>
+    <p>Pojmenujte trasu (třeba podle zakázky nebo pracovníka) a zvolte její barvu. Aktuální trasa zůstane uložená.</p>
+    <input type="text" class="modal-input" id="modal-nazev" placeholder="např. Trasa 2">
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;" id="barvy-picker">
     </div>
     <div class="modal-btns">
@@ -1096,7 +1096,7 @@ function inicializovat() {
 
   // Prva zakázka
   if (zakazky.length === 0) {
-    zakazky.push({ nazev: 'Zakázka 1', barva: BARVY[0], body: [] });
+    zakazky.push({ nazev: 'Trasa 1', barva: BARVY[0], body: [] });
     aktivniZakazka = 0;
   }
   kreslit();
@@ -1196,7 +1196,7 @@ function ulozitKalibraci() {
 
 function spustitKresleni() {
   if (!meritkoNastaveno) { upozornit('Nejdřív nastavte měřítko kliknutím na plánek.'); return; }
-  const nazev = document.getElementById('nazev-zakazky').value || 'Zakázka 1';
+  const nazev = document.getElementById('nazev-zakazky').value || 'Trasa 1';
   zakazky[0].nazev = nazev;
 
   document.getElementById('setup-panel').style.display = 'none';
@@ -1477,7 +1477,7 @@ function smazatAktualniTrasu() {
 }
 
 function novaZakazka() {
-  document.getElementById('modal-nazev').value = 'Zakázka ' + (zakazky.length + 1);
+  document.getElementById('modal-nazev').value = 'Trasa ' + (zakazky.length + 1);
   document.getElementById('modal').classList.add('visible');
   // Reset barvy picker
   const picker = document.getElementById('barvy-picker');
@@ -1491,7 +1491,7 @@ function novaZakazka() {
 function zavritModal() { document.getElementById('modal').classList.remove('visible'); }
 
 function potvrditNovuZakazku() {
-  const nazev = document.getElementById('modal-nazev').value || ('Zakázka ' + (zakazky.length + 1));
+  const nazev = document.getElementById('modal-nazev').value || ('Trasa ' + (zakazky.length + 1));
   zakazky.push({ nazev, barva: vybranaBarva, body: [] });
   aktivniZakazka = zakazky.length - 1;
   zavritModal();
@@ -1747,7 +1747,7 @@ function potvrditReset() {
   zavritModalReset();
   hasUnsavedPrace = false;
   smazatRozpracovanyNakres();
-  zakazky = [{ nazev: 'Zakázka 1', barva: BARVY[0], body: [] }];
+  zakazky = [{ nazev: 'Trasa 1', barva: BARVY[0], body: [] }];
   aktivniZakazka = 0;
   layout = null;
   meritkoNastaveno = false;
