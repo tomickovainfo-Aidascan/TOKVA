@@ -1686,6 +1686,7 @@ function zacitZnovu() {
 }
 
 function zacitZnovuSkutecne() {
+  ukladanyKod = null; // nové vyplnění se uloží jako nový výsledek
   try { if (typeof CEKA_ULOZENI_KEY !== 'undefined') localStorage.removeItem(CEKA_ULOZENI_KEY); } catch (e) {}
   Object.keys(odpovedi).forEach(k => delete odpovedi[k]);
   nevimSet.clear();
@@ -1706,6 +1707,7 @@ let session = null;
 let clenstvi = null;
 let jePro = false;
 let vysledekUlozen = false;
+let ukladanyKod = null; // odpovědi, které už tahle stránka uložila (nebo právě ukládá)
 
 async function nacistPrihlaseniStav() {
   try {
@@ -1773,6 +1775,7 @@ async function klikNaUcet() {
     session = null; clenstvi = null; jePro = false;
     renderUcetNav();
     vysledekUlozen = false;
+    ukladanyKod = null;
     if (document.getElementById('vysledky').classList.contains('active')) renderHistorie();
   } else {
     // i přihlášení horním tlačítkem má hotový výsledek podržet a po návratu uložit
@@ -1889,6 +1892,12 @@ let posledniToolRunId = null;
 
 async function ulozitVysledekDoSupabase(procenta, skore, maxS) {
   if (!jePro || !clenstvi || vysledekUlozen) return;
+  // Stejné odpovědi se na jedné stránce uloží jen jednou, i když se výsledek
+  // zobrazí dvakrát rychle po sobě (přihlášení, návrat z e-mailu). Dřív tak
+  // mohly vzniknout dva záznamy a zařazení k projektu šlo jen k jednomu z nich.
+  const kodUkladani = kodOdpovediProUlozeni();
+  if (ukladanyKod === kodUkladani) return;
+  ukladanyKod = kodUkladani;
   try {
     const nejhorsi = Object.entries(odpovedi)
       .map(([q, b]) => [q, Number(b)])
@@ -1910,6 +1919,7 @@ async function ulozitVysledekDoSupabase(procenta, skore, maxS) {
     vysledekUlozen = true;
     posledniToolRunId = data ? data.id : null;
   } catch (e) {
+    ukladanyKod = null;
     console.warn('Výsledek se nepodařilo uložit do Supabase, zůstává aspoň na téhle stránce.', e);
   }
 }
@@ -1999,7 +2009,8 @@ document.addEventListener('change', function (e) {
 async function ulozitZarazeniProjektu() {
   const stav = document.getElementById('projekt-stav');
   const select = document.getElementById('projekt-select');
-  if (!posledniToolRunId || !clenstvi || !select) return;
+  if (!clenstvi || !select) return;
+  if (!posledniToolRunId) { if (stav) stav.textContent = 'Výsledek se ještě ukládá do historie, zkuste to prosím za chvilku znovu.'; return; }
   stav.textContent = 'Ukládám…';
   try {
     let projektId = select.value || null;
@@ -2016,11 +2027,13 @@ async function ulozitZarazeniProjektu() {
     const premereniCheckbox = document.getElementById('premereni-checkbox');
     const wrapPremereni = document.getElementById('premereni-wrap');
     const jePremereni = !!(wrapPremereni && wrapPremereni.style.display !== 'none' && premereniCheckbox && premereniCheckbox.checked);
-    const { error: chybaUpdate } = await supabaseClient
+    const { data: zarazeno, error: chybaUpdate } = await supabaseClient
       .from('tool_runs')
       .update({ project_id: projektId, premereni_pro: jePremereni ? premereniStarsiId : null })
-      .eq('id', posledniToolRunId);
+      .eq('id', posledniToolRunId)
+      .select('id');
     if (chybaUpdate) throw chybaUpdate;
+    if (!zarazeno || !zarazeno.length) { stav.textContent = 'Zařazení se neuložilo, výsledek se v historii nenašel. Obnovte prosím stránku a zkuste to znovu.'; return; }
     stav.textContent = projektId ? 'Uloženo, výsledek patří k projektu.' : 'Uloženo, bez projektu.';
     await nacistProjekty();
     // Po založení nového projektu přepnout výběr na něj. Jinak by další
