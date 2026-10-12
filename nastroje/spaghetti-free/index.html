@@ -292,6 +292,8 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:12px
 .tool-btn:hover { border-color:var(--gold); color:var(--dark); background:var(--gold-light); }
 .tool-btn.active { background:var(--gold); border-color:var(--gold); color:var(--black); }
 .tool-btn.danger:hover { border-color:var(--red); color:var(--red); background:#fff0f0; }
+/* Zakázané tlačítko (např. Začít kreslit před nastavením měřítka) má vypadat neaktivně, ne zlatě. */
+.tool-btn:disabled, .tool-btn.active:disabled, .tool-btn:disabled:hover { background:#ece9e2; border-color:#ddd8cd; color:#9b968c; cursor:not-allowed; }
 .tool-btn .btn-icon { width:14px; height:9px; background:currentColor; clip-path:polygon(0 0, 62% 0, 100% 50%, 62% 100%, 0 100%); flex-shrink:0; }
 
 /* STATS BAR */
@@ -563,7 +565,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
         <input type="text" class="setup-input" id="nazev-zakazky" placeholder="např. Zakázka #1" value="Zakázka 1">
       </div>
       <div class="setup-group" style="display:flex;align-items:flex-end;">
-        <button class="tool-btn active" id="btn-zacit-kreslit" style="width:100%;justify-content:center;" onclick="spustitKresleni()" disabled>
+        <button class="tool-btn active" id="btn-zacit-kreslit" style="width:100%;justify-content:center;" onclick="spustitKresleni()" title="Nejdřív nastavte měřítko" disabled>
           <span class="btn-icon"></span> Začít kreslit trasu
         </button>
       </div>
