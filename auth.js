@@ -92,6 +92,7 @@ async function zalozitOrganizaci(nazevFirmy) {
 // oddělenou Pro appku - volej znovu po každém překreslení výsledků, protože
 // odkazy se v appkách staví dynamicky.
 function prepnoutOdkazyNaPro(jePro) {
+  nastavitTextyProPro(jePro);
   if (!jePro) return;
   document.querySelectorAll('a[href*="meric-plytvani-free/"]').forEach(a => {
     a.href = a.href.replace('meric-plytvani-free/', 'meric-plytvani-pro/');
@@ -99,6 +100,19 @@ function prepnoutOdkazyNaPro(jePro) {
   document.querySelectorAll('a[href*="spaghetti-free/"]').forEach(a => {
     a.href = a.href.replace('spaghetti-free/', 'spaghetti-pro/');
   });
+}
+
+// Kdo už Tokva Pro má, tomu stránka nemá nabízet "pořiďte si Pro".
+// Prvky s třídou jen-bez-pro se přihlášenému Pro schovají, prvky s třídou
+// jen-s-pro se ukážou jen jemu (text, co mu řekne, kde má historii a porovnání).
+function nastavitTextyProPro(jePro) {
+  if (!document.getElementById('tokva-pro-texty-css')) {
+    var st = document.createElement('style');
+    st.id = 'tokva-pro-texty-css';
+    st.textContent = 'html:not(.tokva-ma-pro) .jen-s-pro, html.tokva-ma-pro .jen-bez-pro{display:none !important;}';
+    document.head.appendChild(st);
+  }
+  document.documentElement.classList.toggle('tokva-ma-pro', !!jePro);
 }
 
 // Ukáže/schová trvalý odkaz na Akční plán v horní liště appky - jen appky,

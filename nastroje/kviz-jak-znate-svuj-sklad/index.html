@@ -825,8 +825,10 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
           <li>Začněte ho měřit. Nemusí to být systém: tři týdny zápisu na papír dokážou většinu věcí ukázat.</li>
           <li>Za tři měsíce projděte kvíz znovu a položte oba výsledky vedle sebe.</li>
         </ol>
-        <p>Bezplatný kvíz spočítá vždycky jen jeden výsledek a po zavření stránky zmizí. Druhý kvíz a porovnání otázku po otázce drží Tokva Pro: výsledky zůstanou ve vašem účtu u projektu a rozdíl vidíte vedle sebe.</p>
-        <a href="#pro-final-panel" onclick="event.preventDefault();document.getElementById('pro-final-panel').scrollIntoView({behavior:'smooth',block:'center'});">Projít kvíz podruhé a porovnat →</a>
+        <p class="jen-s-pro">Výsledek se ukládá do Historie kvízů na téhle stránce. Až kvíz za tři měsíce projdete znovu, v historii zaškrtněte oba a dejte Porovnat vybrané.</p>
+        <a class="jen-s-pro" href="#historie-panel" onclick="event.preventDefault();document.getElementById('historie-panel').scrollIntoView({behavior:'smooth',block:'center'});">Otevřít historii kvízů →</a>
+        <p class="jen-bez-pro">Bezplatný kvíz spočítá vždycky jen jeden výsledek a po zavření stránky zmizí. Druhý kvíz a porovnání otázku po otázce drží Tokva Pro: výsledky zůstanou ve vašem účtu u projektu a rozdíl vidíte vedle sebe.</p>
+        <a class="jen-bez-pro" href="#pro-final-panel" onclick="event.preventDefault();document.getElementById('pro-final-panel').scrollIntoView({behavior:'smooth',block:'center'});">Projít kvíz podruhé a porovnat →</a>
       </div>
     </div>
 
