@@ -566,51 +566,6 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     </button>
   </div>
 
-  <!-- ZAŘADIT K PROJEKTU (Pro) -->
-  <div class="uloz-panel" id="s-projekt-panel" style="display:none;">
-    <div class="uloz-panel-title">Zařadit k projektu</div>
-    <div class="uloz-panel-body">
-      <p>Nepovinné. Pomůže vám tenhle nákres později najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
-      <select id="s-projekt-select" class="modal-input">
-        <option value="">Bez projektu</option>
-        <option value="__novy__">+ Nový projekt…</option>
-      </select>
-      <input id="s-projekt-novy-nazev" type="text" placeholder="Název nového projektu" class="modal-input" style="display:none;">
-      <div id="s-premereni-wrap" style="display:none;margin-bottom:10px;">
-        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;">
-          <input type="checkbox" id="s-premereni-checkbox" checked style="margin-top:3px;">
-          <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
-        </label>
-      </div>
-      <button class="tool-btn" style="background:var(--gold);border-color:var(--gold);width:100%;justify-content:center;" onclick="ulozitZarazeniProjektuVysledek()">Uložit zařazení</button>
-      <div id="s-projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
-    </div>
-  </div>
-
-  <!-- PRIDAT DO AKCNIHO PLANU (Pro) -->
-  <div class="uloz-panel" id="s-akce-panel" style="display:none;">
-    <div class="uloz-panel-title">Přidat do akčního plánu</div>
-    <div class="uloz-panel-body">
-      <p>Založí úkol v Akčním plánu s odkazem na tenhle nákres. Projekt je nepovinný, ale pokud nákres k nějakému patří, vyberte ho, ať se v akčním plánu neztratí.</p>
-      <input id="s-akce-nazev" type="text" placeholder="Co se má udělat" class="modal-input">
-      <select id="s-akce-projekt-select" class="modal-input">
-        <option value="">Bez projektu</option>
-        <option value="__novy__">+ Nový projekt…</option>
-      </select>
-      <input id="s-akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" class="modal-input" style="display:none;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <input id="s-akce-investice" type="number" placeholder="Investice (Kč)" class="modal-input">
-        <input id="s-akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" class="modal-input">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <input id="s-akce-osoba" type="text" placeholder="Odpovědná osoba" class="modal-input">
-        <input id="s-akce-termin" type="date" class="modal-input">
-      </div>
-      <button class="tool-btn" style="background:var(--gold);border-color:var(--gold);width:100%;justify-content:center;" onclick="pridatDoAkcnihoPlanuVysledek()">+ Přidat do akčního plánu</button>
-      <div id="s-akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
-    </div>
-  </div>
-
   <div id="kalibrace-hint" role="status" aria-live="polite" style="display:none;margin:0 0 10px;padding:10px 14px;border:1px solid var(--gold);border-radius:8px;font-size:13px;font-weight:600;color:var(--dark, #222);line-height:1.5;"></div>
 
   <!-- CANVAS -->
@@ -684,6 +639,52 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
       </div>
     </div>
     <div style="font-size:11px;color:var(--light);margin-top:8px;line-height:1.5;">Výchozí rychlost vychází z běžně používané normy pro chůzi bez zátěže. Klikněte na 📊 u trasy v seznamu Pracovníci a trasy a zadejte, kolikrát se opakuje, ať appka spočítá roční km, hodiny i Kč.</div>
+  </div>
+
+  <!-- Zařazení k projektu a úkol patří pod výsledky, ne mezi ovládání kreslení a plánek. -->
+  <!-- ZAŘADIT K PROJEKTU (Pro) -->
+  <div class="uloz-panel" id="s-projekt-panel" style="display:none;">
+    <div class="uloz-panel-title">Zařadit k projektu</div>
+    <div class="uloz-panel-body">
+      <p>Nepovinné. Pomůže vám tenhle nákres později najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
+      <select id="s-projekt-select" class="modal-input">
+        <option value="">Bez projektu</option>
+        <option value="__novy__">+ Nový projekt…</option>
+      </select>
+      <input id="s-projekt-novy-nazev" type="text" placeholder="Název nového projektu" class="modal-input" style="display:none;">
+      <div id="s-premereni-wrap" style="display:none;margin-bottom:10px;">
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;">
+          <input type="checkbox" id="s-premereni-checkbox" checked style="margin-top:3px;">
+          <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
+        </label>
+      </div>
+      <button class="tool-btn" style="background:var(--gold);border-color:var(--gold);width:100%;justify-content:center;" onclick="ulozitZarazeniProjektuVysledek()">Uložit zařazení</button>
+      <div id="s-projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+    </div>
+  </div>
+
+  <!-- PRIDAT DO AKCNIHO PLANU (Pro) -->
+  <div class="uloz-panel" id="s-akce-panel" style="display:none;">
+    <div class="uloz-panel-title">Přidat do akčního plánu</div>
+    <div class="uloz-panel-body">
+      <p>Založí úkol v Akčním plánu s odkazem na tenhle nákres. Projekt je nepovinný, ale pokud nákres k nějakému patří, vyberte ho, ať se v akčním plánu neztratí.</p>
+      <input id="s-akce-nazev" type="text" placeholder="Co se má udělat" class="modal-input">
+      <select id="s-akce-projekt-select" class="modal-input">
+        <option value="">Bez projektu</option>
+        <option value="__novy__">+ Nový projekt…</option>
+      </select>
+      <input id="s-akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" class="modal-input" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <input id="s-akce-investice" type="number" placeholder="Investice (Kč)" class="modal-input">
+        <input id="s-akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" class="modal-input">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <input id="s-akce-osoba" type="text" placeholder="Odpovědná osoba" class="modal-input">
+        <input id="s-akce-termin" type="date" class="modal-input">
+      </div>
+      <button class="tool-btn" style="background:var(--gold);border-color:var(--gold);width:100%;justify-content:center;" onclick="pridatDoAkcnihoPlanuVysledek()">+ Přidat do akčního plánu</button>
+      <div id="s-akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+    </div>
   </div>
 
   <!-- TIP KROKOMERY -->
