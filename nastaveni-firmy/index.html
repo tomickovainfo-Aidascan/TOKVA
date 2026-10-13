@@ -643,8 +643,8 @@ async function exportovatVsechnaData() {
       ['Projekt', 'Stav', 'Odpovídá', 'Popis', 'Další krok', 'Očekávaný potenciál (Kč/rok)', 'Založeno', 'ID'],
       P.map(p => [p.name, STAV_PROJEKTU_CZ[p.status] || p.status, p.responsible_person, p.description, p.next_step, p.expected_potential_kc, datumCZ(p.created_at), p.id])));
     if (!clenove.error && clenove.data) {
-      zip.file('clenove.csv', tabulkaNaCSV(['Uživatel', 'Role', 'Člen od'],
-        clenove.data.map(c => { const pr = (typeof profilyClenu !== 'undefined' && profilyClenu[c.user_id]) || {}; return [pr.email || pr.full_name || c.user_id, ROLE_CZ[c.role] || c.role, datumCZ(c.created_at)]; })));
+      zip.file('clenove.csv', tabulkaNaCSV(['Jméno', 'E-mail', 'Role', 'Člen od'],
+        clenove.data.map(c => { const pr = (typeof profilyClenu !== 'undefined' && profilyClenu[c.user_id]) || {}; return [pr.full_name || '', pr.email || c.user_id, ROLE_CZ[c.role] || c.role, datumCZ(c.created_at)]; })));
     }
 
     // 2) Kompletní data včetně všech odpovědí, vstupů, tras a poznámek (JSON),
