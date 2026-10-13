@@ -422,6 +422,9 @@ nav {
 }
 
 .foto-slot:hover { border-color: var(--gold); }
+.foto-smazat { position:absolute; top:6px; right:6px; z-index:2; width:30px; height:30px; border-radius:50%; border:none; background:rgba(0,0,0,.7); color:#fff; font-size:18px; line-height:30px; text-align:center; cursor:pointer; padding:0; }
+.foto-smazat:hover { background:#b91c1c; }
+@media print { .foto-smazat { display:none !important; } }
 
 .foto-slot img {
   position: absolute;
@@ -2248,7 +2251,7 @@ function renderMain() {
           <div class="foto-grid">
             <div>
               <div class="foto-slot ${fotokyPred ? 'has-photo' : ''}" onclick="vybratFoto('${s.id}', 'pred')">
-                ${fotokyPred ? `<img src="${fotokyPred}">` : ''}
+                ${fotokyPred ? `<img src="${fotokyPred}"><button type="button" class="foto-smazat no-print" title="Smazat fotku" aria-label="Smazat fotku před" onclick="event.stopPropagation();smazatFoto('${s.id}', 'pred')">×</button>` : ''}
                 <div class="foto-slot-icon">📷</div>
                 <div class="foto-slot-label">${fotokyPred ? 'Před' : 'Před'}</div>
                 <div class="foto-slot-formats">JPG, JPEG, PNG</div>
@@ -2258,7 +2261,7 @@ function renderMain() {
             </div>
             <div>
               <div class="foto-slot ${fotokyPo ? 'has-photo' : ''}" onclick="vybratFoto('${s.id}', 'po')">
-                ${fotokyPo ? `<img src="${fotokyPo}">` : ''}
+                ${fotokyPo ? `<img src="${fotokyPo}"><button type="button" class="foto-smazat no-print" title="Smazat fotku" aria-label="Smazat fotku po" onclick="event.stopPropagation();smazatFoto('${s.id}', 'po')">×</button>` : ''}
                 <div class="foto-slot-icon">📷</div>
                 <div class="foto-slot-label">${fotokyPo ? 'Po' : 'Po'}</div>
                 <div class="foto-slot-formats">JPG, JPEG, PNG</div>
@@ -2360,7 +2363,7 @@ function standardBlockHtml(misto) {
   return `<div class="standard-block">
     <div class="standard-title">Standard místa: takto má vypadat vždy</div>
     <div class="standard-foto-slot ${std.foto ? 'has-photo' : ''}" onclick="vybratFotoStandard()">
-      ${std.foto ? `<img src="${std.foto}">` : ''}
+      ${std.foto ? `<img src="${std.foto}"><button type="button" class="foto-smazat no-print" title="Smazat fotku" aria-label="Smazat fotku standardu" onclick="event.stopPropagation();smazatFoto('standard')">×</button>` : ''}
       <div class="standard-foto-icon">📷</div>
       <div class="standard-foto-label">Fotografie standardu</div>
       <div class="standard-foto-formats">JPG, JPEG, PNG</div>
@@ -2665,6 +2668,36 @@ function vybratFoto(sId, typ) {
     });
   };
   input.click();
+}
+
+// Smazání špatně nahrané fotky (dřív šla jen přepsat novou). Smaže ji
+// v prohlížeči i v účtu firmy, ať se na jiném zařízení zase neobjeví.
+function smazatFoto(sId, typ) {
+  const misto = aktivniMistoData();
+  if (!misto) return;
+  const klic = sId === 'standard' ? 'standard' : sId + '_' + typ;
+  ukazatPotvrzeni('Smazat tuhle fotku? Pak můžete nahrát jinou.', async () => {
+    if (klic === 'standard') {
+      if (misto.standard) { misto.standard.foto = null; delete misto.standard.foto_ts; }
+    } else {
+      if (misto.fotky) { delete misto.fotky[klic]; delete misto.fotky[klic + '_ts']; }
+    }
+    const vUctu = misto.cloud && misto.cloud.fotky ? misto.cloud.fotky[klic] : null;
+    if (vUctu) {
+      delete misto.cloud.fotky[klic];
+      if (jePro && clenstvi && !patriDoJineFirmy(misto)) { try { await smazatFotkuZUctu(vUctu); } catch (e) {} }
+    }
+    // Vynutit uložení do účtu, i kdyby se podpis pracoviště nezměnil (starší fotky bez času).
+    misto.upravenoTs = Date.now();
+    if (syncPodpisy[misto.id] !== undefined) syncPodpisy[misto.id] = 'smazana-fotka';
+    ulozit();
+    renderMain();
+    const cardId = sId === 'standard' ? 's4' : sId;
+    setTimeout(() => {
+      const card = document.getElementById('card-' + cardId);
+      if (card && !card.classList.contains('open')) card.classList.add('open');
+    }, 50);
+  }, 'Smazat fotku');
 }
 
 function vybratFotoStandard() {
