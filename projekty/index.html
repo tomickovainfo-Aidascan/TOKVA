@@ -567,6 +567,7 @@ async function nacistPrihlaseniStav() {
   renderUcetNav();
   if (typeof zobrazitOdkazMojeTokva === 'function') zobrazitOdkazMojeTokva(!!clenstvi);
   if (typeof zobrazitOdkazNastaveniFirmy === 'function') zobrazitOdkazNastaveniFirmy(jePro, clenstvi);
+  if (typeof zobrazitOdkazAkcniPlan === 'function') zobrazitOdkazAkcniPlan(jePro);
   renderPrihlaseniStav();
 }
 
