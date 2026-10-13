@@ -412,6 +412,19 @@ nav {
   transition: all .2s;
 }
 .export-output:hover { border-color: var(--gold); color: var(--gold); }
+/* Panely Zařadit k projektu / Přidat do akčního plánu ve stejném vzhledu jako ostatní nástroje */
+.panel-5x { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-top:16px; width:100%; box-sizing:border-box; }
+.panel-5x-nadpis { font-family:'Poppins',sans-serif; font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--dark); margin-bottom:6px; }
+.panel-5x-popis { font-size:13px; color:var(--mid); line-height:1.6; margin:0 0 10px; }
+.panel-5x-vstup { display:block; width:100%; box-sizing:border-box; padding:11px 14px; border:1px solid var(--border); border-radius:8px; font-size:14px; font-family:'DM Sans',sans-serif; background:#fff; margin-bottom:10px; }
+.panel-5x-dva { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+@media (max-width:560px) { .panel-5x-dva { grid-template-columns:1fr; gap:0; } }
+.panel-5x-nahled { margin:0 0 12px 18px; padding:0; font-size:13px; color:var(--dark); line-height:1.6; }
+.panel-5x-nahled li { margin-bottom:4px; }
+.btn-panel-5x { display:block; width:100%; background:var(--gold); border:none; border-radius:8px; padding:11px 22px; color:var(--black,#000); font-family:'Poppins',sans-serif; font-size:13px; font-weight:800; cursor:pointer; transition:all .2s; }
+.btn-panel-5x:hover { background:var(--gold-dark); color:#fff; }
+.btn-panel-5x:disabled { opacity:.7; cursor:default; }
+.panel-5x-stav { font-size:12px; color:var(--mid); margin-top:8px; }
 
 /* INPUT */
 .input-wrap {
@@ -1429,6 +1442,18 @@ async function ulozitStavAnalyzy(hotovo, raw) {
 // Založí z dokončené analýzy dva navazující úkoly (doporučené opatření +
 // první krok do 24 hodin) v Akčním plánu - jen Pro. Odpovídá myšlence
 // z kritiky, že jedna analýza může rovnou spustit konkrétní kroky.
+// Krátký název úkolu z textu sekce analýzy: první věta, bez nadpisů skupin
+// ("Krátkodobě (do 2 týdnů):"), bez odrážek a bez "Akce:" na začátku.
+function kratkyNazevUkolu5x(t) {
+  const jeNadpis = r => /:$/.test(r) && r.length <= 60;
+  const radky = String(t || '').split('\n')
+    .map(x => x.replace(/\*\*|__/g, '').replace(/^[\s#>*•\-]+/, '').trim())
+    .filter(Boolean);
+  let prvni = (radky.find(r => !jeNadpis(r)) || radky[0] || String(t || '')).replace(/^(Akce|Krok|Opatření)\s*:\s*/i, '').replace(/^\d+\.\s*/, '').replace(/^[A-Z]\)\s*/, '');
+  if (prvni.length > 140) prvni = prvni.slice(0, 140).replace(/\s+\S*$/, '') + '…';
+  return prvni;
+}
+
 async function vytvoritUkolyZAnalyzy(raw, btn) {
   if (!jePro || !clenstvi) return;
   const opatreni = extrahovatSekci(raw, '7. DOPORUČENÉ OPATŘENÍ');
@@ -1837,91 +1862,79 @@ function renderOutput(raw, ulozit = true, neuplne = false) {
   btnRow.appendChild(novaBtn);
 
   if (jePro) {
-    const projektAnalyzaWrap = document.createElement('div');
-    projektAnalyzaWrap.style.cssText = 'margin-top:16px;width:100%;';
+    // Panely ve stejném vzhledu jako v ostatních nástrojích (Zařadit k projektu,
+    // Přidat do akčního plánu). Dřív tu byly šedé řádky bez nadpisů a nebylo
+    // vidět, co se do úkolů zapíše.
+    const panel = function (nadpis, popis) {
+      const p = document.createElement('div');
+      p.className = 'panel-5x';
+      p.innerHTML = '<div class="panel-5x-nadpis">' + nadpis + '</div><p class="panel-5x-popis">' + popis + '</p>';
+      return p;
+    };
+    const vstup = function (el) { el.className = (el.className ? el.className + ' ' : '') + 'panel-5x-vstup'; return el; };
 
-    const projektAnalyzaTitle = document.createElement('div');
-    projektAnalyzaTitle.textContent = 'Zařadit k projektu';
-    projektAnalyzaTitle.style.cssText = 'font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:8px;';
-    projektAnalyzaWrap.appendChild(projektAnalyzaTitle);
-
-    const projektAnalyzaRow = document.createElement('div');
-    projektAnalyzaRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;';
-
-    const analyzaProjektSelect = document.createElement('select');
+    const projektAnalyzaWrap = panel('Zařadit k projektu', 'Nepovinné. Pomůže vám tuhle analýzu později najít pohromadě s ostatními nástroji, které se týkají stejné věci.');
+    const analyzaProjektSelect = vstup(document.createElement('select'));
     analyzaProjektSelect.id = 'analyza-projekt-select';
-    analyzaProjektSelect.className = 'projekt-select-5x';
-    analyzaProjektSelect.style.cssText = 'flex:1;min-width:160px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;font-family:"DM Sans",sans-serif;';
+    analyzaProjektSelect.classList.add('projekt-select-5x');
     analyzaProjektSelect.innerHTML = '<option value="" data-nacitani="1" selected>Načítám projekty…</option><option value="">Bez projektu</option><option value="__novy__">+ Nový projekt…</option>';
-
-    const analyzaProjektNovyInput = document.createElement('input');
+    const analyzaProjektNovyInput = vstup(document.createElement('input'));
     analyzaProjektNovyInput.type = 'text';
     analyzaProjektNovyInput.id = 'analyza-projekt-novy-nazev';
     analyzaProjektNovyInput.placeholder = 'Název nového projektu';
-    analyzaProjektNovyInput.style.cssText = 'display:none;flex:1;min-width:160px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;';
-
-    const analyzaUlozitBtn = document.createElement('button');
-    analyzaUlozitBtn.className = 'export-output';
-    analyzaUlozitBtn.style.marginTop = '0';
-    analyzaUlozitBtn.textContent = 'Uložit zařazení';
-    analyzaUlozitBtn.onclick = () => ulozitZarazeniAnalyzy(raw, analyzaUlozitBtn);
-
-    projektAnalyzaRow.appendChild(analyzaProjektSelect);
-    projektAnalyzaRow.appendChild(analyzaProjektNovyInput);
-    projektAnalyzaRow.appendChild(analyzaUlozitBtn);
-    projektAnalyzaWrap.appendChild(projektAnalyzaRow);
-
+    analyzaProjektNovyInput.style.display = 'none';
     const analyzaPremereniWrap = document.createElement('div');
     analyzaPremereniWrap.id = 'analyza-premereni-wrap';
-    analyzaPremereniWrap.style.cssText = 'display:none;margin-top:8px;';
+    analyzaPremereniWrap.style.cssText = 'display:none;margin-bottom:10px;';
     analyzaPremereniWrap.innerHTML = '<label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;"><input type="checkbox" id="analyza-premereni-checkbox" checked style="margin-top:3px;"><span>Tohle je ověření předchozího výsledku ve stejném projektu.</span></label>';
-    projektAnalyzaWrap.appendChild(analyzaPremereniWrap);
-
+    const analyzaUlozitBtn = document.createElement('button');
+    analyzaUlozitBtn.className = 'btn-panel-5x';
+    analyzaUlozitBtn.textContent = 'Uložit zařazení';
+    analyzaUlozitBtn.onclick = () => ulozitZarazeniAnalyzy(raw, analyzaUlozitBtn);
     const analyzaProjektStav = document.createElement('div');
     analyzaProjektStav.id = 'analyza-projekt-stav';
-    analyzaProjektStav.style.cssText = 'font-size:12px;color:var(--mid);margin-top:6px;';
-    projektAnalyzaWrap.appendChild(analyzaProjektStav);
-
+    analyzaProjektStav.className = 'panel-5x-stav';
+    [analyzaProjektSelect, analyzaProjektNovyInput, analyzaPremereniWrap, analyzaUlozitBtn, analyzaProjektStav].forEach(x => projektAnalyzaWrap.appendChild(x));
     card.appendChild(projektAnalyzaWrap);
-    nacistProjekty5x();
 
-    const ukolyPole = document.createElement('div');
-    ukolyPole.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;width:100%;';
-    const projektSelect = document.createElement('select');
+    const opatreniNahled = extrahovatSekci(raw, '7. DOPORUČENÉ OPATŘENÍ');
+    const prvniKrokNahled = extrahovatSekci(raw, '8. PRVNÍ KROK DO 24 HODIN');
+    const nahledy = [opatreniNahled, prvniKrokNahled].filter(Boolean).map(kratkyNazevUkolu5x);
+    const akcePanel = panel('Přidat do akčního plánu', 'Založí ' + (nahledy.length === 1 ? 'úkol' : 'dva úkoly') + ' z analýzy: doporučené opatření a první krok do 24 hodin. Nic nemusíte psát, názvy se vezmou z analýzy a celý text půjde do poznámky úkolu. Projekt je nepovinný, bez něj úkoly zdědí projekt analýzy.');
+    if (nahledy.length) {
+      const seznam = document.createElement('ul');
+      seznam.className = 'panel-5x-nahled';
+      nahledy.forEach(t => { const li = document.createElement('li'); li.textContent = t; seznam.appendChild(li); });
+      akcePanel.appendChild(seznam);
+    }
+    const projektSelect = vstup(document.createElement('select'));
     projektSelect.id = 'ukoly-projekt-select';
-    projektSelect.className = 'projekt-select-5x';
-    projektSelect.style.cssText = 'flex:1;min-width:160px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;font-family:"DM Sans",sans-serif;';
+    projektSelect.classList.add('projekt-select-5x');
     projektSelect.innerHTML = '<option value="" data-nacitani="1" selected>Načítám projekty…</option><option value="">Bez projektu</option><option value="__novy__">+ Nový projekt…</option>';
-    const projektNovyInput = document.createElement('input');
+    const projektNovyInput = vstup(document.createElement('input'));
     projektNovyInput.type = 'text';
     projektNovyInput.id = 'ukoly-projekt-novy-nazev';
     projektNovyInput.placeholder = 'Název nového projektu';
-    projektNovyInput.style.cssText = 'display:none;flex:1;min-width:160px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;';
-    const investiceInput = document.createElement('input');
+    projektNovyInput.style.display = 'none';
+    const dvaSloupce = document.createElement('div');
+    dvaSloupce.className = 'panel-5x-dva';
+    const investiceInput = vstup(document.createElement('input'));
     investiceInput.type = 'number';
     investiceInput.id = 'ukoly-investice';
     investiceInput.placeholder = 'Investice (Kč)';
-    investiceInput.style.cssText = 'flex:1;min-width:140px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;';
-    const prinosInput = document.createElement('input');
+    const prinosInput = vstup(document.createElement('input'));
     prinosInput.type = 'number';
     prinosInput.id = 'ukoly-prinos';
     prinosInput.placeholder = 'Očekávaný přínos (Kč/rok)';
-    prinosInput.style.cssText = 'flex:1;min-width:140px;padding:8px 10px;border:1px solid rgba(0,0,0,.15);border-radius:8px;font-size:13px;';
-    ukolyPole.appendChild(projektSelect);
-    ukolyPole.appendChild(projektNovyInput);
-    ukolyPole.appendChild(investiceInput);
-    ukolyPole.appendChild(prinosInput);
-    card.appendChild(ukolyPole);
-    nacistProjekty5x();
-
+    dvaSloupce.appendChild(investiceInput);
+    dvaSloupce.appendChild(prinosInput);
     const ukolyBtn = document.createElement('button');
-    ukolyBtn.className = 'export-output';
-    ukolyBtn.style.marginTop = '10px';
-    ukolyBtn.style.borderColor = 'rgba(233,169,27,.4)';
-    ukolyBtn.style.color = 'var(--gold)';
-    ukolyBtn.textContent = 'Vytvořit 2 navazující úkoly';
+    ukolyBtn.className = 'btn-panel-5x';
+    ukolyBtn.textContent = nahledy.length === 1 ? '+ Založit úkol v akčním plánu' : '+ Založit 2 úkoly v akčním plánu';
     ukolyBtn.onclick = () => vytvoritUkolyZAnalyzy(raw, ukolyBtn);
-    btnRow.appendChild(ukolyBtn);
+    [projektSelect, projektNovyInput, dvaSloupce, ukolyBtn].forEach(x => akcePanel.appendChild(x));
+    card.appendChild(akcePanel);
+    nacistProjekty5x();
   }
 
   card.appendChild(btnRow);
