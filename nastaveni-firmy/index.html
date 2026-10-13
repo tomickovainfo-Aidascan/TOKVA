@@ -292,11 +292,9 @@ function vykreslitCleny(clenove) {
     const info = document.createElement('div');
     info.className = 'clen-info';
     info.innerHTML = `<span class="clen-jmeno">${escapeHtml(jmeno)}${jsemJa ? '<span class="clen-ja">Vy</span>' : ''}</span>
-      <span class="clen-email">${escapeHtml(c.profil.email || '')}${jsemJa ? ' · <a href="#" class="zmenit-jmeno-odkaz" style="color:var(--gold-dark);font-weight:700;text-decoration:none;">' + (c.profil.full_name ? 'Změnit jméno' : 'Nastavit jméno') + '</a>' : ''}</span>`;
-    if (jsemJa) {
-      const odkaz = info.querySelector('.zmenit-jmeno-odkaz');
-      if (odkaz) odkaz.onclick = (e) => { e.preventDefault(); zmenitSveJmeno(c.profil.full_name || ''); };
-    }
+      <span class="clen-email">${escapeHtml(c.profil.email || '')}${(jsemJa || jsemAdminFirmy(clenstvi)) ? ' · <a href="#" class="zmenit-jmeno-odkaz" style="color:var(--gold-dark);font-weight:700;text-decoration:none;">' + (c.profil.full_name ? 'Změnit jméno' : (jsemJa ? 'Nastavit jméno' : 'Doplnit jméno')) + '</a>' : ''}</span>`;
+    const odkazJmeno = info.querySelector('.zmenit-jmeno-odkaz');
+    if (odkazJmeno) odkazJmeno.onclick = (e) => { e.preventDefault(); zmenitJmenoClena(c.user_id, c.profil.full_name || '', jsemJa, c.profil.email || ''); };
 
     const akce = document.createElement('div');
     akce.className = 'clen-akce';
@@ -448,13 +446,18 @@ async function odebratZrusenouPozvanku(id) {
 
 // Vlastní jméno jde změnit i tady (stejně jako v Přehledu). Ukáže se v seznamu
 // lidí, u Odpovědné osoby a v exportu.
-function zmenitSveJmeno(stavajici) {
+// Majitel a správce můžou doplnit jméno i ostatním členům (funkce
+// nastavit_jmeno_clena v databázi, viz migrace-jmena-clenu-admin-13-10.sql).
+function zmenitJmenoClena(userId, stavajici, jsemJa, email) {
+  zmenitSveJmeno(stavajici, jsemJa ? null : { userId, email });
+}
+function zmenitSveJmeno(stavajici, cizi) {
   const ov = document.createElement('div');
   ov.className = 'tk-dlg-ov';
   ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;';
   ov.innerHTML = '<div style="background:#fff;border-radius:12px;padding:22px;max-width:420px;width:100%;font-family:inherit;">' +
-    '<h3 style="font-family:Poppins,sans-serif;font-size:17px;margin:0 0 6px;">Vaše jméno v Tokvě</h3>' +
-    '<p style="font-size:13px;color:var(--mid);margin:0 0 12px;line-height:1.6;">Uvidí ho kolegové v seznamu lidí ve firmě a u úkolů, které vám přidělí.</p>' +
+    '<h3 style="font-family:Poppins,sans-serif;font-size:17px;margin:0 0 6px;">' + (cizi ? 'Jméno člena' : 'Vaše jméno v Tokvě') + '</h3>' +
+    '<p style="font-size:13px;color:var(--mid);margin:0 0 12px;line-height:1.6;">' + (cizi ? 'Pro účet ' + escapeHtml(cizi.email) + '. Jméno se ukáže v seznamu lidí, u úkolů a v exportu.' : 'Uvidí ho kolegové v seznamu lidí ve firmě a u úkolů, které vám přidělí.') + '</p>' +
     '<input type="text" maxlength="80" autocomplete="name" placeholder="např. Jana Nováková" style="width:100%;box-sizing:border-box;border:2px solid var(--border);border-radius:8px;padding:10px 12px;font-size:15px;font-family:inherit;">' +
     '<div class="zj-stav" style="font-size:12.5px;color:#c0392b;min-height:18px;margin-top:6px;"></div>' +
     '<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;"><button type="button" class="zj-zrusit" style="background:none;border:1px solid var(--border);border-radius:8px;padding:9px 16px;cursor:pointer;font-family:inherit;">Zrušit</button>' +
@@ -469,14 +472,20 @@ function zmenitSveJmeno(stavajici) {
     const st = ov.querySelector('.zj-stav');
     if (jmeno.length < 2) { st.textContent = 'Napište prosím jméno a příjmení.'; return; }
     try {
-      const { data, error } = await supabaseClient.from('profiles').update({ full_name: jmeno }).eq('id', session.user.id).select('id');
-      if (error) throw error;
-      if (!data || !data.length) throw new Error('profil nenalezen');
+      if (cizi) {
+        const { error } = await supabaseClient.rpc('nastavit_jmeno_clena', { p_user_id: cizi.userId, p_jmeno: jmeno });
+        if (error) throw error;
+      } else {
+        const { data, error } = await supabaseClient.from('profiles').update({ full_name: jmeno }).eq('id', session.user.id).select('id');
+        if (error) throw error;
+        if (!data || !data.length) throw new Error('profil nenalezen');
+      }
       zavrit();
       nacistData();
     } catch (e) {
       console.warn('Jméno se nepodařilo uložit.', e);
-      st.textContent = 'Uložení se nepovedlo, zkuste to prosím znovu.';
+      const chybiFunkce = e && (e.code === 'PGRST202' || /nastavit_jmeno_clena/.test(e.message || ''));
+      st.textContent = chybiFunkce ? 'Doplňování jmen ostatním ještě není v databázi zapnuté.' : 'Uložení se nepovedlo, zkuste to prosím znovu.';
     }
   };
   ov.querySelector('.zj-ulozit').onclick = ulozit;
