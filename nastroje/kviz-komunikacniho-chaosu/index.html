@@ -115,6 +115,9 @@ nav{background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20p
 /* MODAL (Pro odemčení, historie) */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:flex-end;justify-content:center;}
 .modal{background:#1a1a1a;border:1px solid rgba(255,255,255,.1);border-radius:16px 16px 0 0;padding:20px 20px 36px;width:100%;max-width:560px;max-height:80vh;overflow-y:auto;animation:slideUp .25s ease;}
+/* Na počítači okno uprostřed obrazovky a vyšší, ať se porovnání vejde bez rolování (dřív viselo dole a mělo jen 80 % výšky). */
+@media (min-width:700px){.modal-overlay{align-items:center;padding:16px;}.modal{border-radius:16px;max-height:94vh;padding:22px 26px 26px;}#modal-tym .modal{max-width:720px;}}
+@media (min-width:960px){#modal-tym .modal{max-width:980px;}.tym-mrizka{display:grid;grid-template-columns:1fr 1fr;gap:10px;}.tym-mrizka .historie-item{margin:0;}}
 @keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
 .modal-title{font-family:"Poppins",sans-serif;font-size:15px;font-weight:800;color:white;margin-bottom:16px;display:flex;justify-content:space-between;}
 .modal-close{background:transparent;border:none;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;}
@@ -2261,6 +2264,9 @@ async function zobrazitPorovnani(obsah, kolo) {
       return w;
     };
 
+    const mrizka = document.createElement('div');
+    mrizka.className = 'tym-mrizka';
+    obsah.appendChild(mrizka);
     radky.forEach(({ k, tymPct, mujPct }) => {
       const row = document.createElement('div');
       row.className = 'historie-item';
@@ -2284,7 +2290,7 @@ async function zobrazitPorovnani(obsah, kolo) {
         }
         row.appendChild(kom);
       }
-      obsah.appendChild(row);
+      mrizka.appendChild(row);
     });
     const zpetBtn = document.createElement('button');
     zpetBtn.className = 'modal-save';
