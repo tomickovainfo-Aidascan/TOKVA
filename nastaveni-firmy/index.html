@@ -331,7 +331,8 @@ function vykreslitCleny(clenove) {
 
 function vykreslitPozvanky(pozvanky) {
   const wrap = document.getElementById('seznam-pozvanek');
-  const aktivni = pozvanky.filter(p => p.status !== 'prijato');
+  const skryte = skrytePozvanky();
+  const aktivni = pozvanky.filter(p => p.status !== 'prijato' && skryte.indexOf(p.id) < 0);
   if (!aktivni.length) { wrap.innerHTML = '<p class="prazdny">Žádné čekající pozvánky.</p>'; return; }
   wrap.innerHTML = '';
   aktivni.forEach(p => {
@@ -348,6 +349,12 @@ function vykreslitPozvanky(pozvanky) {
       const btn = document.createElement('button');
       btn.className = 'ikona-btn'; btn.title = 'Zrušit pozvánku'; btn.textContent = '✕';
       btn.onclick = () => zrusitPozvanku(p.id);
+      radek.querySelector('div[style]').appendChild(btn);
+    }
+    if (p.status === 'zruseno' && jsemAdminFirmy(clenstvi)) {
+      const btn = document.createElement('button');
+      btn.className = 'ikona-btn'; btn.title = 'Odebrat ze seznamu'; btn.textContent = '✕';
+      btn.onclick = () => odebratZrusenouPozvanku(p.id);
       radek.querySelector('div[style]').appendChild(btn);
     }
     wrap.appendChild(radek);
@@ -410,6 +417,28 @@ async function zrusitPozvanku(id) {
   if (!(await tokvaPotvrdit('Zrušit tuhle pozvánku? Odkaz v e-mailu pak přestane platit.', 'Zrušit pozvánku', true))) return;
   const { error } = await supabaseClient.from('organization_invites').update({ status: 'zruseno' }).eq('id', id);
   if (error) { tokvaUpozornit('Nepodařilo se zrušit pozvánku: ' + error.message); return; }
+  nacistData();
+}
+
+// Zrušená pozvánka dřív visela v seznamu napořád. Křížkem se smaže; kdyby
+// databáze smazání nedovolila, aspoň se v tomhle prohlížeči schová.
+function skrytePozvanky() {
+  try { return JSON.parse(localStorage.getItem('tokva_skryte_pozvanky_' + clenstvi.organization_id) || '[]'); } catch (e) { return []; }
+}
+async function odebratZrusenouPozvanku(id) {
+  let smazano = false;
+  try {
+    const { data, error } = await supabaseClient.from('organization_invites').delete().eq('id', id).eq('status', 'zruseno').select('id');
+    smazano = !error && data && data.length > 0;
+    if (error) console.warn('Zrušenou pozvánku se nepodařilo smazat, jen ji schovám.', error);
+  } catch (e) { console.warn('Zrušenou pozvánku se nepodařilo smazat, jen ji schovám.', e); }
+  if (!smazano) {
+    try {
+      const s = skrytePozvanky();
+      if (s.indexOf(id) < 0) s.push(id);
+      localStorage.setItem('tokva_skryte_pozvanky_' + clenstvi.organization_id, JSON.stringify(s));
+    } catch (e) {}
+  }
   nacistData();
 }
 
