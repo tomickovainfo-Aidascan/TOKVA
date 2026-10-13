@@ -118,6 +118,10 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .tabulka-ap tr.tabulka-filtry-radek input,.tabulka-ap tr.tabulka-filtry-radek select{width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;padding:5px 7px;font-family:"DM Sans",sans-serif;font-size:12.5px;background:var(--white);outline:none;}
 .tabulka-ap tbody tr:hover{background:var(--paper);}
 .tabulka-akce-bunka{white-space:nowrap;}
+/* Dlouhé texty (skutečný stav, zdroj úkolu) se zalomí do víc řádků, ať tabulku neroztahují do šířky. */
+.tabulka-ap td.bunka-zalomit{white-space:normal;min-width:160px;max-width:240px;overflow-wrap:anywhere;}
+.tabulka-ap td:first-child,.tabulka-ap th:first-child{min-width:170px;}
+.tabulka-ap tr.tabulka-filtry-radek th:nth-child(2),.tabulka-ap tr.tabulka-filtry-radek th:nth-child(3){min-width:130px;}
 /* Hlavička tabulky (názvy sloupců a filtry) zůstává při rolování nahoře.
    Tabulka roluje uvnitř svého rámečku (výška obrazovky pod lištou), takže
    ukotvení funguje i u široké tabulky, která roluje do strany. */
@@ -1148,11 +1152,11 @@ function aktualizovatTabulkuRadky() {
       '<td>' + (a.due_date ? formatDatum(a.due_date) : '-') + '</td>' +
       '<td>' + (a.estimated_investment != null ? formatKc(a.estimated_investment) : '-') + '</td>' +
       '<td>' + (a.expected_benefit != null ? formatKc(a.expected_benefit) + '/rok' : '-') + '</td>' +
-      '<td>' + escapovat(a.actual_state || '-') + '</td>' +
+      '<td class="bunka-zalomit">' + escapovat(a.actual_state || '-') + '</td>' +
       '<td>' + (a.actual_benefit != null ? formatKc(a.actual_benefit) + '/rok' : '-') + '</td>' +
       '<td>' + (a.verification_date ? formatDatum(a.verification_date) : '-') + '</td>' +
       '<td>' + (a.verification_confirmed ? '✓' : '-') + '</td>' +
-      '<td>' + (a.tool_runs ? '<span class="akce-duvod" onclick="otevritModalDuvod(\'' + a.id + '\')">' + escapovat(a.tool_runs.nazev || 'Výsledek nástroje') + '</span>' : '-') + '</td>' +
+      '<td class="bunka-zalomit">' + (a.tool_runs ? '<span class="akce-duvod" onclick="otevritModalDuvod(\'' + a.id + '\')">' + escapovat(a.tool_runs.nazev || 'Výsledek nástroje') + '</span>' : '-') + '</td>' +
       '<td class="tabulka-akce-bunka"><button class="ikona-btn" title="Upravit" aria-label="Upravit" onclick="otevritModalUpravitAkce(\'' + a.id + '\')">' + IKONA_UPRAVIT + '</button>' + (jsemAdmin() ? '<button class="ikona-btn smazat" title="Smazat" aria-label="Smazat" onclick="smazatAkci(\'' + a.id + '\')">' + IKONA_SMAZAT + '</button>' : '') + '</td>' +
     '</tr>';
   }).join('');
