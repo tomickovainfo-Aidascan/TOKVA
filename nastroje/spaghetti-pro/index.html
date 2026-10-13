@@ -1921,7 +1921,7 @@ async function pridatDoAkcnihoPlanu() {
       if (chybaProjekt) throw chybaProjekt;
       projektId = novyProjekt.id;
     }
-    const { error } = await supabaseClient.from('actions').insert({
+    const { error } = await (typeof tokvaVlozitAkci === 'function' ? tokvaVlozitAkci : function (r) { return supabaseClient.from('actions').insert(r); })({
       organization_id: clenstvi.organization_id,
       project_id: projektId,
       tool_run_id: akcniPlanAktivniToolRunId,
@@ -2007,7 +2007,7 @@ async function pridatDoAkcnihoPlanuVysledek() {
         console.warn('Přiřazení nákresu k projektu se nepodařilo, úkol se přesto založí.', ex);
       }
     }
-    const { error } = await supabaseClient.from('actions').insert({
+    const { error } = await (typeof tokvaVlozitAkci === 'function' ? tokvaVlozitAkci : function (r) { return supabaseClient.from('actions').insert(r); })({
       organization_id: clenstvi.organization_id,
       project_id: projektId,
       tool_run_id: posledniToolRunId,

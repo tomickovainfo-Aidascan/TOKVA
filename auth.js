@@ -168,6 +168,25 @@ function zobrazitOdkazNastaveniFirmy(jePro, clenstvi) {
   el.style.display = ukazat ? '' : 'none';
 }
 
+// Založení úkolu v Akčním plánu ze kteréhokoli nástroje. Když úkol odkazuje
+// na projekt nebo výsledek, který mezitím někdo smazal, databáze ho odmítne
+// (chyba 23503). Pak to zkusí znovu bez odkazu na výsledek a nakonec i bez
+// projektu, ať úkol v Akčním plánu vždycky skončí.
+async function tokvaVlozitAkci(radek) {
+  let vysledek = await supabaseClient.from('actions').insert(radek);
+  if (vysledek.error && vysledek.error.code === '23503' && radek.tool_run_id) {
+    console.warn('Úkol odkazuje na smazaný výsledek, ukládám bez odkazu.', vysledek.error);
+    radek = Object.assign({}, radek, { tool_run_id: null });
+    vysledek = await supabaseClient.from('actions').insert(radek);
+  }
+  if (vysledek.error && vysledek.error.code === '23503' && radek.project_id) {
+    console.warn('Úkol odkazuje na smazaný projekt, ukládám bez projektu.', vysledek.error);
+    radek = Object.assign({}, radek, { project_id: null });
+    vysledek = await supabaseClient.from('actions').insert(radek);
+  }
+  return vysledek;
+}
+
 // Odhlášení, s přesměrováním zpátky na přihlašovací stránku.
 async function odhlasit() {
   await supabaseClient.auth.signOut();

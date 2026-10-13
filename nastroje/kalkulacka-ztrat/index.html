@@ -1306,7 +1306,7 @@ async function pridatDoAkcnihoPlanuVysledek() {
         console.warn('Přiřazení výpočtu k projektu se nepodařilo, úkol se přesto založí.', ex);
       }
     }
-    var vysledekAkce = await supabaseClient.from('actions').insert({
+    var vysledekAkce = await (typeof tokvaVlozitAkci === 'function' ? tokvaVlozitAkci : function (r) { return supabaseClient.from('actions').insert(r); })({
       organization_id: clenstvi.organization_id,
       project_id: projektId,
       tool_run_id: posledniToolRunId,
