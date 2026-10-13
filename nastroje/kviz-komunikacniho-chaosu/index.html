@@ -2084,6 +2084,15 @@ async function renderTymStav(obsah) {
   stav.textContent = pocet + (pocet === 1 ? ' odpověď zatím přišla.' : (pocet >= 2 && pocet <= 4) ? ' odpovědi zatím přišly.' : ' odpovědí zatím přišlo.');
   obsah.appendChild(stav);
 
+  if (pocet < MIN_ZOBRAZIT_TYM) {
+    // Dřív okno jen napsalo počet a nebylo jasné, kde průměr týmu uvidím.
+    const chybi = MIN_ZOBRAZIT_TYM - pocet;
+    const info = document.createElement('p');
+    info.style.cssText = 'font-size:13px;color:rgba(255,255,255,.7);line-height:1.6;margin:-4px 0 14px;';
+    info.textContent = 'Průměr týmu a porovnání s vaší odpovědí se tady ukáže od ' + MIN_ZOBRAZIT_TYM + ' odpovědí. Chybí ještě ' + chybi + (chybi === 1 ? ' odpověď' : ' odpovědi') + '. Je to kvůli anonymitě: s méně odpověďmi by šlo uhodnout, kdo co napsal.';
+    obsah.appendChild(info);
+  }
+
   if (pocet >= MIN_ZOBRAZIT_TYM) {
     if (pocet < MIN_DOPORUCENY_TYM) {
       const varovani = document.createElement('p');
