@@ -221,7 +221,9 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:13px 24
 .detail-text strong{font-size:13px;font-weight:600;color:var(--dark);display:block;margin-bottom:2px;}
 .detail-text span{font-size:11px;color:var(--light);}
 .detail-odpoved{font-size:12px;color:var(--mid);margin-top:4px;line-height:1.5;}
-.detail-odpoved strong{font-size:12px;font-weight:600;color:var(--mid);}
+.detail-odpoved-lbl{font-weight:600;color:var(--dark);}
+.detail-stav{font-size:12px;font-weight:700;margin-top:4px;}
+.detail-arr,.detail-stav{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 .detail-body{font-family:"DM Mono",monospace;font-size:11px;font-weight:500;padding:2px 8px;border-radius:3px;white-space:nowrap;}
 
 .vysledky-detail{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px 22px;}
@@ -367,6 +369,9 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
   /* Kompaktní tisk: výsledek přes celou šířku stránky, přehled odpovědí ve dvou sloupcích */
   .main, #vysledky, .vysledky-wrap { max-width:none !important; padding-left:0 !important; padding-right:0 !important; }
   #vysledky-rows { display:grid; grid-template-columns:1fr 1fr; column-gap:16px; }
+  /* Skóre nahoře: barevné pozadí se netiskne, bílé písmo by zmizelo */
+  #skore-hero { background:none !important; border:2px solid #e9a91b; padding-top:16px !important; padding-bottom:16px !important; }
+  #skore-hero, #skore-hero * { color:#111 !important; }
   @page { margin:15mm; }
 }
 
@@ -1919,6 +1924,7 @@ function obnovitVysledekZOdkazu() {
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', obnovitVysledekZOdkazu); else setTimeout(obnovitVysledekZOdkazu, 0);
 
+function tokvaEscKviz(t) { return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function zobrazVysledky() {
   if (!zobrazenoZOdkazu) oznamitDokonceni();
   hasRozpracovanyAudit = false;
@@ -1960,17 +1966,19 @@ function zobrazVysledky() {
     // Doplněna přesná vybraná odpověď (ne jen odvozený stav), ať je výsledek
     // úplný a jde ho později otázku po otázce porovnat s dalším pokusem.
     const moznostEl = document.querySelectorAll('#q'+i+' .moznost')[b];
-    const odpovedText = moznostEl ? moznostEl.querySelector('.moznost-text').innerHTML : '';
+    // Čistý text zvolené odpovědi (bez tučného začátku), ať je v tisku jasné,
+    // co člověk zaškrtl, a nesplývá to s hodnocením.
+    const odpovedText = moznostEl ? tokvaEscKviz(moznostEl.querySelector('.moznost-text').textContent.replace(/\s+/g, ' ').trim()) : '';
+    const znaky = ['✓', '~', '!'];
     const row = document.createElement('div');
     row.className = 'detail-row';
     row.innerHTML = `
       <div class="detail-arr" style="background:${barvy[b]}"></div>
       <div class="detail-text">
-        <strong>${OTAZKY_NAZVY[i-1]}</strong>
-        <span>${popisky[b]}</span>
-        <div class="detail-odpoved">${odpovedText}</div>
+        <strong>${i}. ${OTAZKY_NAZVY[i-1]}</strong>
+        <div class="detail-odpoved"><span class="detail-odpoved-lbl">Vaše odpověď:</span> ${odpovedText}</div>
+        <div class="detail-stav" style="color:${barvy[b]}">${znaky[b]} ${popisky[b]}</div>
       </div>
-      <div class="detail-body" style="background:${barvy[b]}22;color:${barvy[b]}">${b === 0 ? '✓' : b === 1 ? '~' : '!'}</div>
     `;
     rows.appendChild(row);
   }
