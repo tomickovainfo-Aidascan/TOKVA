@@ -1093,6 +1093,7 @@ function seraditTabulku(sloupec) {
   renderTabulka(posledniZakladniSeznam);
 }
 
+let posledniTabulkaRadky = null;
 function aktualizovatTabulkuRadky() {
   const tbody = document.getElementById('tabulka-tbody');
 
@@ -1137,6 +1138,7 @@ function aktualizovatTabulkuRadky() {
     });
   }
 
+ posledniTabulkaRadky = f;
   if (f.length === 0) {
     tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;color:var(--mid);padding:24px;">Nic nevyhovuje filtru.</td></tr>';
     return;
@@ -1549,24 +1551,49 @@ function tokvaStahnoutCSV(nazevSouboru, radky) {
   setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
 }
 
+// Tisk celé tabulky: všechny sloupce, na šířku listu (A4 naležato), kolik
+// listů vyjde, tolik vyjde. V zobrazení Tabulka tiskne přesně to, co je
+// vyfiltrované a seřazené v tabulce, v zobrazení Karty podle filtrů nahoře.
 function tisknoutAkcniPlan() {
-  const seznam = filtrovaneAkce();
+  const zTabulky = zobrazeniAP === 'tabulka' && Array.isArray(posledniTabulkaRadky);
+  const seznam = zTabulky ? posledniTabulkaRadky : filtrovaneAkce().slice().sort(function (a, b) { return (a.due_date || '9999').localeCompare(b.due_date || '9999'); });
   if (!seznam.length) { ukazatUpozorneni('Nic k tisku, zkuste změnit filtr.'); return; }
-  const serazene = seznam.slice().sort(function (a, b) { return (a.due_date || '9999').localeCompare(b.due_date || '9999'); });
   const dnes = new Date().toISOString().slice(0, 10);
-  const radky = serazene.map(function (a) {
+  const kc = v => v != null ? formatKc(v) : '';
+  const radky = seznam.map(function (a) {
     const poTerminu = a.due_date && a.due_date < dnes && a.status !== 'hotovo' && a.status !== 'uzavreno';
-    return '<tr><td><b>' + tokvaEsc(a.title || '') + '</b>' + (a.reason ? '<br><span style="color:#777;font-size:10.5px;">' + tokvaEsc(a.reason) + '</span>' : '') + '</td>' +
+    return '<tr>' +
+      '<td class="w"><b>' + tokvaEsc(a.title || '') + '</b>' + (a.reason ? '<br><span class="pozn">' + tokvaEsc(a.reason) + '</span>' : '') + '</td>' +
       '<td>' + tokvaEsc((a.projects && a.projects.name) || '') + '</td>' +
       '<td>' + tokvaEsc(NAZVY_STAVU[a.status] || a.status || '') + '</td>' +
       '<td>' + tokvaEsc(a.responsible_person || '') + '</td>' +
-      '<td class="c"' + (poTerminu ? ' style="color:#c0392b;font-weight:700;"' : '') + '>' + (a.due_date ? formatDatum(a.due_date) : '') + '</td>' +
-      '<td style="width:60px;border-left:1px solid #eee;"></td></tr>';
+      '<td class="n"' + (poTerminu ? ' style="color:#c0392b;font-weight:700;"' : '') + '>' + (a.due_date ? formatDatum(a.due_date) : '') + '</td>' +
+      '<td class="n">' + kc(a.estimated_investment) + '</td>' +
+      '<td class="n">' + (a.expected_benefit != null ? kc(a.expected_benefit) + '/rok' : '') + '</td>' +
+      '<td class="w">' + tokvaEsc(a.actual_state || '') + '</td>' +
+      '<td class="n">' + (a.actual_benefit != null ? kc(a.actual_benefit) + '/rok' : '') + '</td>' +
+      '<td class="n">' + (a.verification_date ? formatDatum(a.verification_date) : '') + '</td>' +
+      '<td class="n">' + (a.verification_confirmed ? '✓' : '') + '</td>' +
+      '<td class="w">' + tokvaEsc(a.tool_runs ? (a.tool_runs.nazev || 'Výsledek nástroje') : '') + '</td>' +
+    '</tr>';
   }).join('');
-  const filtrText = (document.getElementById('filtr-status') || {}).selectedOptions ? document.getElementById('filtr-status').selectedOptions[0].textContent : '';
-  const telo = '<table><thead><tr><th>Úkol</th><th>Projekt</th><th>Stav</th><th>Kdo</th><th style="text-align:right">Termín</th><th>Hotovo</th></tr></thead><tbody>' + radky + '</tbody></table>' +
-    '<p style="font-size:10.5px;color:#777;margin-top:8px;">' + serazene.length + ' úkolů, seřazeno podle termínu. Červeně úkoly po termínu.</p>';
-  tokvaTiskOkno('Akční plán', '<b>' + tokvaEsc((clenstvi && clenstvi.organizations && clenstvi.organizations.name) || '') + '</b>' + (filtrText ? tokvaEsc(filtrText) + ' · ' : '') + new Date().toLocaleDateString('cs-CZ'), telo);
+  const firma = (clenstvi && clenstvi.organizations && clenstvi.organizations.name) || '';
+  const w = window.open('', '_blank');
+  if (!w) { tokvaUpozornit('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
+  w.document.write('<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><title>Akční plán</title><style>' +
+    '@page{size:A4 landscape;margin:10mm;}*{box-sizing:border-box;}body{font-family:Arial,sans-serif;color:#111;margin:0;padding:0;}' +
+    '.hl{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #e9a91b;padding-bottom:8px;margin-bottom:10px;}.hl .n{font-size:18px;font-weight:900;}.hl .i{font-size:11px;color:#666;text-align:right;}.hl .i b{display:block;font-size:13px;color:#111;}' +
+    'table{width:100%;border-collapse:collapse;table-layout:auto;}thead{display:table-header-group;}' +
+    'th{background:#111;color:#fff;padding:5px 5px;text-align:left;font-size:8.5px;text-transform:uppercase;letter-spacing:.3px;vertical-align:bottom;-webkit-print-color-adjust:exact;print-color-adjust:exact;}' +
+    'td{padding:5px;border-bottom:1px solid #ddd;font-size:9.5px;vertical-align:top;line-height:1.35;}td.n{white-space:nowrap;}td.w{min-width:110px;overflow-wrap:anywhere;}' +
+    '.pozn{color:#777;font-size:8.5px;}tr{break-inside:avoid;}.souhrn{font-size:10px;color:#777;margin-top:6px;}' +
+    '</style></head><body><div class="hl"><div class="n">Akční plán</div><div class="i"><b>' + tokvaEsc(firma) + '</b>' + new Date().toLocaleDateString('cs-CZ') + '</div></div>' +
+    '<table><thead><tr><th>Co</th><th>Projekt</th><th>Stav</th><th>Odpovědná osoba</th><th>Termín</th><th>Investice</th><th>Očekávaný přínos</th><th>Skutečný stav</th><th>Skutečný přínos</th><th>Datum ověření</th><th>Potvrzeno</th><th>Zdroj úkolu</th></tr></thead><tbody>' + radky + '</tbody></table>' +
+    '<p class="souhrn">' + seznam.length + ' úkolů' + (zTabulky ? ', pořadí a filtry jako v tabulce' : ', seřazeno podle termínu') + '. Červeně úkoly po termínu. tokva.cz</p>' +
+    '</body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function () { w.print(); }, 400);
 }
 </script>
 <script src="../zpetna-vazba.js"></script>
