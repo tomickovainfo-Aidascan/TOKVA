@@ -189,9 +189,13 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
     Tahle firma zatím nemá aktivní Tokva Pro - vidíte jen omezený přehled. Diagnostické nástroje zdarma fungují naplno dál, Pro propojuje výsledky do akčního plánu a ukládá historii. Víc na <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'moje_tokva',placement:'banner'})">stránce Tokva Pro</a>.
   </div>
 
+  <div id="radek-jmeno" style="display:none;font-size:13px;color:var(--mid);margin-bottom:14px;">
+    Vaše jméno v Tokvě: <strong id="radek-jmeno-text" style="color:var(--dark);"></strong> · <a href="#" onclick="event.preventDefault();otevritZmenuJmena();" style="color:var(--gold-dark);font-weight:700;text-decoration:none;">Změnit</a>
+  </div>
+
   <div class="sekce" id="karta-jmeno" style="display:none;margin-bottom:20px;border-color:var(--gold);">
-    <h2>Jak se jmenujete?</h2>
-    <div class="sekce-pod">Jméno uvidí kolegové u úkolů, které vám přidělí. Teď se místo něj ukazuje začátek vašeho e-mailu.</div>
+    <h2 id="karta-jmeno-nadpis">Jak se jmenujete?</h2>
+    <div class="sekce-pod" id="karta-jmeno-pod">Jméno uvidí kolegové u úkolů, které vám přidělí. Teď se místo něj ukazuje začátek vašeho e-mailu.</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
       <input id="jmeno-pole" type="text" placeholder="např. Jana Nováková" autocomplete="name" maxlength="80" style="flex:1;min-width:200px;border:2px solid var(--border);border-radius:8px;padding:10px 12px;font-size:14px;font-family:inherit;">
       <button class="prih-btn" style="margin:0;width:auto;padding:10px 22px;" onclick="ulozitSveJmeno()">Uložit</button>
@@ -362,8 +366,21 @@ let limitVysledku = 8;
 async function zkontrolovatSveJmeno() {
   try {
     const { data } = await supabaseClient.from('profiles').select('full_name').eq('id', session.user.id).maybeSingle();
-    document.getElementById('karta-jmeno').style.display = (data && (data.full_name || '').trim()) ? 'none' : '';
+    const jmeno = data && (data.full_name || '').trim();
+    document.getElementById('karta-jmeno').style.display = jmeno ? 'none' : '';
+    // Jméno jde změnit i dodatečně (dřív se appka ptala jen jednou, když chybělo).
+    document.getElementById('radek-jmeno').style.display = jmeno ? '' : 'none';
+    document.getElementById('radek-jmeno-text').textContent = jmeno || '';
   } catch (e) { console.warn('Jméno v profilu se nepodařilo ověřit.', e); }
+}
+function otevritZmenuJmena() {
+  document.getElementById('karta-jmeno-nadpis').textContent = 'Změnit jméno';
+  document.getElementById('karta-jmeno-pod').textContent = 'Jméno uvidí kolegové v seznamu lidí ve firmě a u úkolů, které vám přidělí.';
+  document.getElementById('jmeno-pole').value = document.getElementById('radek-jmeno-text').textContent;
+  document.getElementById('jmeno-stav').textContent = '';
+  document.getElementById('radek-jmeno').style.display = 'none';
+  document.getElementById('karta-jmeno').style.display = '';
+  document.getElementById('jmeno-pole').focus();
 }
 async function ulozitSveJmeno() {
   const stav = document.getElementById('jmeno-stav');
@@ -374,6 +391,8 @@ async function ulozitSveJmeno() {
     if (error) throw error;
     if (!data || !data.length) throw new Error('profil nenalezen');
     document.getElementById('karta-jmeno').style.display = 'none';
+    document.getElementById('radek-jmeno-text').textContent = jmeno;
+    document.getElementById('radek-jmeno').style.display = '';
   } catch (e) {
     console.warn('Jméno se nepodařilo uložit.', e);
     stav.style.color = '#c0392b';
