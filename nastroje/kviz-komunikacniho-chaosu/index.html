@@ -2221,29 +2221,68 @@ async function zobrazitPorovnani(obsah, kolo) {
       p.textContent = 'Pro porovnání ještě nemáte uložený svůj vlastní výsledek. Vyplňte kvíz a klikněte na „Uložit tento výsledek“, pak sem zase přijďte.';
       obsah.appendChild(p);
     }
+    // Dřív tu byla jen dvě čísla bez vysvětlení a komentář jen u velkého rozdílu.
+    // Teď: co procenta znamenají, pruhy, slovní hodnocení u každé oblasti
+    // a nahoře, kde začít (oblast, kterou tým vidí nejhůř).
+    const barvaPct = function (v) { return v >= 67 ? '#e5534b' : v >= 34 ? '#f0a020' : '#3fae6f'; };
+    const slovoPct = function (v) { return v >= 67 ? 'velký problém' : v >= 34 ? 'střední problém' : 'funguje to'; };
+    const vysvetleni = document.createElement('p');
+    vysvetleni.style.cssText = 'font-size:13px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:12px;';
+    vysvetleni.innerHTML = '<strong style="color:#fff;">Co znamenají procenta:</strong> jak velký problém v oblasti je. 0 % znamená, že to funguje, 100 % že to tam hoří. <strong style="color:#fff;">Vy</strong> jsou vaše vlastní odpovědi, <strong style="color:#fff;">Tým</strong> průměr odpovědí kolegů. Nejvíc řekne rozdíl: kde to tým vidí hůř než vy, tam o problému nejspíš nevíte.';
+    obsah.appendChild(vysvetleni);
+
     const poradi = ['chaos-zmen','zavislost','cekani','uloziste','kanalovy-chaos','prepisovani'];
-    poradi.forEach(k => {
-      const tymPct = pocty[k] > 0 ? Math.round(soucty[k] / pocty[k]) : null;
-      const mujPct = mujVysledek && mujVysledek[k] ? mujVysledek[k].pct : null;
+    const radky = poradi.map(k => ({
+      k,
+      tymPct: pocty[k] > 0 ? Math.round(soucty[k] / pocty[k]) : null,
+      mujPct: mujVysledek && mujVysledek[k] && typeof mujVysledek[k].pct === 'number' ? mujVysledek[k].pct : null
+    }));
+    // Nejhorší podle týmu nahoru, tam má smysl začít.
+    radky.sort((x, y) => (y.tymPct == null ? -1 : y.tymPct) - (x.tymPct == null ? -1 : x.tymPct));
+    const nejhorsi = radky.find(r => r.tymPct != null && r.tymPct >= 34);
+    if (nejhorsi) {
+      const zacit = document.createElement('div');
+      zacit.style.cssText = 'border:1px solid #e9a91b;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;line-height:1.6;color:#fff;';
+      zacit.innerHTML = '<strong style="color:#e9a91b;">Kde začít:</strong> ' + OBLASTI[nejhorsi.k].nazev + '. Tady tým vidí největší problém (' + nejhorsi.tymPct + ' %).';
+      obsah.appendChild(zacit);
+    }
+
+    const pruh = function (popisek, v) {
+      const w = document.createElement('div');
+      w.style.cssText = 'display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(255,255,255,.7);margin-top:4px;';
+      const l = document.createElement('div'); l.style.cssText = 'width:38px;flex-shrink:0;'; l.textContent = popisek;
+      const bar = document.createElement('div'); bar.style.cssText = 'flex:1;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;';
+      const fill = document.createElement('div');
+      if (v != null) fill.style.cssText = 'height:100%;width:' + Math.max(v, 2) + '%;background:' + barvaPct(v) + ';';
+      bar.appendChild(fill);
+      const h = document.createElement('div'); h.style.cssText = 'min-width:140px;flex-shrink:0;text-align:right;white-space:nowrap;';
+      h.textContent = v != null ? v + ' % · ' + slovoPct(v) : 'nezjištěno';
+      w.appendChild(l); w.appendChild(bar); w.appendChild(h);
+      return w;
+    };
+
+    radky.forEach(({ k, tymPct, mujPct }) => {
       const row = document.createElement('div');
       row.className = 'historie-item';
       const nadpis = document.createElement('div');
       nadpis.className = 'historie-shrnuti';
-      nadpis.style.marginBottom = '6px';
+      nadpis.style.marginBottom = '4px';
       nadpis.textContent = OBLASTI[k].nazev;
       row.appendChild(nadpis);
-      const radek2 = document.createElement('div');
-      radek2.style.fontSize = '12px';
-      radek2.style.color = 'rgba(255,255,255,.6)';
-      radek2.textContent = 'Vy: ' + (mujPct !== null ? mujPct + ' %' : 'nezjištěno') + '   ·   Tým (průměr): ' + (tymPct !== null ? tymPct + ' %' : 'nezjištěno');
-      row.appendChild(radek2);
-      if (mujPct !== null && tymPct !== null && Math.abs(mujPct - tymPct) >= 20) {
-        const rozdil = document.createElement('div');
-        rozdil.className = 'historie-trend';
-        rozdil.textContent = mujPct < tymPct
-          ? 'Tým to tady vidí výrazně hůř, než si myslíte.'
-          : 'Vy to vidíte hůř než tým, stojí za to zjistit proč.';
-        row.appendChild(rozdil);
+      row.appendChild(pruh('Vy', mujPct));
+      row.appendChild(pruh('Tým', tymPct));
+      if (mujPct !== null && tymPct !== null) {
+        const d = tymPct - mujPct;
+        const kom = document.createElement('div');
+        kom.style.cssText = 'font-size:12.5px;line-height:1.55;margin-top:8px;color:' + (Math.abs(d) >= 20 ? '#e9a91b' : 'rgba(255,255,255,.75)') + ';';
+        if (Math.abs(d) < 20) {
+          kom.textContent = 'Vidíte to s týmem podobně' + (tymPct >= 34 ? ', a oba jako problém. Tady se shodnete, že je co řešit.' : '. Tady to podle všech funguje.');
+        } else if (d > 0) {
+          kom.textContent = 'Tým to vidí o ' + d + ' bodů hůř než vy. Lidé tu narážejí na něco, co odjinud není vidět. Zeptejte se jich, na čem konkrétně se to zasekává.';
+        } else {
+          kom.textContent = 'Vy to vidíte o ' + (-d) + ' bodů hůř než tým. Buď to lidé berou jako normál, nebo se vás to týká víc než jich. Stojí za to zjistit proč.';
+        }
+        row.appendChild(kom);
       }
       obsah.appendChild(row);
     });
