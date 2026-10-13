@@ -1530,6 +1530,13 @@ async function vytvoritUkolyZAnalyzy(raw, btn) {
     const { error } = await supabaseClient.from('actions').insert(ukoly);
     if (error) throw error;
     btn.textContent = ukoly.length === 1 ? 'Založen 1 úkol ✓' : 'Úkoly založeny ✓';
+    // Připomínka, že termín a odpovědná osoba se doplňují až v Akčním plánu.
+    if (!btn.parentElement.querySelector('.ukoly-dalsi-krok')) {
+      const pozn = document.createElement('p');
+      pozn.className = 'panel-5x-stav ukoly-dalsi-krok';
+      pozn.innerHTML = 'Termín a odpovědnou osobu doplňte v Akčním plánu. <a href="https://tokva.cz/akcni-plan/' + (projektId ? '?projekt=' + encodeURIComponent(projektId) : '') + '" target="_blank" style="color:var(--gold-dark);font-weight:700;text-decoration:none;">Otevřít Akční plán →</a>';
+      btn.insertAdjacentElement('afterend', pozn);
+    }
   } catch (e) {
     console.warn('Úkoly se nepodařilo založit v Supabase.', e);
     btn.disabled = false;
