@@ -922,6 +922,9 @@ nav {
 /* STANDARD MÍSTA (4S, Pro) */
 .standard-block { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
 .standard-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.misto-projekt-radek { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; font-size:13px; color:var(--mid); }
+.misto-projekt-radek select { border:1px solid var(--border); border-radius:6px; padding:5px 8px; font-size:13px; font-family:inherit; background:#fff; max-width:100%; }
+#misto-projekt-pozn { font-size:12px; color:#b45309; }
 .sync-stav { align-self: center; font-size: 11px; color: var(--light); margin-left: 4px; }
 .sync-stav.sync-ok { color: var(--green); }
 .sync-stav.sync-chyba { color: var(--gold); }
@@ -1186,6 +1189,11 @@ body.je-pro .jen-free { display:none; }
   </div>
   <div class="progress-bar">
     <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+  <div class="misto-projekt-radek no-print" id="misto-projekt-radek" style="display:none;">
+    <label for="misto-projekt-zmena">Projekt:</label>
+    <select id="misto-projekt-zmena" onchange="zmenitProjektMista(this.value)"></select>
+    <span id="misto-projekt-pozn"></span>
   </div>
 </div>
 
@@ -1689,7 +1697,7 @@ async function opravitNeplatneOdkazy(m) {
   try {
     if (m.projekt_id) {
       const { data: p } = await supabaseClient.from('projects').select('id').eq('id', m.projekt_id).maybeSingle();
-      if (!p) { console.warn('5S: projekt pracoviště už neexistuje, odkaz zahazuji.', m.projekt_id); m.projekt_id = null; zmena = true; }
+      if (!p) { console.warn('5S: projekt pracoviště už neexistuje, odkaz zahazuji.', m.projekt_id); m.projekt_id = null; zmena = true; projektyFirmy5S = null; setTimeout(renderProjektMista, 0); }
     }
     if (m.location_id) {
       const { data: l } = await supabaseClient.from('locations').select('id').eq('id', m.location_id).maybeSingle();
@@ -2085,6 +2093,7 @@ async function projektIdZeSelectu(selectId, novyNazevId) {
   if (select.value !== '__novy__') return select.value;
   const nazev = (document.getElementById(novyNazevId).value || '').trim();
   if (!nazev) return undefined; // signál "chybí název", volající to ošetří
+  projektyFirmy5S = null;
   const { data, error } = await supabaseClient.from('projects').insert({
     organization_id: clenstvi.organization_id,
     name: nazev
@@ -2233,9 +2242,45 @@ async function exportovatData() {
 }
 
 // MAIN RENDER
+// U pracoviště je vidět, ke kterému projektu patří, a dá se změnit. Dřív to
+// nebylo vidět nikde, a když někdo projekt smazal, nevědělo se proč.
+let projektyFirmy5S = null;
+async function renderProjektMista() {
+  const radek = document.getElementById('misto-projekt-radek');
+  const sel = document.getElementById('misto-projekt-zmena');
+  const pozn = document.getElementById('misto-projekt-pozn');
+  const misto = aktivniMistoData();
+  if (!radek || !sel) return;
+  if (!jePro || !clenstvi || !misto) { radek.style.display = 'none'; return; }
+  radek.style.display = 'flex';
+  if (!projektyFirmy5S) {
+    try {
+      const { data: p, error } = await supabaseClient.from('projects').select('id, name')
+        .eq('organization_id', clenstvi.organization_id).order('created_at', { ascending: false });
+      if (error) throw error;
+      projektyFirmy5S = p || [];
+    } catch (e) { console.warn('Projekty se nepodařilo načíst.', e); return; }
+  }
+  const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const existuje = !misto.projekt_id || projektyFirmy5S.some(p => p.id === misto.projekt_id);
+  sel.innerHTML = '<option value="">Bez projektu</option>' +
+    (existuje ? '' : '<option value="' + esc(misto.projekt_id) + '">Smazaný projekt</option>') +
+    projektyFirmy5S.map(p => '<option value="' + esc(p.id) + '">' + esc(p.name) + '</option>').join('');
+  sel.value = misto.projekt_id || '';
+  pozn.textContent = existuje ? '' : 'Projekt už neexistuje. Vyberte jiný, nebo nechte bez projektu.';
+}
+function zmenitProjektMista(hodnota) {
+  const misto = aktivniMistoData();
+  if (!misto) return;
+  misto.projekt_id = hodnota || null;
+  ulozit();
+  renderProjektMista();
+}
+
 function renderMain() {
   const misto = aktivniMistoData();
   if (!misto) return;
+  renderProjektMista();
 
   const splneno = S_DATA.filter(s => misto.splneno[s.id]).length;
   const pct = Math.round(splneno / 5 * 100);
