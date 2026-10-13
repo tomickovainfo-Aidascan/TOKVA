@@ -2603,9 +2603,39 @@ function exportCSV() {
     upozornit('Zatím nemáte žádný uložený výpočet k exportu. Nejdřív nějaký uložte tlačítkem „Uložit tento výpočet".');
     return;
   }
-  var radky = [['Název', 'Datum', 'Plocha (m²)', 'Typ', 'Kč/m²/měsíc', 'Kč/měsíc celkem', 'Kč/rok celkem', 'Kč/m²/rok']];
+  // Dřív CSV obsahovalo jen souhrn. Teď i rozpad podle kategorií a všechna
+  // zadaná čísla, ať jde výpočet v Excelu dohledat a porovnat položku po položce.
+  var KAT_KLICE = ['zakladni', 'energie', 'pojisteni', 'revize', 'provoz', 'odpisy', 'ostatni'];
+  var VSTUPY_CSV = [
+    ['najemne', 'Měsíční nájemné (Kč/měsíc)'], ['sprava', 'Správa a zálohy nad nájemné (Kč/měsíc)'],
+    ['budova', 'Pořizovací hodnota budovy (Kč)'], ['odpis_budova', 'Doba odepisování budovy (let)'], ['pozemek', 'Hodnota pozemku (Kč)'], ['urok', 'Oportunitní náklad kapitálu (% p.a.)'],
+    ['elektrina', 'Elektřina (Kč/měsíc)'], ['vytapeni', 'Vytápění a chlazení (Kč/měsíc)'], ['voda', 'Voda a kanalizace (Kč/měsíc)'],
+    ['dan', 'Daň z nemovitosti (Kč/rok)'], ['poj_budova', 'Pojištění budovy (Kč/rok)'], ['poj_odp', 'Pojištění odpovědnosti (Kč/rok)'],
+    ['udrzba', 'Běžná údržba a opravy (Kč/měsíc)'], ['elektrorevize', 'Elektrorevize (Kč/rok)'], ['eps', 'Revize EPS (Kč/rok)'], ['ezs', 'Revize EZS (Kč/rok)'],
+    ['zdvihaci', 'Revize zdvihacích zařízení (Kč/rok)'], ['hasici', 'Revize hasicích přístrojů (Kč/rok)'], ['plyn', 'Revize plynových zařízení (Kč/rok)'], ['ostatni_rev', 'Ostatní revize a zkoušky (Kč/rok)'],
+    ['uklid', 'Úklid a čištění (Kč/měsíc)'], ['ostraha', 'Ostraha a bezpečnostní systém (Kč/měsíc)'], ['odpad', 'Odvoz odpadu (Kč/měsíc)'], ['facility', 'Správa budovy externí firmou (Kč/měsíc)'], ['deratizace', 'Deratizace a dezinsekce (Kč/měsíc)'],
+    ['regaly', 'Regálový systém, pořizovací cena (Kč)'], ['odpis_regaly', 'Doba odepisování regálů (let)'], ['dok_technika', 'Dokovací technika (Kč)'], ['led', 'LED osvětlení, instalace (Kč)'],
+    ['vrata', 'Průmyslová vrata a sekční dveře (Kč)'], ['ostatni_vyb', 'Ostatní fixní vybavení (Kč)'], ['odpis_vybaveni', 'Doba odepisování vybavení mimo regály (let)'],
+    ['internet', 'Internet a telekomunikace (Kč/měsíc)'], ['certifikace', 'Certifikace a licence (Kč/měsíc)'], ['rezerva', 'Rezerva na nepředvídané náklady (%)']
+  ];
+  var velke = function (t) { return t.charAt(0).toUpperCase() + t.slice(1); };
+  var radky = [['Název', 'Datum', 'Plocha (m²)', 'Typ', 'Kč/m²/měsíc', 'Kč/měsíc celkem', 'Kč/rok celkem', 'Kč/m²/rok']
+    .concat(KAT_KLICE.map(function (k) { return velke(NAZVY_KAT[k]) + ' (Kč/měsíc)'; }))
+    .concat(KAT_KLICE.map(function (k) { return velke(NAZVY_KAT[k]) + ' (% z celku)'; }))
+    .concat(VSTUPY_CSV.map(function (x) { return 'Zadáno: ' + x[1]; }))];
   posledniHistorie.forEach(function (u) {
-    radky.push([u.nazev, u.datum, u.plocha, u.mode === 'najem' ? 'Pronájem' : 'Vlastní budova', u.m2mesic, u.mesic, u.rok, u.m2rok]);
+    var kat = u.kategorie || {};
+    var vst = u.vstupy || {};
+    var celkem = KAT_KLICE.reduce(function (a, k) { return a + (Number(kat[k]) || 0); }, 0);
+    radky.push([u.nazev, u.datum, u.plocha, u.mode === 'najem' ? 'Pronájem' : 'Vlastní budova', u.m2mesic, u.mesic, u.rok, u.m2rok]
+      .concat(KAT_KLICE.map(function (k) { return kat[k] == null ? '' : Math.round(kat[k]); }))
+      .concat(KAT_KLICE.map(function (k) { return (kat[k] == null || !celkem) ? '' : Math.round(kat[k] / celkem * 1000) / 10; }))
+      .concat(VSTUPY_CSV.map(function (x) {
+        // Pole, která pro zvolený typ skladu nehrají roli, nechá prázdná (jinak by mátla).
+        if (u.mode === 'najem' && ['budova', 'odpis_budova', 'pozemek', 'urok'].indexOf(x[0]) >= 0) return '';
+        if (u.mode !== 'najem' && ['najemne', 'sprava'].indexOf(x[0]) >= 0) return '';
+        return vst[x[0]] == null ? '' : vst[x[0]];
+      })));
   });
   var csv = radky.map(function (r) {
     return r.map(function (v) { return '"' + String(v).replace(/^(-?\d+)\.(\d+)$/, '$1,$2').replace(/"/g, '""') + '"'; }).join(';');
