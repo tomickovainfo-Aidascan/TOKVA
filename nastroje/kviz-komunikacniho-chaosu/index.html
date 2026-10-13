@@ -1295,9 +1295,14 @@ function renderUlozitNeboTym() {
   const card = document.getElementById('v-ulozit-card');
   if (!card) return;
   if (tymKod) {
+    // Kdo kvíz vyplňuje za tým, musí odpovědi ještě odeslat - karta proto
+    // patří hned pod skóre, ne až na konec výsledku (tam si jí půlka lidí nevšimla).
+    const hlavicka = document.querySelector('#vysledek .v-header');
+    if (hlavicka && hlavicka.nextElementSibling !== card) hlavicka.insertAdjacentElement('afterend', card);
     card.style.display = '';
-    card.innerHTML = `<h3>Týmové porovnání</h3>
-      <p style="margin-bottom:12px;">Vaše odpovědi teď můžete anonymně odeslat vedení. Appka nikdy neukáže, kdo přesně co napsal, jen průměr celého týmu.</p>
+    card.style.border = '2px solid var(--gold, #e9a91b)';
+    card.innerHTML = `<h3>Poslední krok: odešlete odpovědi</h3>
+      <p style="margin-bottom:12px;">Dokud je neodešlete, vedení je neuvidí. Appka nikdy neukáže, kdo přesně co napsal, jen průměr celého týmu.</p>
       <button class="btn-spustit" id="btn-odeslat-tym" onclick="odeslatDoTymu(document.getElementById('btn-odeslat-tym'))">Odeslat anonymně do týmu</button>`;
   } else {
     // Dřív appka tuhle kartu pro běžné (netýmové) vyplnění schovávala s tím,
