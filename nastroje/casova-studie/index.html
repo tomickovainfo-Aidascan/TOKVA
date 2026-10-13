@@ -920,6 +920,10 @@ nav {
   transition:all .2s;
 }
 .historie-lock button:hover { background:var(--gold-dark); }
+/* Tlačítka v panelech Zařadit k projektu / Přidat do akčního plánu, stejná jako v ostatních nástrojích */
+.btn-panel { background:var(--gold); border:none; border-radius:8px; padding:11px 22px; color:var(--black); font-family:'Poppins',sans-serif; font-size:13px; font-weight:800; cursor:pointer; transition:all .2s; }
+.btn-panel:hover { background:var(--gold-dark); color:#fff; }
+#projekt-panel select, #projekt-panel input[type=text], #akcni-panel select, #akcni-panel input:not([type=checkbox]) { font-family:'DM Sans',sans-serif; font-size:14px !important; padding:11px 14px !important; background:#fff; }
 .pro-final-panel {
   background: linear-gradient(135deg, #000, #1a1400);
   border-radius: 16px;
@@ -1556,6 +1560,9 @@ nav {
     <div id="historie-porovnat-bar" class="historie-porovnat-bar" style="display:none;">
       <button class="export-btn" style="width:100%;" id="btn-porovnat-vybrane" onclick="otevritModalPorovnani()" disabled>Porovnat vybrané (0/2)</button>
     </div>
+    <div id="historie-export-bar" style="display:none;margin-top:10px;">
+      <button class="export-btn" style="width:100%;" onclick="exportHistorieCSV()">⬇ Export všech dnů (CSV)</button>
+    </div>
   </div>
 
   <div class="historie-card" id="projekt-panel" style="display:none;">
@@ -1572,7 +1579,7 @@ nav {
         <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
       </label>
     </div>
-    <button class="historie-lock button" style="width:100%;" onclick="ulozitZarazeniProjektu()">Uložit zařazení</button>
+    <button class="btn-panel" style="width:100%;" onclick="ulozitZarazeniProjektu()">Uložit zařazení</button>
     <div id="projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
   </div>
 
@@ -1594,7 +1601,7 @@ nav {
       <input id="akce-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
       <input id="akce-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
     </div>
-    <button class="historie-lock button" style="width:100%;" onclick="pridatDoAkcnihoPlanu()">+ Přidat do akčního plánu</button>
+    <button class="btn-panel" style="width:100%;" onclick="pridatDoAkcnihoPlanu()">+ Přidat do akčního plánu</button>
     <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
   </div>
 
@@ -2643,7 +2650,79 @@ function otevritModalDetailVysledku(i) {
   document.getElementById('detail-vysledku-kriticke').innerHTML = formatKritickeObdobi(najitKritickeObdobi(d.zaznamy));
   if (typeof tokvaVlozitPrvniKrok === 'function') tokvaVlozitPrvniKrok(document.getElementById('modal-detail-vysledku'), 'casova-studie', d);
   if (typeof tokvaPridatSmazaniVysledku === 'function') tokvaPridatSmazaniVysledku(document.getElementById('modal-detail-vysledku'), r.id, function () { zavritModalDetailVysledku(); renderHistorie(); });
+  const datumSoubor = new Date(r.created_at).toISOString().slice(0, 10);
+  document.getElementById('detail-vysledku-csv').onclick = function () { exportCSV(d.zaznamy || [], datumSoubor); };
+  document.getElementById('detail-vysledku-tisk').onclick = function () { tisknoutUlozenyDen(r); };
   document.getElementById('modal-detail-vysledku').style.display = 'flex';
+}
+
+// Tisk uloženého dne z historie (dřív šel vytisknout jen právě měřený den).
+function tisknoutUlozenyDen(r) {
+  const d = r.data || {};
+  const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const katCas = d.kat_cas || {};
+  const total = d.total_ms || Object.values(katCas).reduce((a, b) => a + b, 0);
+  const kat = KATEGORIE.filter(k => katCas[k.id] > 0).sort((a, b) => katCas[b.id] - katCas[a.id])
+    .map(k => '<tr><td>' + esc(k.label) + '</td><td>' + formatDuration(katCas[k.id]) + '</td><td>' + (total > 0 ? Math.round(katCas[k.id] / total * 100) : 0) + ' %</td></tr>').join('');
+  const zaz = d.zaznamy || [];
+  const zazRadky = zaz.map((z, i) => {
+    if (z.text === 'Konec') return '<tr><td>' + esc(z.cas) + '</td><td colspan="3"><strong>Konec dne</strong></td></tr>';
+    const next = zaz[i + 1];
+    const dur = next ? Math.round((next.timestamp - z.timestamp) / 60000) + ' min' : '';
+    return '<tr><td>' + esc(z.cas) + '</td><td>' + esc(z.text) + '</td><td>' + dur + '</td><td>' + esc(katInfo(z.kat || rozpoznatKat(z.text)).label) + '</td></tr>';
+  }).join('');
+  const kriticke = document.createElement('div');
+  kriticke.innerHTML = formatKritickeObdobi(najitKritickeObdobi(zaz));
+  const w = window.open('', '_blank');
+  if (!w) { upozornit('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
+  w.document.write('<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Časová studie · ' + esc(new Date(r.created_at).toLocaleDateString('cs-CZ')) + '</title><style>' +
+    'body{font-family:Arial,sans-serif;color:#111;font-size:12px;line-height:1.5;margin:0;}' +
+    '.hl{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #e9a91b;padding-bottom:8px;margin-bottom:14px;}.n{font-size:18px;font-weight:900;}.i{font-size:11px;color:#666;text-align:right;}' +
+    'h2{font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin:16px 0 6px;}table{width:100%;border-collapse:collapse;}td,th{border-bottom:1px solid #ddd;padding:5px 6px;text-align:left;vertical-align:top;}tr{break-inside:avoid;}' +
+    '.velke{font-size:22px;font-weight:900;}footer{margin-top:18px;text-align:center;font-size:10px;color:#999;}@page{margin:15mm;}' +
+    '</style></head><body><div class="hl"><div class="n">Časová studie mého dne</div><div class="i">' + esc(new Date(r.created_at).toLocaleDateString('cs-CZ')) + '</div></div>' +
+    '<p><span class="velke">' + Math.round(r.hlavni_hodnota_cislo || 0) + ' %</span> produktivní práce · celkem změřeno ' + formatDuration(total) + '</p>' +
+    '<h2>Kategorie</h2><table><thead><tr><th>Kategorie</th><th>Čas</th><th>Podíl</th></tr></thead><tbody>' + (kat || '<tr><td colspan="3">Žádný záznam.</td></tr>') + '</tbody></table>' +
+    (kriticke.textContent.trim() ? '<h2>Kritické období</h2><div>' + kriticke.innerHTML + '</div>' : '') +
+    (zazRadky ? '<h2>Záznamy dne</h2><table><thead><tr><th>Čas</th><th>Aktivita</th><th>Trvání</th><th>Kategorie</th></tr></thead><tbody>' + zazRadky + '</tbody></table>' : '') +
+    '<footer>tokva.cz</footer></body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function () { w.print(); }, 300);
+}
+
+// Export všech uložených dnů do jedné tabulky (jeden řádek = jeden den).
+async function exportHistorieCSV() {
+  if (!jePro || !clenstvi) return;
+  try {
+    const { data: dny, error } = await supabaseClient.from('tool_runs')
+      .select('created_at, hlavni_hodnota_cislo, data')
+      .eq('organization_id', clenstvi.organization_id)
+      .eq('nastroj', 'casova-studie')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    if (!dny || !dny.length) { upozornit('Zatím nemáte žádný uložený den.'); return; }
+    const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    const hlavicka = ['Datum', 'Produktivní práce (%)', 'Celkem změřeno (min)', 'Počet záznamů'].concat(KATEGORIE.map(k => k.label + ' (min)'));
+    const radky = dny.map(r => {
+      const d = r.data || {};
+      const katCas = d.kat_cas || {};
+      const total = d.total_ms || Object.values(katCas).reduce((a, b) => a + b, 0);
+      const pocet = (d.zaznamy || []).filter(z => z.text !== 'Konec').length;
+      return [new Date(r.created_at).toLocaleDateString('cs-CZ'), Math.round(r.hlavni_hodnota_cislo || 0), Math.round(total / 60000), pocet]
+        .concat(KATEGORIE.map(k => Math.round((katCas[k.id] || 0) / 60000))).map(q).join(';');
+    });
+    const blob = new Blob(['\ufeff' + hlavicka.map(q).join(';') + '\n' + radky.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'casova-studie-vsechny-dny-' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (e) {
+    console.warn('Export historie se nepodařil.', e);
+    upozornit('Export se teď nepodařil. Zkuste to prosím znovu.');
+  }
 }
 
 function zavritModalDetailVysledku() {
@@ -2776,6 +2855,8 @@ async function renderHistorie() {
       return;
     }
     posledniHistorie = dny;
+    const exportBar = document.getElementById('historie-export-bar');
+    if (exportBar) exportBar.style.display = 'block';
     body.innerHTML = dny.map((d, i) => {
       const datum = new Date(d.created_at).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' });
       const pct = Math.round(d.hlavni_hodnota_cislo || 0);
@@ -2962,10 +3043,13 @@ async function pridatDoAkcnihoPlanu() {
 // Drive appka po kliknuti na Export CSV nedavala zadnou zpetnou vazbu -
 // ani kdyz se export povedl, ani kdyz nebylo co exportovat (tlacitko jen
 // tise nic neudelalo).
-function exportCSV() {
-  const status = document.getElementById('export-status');
-  if (zaznamy.length === 0) {
+function exportCSV(seznam, datumSouboru) {
+  // Bez parametrů exportuje dnešní den, s parametry uložený den z historie.
+  const zaz = Array.isArray(seznam) ? seznam : zaznamy;
+  const status = Array.isArray(seznam) ? null : document.getElementById('export-status');
+  if (!zaz || zaz.length === 0) {
     if (status) status.textContent = 'Zatím není co exportovat, nemáte žádný záznam.';
+    else if (Array.isArray(seznam)) upozornit('U tohoto dne nejsou uložené jednotlivé záznamy, export není z čeho udělat.');
     return;
   }
   try {
@@ -2978,12 +3062,12 @@ function exportCSV() {
     const KLAS_LABELY_EXPORT = { ja: 'Já', delegovat: 'Delegovat', automatizovat: 'Automatizovat', zrusit: 'Zrušit' };
 
     const rows = [['Čas', 'Aktivita', 'Trvání (min)', 'Kategorie', 'Rozhodnutí']];
-    zaznamy.forEach((z, i) => {
+    zaz.forEach((z, i) => {
       if (z.text === 'Konec') {
         rows.push([z.cas, 'Konec dne', '', '', '']);
         return;
       }
-      const next = zaznamy[i + 1];
+      const next = zaz[i + 1];
       const dur = next ? Math.round((next.timestamp - z.timestamp) / 60000) : '';
       const k = katInfo(z.kat || rozpoznatKat(z.text));
       const klasKey = z.text.trim().toLowerCase();
@@ -2993,12 +3077,12 @@ function exportCSV() {
 
     // Souhrny - jen když je z čeho počítat (appka na obrazovce potřebuje
     // aspoň 2 záznamy, jinak trvání nejde spočítat vůbec)
-    if (zaznamy.length > 1) {
-      const total = zaznamy[zaznamy.length - 1].timestamp - zaznamy[0].timestamp;
+    if (zaz.length > 1) {
+      const total = zaz[zaz.length - 1].timestamp - zaz[0].timestamp;
       const katCas = {};
       KATEGORIE.forEach(k => katCas[k.id] = 0);
-      zaznamy.forEach((z, i) => {
-        const next = zaznamy[i + 1];
+      zaz.forEach((z, i) => {
+        const next = zaz[i + 1];
         if (!next) return;
         const dur = next.timestamp - z.timestamp;
         const kid = z.kat || rozpoznatKat(z.text);
@@ -3032,7 +3116,7 @@ function exportCSV() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'casova-studie-' + new Date().toISOString().slice(0, 10) + '.csv';
+    a.download = 'casova-studie-' + (datumSouboru || new Date().toISOString().slice(0, 10)) + '.csv';
     a.click();
     if (status) {
       status.textContent = 'Soubor byl stažen ✓';
@@ -3280,6 +3364,10 @@ nacistPrihlaseniStav();
     <div id="detail-vysledku-datum" style="font-size:12px;color:var(--light);margin-bottom:14px;"></div>
     <div id="detail-vysledku-kategorie" style="margin-bottom:16px;"></div>
     <div id="detail-vysledku-kriticke"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+      <button class="export-btn" id="detail-vysledku-csv" style="flex:1;min-width:140px;">Export CSV</button>
+      <button class="export-btn" id="detail-vysledku-tisk" style="flex:1;min-width:140px;">Vytisknout den</button>
+    </div>
   </div>
 </div>
 

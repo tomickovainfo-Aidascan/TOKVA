@@ -55,6 +55,7 @@
 .zv-pozn a{color:inherit;}
 .zv-chyba{display:none;font-size:13px;color:#b42318;margin:0 0 12px;}
 .zv-diky{font-size:14px;line-height:1.7;color:var(--dark,#1f2a37);margin:0;}
+@media print{.zv-wrap,[data-tokva-zpetna-vazba]{display:none!important;}}
 `;
 
   function vlozitStyl() {
