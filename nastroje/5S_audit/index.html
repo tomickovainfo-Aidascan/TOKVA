@@ -1593,6 +1593,7 @@ function typSouboruFotky(klic) {
 }
 
 let posledniSyncStav = '';
+let posledniSyncChyba = '';
 function nastavitSyncStav(stav) {
   if (stav !== undefined) posledniSyncStav = stav;
   stav = posledniSyncStav;
@@ -1606,6 +1607,8 @@ function nastavitSyncStav(stav) {
   };
   el.textContent = texty[stav] || '';
   el.className = 'sync-stav sync-' + stav;
+  // Technický důvod chyby jen v bublině po najetí myší, pro hledání příčiny.
+  el.title = stav === 'chyba' && posledniSyncChyba ? 'Důvod: ' + posledniSyncChyba : '';
 }
 
 // Zapíše data do prohlížeče. Když dojde místo (fotky jsou velké), nechá
@@ -1678,6 +1681,26 @@ function naplanovatSync() {
   });
 }
 
+// Pracoviště může odkazovat na projekt nebo lokaci, které mezitím někdo
+// smazal. Databáze pak odmítne každé uložení (chyba 23503) a appka donekonečna
+// hlásila „Zatím jen v tomto prohlížeči“. Neplatný odkaz tady zahodíme.
+async function opravitNeplatneOdkazy(m) {
+  let zmena = false;
+  try {
+    if (m.projekt_id) {
+      const { data: p } = await supabaseClient.from('projects').select('id').eq('id', m.projekt_id).maybeSingle();
+      if (!p) { console.warn('5S: projekt pracoviště už neexistuje, odkaz zahazuji.', m.projekt_id); m.projekt_id = null; zmena = true; }
+    }
+    if (m.location_id) {
+      const { data: l } = await supabaseClient.from('locations').select('id').eq('id', m.location_id).maybeSingle();
+      if (!l) { console.warn('5S: lokace pracoviště už neexistuje, odkaz zahazuji.', m.location_id); m.location_id = null; zmena = true; }
+    }
+  } catch (e) {
+    console.warn('5S: odkazy pracoviště se nepodařilo ověřit.', e);
+  }
+  return zmena;
+}
+
 async function synchronizovatMisto(id) {
   if (!jePro || !clenstvi || !syncPovoleno) return;
   if (syncBezi[id]) { syncCasovace[id] = setTimeout(() => synchronizovatMisto(id), 1500); return; }
@@ -1703,7 +1726,10 @@ async function synchronizovatMisto(id) {
 
     // 1) Řádek pracoviště (potřebujeme jeho id pro fotky)
     if (m.cloud.runId) {
-      const { data: upd, error } = await supabaseClient.from('tool_runs').update(radek()).eq('id', m.cloud.runId).select('id');
+      let { data: upd, error } = await supabaseClient.from('tool_runs').update(radek()).eq('id', m.cloud.runId).select('id');
+      if (error && error.code === '23503' && await opravitNeplatneOdkazy(m)) {
+        ({ data: upd, error } = await supabaseClient.from('tool_runs').update(radek()).eq('id', m.cloud.runId).select('id'));
+      }
       if (error) throw error;
       if (!upd || !upd.length) m.cloud.runId = null;
     }
@@ -1713,8 +1739,9 @@ async function synchronizovatMisto(id) {
         .select('id').single();
       // Pracoviště založené dřív pod jiným účtem má odkaz na lokaci, která v téhle
       // firmě neexistuje. Odkaz zahodíme a uložíme znovu, jinak by se neuložilo nikdy.
-      if (error && error.code === '23503' && m.location_id) {
-        m.location_id = null;
+      if (error && error.code === '23503' && (m.location_id || m.projekt_id)) {
+        await opravitNeplatneOdkazy(m);
+        if (m.location_id) m.location_id = null;
         ({ data: ins, error } = await supabaseClient.from('tool_runs')
           .insert(Object.assign({ organization_id: org, user_id: session.user.id, nastroj: SYNC_NASTROJ }, radek()))
           .select('id').single());
@@ -1734,7 +1761,7 @@ async function synchronizovatMisto(id) {
       const blob = dataUrlNaBlob(fotky[klic]);
       const { error: eUp } = await supabaseClient.storage.from('nastrojovna-files').upload(cesta, blob, { contentType: blob.type });
       if (eUp) throw eUp;
-      const { data: soubor, error: eF } = await supabaseClient.from('files').insert({
+      let { data: soubor, error: eF } = await supabaseClient.from('files').insert({
         organization_id: org,
         project_id: m.projekt_id || null,
         tool_run_id: m.cloud.runId,
@@ -1765,6 +1792,7 @@ async function synchronizovatMisto(id) {
     else if (!Object.keys(syncBezi).some(k => k !== id && syncBezi[k])) nastavitSyncStav('ok');
   } catch (e) {
     console.warn('Pracoviště se nepodařilo uložit do účtu, zkusím to znovu.', e);
+    posledniSyncChyba = [(e && e.code) || '', (e && (e.message || e.error)) || String(e)].filter(Boolean).join(' ');
     syncChyby++;
     nastavitSyncStav('chyba');
     ulozitLokalne();
