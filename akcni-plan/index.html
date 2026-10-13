@@ -119,9 +119,16 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .tabulka-ap tbody tr:hover{background:var(--paper);}
 .tabulka-akce-bunka{white-space:nowrap;}
 /* Dlouhé texty (skutečný stav, zdroj úkolu) se zalomí do víc řádků, ať tabulku neroztahují do šířky. */
-.tabulka-ap td.bunka-zalomit{white-space:normal;min-width:160px;max-width:240px;overflow-wrap:anywhere;}
-.tabulka-ap td:first-child,.tabulka-ap th:first-child{min-width:170px;}
-.tabulka-ap tr.tabulka-filtry-radek th:nth-child(2),.tabulka-ap tr.tabulka-filtry-radek th:nth-child(3){min-width:130px;}
+.tabulka-ap td.bunka-zalomit{white-space:normal;min-width:140px;max-width:220px;overflow-wrap:anywhere;}
+.tabulka-ap td:first-child,.tabulka-ap th:first-child{min-width:150px;}
+.tabulka-ap tr.tabulka-filtry-radek th:nth-child(2),.tabulka-ap tr.tabulka-filtry-radek th:nth-child(3){min-width:105px;}
+/* Užší sloupce: názvy sloupců se smí zalomit, projekt a osoba taky, kratší vnitřní okraje. */
+.tabulka-ap th,.tabulka-ap td{padding:6px 6px;}
+.tabulka-ap thead tr.tabulka-hlavicka-radek th{white-space:normal;vertical-align:bottom;line-height:1.25;}
+.tabulka-ap td:nth-child(2),.tabulka-ap td:nth-child(4){white-space:normal;max-width:120px;overflow-wrap:anywhere;}
+.tabulka-ap tr.tabulka-filtry-radek th:nth-child(4){min-width:95px;}
+.tabulka-ap tr.tabulka-filtry-radek th:nth-child(5){min-width:85px;}
+.tabulka-ap tr.tabulka-filtry-radek input,.tabulka-ap tr.tabulka-filtry-radek select{min-width:0;}
 /* Hlavička tabulky (názvy sloupců a filtry) zůstává při rolování nahoře.
    Tabulka roluje uvnitř svého rámečku (výška obrazovky pod lištou), takže
    ukotvení funguje i u široké tabulky, která roluje do strany. */
