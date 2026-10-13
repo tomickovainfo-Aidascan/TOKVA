@@ -2492,22 +2492,29 @@ async function pridatUkolInterni(misto, { text, kdo, termin, investice, prinos, 
   if (jePro && clenstvi) {
     const posledniKontrola = (misto.kontroly || []).length ? misto.kontroly[misto.kontroly.length - 1] : null;
     try {
-      const { data: radek, error } = await supabaseClient
-        .from('actions')
-        .insert({
-          organization_id: clenstvi.organization_id,
-          project_id: misto.projekt_id || null,
-          tool_run_id: (posledniKontrola && posledniKontrola.toolRunId) || (misto.cloud && misto.cloud.runId) || null,
-          reason: reason || ('5S - ' + misto.nazev),
-          title: text,
-          responsible_person: kdo || null,
-          due_date: termin || null,
-          estimated_investment: (investice || investice === 0) ? investice : null,
-          expected_benefit: (prinos || prinos === 0) ? prinos : null,
-          status: 'novy'
-        })
-        .select()
-        .single();
+      const zaklad = {
+        organization_id: clenstvi.organization_id,
+        project_id: misto.projekt_id || null,
+        tool_run_id: (posledniKontrola && posledniKontrola.toolRunId) || (misto.cloud && misto.cloud.runId) || null,
+        reason: reason || ('5S - ' + misto.nazev),
+        title: text,
+        responsible_person: kdo || null,
+        due_date: termin || null,
+        estimated_investment: (investice || investice === 0) ? investice : null,
+        expected_benefit: (prinos || prinos === 0) ? prinos : null,
+        status: 'novy'
+      };
+      const vlozit = r => supabaseClient.from('actions').insert(r).select().single();
+      let { data: radek, error } = await vlozit(zaklad);
+      // Odkaz na kontrolu nebo projekt, který mezitím někdo smazal (nebo patří
+      // jiné firmě), dřív shodil celé uložení úkolu. Zkusíme bez odkazu na
+      // kontrolu, pak i bez projektu, ať úkol v Akčním plánu vždycky skončí.
+      if (error && error.code === '23503') {
+        console.warn('Úkol 5S: odkaz na kontrolu/projekt neplatí, ukládám bez něj.', error);
+        ({ data: radek, error } = await vlozit(Object.assign({}, zaklad, { tool_run_id: (misto.cloud && misto.cloud.runId) || null })));
+        if (error && error.code === '23503') ({ data: radek, error } = await vlozit(Object.assign({}, zaklad, { tool_run_id: null })));
+        if (error && error.code === '23503') ({ data: radek, error } = await vlozit(Object.assign({}, zaklad, { tool_run_id: null, project_id: null })));
+      }
       if (error) throw error;
       ukol.actionId = radek.id;
       ulozit();
@@ -2538,16 +2545,30 @@ async function pridatUkol() {
 // Rychlé přidání do akčního plánu přímo u kroku 5S - vezme text z "Co ještě
 // zbývá" (nebo "Co jsem udělal", případně jen název kroku), ať nemusíte
 // psát znovu to, co jste už napsali do poznámky.
+// Po překreslení se karty kroků sbalí. Ať obrazovka nezůstane viset někde
+// dole v prázdnu, vrátí se na seznam kroků 1 až 5.
+function skrolovatNaKroky() {
+  setTimeout(() => {
+    const prvni = document.getElementById('card-s1');
+    if (!prvni) return;
+    const nav = document.querySelector('nav');
+    const y = prvni.getBoundingClientRect().top + window.pageYOffset - (nav ? nav.offsetHeight : 0) - 16;
+    window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+  }, 60);
+}
+
 async function pridatUkolZKroku(sId) {
   const misto = aktivniMistoData();
   if (!misto) return;
   const s = S_DATA.find(x => x.id === sId);
   const text = (misto.zbyvaCo[sId] || '').trim() || (misto.poznamky[sId] || '').trim() || (s.num + ' ' + s.name + ' - ' + misto.nazev);
-  const ukol = await pridatUkolInterni(misto, {
+  const uloha = pridatUkolInterni(misto, {
     text,
     reason: 'Krok ' + s.num + ' (' + s.name + ') - ' + misto.nazev,
     krok: s.num
   });
+  skrolovatNaKroky();
+  const ukol = await uloha;
   ukazatUpozorneni(
     ukol.actionId ? 'Přidáno do akčního plánu.' : 'Přidáno do appky, do akčního plánu se to teď nepodařilo uložit. Zkuste to prosím znovu.',
     ukol.actionId ? '✓' : '!'
@@ -2796,6 +2817,7 @@ function splnitS(sId) {
     if (card) {
       if (jePravePotvrzeno) {
         card.classList.remove('open');
+        skrolovatNaKroky();
       } else if (!card.classList.contains('open')) {
         card.classList.add('open');
       }
