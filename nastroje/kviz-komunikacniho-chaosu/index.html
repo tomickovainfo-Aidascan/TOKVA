@@ -2163,6 +2163,77 @@ function zavritKolo(btn) {
   });
 }
 
+// Slovní komentář k jedné oblasti týmového porovnání (okno, tisk i CSV).
+function komentarTymChaos(mujPct, tymPct) {
+  if (mujPct == null || tymPct == null) return '';
+  const d = tymPct - mujPct;
+  if (Math.abs(d) < 20) {
+    if (tymPct >= 34 && mujPct >= 34) return 'Vidíte to s týmem podobně, a oba jako problém. Tady se shodnete, že je co řešit.';
+    if (tymPct < 34 && mujPct < 34) return 'Vidíte to s týmem podobně. Tady to podle všech funguje.';
+    return 'Vidíte to s týmem podobně, na hranici. Drobný problém, zatím ne priorita.';
+  }
+  if (d > 0) return 'Tým to vidí o ' + d + ' bodů hůř než vy. Lidé tu narážejí na něco, co odjinud není vidět. Zeptejte se jich, na čem konkrétně se to zasekává.';
+  return 'Vy to vidíte o ' + (-d) + ' bodů hůř než tým. Buď to lidé berou jako normál, nebo se vás to týká víc než jich. Stojí za to zjistit proč.';
+}
+function slovoTymChaos(v) { return v == null ? 'nezjištěno' : v >= 67 ? 'velký problém' : v >= 34 ? 'střední problém' : 'funguje to'; }
+let posledniTymPorovnani = null;
+
+function tiskTymPorovnaniChaos() {
+  const t = posledniTymPorovnani;
+  if (!t) return;
+  const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const barva = v => v == null ? '#999' : v >= 67 ? '#b91c1c' : v >= 34 ? '#b45309' : '#2a7a4f';
+  const radky = t.radky.map(r => '<tr><td><strong>' + esc(OBLASTI[r.k].nazev) + '</strong></td>' +
+    '<td style="color:' + barva(r.mujPct) + '">' + (r.mujPct == null ? 'nezjištěno' : r.mujPct + ' %<br><span>' + slovoTymChaos(r.mujPct) + '</span>') + '</td>' +
+    '<td style="color:' + barva(r.tymPct) + '">' + (r.tymPct == null ? 'nezjištěno' : r.tymPct + ' %<br><span>' + slovoTymChaos(r.tymPct) + '</span>') + '</td>' +
+    '<td>' + esc(komentarTymChaos(r.mujPct, r.tymPct)) + '</td></tr>').join('');
+  const w = window.open('', '_blank');
+  if (!w) { upozornit('Prohlížeč zablokoval okno pro tisk. Povolte prosím vyskakovací okna pro tokva.cz a zkuste to znovu.'); return; }
+  w.document.write('<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>Týmové porovnání · Kvíz komunikačního chaosu</title><style>' +
+    'body{font-family:Arial,sans-serif;color:#111;margin:0;padding:0;font-size:12px;line-height:1.5;}' +
+    '.hl{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #e9a91b;padding-bottom:8px;margin-bottom:14px;}' +
+    '.n{font-size:18px;font-weight:900;}.i{font-size:11px;color:#666;text-align:right;}' +
+    'p{margin:0 0 10px;}.zacit{border:2px solid #e9a91b;border-radius:6px;padding:8px 12px;margin:0 0 12px;}' +
+    'table{width:100%;border-collapse:collapse;}th,td{border-bottom:1px solid #ddd;padding:7px 6px;text-align:left;vertical-align:top;}' +
+    'th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#666;}td span{font-size:10.5px;}tr{break-inside:avoid;}' +
+    'td,td *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}footer{margin-top:18px;text-align:center;font-size:10px;color:#999;}@page{margin:15mm;}' +
+    '</style></head><body><div class="hl"><div class="n">Kvíz komunikačního chaosu · Týmové porovnání</div><div class="i">' + esc(t.firma) + '<br>' + esc(t.datum) + ' · ' + t.pocet + ' odpovědí týmu</div></div>' +
+    (t.pocet < MIN_DOPORUCENY_TYM ? '<p style="color:#b45309;">Porovnání je jen z ' + t.pocet + ' odpovědí. Berte výsledek s rezervou.</p>' : '') +
+    '<p><strong>Co znamenají procenta:</strong> jak velký problém v oblasti je. 0 % znamená, že to funguje, 100 % že to tam hoří. <strong>Vy</strong> jsou vaše vlastní odpovědi, <strong>Tým</strong> průměr odpovědí kolegů. Nejvíc řekne rozdíl: kde to tým vidí hůř než vy, tam o problému nejspíš nevíte.</p>' +
+    (t.nejhorsi ? '<div class="zacit"><strong>Kde začít:</strong> ' + esc(OBLASTI[t.nejhorsi.k].nazev) + '. Tady tým vidí největší problém (' + t.nejhorsi.tymPct + ' %).</div>' : '') +
+    '<table><thead><tr><th style="width:22%">Oblast</th><th style="width:15%">Vy</th><th style="width:15%">Tým (průměr)</th><th>Co to znamená</th></tr></thead><tbody>' + radky + '</tbody></table>' +
+    '<footer>tokva.cz</footer></body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function () { w.print(); }, 300);
+}
+
+function csvTymPorovnaniChaos() {
+  const t = posledniTymPorovnani;
+  if (!t) return;
+  const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const radky = [
+    [q('Kvíz komunikačního chaosu'), q('Týmové porovnání')].join(';'),
+    [q('Firma'), q(t.firma)].join(';'),
+    [q('Datum'), q(t.datum)].join(';'),
+    [q('Počet odpovědí týmu'), q(t.pocet)].join(';'),
+    [q('Procenta'), q('0 % = funguje to, 100 % = velký problém')].join(';'),
+    '',
+    ['Oblast', 'Vy (%)', 'Vy hodnocení', 'Tým průměr (%)', 'Tým hodnocení', 'Rozdíl tým minus vy (body)', 'Co to znamená'].map(q).join(';')
+  ];
+  t.radky.forEach(r => {
+    radky.push([OBLASTI[r.k].nazev, r.mujPct, slovoTymChaos(r.mujPct), r.tymPct, slovoTymChaos(r.tymPct),
+      (r.mujPct != null && r.tymPct != null) ? r.tymPct - r.mujPct : '', komentarTymChaos(r.mujPct, r.tymPct)].map(q).join(';'));
+  });
+  const blob = new Blob(['\ufeff' + radky.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'kviz-chaosu-tymove-porovnani-' + new Date().toISOString().slice(0, 10) + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 async function zobrazitPorovnani(obsah, kolo) {
   const koloProPorovnani = kolo || aktivniKolo;
   obsah.innerHTML = '<div class="historie-prazdno">Počítám průměr...</div>';
@@ -2281,20 +2352,30 @@ async function zobrazitPorovnani(obsah, kolo) {
         const d = tymPct - mujPct;
         const kom = document.createElement('div');
         kom.style.cssText = 'font-size:12.5px;line-height:1.55;margin-top:8px;color:' + (Math.abs(d) >= 20 ? '#e9a91b' : 'rgba(255,255,255,.75)') + ';';
-        if (Math.abs(d) < 20) {
-          kom.textContent = 'Vidíte to s týmem podobně' + (tymPct >= 34 ? ', a oba jako problém. Tady se shodnete, že je co řešit.' : '. Tady to podle všech funguje.');
-        } else if (d > 0) {
-          kom.textContent = 'Tým to vidí o ' + d + ' bodů hůř než vy. Lidé tu narážejí na něco, co odjinud není vidět. Zeptejte se jich, na čem konkrétně se to zasekává.';
-        } else {
-          kom.textContent = 'Vy to vidíte o ' + (-d) + ' bodů hůř než tým. Buď to lidé berou jako normál, nebo se vás to týká víc než jich. Stojí za to zjistit proč.';
-        }
+        kom.textContent = komentarTymChaos(mujPct, tymPct);
         row.appendChild(kom);
       }
       mrizka.appendChild(row);
     });
+    posledniTymPorovnani = {
+      radky, nejhorsi, pocet: pocetOdpovedi,
+      firma: clenstvi && clenstvi.organizations ? clenstvi.organizations.name : '',
+      datum: new Date(koloProPorovnani.created_at || Date.now()).toLocaleDateString('cs-CZ') + (koloProPorovnani.uzavreno ? ' (uzavřené kolo)' : ' (kolo běží)')
+    };
+    const vystupy = document.createElement('div');
+    vystupy.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;';
+    [['Vytisknout porovnání', tiskTymPorovnaniChaos], ['⬇ Stáhnout CSV porovnání', csvTymPorovnaniChaos]].forEach(([text, fn]) => {
+      const b = document.createElement('button');
+      b.className = 'modal-save';
+      b.style.cssText = 'flex:1;min-width:200px;margin:0;';
+      b.textContent = text;
+      b.onclick = fn;
+      vystupy.appendChild(b);
+    });
+    obsah.appendChild(vystupy);
     const zpetBtn = document.createElement('button');
     zpetBtn.className = 'modal-save';
-    zpetBtn.style.cssText = 'background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);margin-top:6px;';
+    zpetBtn.style.cssText = 'background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);margin-top:10px;';
     zpetBtn.textContent = 'Zpět na stav kola';
     zpetBtn.onclick = () => nacistStavTymu();
     obsah.appendChild(zpetBtn);
