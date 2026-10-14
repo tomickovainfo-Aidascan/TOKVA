@@ -19,24 +19,24 @@
   body{margin:0;font-family:'DM Sans',sans-serif;color:var(--dark);background:var(--paper);}
   a{text-decoration:none;}
 
-  /* Nav */
-  .nav{background:var(--black);position:sticky;top:0;z-index:10;border-bottom:2px solid var(--gold);}
-  .nav-inner{max-width:1040px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
-  .nav-brand{font-family:'Poppins',sans-serif;font-weight:800;font-size:20px;color:var(--white);letter-spacing:-0.3px;}
-  .nav-brand span{color:var(--gold);}
-  .nav-back{font-size:14px;color:rgba(255,255,255,0.6);font-weight:500;}
-
+  /* Horní lišta, stejná jako na úvodní stránce */
+  .topbar{background:var(--black);color:var(--white);padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:200;border-bottom:2px solid var(--gold);flex-wrap:wrap;row-gap:8px;}
+  .topbar .brand{font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;color:var(--white);}
+  .topbar-right{display:flex;align-items:center;flex-wrap:wrap;row-gap:8px;}
+  .topbar-login{color:var(--gold);font-size:13px;font-weight:700;border:1px solid var(--gold);padding:7px 16px;border-radius:6px;}
+  .topbar-login:hover{background:var(--gold);color:var(--black);}
   /* Hero */
-  .hero{background:var(--black);padding:60px 24px 52px;position:relative;overflow:hidden;}
+  .hero{background:var(--black);padding:64px 0 52px;position:relative;overflow:hidden;}
   .hero::before{content:"";position:absolute;top:-70px;right:-70px;width:240px;height:240px;border-radius:50%;border:42px solid rgba(233,169,27,0.07);pointer-events:none;}
-  .hero-inner{max-width:1040px;margin:0 auto;position:relative;z-index:1;}
+  .hero-inner{max-width:1040px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
   .badge{display:inline-block;background:rgba(233,169,27,0.14);color:var(--gold);font-size:13px;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;padding:7px 16px;border-radius:20px;margin-bottom:22px;}
-  .hero h1{font-family:'Poppins',sans-serif;font-weight:900;font-size:clamp(28px,4.5vw,44px);letter-spacing:-0.6px;color:var(--white);margin:0 0 16px;max-width:760px;line-height:1.12;}
+  .hero h1{font-family:'Poppins',sans-serif;font-weight:900;font-size:clamp(28px,4vw,44px);letter-spacing:-0.5px;color:var(--white);margin:0 0 18px;max-width:820px;line-height:1.15;}
   .hero h1 .hl{color:var(--gold);}
   .hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.75;font-weight:300;margin:0;}
 
   /* Content */
-  .content{max-width:760px;margin:0 auto;padding:60px 24px 20px;}
+  .content{max-width:1040px;margin:0 auto;padding:56px 24px 20px;}
+  .content > *{max-width:760px;}
   .block{margin-bottom:52px;}
   .block h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(20px,3vw,26px);letter-spacing:-0.3px;margin:0 0 18px;color:var(--dark);}
   .block > p{font-size:16px;line-height:1.75;color:var(--mid);max-width:640px;margin:0;}
@@ -77,20 +77,24 @@
   @media (max-width:700px){.site-footer{padding:20px 16px;}.footer-in{flex-direction:column;gap:10px;}.footer-vpravo{text-align:left;}}
 
   @media (max-width:600px){
-    .hero{padding:44px 16px 40px;}
-    .content{padding:44px 16px 16px;}
+    .topbar{padding:12px 16px;}
+    .hero{padding:44px 0 40px;}
+    .hero-inner{padding:0 18px;}
+    .content{padding:44px 18px 16px;}
     .practice-card, .cta-block{padding:28px 22px;}
   }
 </style>
 </head>
 <body>
 
-  <nav class="nav">
-    <div class="nav-inner">
-      <a class="nav-brand" href="https://tokva.cz/">Tokva</a>
-      <a class="nav-back" href="https://tokva.cz">← Zpět na tokva.cz</a>
+  <div class="topbar">
+    <a class="brand" href="https://tokva.cz/">Tokva</a>
+    <div class="topbar-right">
+      <a class="topbar-login" href="https://tokva.cz/nastroje/">Všechny nástroje</a>
+      <a class="topbar-login" href="https://tokva.cz/pro/">Víc o Tokva Pro</a>
+      <a class="topbar-login" href="https://tokva.cz/prihlaseni.html">Přihlásit se</a>
     </div>
-  </nav>
+  </div>
 
   <section class="hero">
     <div class="hero-inner">
