@@ -1108,7 +1108,7 @@ body.je-pro .jen-free { display:none; }
   <div class="hero-inner">
     <div class="tool-badge">Vedoucí a mistři, kteří chtějí pořádek zavést i udržet</div>
     <h1>5S audit: uklidit pracoviště <em>a udržet to tak</em></h1>
-    <p class="hero-sub">Uklidit se dá za odpoledne. Udržet to je ta těžší část. Appka vás provede pěti kroky 5S na jednom konkrétním pracovišti: u každého kroku víte, co dělat a proč, a fotkami zachytíte stav před a po. <span id="hero-zdarma">Bez registrace, jedno pracoviště zdarma bez časového omezení.</span></p>
+    <p class="hero-sub">Uklidit se dá za odpoledne. Udržet to je ta těžší část. Appka vás provede pěti kroky 5S na jednom konkrétním pracovišti: u každého kroku víte, co dělat a proč, a fotkami zachytíte stav před a po. <span id="hero-zdarma">Jedno pracoviště zdarma bez časového omezení, stačí zadat e-mail.</span></p>
     <div class="hero-meta">
       <span>Průvodce pěti kroky 5S</span>
       <span>Fotky před a po u každého kroku</span>
@@ -1351,6 +1351,7 @@ body.je-pro .jen-free { display:none; }
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
 <script src="../../auth.js"></script>
+<script src="../../brana.js" data-zamknout="#main, #mista-bar" data-nastroj="5s_audit"></script>
 <script>
 // DATA
 // Free: místa, kroky, fotky a poznámky jsou jen v localStorage tohoto prohlížeče.
@@ -1396,7 +1397,7 @@ async function nacistPrihlaseniStav() {
     // 11. 10.: po přepnutí na jinou firmu tu zůstala pracoviště Matěj a.s.).
     if (odsunoutCiziPracoviste()) { prepinamFirmu = true; location.reload(); return; }
     document.body.classList.toggle('je-pro', !!jePro);
-    // V Pro neplatí věta o jednom pracovišti zdarma bez registrace.
+    // V Pro neplatí věta o jednom pracovišti zdarma.
     const heroZdarma = document.getElementById('hero-zdarma');
     if (heroZdarma && jePro) heroZdarma.textContent = 'Pracoviště se ukládají do účtu firmy.';
     prepnoutOdkazyNaPro(jePro);

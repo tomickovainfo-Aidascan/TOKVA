@@ -856,12 +856,13 @@ nav {
     <div class="login-brand">Gabriela <span>Tomíčková</span></div>
     <div style="font-family:'Poppins',sans-serif;font-size:18px;font-weight:900;color:var(--dark);margin-bottom:16px;line-height:1.2;">Spustit analýzu</div>
     <div id="zdarma-blok">
-      <p style="font-size:13px;color:var(--mid);margin-bottom:16px;">Vyzkoušejte si jednu kompletní analýzu zdarma. Stačí e-mail, nic dalšího.</p>
+      <p style="font-size:13px;color:var(--mid);margin-bottom:16px;" id="zdarma-uvod">Vyzkoušejte si jednu kompletní analýzu zdarma. Stačí e-mail, nic dalšího.</p>
+      <p style="font-size:13px;color:var(--mid);margin-bottom:16px;display:none;" id="zdarma-brana">Jedna analýza zdarma pro <strong id="zdarma-brana-email"></strong>. <a href="javascript:void(0)" onclick="zmenitEmailZdarma()" style="color:var(--gold-dark);">Jiný e-mail</a></p>
       <input class="login-input" id="zdarma-email" type="email" aria-label="Váš e-mail pro analýzu zdarma" autocomplete="email" inputmode="email" placeholder="vas@email.cz" style="letter-spacing:normal;"
         onkeydown="if(event.key==='Enter') spustitZdarma()">
       <div class="login-err" id="zdarma-err"></div>
       <button class="login-btn" id="zdarma-btn" onclick="spustitZdarma()">Chci spustit analýzu zdarma</button>
-      <p style="font-size:11.5px;color:var(--mid);margin-top:10px;line-height:1.5;">E-mail použijeme jen k ověření, že jde o vaši první analýzu zdarma. Víc v <a href="https://tokva.cz/ochrana-osobnich-udaju/" target="_blank" rel="noopener">zásadách ochrany osobních údajů</a>.</p>
+      <p style="font-size:11.5px;color:var(--mid);margin-top:10px;line-height:1.5;">E-mail použijeme i k ověření, že jde o vaši první analýzu zdarma. Víc v <a href="https://tokva.cz/ochrana-osobnich-udaju/" target="_blank" rel="noopener">zásadách ochrany osobních údajů</a>.</p>
       <div class="login-link"><a href="javascript:void(0)" onclick="prepnoutKodBlok()">Mám účet Pro, chci se přihlásit</a></div>
     </div>
     <div id="kod-blok" style="display:none;">
@@ -1011,6 +1012,7 @@ nav {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
 <script src="../../auth.js"></script>
+<script src="../../brana.js" data-nastroj="5x_proc"></script>
 <script>
 const SYSTEM_PROMPT = `Jsi zkušený facilitátor metody 5× proč, kouč pro řešení problémů a empatický průvodce analýzou kořenové příčiny.
 
@@ -2462,7 +2464,37 @@ function otevritProLogin() {
 // Free = 1 živá analýza na e-mail. Kontrola duplicit (jestli tenhle e-mail
 // uz analyzu vyzkousel) bezi na strane Apps Scriptu (Google Sheet), ne jen
 // tady v prohlizeci - klientska brana jde jinak snadno obejit.
+// E-mail z brány Tokvy (jednou zadaný e-mail odemkne všechny bezplatné
+// nástroje) - 5× Proč ho už znovu nechce, jen ověří, že jde o první analýzu.
+function nastavitEmailZBrany() {
+  const e = (typeof window.tokvaBranaEmail === 'function') ? window.tokvaBranaEmail() : '';
+  if (!e) return;
+  document.getElementById('zdarma-email').value = e;
+  document.getElementById('zdarma-email').style.display = 'none';
+  document.getElementById('zdarma-uvod').style.display = 'none';
+  document.getElementById('zdarma-brana').style.display = '';
+  document.getElementById('zdarma-brana-email').textContent = e;
+}
+function zmenitEmailZdarma() {
+  if (typeof window.tokvaBranaZmenit === 'function') window.tokvaBranaZmenit(nastavitEmailZBrany);
+}
+// E-mail se zadává jen v okně brány (ať jde i do Breva a odemkne ostatní nástroje).
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof window.tokvaBranaOtevrit === 'function') {
+    const pole = document.getElementById('zdarma-email');
+    // Přihlášený do Tokvy bránu nemá, ten e-mail napíše sem jako dřív.
+    if (pole && !pole.value && !window.tokvaBranaOdemceno()) pole.style.display = 'none';
+  }
+});
+document.addEventListener('DOMContentLoaded', nastavitEmailZBrany);
+document.addEventListener('tokva-brana-odemceno', nastavitEmailZBrany);
+
 async function spustitZdarma() {
+  // Bez e-mailu z brány se nejdřív ukáže okno brány (stejné jako u ostatních nástrojů).
+  if (typeof window.tokvaBranaOtevrit === 'function' && !window.tokvaBranaEmail() && !window.tokvaBranaOdemceno()) {
+    window.tokvaBranaOtevrit(function () { nastavitEmailZBrany(); spustitZdarma(); });
+    return;
+  }
   const email = document.getElementById('zdarma-email').value.trim();
   const err = document.getElementById('zdarma-err');
   const btn = document.getElementById('zdarma-btn');

@@ -395,7 +395,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div class="steps-list">
           <div class="step-item"><div class="step-num">1</div><div>Zadáte čísla ze svého provozu - počet lidí, směny, kolik minut denně odchází zbytečnou chůzí, čekáním a administrativou</div></div>
           <div class="step-item"><div class="step-num">2</div><div>Kalkulačka propočítá ztráty - v korunách za měsíc, hodinách za týden a kilometrech navíc za rok</div></div>
-          <div class="step-item"><div class="step-num">3</div><div>Dostanete výsledek okamžitě - bez registrace, bez čekání, přímo na stránce</div></div>
+          <div class="step-item"><div class="step-num">3</div><div>Dostanete výsledek okamžitě, bez čekání, přímo na stránce</div></div>
         </div>
       </div>
     </div>
@@ -749,6 +749,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
 <script src="../../auth.js"></script>
+<script src="../../brana.js" data-zamknout=".main" data-nastroj="kalkulacka_ztrat"></script>
 <script>
 function fmt(n) { return Math.round(n).toLocaleString("cs-CZ"); }
 

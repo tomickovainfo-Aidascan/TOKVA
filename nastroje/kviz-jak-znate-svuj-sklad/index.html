@@ -577,7 +577,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
     <div class="hero-meta">
       <span>10 otázek</span>
       <span>5 minut</span>
-      <span>Výsledek ihned, e-mail nepovinný</span>
+      <span>Výsledek ihned</span>
     </div>
   </div>
 </div>
@@ -618,7 +618,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
       <div class="content-card">
         <h2 class="content-card-title">Tři kroky, žádná věda:</h2>
         <div class="steps-list">
-          <div class="step-item"><div class="step-num">1</div><div>Spustíte kvíz rovnou, bez e-mailu. Žádná příprava, žádné podklady.</div></div>
+          <div class="step-item"><div class="step-num">1</div><div>Spustíte kvíz hned po zadání e-mailu. Žádná příprava, žádné podklady.</div></div>
           <div class="step-item"><div class="step-num">2</div><div>Odpovíte na 10 otázek ze svého provozu. Tři možnosti, jedno kliknutí.</div></div>
           <div class="step-item"><div class="step-num">3</div><div>Dostanete výsledek a konkrétní tipy, co sledovat jako první.</div></div>
         </div>
@@ -989,7 +989,9 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
                   </div>
                   <div class="tokva-sib-submit-wrap">
                     <div class="sib-form-block" style="text-align:center">
-                      <button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
+                      <label class="tokva-souhlas-novinky" style="display:flex;gap:8px;align-items:flex-start;text-align:left;font-size:13px;line-height:1.5;color:#555;margin:0 0 10px;cursor:pointer;font-family:'DM Sans',sans-serif;"><input type="checkbox" name="SOUHLAS_NOVINKY" value="ano" form="sib-form" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;"> <span>Souhlasím se zasíláním tipů a novinek k Tokvě na tento e-mail. Odhlásit se můžu kdykoliv.</span></label>
+<p class="tokva-souhlas-pozn" style="font-size:12px;color:#888;text-align:left;margin:0 0 12px;font-family:'DM Sans',sans-serif;">Výsledek vám přijde na e-mail. Tipy a novinky jen se souhlasem.</p>
+<button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
                         <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512"><path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z"/></svg>
                         Poslat výsledek
                       </button>
@@ -1089,6 +1091,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
 <script src="../../auth.js"></script>
+<script src="../../brana.js" data-zamknout=".main" data-nastroj="kviz_sklad"></script>
 <script src="../../prvni-krok.js"></script>
 <script>
 // MODALY - jednotne upozorneni/potvrzeni misto browser alert()/confirm()

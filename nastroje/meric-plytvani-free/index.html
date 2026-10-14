@@ -5,13 +5,13 @@
 <link rel="canonical" href="https://tokva.cz/nastroje/meric-plytvani-free/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Měřič plýtvání zdarma: produktivita za 10 minut | Tokva</title>
-<meta name="description" content="Výpočet produktivity práce ve vaší firmě za 10 minut. Appka spočítá podíl práce, chození, hledání a čekání. Zdarma, bez registrace.">
+<meta name="description" content="Výpočet produktivity práce ve vaší firmě za 10 minut. Appka spočítá podíl práce, chození, hledání a čekání. Zdarma, stačí zadat e-mail.">
 <meta name="keywords" content="produktivita práce výpočet, měřič plýtvání, plýtvání, 7 druhů plýtvání, muda, časová studie výroby">
 <meta name="author" content="Gabriela Tomíčková">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="Měřič plýtvání zdarma: produktivita za 10 minut | Tokva">
 <meta property="og:url" content="https://tokva.cz/nastroje/meric-plytvani-free/">
-<meta property="og:description" content="Zjistěte za 10 minut, kolik času vaši lidé skutečně tráví prací, a kolik chozením, hledáním a čekáním. Zdarma, bez registrace.">
+<meta property="og:description" content="Zjistěte za 10 minut, kolik času vaši lidé skutečně tráví prací, a kolik chozením, hledáním a čekáním. Zdarma, stačí zadat e-mail.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:image" content="https://tokva.cz/og-image.png">
@@ -414,7 +414,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
     <div class="hero-meta">
       <span>7 kategorií</span>
       <span>10 minut</span>
-      <span>Výsledek ihned, e-mail nepovinný</span>
+      <span>Výsledek ihned</span>
     </div>
   </div>
 </div>
@@ -606,6 +606,8 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
       <input type="hidden" name="PLYTVANI_PCT" id="hid-plytvani-pct" value="">
       <input type="hidden" name="PRUMER_CYKLUS" id="hid-prumer-cyklus" value="">
       <input type="hidden" name="PLYTVANI_KC_ROK" id="hid-plytvani-kc" value="">
+<label class="tokva-souhlas-novinky" style="display:flex;gap:8px;align-items:flex-start;text-align:left;font-size:13px;line-height:1.5;color:#555;margin:0 0 10px;cursor:pointer;font-family:'DM Sans',sans-serif;"><input type="checkbox" name="SOUHLAS_NOVINKY" value="ano" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;"> <span>Souhlasím se zasíláním tipů a novinek k Tokvě na tento e-mail. Odhlásit se můžu kdykoliv.</span></label>
+<p class="tokva-souhlas-pozn" style="font-size:12px;color:#888;text-align:left;margin:0 0 12px;font-family:'DM Sans',sans-serif;">Výsledek vám přijde na e-mail. Tipy a novinky jen se souhlasem.</p>
       <button type="submit">Chci to e-mailem</button>
     </form>
     <div class="email-ok" id="email-ok" style="display:none;">Díky, posíláme vám to na e-mail.</div>
@@ -1276,6 +1278,7 @@ function fmtCJemne(s) { return s < 10 ? s.toFixed(1) + ' s' : fmtC(s); }
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../supabase-client.js"></script>
 <script src="../../auth.js"></script>
+<script src="../../brana.js" data-zamknout="#setup, #mereni" data-nastroj="meric_plytvani_free"></script>
 <script>
 // Sdílený účet Tokva Pro (Supabase, viz auth.js/supabase-client.js) - appka
 // sama žádný Pro obsah neodemyká (Pro je samostatná appka na ../meric-plytvani-pro/),
