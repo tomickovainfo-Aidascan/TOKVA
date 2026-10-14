@@ -20,6 +20,11 @@ const WEBHOOK_SECRET = Deno.env.get("WEBHOOK_SECRET")!;
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
+function datumCz(d: string | null): string {
+  if (!d) return "-";
+  return new Date(d).toLocaleDateString("cs-CZ");
+}
+
 Deno.serve(async (req) => {
   if (req.headers.get("x-webhook-secret") !== WEBHOOK_SECRET) {
     return new Response("Unauthorized", { status: 401 });
@@ -65,11 +70,15 @@ Deno.serve(async (req) => {
         "<p>Firma: " + (org.name || "-") + "<br>" +
         "E-mail pro fakturu: " + email + "<br>" +
         "ID firmy: " + org.id + "<br>" +
-        "Tokva Pro prodlouženo do: " + (org.plan_expires_at || "-") + "<br>" +
-        "Splatnost faktury: " + (org.faktura_splatnost || "bez faktury (cena 0 Kč)") + "</p>" +
-        "<p>Pro se prodloužilo samo. Koncept faktury se připraví v iDokladu automaticky, " +
-        "přijde ti o něm zvláštní e-mail. Zkontroluj ho a pošli zákazníkovi. " +
-        "Až platba dorazí, smaž u firmy faktura_splatnost (NULL).</p>",
+        "Tokva Pro prodlouženo do: " + datumCz(org.plan_expires_at) + "<br>" +
+        "Splatnost faktury: " + (org.faktura_splatnost ? datumCz(org.faktura_splatnost) : "bez faktury (cena 0 Kč)") + "</p>" +
+        (org.faktura_splatnost
+          ? "<p>Pro se prodloužilo samo. Koncept faktury se připraví v iDokladu automaticky, " +
+            "přijde ti o něm zvláštní e-mail. Zkontroluj ho a pošli zákazníkovi. " +
+            "Až platba dorazí, smaž u firmy faktura_splatnost (NULL).</p>"
+          : "<p>Pro se prodloužilo samo. Firma má cenu 0 Kč (pilot), takže se faktura nepřipraví " +
+            "a zákazníkovi nic dalšího nepřijde. Pokud už pilot skončil, přepiš u firmy " +
+            "mesicni_cena_kc na skutečnou cenu a fakturu vystav ručně.</p>"),
     }),
   });
 
