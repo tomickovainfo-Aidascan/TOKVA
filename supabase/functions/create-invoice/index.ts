@@ -78,6 +78,11 @@ Deno.serve(async (req) => {
     return new Response("Cena 0 Kč, faktura se nepřipravuje", { status: 200 });
   }
 
+  // Pilot: období, které je ještě zdarma (konec Pro nepřesáhl zdarma_do).
+  if (org.zdarma_do && org.plan_expires_at && new Date(org.plan_expires_at) <= new Date(org.zdarma_do)) {
+    return new Response("Období zdarma (pilot), faktura se nepřipravuje", { status: 200 });
+  }
+
   // Prodloužení = zákazník během posledního dne klikl na "Chci pokračovat"
   // (od 14.10.2026 klik sám prodlouží Pro). Jinak jde o první aktivaci
   // nebo ruční změnu data Gábinou.

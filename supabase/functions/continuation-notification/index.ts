@@ -71,14 +71,14 @@ Deno.serve(async (req) => {
         "E-mail pro fakturu: " + email + "<br>" +
         "ID firmy: " + org.id + "<br>" +
         "Tokva Pro prodlouženo do: " + datumCz(org.plan_expires_at) + "<br>" +
-        "Splatnost faktury: " + (org.faktura_splatnost ? datumCz(org.faktura_splatnost) : "bez faktury (cena 0 Kč)") + "</p>" +
+        "Splatnost faktury: " + (org.faktura_splatnost ? datumCz(org.faktura_splatnost) : "bez faktury (cena 0 Kč nebo období zdarma)") + "</p>" +
         (org.faktura_splatnost
           ? "<p>Pro se prodloužilo samo. Koncept faktury se připraví v iDokladu automaticky, " +
             "přijde ti o něm zvláštní e-mail. Zkontroluj ho a pošli zákazníkovi. " +
             "Až platba dorazí, smaž u firmy faktura_splatnost (NULL).</p>"
-          : "<p>Pro se prodloužilo samo. Firma má cenu 0 Kč (pilot), takže se faktura nepřipraví " +
-            "a zákazníkovi nic dalšího nepřijde. Pokud už pilot skončil, přepiš u firmy " +
-            "mesicni_cena_kc na skutečnou cenu a fakturu vystav ručně.</p>"),
+          : "<p>Pro se prodloužilo samo. Faktura se nepřipraví, protože firma má cenu 0 Kč " +
+            "nebo je nové období ještě zdarma (zdarma_do). Zákazníkovi nic dalšího nepřijde. " +
+            "Pokud to nesedí, zkontroluj u firmy mesicni_cena_kc a zdarma_do.</p>"),
     }),
   });
 
