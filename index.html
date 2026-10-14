@@ -103,6 +103,9 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 .site-footer .footer-line { font-size:12.5px; color:rgba(255,255,255,0.6); }
 .site-footer .footer-line a { color:rgba(255,255,255,0.85); text-decoration:underline; text-underline-offset:2px; transition:color .2s; }
 .site-footer .footer-line a:hover { color:var(--gold); }
+.site-footer .footer-line strong { color:rgba(255,255,255,0.85); }
+.site-footer .footer-odkazy { margin-top:8px; }
+@media (max-width:600px){ .site-footer { padding:20px 16px; } .site-footer .footer-line { line-height:1.8; } }
 .area-card:hover { border-color:var(--gold); background:var(--white); transform:translateY(-2px); }
 .area-card.first { background:var(--dark); border-color:var(--dark); color:var(--white); }
 .area-card h3 { font-family:'Poppins',sans-serif; font-weight:800; font-size:20px; margin-bottom:10px; }
@@ -145,6 +148,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 @media (max-width:700px) {
   .topbar { padding:12px 16px; }
   .wrap { padding:0 18px; }
+  #pro-section { margin:0 -18px !important; padding-left:18px !important; padding-right:18px !important; }
   .hero { padding:40px 0 32px; }
   section { padding:40px 0; }
 }
@@ -246,9 +250,9 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
   <section class="duvera">
     <h2 class="section-title">Proč tomu věřit</h2>
     <div class="duvera-box">
-      <p>Tokvu jsem postavila podle toho, co mi fungovalo v praxi. Jako vedoucí velkoobchodního skladu s 20 lidmi jsem za čtyři roky dostala sklad tam, kde stejnou práci se stejnými lidmi zvládl o 30 % rychleji. Další dva roky už pobočka běžela sama a stačilo, že jsem na ni dohlížela na dálku.</p>
+      <p>Tokvu jsem postavila podle toho, co mi fungovalo v praxi. Jako vedoucí velkoobchodního skladu s 20 lidmi jsem za čtyři roky dostala sklad tam, kde stejná práce se stejnými lidmi zabrala o 30 % méně hodin. Další dva roky už pobočka běžela sama a stačilo, že jsem na ni dohlížela na dálku.</p>
       <p>Bylo to poznat i na výplatách: zmizely dlouholeté přesčasy a zbyly peníze na odměny.</p>
-      <p>Žádné drahé systémy. Jen dívat se, měřit a měnit to, co má smysl. Nemusíte znát Kaizen ani mít ve firmě specialistu. Tokva vás provede stejnými kroky, jaké bych s vámi dělala já.</p>
+      <p>Žádné drahé systémy. Jen dívat se, měřit a měnit to, co má smysl. Tokva je pro vedoucí skladu, mistry ve výrobě a majitele malých firem, kteří svůj provoz znají a nechtějí studovat metodiku. Provede vás stejnými kroky, jaké bych s vámi dělala já.</p>
       <p class="duvera-podpis">Gabriela Tomíčková<span>10 let KAIZEN ve výrobě, 6 let vedení skladu</span></p>
     </div>
     <div class="duvera-cta">
@@ -270,17 +274,11 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <a class="btn btn-gold" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'homepage',placement:'section'})">Zjistit více o Tokva Pro</a>
   </section>
 
-  <section class="audience">
-    <h2 class="section-title">Tokva není jen pro Lean specialisty</h2>
-    <p>Je pro člověka, který zná svůj provoz, ale nepotřebuje studovat metodiku, aby mohl něco zlepšit.</p>
-    <p class="roles">Vedoucí skladu. Mistr ve výrobě. Majitel malé firmy. Člověk, který řeší vlastní pracovní den.</p>
-    <p class="closer">Vy znáte svůj provoz. Tokva vám pomůže podívat se na něj jinak.</p>
-  </section>
-
 </main>
 
 <footer class="site-footer">
-  <div class="footer-line">Tokvu vytvořila <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">Gabriela Tomíčková</a>, konzultantka procesů a AI automatizace.</div>
+  <div class="footer-line"><strong>Tokva</strong> · Gabriela Tomíčková · IČO 75905311 · <a href="mailto:tomickova.info@gmail.com">tomickova.info@gmail.com</a> · <a href="tel:+420608221039">+420 608 221 039</a></div>
+  <div class="footer-line footer-odkazy"><a href="https://tokva.cz/ochrana-osobnich-udaju/">Zásady ochrany osobních údajů</a> · <a href="https://tokva.cz/obchodni-podminky/">Obchodní podmínky</a> · <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a></div>
 </footer>
 
 <!-- Přihlášení se načítá odloženě (defer), aby nebrzdilo první zobrazení stránky. -->
