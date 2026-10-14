@@ -1,4 +1,6 @@
 // Edge Function: pošle interní upozornění Gábině, když zákazník klikne
+// (od 14.10.2026 klik zároveň prodlouží Pro o měsíc, viz
+// migrace-prodlouzeni-a-hlidani-14-10.sql)
 // na "Chci pokračovat" na stránce pokracovani.html (RPC potvrdit_pokracovani
 // zapíše pokracovani_potvrzeno_at, SQL trigger na organizations pak zavolá
 // tuhle appku).
@@ -63,8 +65,11 @@ Deno.serve(async (req) => {
         "<p>Firma: " + (org.name || "-") + "<br>" +
         "E-mail pro fakturu: " + email + "<br>" +
         "ID firmy: " + org.id + "<br>" +
-        "Konec předplatného (do teď): " + (org.plan_expires_at || "-") + "</p>" +
-        "<p>Pošli fakturu na další měsíc.</p>",
+        "Tokva Pro prodlouženo do: " + (org.plan_expires_at || "-") + "<br>" +
+        "Splatnost faktury: " + (org.faktura_splatnost || "bez faktury (cena 0 Kč)") + "</p>" +
+        "<p>Pro se prodloužilo samo. Koncept faktury se připraví v iDokladu automaticky, " +
+        "přijde ti o něm zvláštní e-mail. Zkontroluj ho a pošli zákazníkovi. " +
+        "Až platba dorazí, smaž u firmy faktura_splatnost (NULL).</p>",
     }),
   });
 

@@ -73,15 +73,15 @@ p { font-size:14px; color:var(--mid); margin-bottom:8px; }
 
   <div id="stav-form">
     <h1 id="nadpis">Pokračovat v Tokva Pro?</h1>
-    <p id="popis">Za chvíli vám pošlu fakturu na další měsíc.</p>
+    <p id="popis">Kliknutím prodloužíte Tokva Pro o další měsíc. Fakturu se splatností 14 dní vám pošlu e-mailem do 48 hodin.</p>
     <button class="btn-gold" id="btn-potvrdit" onclick="potvrditPokracovani()">Ano, chci pokračovat →</button>
     <div class="zprava" id="zprava"></div>
   </div>
 
   <div class="stav-ok" id="stav-ok">
     <div class="ikona-ok">✓</div>
-    <h1>Díky!</h1>
-    <p>Pokračování je zapsané. Fakturu na další měsíc pošlu do pár dnů.</p>
+    <h1 id="ok-nadpis">Díky, máte prodlouženo!</h1>
+    <p id="ok-text">Tokva Pro běží dál bez přerušení. Fakturu se splatností 14 dní vám pošlu e-mailem do 48 hodin.</p>
   </div>
 
   <a class="zpatky-link" href="https://tokva.cz/moje-tokva/">← Zpět do Tokvy</a>
@@ -117,8 +117,30 @@ async function potvrditPokracovani() {
   zprava.style.display = 'none';
   btn.disabled = true;
   try {
-    const { error } = await supabaseClient.rpc('potvrdit_pokracovani', { p_org_id: orgId });
+    const { data: novyKonec, error } = await supabaseClient.rpc('potvrdit_pokracovani', { p_org_id: orgId });
     if (error) throw error;
+    const okText = document.getElementById('ok-text');
+    if (novyKonec) {
+      okText.textContent = 'Tokva Pro máte prodloužené do ' + new Date(novyKonec).toLocaleDateString('cs-CZ') +
+        '. Fakturu se splatností 14 dní vám pošlu e-mailem do 48 hodin.';
+    } else {
+      // Nic se neprodloužilo: buď už je potvrzeno (dvojklik, odkaz otevřený znovu),
+      // nebo Pro už skončilo či ještě není čas na prodloužení.
+      let konec = null, staraDatabaze = false;
+      try {
+        const r = await supabaseClient.rpc('konec_pro_verejne', { p_org_id: orgId });
+        if (r.error) staraDatabaze = true; else konec = r.data;
+      } catch (e) { staraDatabaze = true; }
+      if (staraDatabaze) {
+        // Databáze ještě bez migrace 14.10.: klik se jen zapsal, nic víc.
+        document.getElementById('ok-nadpis').textContent = 'Díky!';
+        okText.textContent = 'Pokračování je zapsané. Fakturu na další měsíc pošlu e-mailem.';
+      } else {
+        document.getElementById('ok-nadpis').textContent = 'Pokračování už máte potvrzené';
+        okText.textContent = (konec ? 'Tokva Pro platí do ' + new Date(konec).toLocaleDateString('cs-CZ') + '. ' : '') +
+          'Kdyby něco nesedělo, napište mi na tomickova.info@gmail.com.';
+      }
+    }
     document.getElementById('stav-form').classList.add('skryty');
     document.getElementById('stav-ok').classList.add('aktivni');
   } catch (ex) {
