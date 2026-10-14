@@ -72,6 +72,19 @@ Deno.serve(async (req) => {
     return new Response("Chybí data firmy", { status: 400 });
   }
 
+  // Pilot nebo jiná firma s cenou 0 Kč: žádná faktura ani e-mail.
+  // (Pojistka navíc k podmínce v databázovém triggeru.)
+  if (org.mesicni_cena_kc !== null && org.mesicni_cena_kc !== undefined && Number(org.mesicni_cena_kc) === 0) {
+    return new Response("Cena 0 Kč, faktura se nepřipravuje", { status: 200 });
+  }
+
+  // Prodloužení = zákazník během posledního dne klikl na "Chci pokračovat"
+  // (od 14.10.2026 klik sám prodlouží Pro). Jinak jde o první aktivaci
+  // nebo ruční změnu data Gábinou.
+  const jeProdlouzeni = !!org.pokracovani_potvrzeno_at &&
+    (Date.now() - new Date(org.pokracovani_potvrzeno_at).getTime()) < 24 * 3600 * 1000;
+  const konecPro = org.plan_expires_at ? new Date(org.plan_expires_at).toLocaleDateString("cs-CZ") : "";
+
   const ladiciLog: string[] = [];
   const log = (s: string) => {
     ladiciLog.push(s);
@@ -196,7 +209,7 @@ Deno.serve(async (req) => {
     splatnost.setDate(splatnost.getDate() + 14);
     const splatnostStr = splatnost.toISOString().slice(0, 10);
 
-    const cena = Number(org.mesicni_cena_kc) || 699;
+    const cena = Number(org.mesicni_cena_kc ?? 699) || 699;
 
     const faktura = await idokladFetch(token, "/IssuedInvoices", {
       method: "POST",
@@ -240,13 +253,17 @@ Deno.serve(async (req) => {
           body: JSON.stringify({
             sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
             to: [{ email }],
-            subject: "Vaše Tokva Pro je aktivní",
+            subject: jeProdlouzeni ? "Tokva Pro máte prodloužené" : "Vaše Tokva Pro je aktivní",
             htmlContent:
               "<p>Dobrý den,</p>" +
-              "<p>Tokva Pro je u vás aktivní. Přístup najdete tady: " +
-              "<a href=\"https://tokva.cz/moje-tokva/\">tokva.cz/moje-tokva</a></p>" +
-              "<p>Fakturu na " + cena + " Kč za měsíc dostanete zvlášť.</p>" +
-              "<p>Kdyby něco nesedělo nebo měla otázku, napište na gabriela@tokva.cz.</p>" +
+              (jeProdlouzeni
+                ? "<p>díky, že pokračujete. Tokva Pro máte prodloužené" + (konecPro ? " do " + konecPro : "") +
+                  ", běží dál bez přerušení.</p>" +
+                  "<p>Fakturu na " + cena + " Kč za další měsíc dostanete zvlášť, splatnost je 14 dní.</p>"
+                : "<p>Tokva Pro je u vás aktivní" + (konecPro ? " do " + konecPro : "") + ". Přístup najdete tady: " +
+                  "<a href=\"https://tokva.cz/moje-tokva/\">tokva.cz/moje-tokva</a></p>" +
+                  "<p>Fakturu na " + cena + " Kč za měsíc dostanete zvlášť.</p>") +
+              "<p>Kdyby něco nesedělo nebo jste měli otázku, napište na gabriela@tokva.cz.</p>" +
               "<p>Gabriela</p>",
           }),
         });
@@ -264,7 +281,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
         to: [{ email: "tomickova.info@gmail.com" }],
-        subject: "Koncept faktury vytvořen - " + (org.name || org.id),
+        subject: (jeProdlouzeni ? "Koncept faktury (prodloužení) - " : "Koncept faktury vytvořen - ") + (org.name || org.id),
         htmlContent:
           "<p>V iDokladu vznikl koncept faktury:</p>" +
           "<p>Firma: " + (org.name || "-") + "<br>" +
