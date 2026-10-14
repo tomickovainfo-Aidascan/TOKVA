@@ -494,7 +494,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 <div class="modal-overlay" id="modal-pro" style="display:none;">
   <div class="modal">
     <div class="modal-title"><span>Druhé měření drží Tokva Pro</span><button class="modal-close" onclick="document.getElementById('modal-pro').style.display='none';">×</button></div>
-    <p>Tenhle výsledek je váš výchozí stav. Tokva Pro ho uloží, a až kvíz vyplníte podruhé, ukáže u všech šesti oblastí, o kolik se každá posunula. Samotný kvíz zůstává navždy zdarma, bez přihlášení.</p>
+    <p>Tenhle výsledek je váš výchozí stav. Tokva Pro ho uloží, a až kvíz vyplníte podruhé, ukáže u všech šesti oblastí, o kolik se každá posunula. Samotný kvíz zůstává navždy zdarma.</p>
     <p class="login-err" id="pro-err" style="color:rgba(255,255,255,.5);"></p>
     <button class="modal-save" onclick="klikVModaluPro()">Přihlásit se</button>
     <div class="login-link" style="margin-top:10px;">Ještě nemáte Pro? <a href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'kviz_komunikace',placement:'modal'})">Zjistit víc o Tokva Pro</a></div>
@@ -574,10 +574,10 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
           <div class="content-card">
             <h3 class="content-card-title">Čtyři kroky, žádná věda:</h3>
             <div class="steps-list">
-              <div class="step-item"><div class="step-num">1</div><div>Spustíte kvíz, žádný e-mail na start nepotřebujete</div></div>
+              <div class="step-item"><div class="step-num">1</div><div>Spustíte kvíz. Pokud jste tu poprvé, zadáte jednou e-mail</div></div>
               <div class="step-item"><div class="step-num">2</div><div>Odpovíte na 11 otázek o tom, jak si ve firmě předáváte informace</div></div>
               <div class="step-item"><div class="step-num">3</div><div>Podíváte se na skóre, pásmo a pojmenovanou oblast, kde to bolí nejvíc</div></div>
-              <div class="step-item"><div class="step-num">4</div><div>Když chcete, pošlete si výsledek na e-mail, ať se k němu můžete vrátit. Kvíz ani výsledek to nepotřebují</div></div>
+              <div class="step-item"><div class="step-num">4</div><div>Když chcete, pošlete si výsledek na e-mail, ať se k němu můžete vrátit</div></div>
             </div>
           </div>
         </div>
@@ -587,7 +587,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
           <div class="no-need-grid">
             <div class="no-need-item">Metodu ani odborné názvy</div>
             <div class="no-need-item">Podklady ani přípravu předem</div>
-            <div class="no-need-item">E-mail na start</div>
+            <div class="no-need-item">Konzultanta ani poradce</div>
           </div>
         </div>
 
@@ -679,7 +679,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
   </div>
   <div class="email-card">
     <h3>Chcete mít výsledek v e-mailu?</h3>
-    <p style="font-size:12px;color:var(--mid);margin-bottom:6px;">Výsledek nahoře máte celý zdarma a bez přihlášení. E-mail je jen pro pohodlí.</p>
+    <p style="font-size:12px;color:var(--mid);margin-bottom:6px;">Výsledek nahoře máte celý zdarma. Na e-mail si ho pošlete, jen když chcete.</p>
     <p>Pošlu vám skóre, co znamená a kde začít, ať se k tomu můžete vrátit nebo to přeposlat kolegům.</p>
     <button type="button" class="btn-spustit" id="btn-poslat-email-chaos" onclick="ukazatEmailFormChaos()">Poslat výsledek na e-mail</button>
     <div id="email-form-wrap-chaos" style="display:none;margin-top:10px;">
@@ -853,7 +853,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <div class="pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
       <div class="pro-final-title">Co se změní, až kvíz vyplníte podruhé</div>
-      <p style="font-size:13.5px;color:rgba(255,255,255,.8);line-height:1.7;margin:-6px 0 12px;">Kvíz i výsledek, který jste právě viděli, zůstávají zdarma a bez přihlášení. Tokva Pro k tomu umí jednu věc: uloží tenhle výsledek a za pár měsíců vám u všech šesti oblastí ukáže, o kolik se každá z nich posunula.</p>
+      <p style="font-size:13.5px;color:rgba(255,255,255,.8);line-height:1.7;margin:-6px 0 12px;">Kvíz i výsledek, který jste právě viděli, zůstávají zdarma. Tokva Pro k tomu umí jednu věc: uloží tenhle výsledek a za pár měsíců vám u všech šesti oblastí ukáže, o kolik se každá z nich posunula.</p>
       <p style="font-size:13.5px;color:rgba(255,255,255,.8);line-height:1.7;margin:0 0 18px;">Jestli se komunikace ve firmě zlepšila, nepoznáte pocitem. Poznáte to tak, že máte dvě měření vedle sebe.</p>
       <button class="pro-final-cta" onclick="klikUlozitVysledek()">Uložit výsledek a změřit znovu</button>
       <p style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6;margin:12px 0 0;">V Pro si navíc výsledek zařadíte k projektu, z nejslabší oblasti rovnou založíte úkol v Akčním plánu a kvíz můžete anonymně poslat i týmu.</p>
@@ -1177,7 +1177,7 @@ const DALSI_KROK_TEXT = {
 
 
 // ============ PŘIHLÁŠENÍ A PRO (Supabase) ============
-// Kvíz samotný je a zůstává úplně zdarma bez přihlášení - tohle jen navíc
+// Kvíz samotný je a zůstává úplně zdarma - tohle jen navíc
 // odemyká uložení výsledku a historii pro firmy s aktivním Pro.
 let session = null;
 let clenstvi = null;
