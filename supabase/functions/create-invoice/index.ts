@@ -61,6 +61,34 @@ async function idokladFetch(token: string, path: string, options: RequestInit = 
   return json;
 }
 
+// Adresa firmy z veřejného rejstříku ARES podle IČO (ulice, město, PSČ
+// zvlášť, jak je chce iDoklad). Když ARES neodpoví, vrátí null a použije
+// se adresa napsaná v objednávce.
+async function adresaZAres(ico: string): Promise<{ nazev?: string; dic?: string; ulice: string; mesto: string; psc: string } | null> {
+  try {
+    const res = await fetch("https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/" + encodeURIComponent(ico.replace(/\s/g, "")));
+    if (!res.ok) return null;
+    const d = await res.json();
+    const s = d?.sidlo || {};
+    const cislo = [s.cisloDomovni, s.cisloOrientacni ? String(s.cisloOrientacni) + (s.cisloOrientacniPismeno || "") : null]
+      .filter(Boolean).join("/");
+    const ulice = ((s.nazevUlice || s.nazevCastiObce || s.nazevObce || "") + (cislo ? " " + cislo : "")).trim();
+    return {
+      nazev: d?.obchodniJmeno,
+      dic: d?.dic,
+      ulice,
+      mesto: s.nazevObce || "",
+      psc: s.psc ? String(s.psc) : "",
+    };
+  } catch {
+    return null;
+  }
+}
+
+function datumCz(d: string | Date): string {
+  return new Date(d).toLocaleDateString("cs-CZ");
+}
+
 Deno.serve(async (req) => {
   if (req.headers.get("x-webhook-secret") !== WEBHOOK_SECRET) {
     return new Response("Unauthorized", { status: 401 });
@@ -102,18 +130,9 @@ Deno.serve(async (req) => {
     const token = await ziskatToken();
     log("Token OK");
 
-    // Najít kontakt podle názvu firmy - filtr přes URL se spolehlivě
-    // netrefoval (vracel vždy 0 výsledků), takže appka stáhne stránku
-    // kontaktů a hledá shodu sama, case-insensitive.
-    const hledani = await idokladFetch(token, "/Contacts?pageSize=200");
-    const vsechnyKontakty = hledani?.Data?.Items ?? [];
-    const nazevHledany = (org.name || "").trim().toLowerCase();
-    log(
-      "Hledání kontaktu mezi " + vsechnyKontakty.length + " existujícími pro název: " + nazevHledany
-    );
-
-    // Dohledat e-mail majitele (i pro předvyplnění kontaktu z objednávky)
     const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
+
+    // E-mail majitele firmy
     let email = "-";
     const { data: clen } = await supabase
       .from("organization_members")
@@ -130,10 +149,40 @@ Deno.serve(async (req) => {
       if (profil?.email) email = profil.email;
     }
 
+    // Poslední objednávka majitele (IČO, DIČ, adresa, variabilní symbol)
+    let objednavka: any = null;
+    if (email !== "-") {
+      const { data } = await supabase
+        .from("orders")
+        .select("id, ico, dic, billing_address, variabilni_symbol, status, created_at")
+        .ilike("email", email)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      objednavka = data;
+      log("Objednávka: " + JSON.stringify(objednavka));
+    }
+
+    // První faktura po zaplacené objednávce: zákazník už zaplatil předem
+    // podle variabilního symbolu z objednávky. Faktura převezme stejný VS
+    // a číslo objednávky a rovnou se označí jako uhrazená.
+    const jePrvniPoObjednavce = !jeProdlouzeni && !!objednavka && objednavka.status === "nova" &&
+      !!objednavka.variabilni_symbol;
+    const vs = jePrvniPoObjednavce ? String(objednavka.variabilni_symbol) : undefined;
+    log("První faktura po objednávce: " + jePrvniPoObjednavce + (vs ? " (VS " + vs + ")" : ""));
+
+    // Kontakt v iDokladu: nejdřív podle IČO, pak podle názvu firmy.
+    // Filtr přes URL se spolehlivě netrefoval, takže appka stáhne stránku
+    // kontaktů a hledá shodu sama.
+    const hledani = await idokladFetch(token, "/Contacts?pageSize=200");
+    const vsechnyKontakty = hledani?.Data?.Items ?? [];
+    const icoObj = (objednavka?.ico || "").replace(/\s/g, "");
+    const nazevHledany = (org.name || "").trim().toLowerCase();
     let partnerId: number | null = null;
-    const shoda = vsechnyKontakty.find(
-      (k: any) => (k.CompanyName || "").trim().toLowerCase() === nazevHledany
-    );
+    let kontaktZAres = false;
+    const shoda =
+      (icoObj && vsechnyKontakty.find((k: any) => (k.IdentificationNumber || "").replace(/\s/g, "") === icoObj)) ||
+      vsechnyKontakty.find((k: any) => (k.CompanyName || "").trim().toLowerCase() === nazevHledany);
     if (shoda) {
       partnerId = shoda.Id;
       log("Kontakt nalezen, Id=" + partnerId);
@@ -144,41 +193,26 @@ Deno.serve(async (req) => {
         z.Code === "CZ" || z.Code === "CZE" || /česk/i.test(z.Name || "")
       );
       const countryId = ceskoZaznam?.Id;
-      log("Česko nalezeno: " + JSON.stringify(ceskoZaznam));
 
-      // Zkusit dohledat IČO/DIČ/adresu z poslední objednávky téhož e-mailu
-      let ico: string | null = null;
-      let dic: string | null = null;
-      let street = "";
-      if (email !== "-") {
-        const { data: objednavka } = await supabase
-          .from("orders")
-          .select("ico, dic, billing_address")
-          .eq("email", email)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        if (objednavka) {
-          ico = objednavka.ico || null;
-          dic = objednavka.dic || null;
-          street = objednavka.billing_address || "";
-        }
-        log("Objednávka pro předvyplnění: " + JSON.stringify(objednavka));
-      }
+      const ares = icoObj ? await adresaZAres(icoObj) : null;
+      kontaktZAres = !!(ares && ares.mesto);
+      log("ARES: " + JSON.stringify(ares));
 
       const novyKontakt = await idokladFetch(token, "/Contacts", {
         method: "POST",
         body: JSON.stringify({
           CompanyName: org.name,
           CountryId: countryId,
-          IdentificationNumber: ico,
-          VatIdentificationNumber: dic,
-          Street: street,
+          IdentificationNumber: icoObj || null,
+          VatIdentificationNumber: objednavka?.dic || ares?.dic || null,
+          Street: kontaktZAres ? ares!.ulice : (objednavka?.billing_address || ""),
+          City: kontaktZAres ? ares!.mesto : undefined,
+          PostalCode: kontaktZAres ? ares!.psc : undefined,
           Email: email !== "-" ? email : null,
         }),
       });
       partnerId = novyKontakt?.Data?.Id ?? novyKontakt?.Id;
-      log("Kontakt založen: " + JSON.stringify(novyKontakt).slice(0, 300) + " -> Id=" + partnerId);
+      log("Kontakt založen -> Id=" + partnerId);
     }
 
     // Výchozí hodnoty potřebné appkou - číselná řada, způsob platby, měna
@@ -216,6 +250,16 @@ Deno.serve(async (req) => {
 
     const cena = Number(org.mesicni_cena_kc ?? 699) || 699;
 
+    // Období, za které se platí: měsíc před novým koncem Pro
+    let obdobi = "";
+    if (org.plan_expires_at) {
+      const doD = new Date(org.plan_expires_at);
+      const odD = new Date(doD);
+      odD.setMonth(odD.getMonth() - 1);
+      obdobi = datumCz(odD) + " až " + datumCz(doD);
+    }
+    const nazevPolozky = "Tokva Pro, měsíční předplatné" + (obdobi ? " (" + obdobi + ")" : "");
+
     const faktura = await idokladFetch(token, "/IssuedInvoices", {
       method: "POST",
       body: JSON.stringify({
@@ -225,16 +269,19 @@ Deno.serve(async (req) => {
         CurrencyId: currencyId,
         DateOfIssue: dnes,
         DateOfTaxing: dnes,
-        DateOfMaturity: splatnostStr,
+        DateOfMaturity: jePrvniPoObjednavce ? dnes : splatnostStr,
         DocumentSerialNumber: dalsiCislo,
         AccountNumber: vychoziUcet?.AccountNumber || undefined,
         BankId: vychoziUcet?.BankId || undefined,
         IsEet: false,
         IsIncomeTax: false,
         Description: "Tokva Pro - měsíční předplatné",
+        VariableSymbol: vs,
+        OrderNumber: vs,
+        Note: jePrvniPoObjednavce ? "Uhrazeno převodem předem (VS " + vs + "). Neplaťte." : undefined,
         Items: [
           {
-            Name: "Tokva Pro - měsíční předplatné",
+            Name: nazevPolozky,
             Amount: 1,
             UnitPrice: cena,
             PriceType: "WithoutVat",
@@ -246,6 +293,20 @@ Deno.serve(async (req) => {
       }),
     });
     log("Faktura vytvořena: " + JSON.stringify(faktura));
+    const fakturaId = faktura?.Data?.Id ?? faktura?.Id;
+    const cisloDokladu = faktura?.Data?.DocumentNumber || faktura?.DocumentNumber || fakturaId || "-";
+
+    let oznacenoUhrazeno = false;
+    if (jePrvniPoObjednavce && fakturaId) {
+      try {
+        await idokladFetch(token, "/IssuedDocumentPayments/FullyPay/" + fakturaId + "?dateOfPayment=" + dnes, { method: "PUT" });
+        oznacenoUhrazeno = true;
+        log("Faktura označena jako uhrazená");
+      } catch (e) {
+        log("Označení úhrady se nepovedlo: " + String(e));
+      }
+      await supabase.from("orders").update({ status: "zaplaceno" }).eq("id", objednavka.id);
+    }
 
     // E-mail zákazníkovi, že má Tokva Pro aktivní. Posílá se jen když
     // se podařilo dohledat e-mail majitele - jinak appka zákazníka
@@ -258,10 +319,15 @@ Deno.serve(async (req) => {
           body: JSON.stringify({
             sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
             to: [{ email }],
-            subject: jeProdlouzeni ? "Tokva Pro máte prodloužené" : "Vaše Tokva Pro je aktivní",
+            subject: jePrvniPoObjednavce ? "Platba dorazila, Tokva Pro je aktivní"
+              : jeProdlouzeni ? "Tokva Pro máte prodloužené" : "Vaše Tokva Pro je aktivní",
             htmlContent:
               "<p>Dobrý den,</p>" +
-              (jeProdlouzeni
+              (jePrvniPoObjednavce
+                ? "<p>platba dorazila, děkuju. Tokva Pro je u vás aktivní" + (konecPro ? " do " + konecPro : "") + ". " +
+                  "Přístup najdete tady: <a href=\"https://tokva.cz/moje-tokva/\">tokva.cz/moje-tokva</a></p>" +
+                  "<p>Fakturu pro účetnictví vám pošlu zvlášť. Je už zaplacená, nic dalšího neplaťte.</p>"
+                : jeProdlouzeni
                 ? "<p>díky, že pokračujete. Tokva Pro máte prodloužené" + (konecPro ? " do " + konecPro : "") +
                   ", běží dál bez přerušení.</p>" +
                   "<p>Fakturu na " + cena + " Kč za další měsíc dostanete zvlášť, splatnost je 14 dní.</p>"
@@ -286,14 +352,24 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
         to: [{ email: "tomickova.info@gmail.com" }],
-        subject: (jeProdlouzeni ? "Koncept faktury (prodloužení) - " : "Koncept faktury vytvořen - ") + (org.name || org.id),
+        subject: (jePrvniPoObjednavce ? "Faktura (zaplacená, VS " + vs + ") - "
+          : jeProdlouzeni ? "Koncept faktury (prodloužení) - " : "Koncept faktury vytvořen - ") + (org.name || org.id),
         htmlContent:
-          "<p>V iDokladu vznikl koncept faktury:</p>" +
+          "<p>V iDokladu vznikla faktura:</p>" +
           "<p>Firma: " + (org.name || "-") + "<br>" +
           "Cena: " + cena + " Kč<br>" +
+          (obdobi ? "Období: " + obdobi + "<br>" : "") +
+          (vs ? "Variabilní symbol a číslo objednávky: " + vs + "<br>" : "") +
           "E-mail zákazníka: " + email + "<br>" +
-          "Číslo dokladu: " + (faktura?.Data?.DocumentNumber || faktura?.Data?.Id || faktura?.DocumentNumber || faktura?.Id || "-") + "</p>" +
-          "<p>Zkontroluj IČO a adresu v kontaktu, doplň, a pošli zákazníkovi.</p>",
+          "Číslo dokladu: " + cisloDokladu + "</p>" +
+          (jePrvniPoObjednavce
+            ? (oznacenoUhrazeno
+                ? "<p>Faktura je označená jako uhrazená. Objednávka je v Tokvě přepnutá na zaplaceno.</p>"
+                : "<p><b>Označení jako uhrazená se nepovedlo, označ ji v iDokladu ručně.</b></p>")
+            : "") +
+          (kontaktZAres
+            ? "<p>Kontakt je nově založený podle IČO z ARES. Zkontroluj a pošli zákazníkovi.</p>"
+            : "<p>Zkontroluj odběratele (IČO a adresu) a pošli fakturu zákazníkovi.</p>"),
       }),
     });
 
