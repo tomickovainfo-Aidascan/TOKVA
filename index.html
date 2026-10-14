@@ -78,6 +78,12 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 .duvera-box p{font-size:15.5px;line-height:1.75;color:var(--dark);margin-bottom:12px;}
 .duvera-podpis{font-weight:700;margin:16px 0 0 !important;}
 .duvera-podpis span{display:block;font-weight:400;font-size:13px;color:var(--mid);}
+.pilot-box{background:var(--gold-light);border-radius:12px;padding:26px 28px;max-width:720px;}
+.pilot-nadpis{font-family:'Poppins',sans-serif;font-weight:800;font-size:22px;letter-spacing:-.3px;margin:0 0 8px;color:var(--dark);}
+.pilot-box p{font-size:15.5px;line-height:1.7;color:var(--dark);margin:0 0 18px;}
+.btn-outline-dark{display:inline-block;border:2px solid var(--dark);color:var(--dark);background:transparent;font-weight:700;padding:11px 24px;border-radius:8px;text-decoration:none;}
+.btn-outline-dark:hover{background:var(--dark);color:#fff;}
+@media (max-width:600px){ .pilot-box{padding:22px 18px;} }
 .duvera-cta{margin-top:26px;}
 .pro-koho { font-size:14px; font-weight:600; color:var(--gold-dark); margin-bottom:12px; max-width:680px; line-height:1.5; }
 .eyebrow { font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-dark); margin-bottom:14px; }
@@ -258,6 +264,15 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <div class="duvera-cta">
       <a class="btn btn-gold" href="https://tokva.cz/nastroje/" onclick="return vyzkouset(event)">Vyzkoušet nástroje zdarma</a>
       <p class="brana-pozn">Zdarma. Stačí jednou zadat e-mail, příště vstoupíte rovnou.</p>
+    </div>
+  </section>
+
+  <section class="pilot-pozvanka">
+    <div class="pilot-box">
+      <div class="eyebrow">Pilotní provoz</div>
+      <h2 class="pilot-nadpis">Hledám 3 firmy na pilotní provoz</h2>
+      <p>Výroba nebo sklad. Půl roku Tokva Pro zdarma a moje podpora u prvního projektu.</p>
+      <a class="btn btn-outline-dark" href="https://tokva.cz/pilot/" onclick="trackTokvaEvent('pilot_click',{source_tool:'homepage'})">Podmínky pilotu</a>
     </div>
   </section>
 
