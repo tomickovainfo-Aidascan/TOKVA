@@ -474,8 +474,9 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <a href="https://tokva.cz/pro/tym/" class="btn-secondary-dark" style="display:block;text-align:center;margin-top:14px;">Jak funguje tým a co kdo smí →</a>
 
     <div class="objednavka-ok" id="objednavka-ok">
-      <p>Díky! Objednávka je zapsaná. Fakturu vám pošlu do pár dnů na e-mail, appku na Pro přepnu po přijetí platby. Přihlásit se můžete rovnou teď. Appky uvidíte ve verzi zdarma, dokud platba nedorazí.</p>
+      <p>Díky! Objednávka je zapsaná. Platbu pošlete převodem s variabilním symbolem níže, údaje k platbě máte i v e-mailu. Appku na Pro přepnu, jakmile platba dorazí, a fakturu (už zaplacenou) vám pošlu pro účetnictví.</p>
       <p class="objednavka-vs" id="objednavka-vs"></p>
+      <p id="objednavka-dokoncit"><b>Ještě jeden krok:</b> klikněte na Přihlásit se, zadejte e-mail a heslo z objednávky a potvrďte název firmy. Tím je registrace hotová. Do příchodu platby uvidíte appky ve verzi zdarma.</p>
       <a href="https://tokva.cz/prihlaseni.html" class="btn-secondary-dark">Přihlásit se →</a>
     </div>
 
@@ -596,6 +597,15 @@ async function odeslatObjednavku(e) {
     if (signUpData && signUpData.user && Array.isArray(signUpData.user.identities) && signUpData.user.identities.length > 0) {
       trackTokvaEvent('sign_up', { method: 'email' });
       trackTokvaEvent('signup_completed', { method: 'email', placement: 'pro_page', plan_variant: varianta });
+      // Nový účet a Supabase rovnou přihlásil (bez potvrzování e-mailu):
+      // firmu založíme hned, ať je v Tokvě vidět i bez prvního přihlášení.
+      // Když to nevyjde, nic se neděje, firma se založí při prvním přihlášení.
+      if (signUpData.session) {
+        try {
+          await supabaseClient.rpc('create_organization', { org_name: firma });
+          window.__firmaZalozena = true;
+        } catch (e) { console.warn('Firmu se nepodařilo založit hned, založí se při přihlášení.', e); }
+      }
     }
 
     const { data: variabilniSymbol, error: orderError } = await supabaseClient.rpc('vytvorit_objednavku', {
@@ -620,6 +630,9 @@ async function odeslatObjednavku(e) {
     document.getElementById('objednavka-form').style.display = 'none';
     document.getElementById('objednavka-cena-popis').style.display = 'none';
     document.getElementById('objednavka-vs').textContent = 'Variabilní symbol k platbě: ' + variabilniSymbol;
+    if (window.__firmaZalozena) {
+      document.getElementById('objednavka-dokoncit').innerHTML = 'Účet i firma jsou založené. Přihlásit se můžete rovnou, do příchodu platby uvidíte appky ve verzi zdarma.';
+    }
     document.getElementById('objednavka-ok').style.display = 'block';
   } catch (ex) {
     err.textContent = prelozitChybuObjednavky(ex.message || String(ex));
