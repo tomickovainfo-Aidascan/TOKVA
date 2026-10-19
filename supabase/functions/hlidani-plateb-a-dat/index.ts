@@ -47,7 +47,7 @@ async function poslat(to: { email: string; name?: string }, subject: string, htm
   const res = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
     headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
-    body: JSON.stringify({ sender: ODESILATEL, to: [to], subject, htmlContent }),
+    body: JSON.stringify({ sender: ODESILATEL, replyTo: { email: "tomickova.info@gmail.com", name: "Gabriela Tomíčková" }, to: [to], subject, htmlContent }),
   });
   if (!res.ok) throw new Error("Brevo " + res.status + ": " + (await res.text()));
 }

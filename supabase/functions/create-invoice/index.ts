@@ -275,7 +275,7 @@ Deno.serve(async (req) => {
         BankId: vychoziUcet?.BankId || undefined,
         IsEet: false,
         IsIncomeTax: false,
-        Description: "Tokva Pro - měsíční předplatné",
+        Description: "Tokva Pro, měsíční předplatné",
         VariableSymbol: vs,
         OrderNumber: vs,
         Note: jePrvniPoObjednavce ? "Uhrazeno převodem předem (VS " + vs + "). Neplaťte." : undefined,
@@ -318,6 +318,7 @@ Deno.serve(async (req) => {
           headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
           body: JSON.stringify({
             sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
+            replyTo: { email: "tomickova.info@gmail.com", name: "Gabriela Tomíčková" },
             to: [{ email }],
             subject: jePrvniPoObjednavce ? "Platba dorazila, Tokva Pro je aktivní"
               : jeProdlouzeni ? "Tokva Pro máte prodloužené" : "Vaše Tokva Pro je aktivní",
@@ -334,7 +335,7 @@ Deno.serve(async (req) => {
                 : "<p>Tokva Pro je u vás aktivní" + (konecPro ? " do " + konecPro : "") + ". Přístup najdete tady: " +
                   "<a href=\"https://tokva.cz/moje-tokva/\">tokva.cz/moje-tokva</a></p>" +
                   "<p>Fakturu na " + cena + " Kč za měsíc dostanete zvlášť.</p>") +
-              "<p>Kdyby něco nesedělo nebo jste měli otázku, napište na gabriela@tokva.cz.</p>" +
+              "<p>Kdyby něco nesedělo nebo jste měli otázku, napište na <a href=\"mailto:tomickova.info@gmail.com\">tomickova.info@gmail.com</a> nebo odpovězte na tento e-mail.</p>" +
               "<p>Gabriela</p>",
           }),
         });
