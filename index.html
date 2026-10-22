@@ -94,6 +94,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 @media (max-width:700px){.site-footer{padding:20px 16px;}.footer-in{flex-direction:column;gap:10px;}.footer-vpravo{text-align:left;}}
 .duvera-cta{margin-top:26px;}
 .kroky-cta{margin-top:30px;}
+.kroky-mrizka{display:grid;grid-template-columns:1fr;gap:32px;align-items:start;}
+@media (min-width:960px){ .kroky-mrizka{grid-template-columns:minmax(0,1fr) 300px;gap:48px;} }
+
 .pro-koho { font-family:'Poppins',sans-serif; font-size:18px; font-weight:700; color:var(--gold-dark); margin-bottom:14px; max-width:760px; line-height:1.4; }
 @media (max-width:600px){ .pro-koho { font-size:16px; } }
 .eyebrow { font-size:11px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase; color:var(--gold-dark); margin-bottom:14px; }
@@ -233,6 +236,8 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 
   <section>
     <h2 class="section-title">Od prvního zjištění k řešení. S podporou Tokvy v každém kroku.</h2>
+    <div class="kroky-mrizka">
+    <div>
     <div class="steps">
       <div class="step"><span class="step-num">01</span><div><h3>Za pár minut víte, kde začít</h3><p>Odpovíte na jednoduché otázky o svém provozu. Krátká diagnostika vám pomůže vybrat první oblast ke zlepšení.</p></div></div>
       <div class="step"><span class="step-num">02</span><div><h3>Čísla získají jasný význam</h3><p>Tokva vás provede měřením a výsledky přehledně zobrazí. Snáz poznáte, kde ztrácíte nejvíc času.</p></div></div>
@@ -242,6 +247,14 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <div class="kroky-cta">
       <a class="btn btn-gold" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'kroky'})">Otevřít Tokvu zdarma</a>
       <p class="brana-pozn">Zdarma. Výsledky všech bezplatných nástrojů odemknete jedním zadáním e-mailu.</p>
+    </div>
+    </div>
+    <figure class="hero-obraz kroky-video">
+      <video id="ukazka-video" poster="videa/tokva-ukazka-nahled.jpg" muted loop playsinline controls preload="none" width="720" height="1402">
+        <source src="videa/tokva-ukazka.mp4" type="video/mp4">
+      </video>
+      <figcaption><strong style="color:var(--dark);">Ukázka: od výběru oblasti k výsledku.</strong><br>Zrychlený záznam z mobilu.</figcaption>
+    </figure>
     </div>
   </section>
 
@@ -375,6 +388,19 @@ function cookiesOdmitnout() {
   localStorage.setItem('cookies_souhlas', 'ne');
   document.getElementById('cookies-bar').style.display = 'none';
 }
+</script>
+<script>
+// Ukázka se spustí sama (bez zvuku), až když je video vidět, a zastaví se, když odjede.
+(function () {
+  var v = document.getElementById('ukazka-video');
+  if (!v || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (z) {
+    z.forEach(function (e) {
+      if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+      else v.pause();
+    });
+  }, { threshold: 0.5 }).observe(v);
+})();
 </script>
 </body>
 </html>
