@@ -216,9 +216,9 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <p class="lead">Tokva je webová aplikace, která vás provede měřením provozu a hledáním příčin problémů. Získáte konkrétní podklady pro rozhodnutí, co zlepšit.</p>
     <p class="proof">První výsledek za pár minut · nástroje zdarma, stačí jednou zadat e-mail · bez znalosti Kaizenu</p>
     <div class="hero-ctas">
-      <a class="btn btn-gold" href="https://tokva.cz/nastroje/" onclick="return vyzkouset(event)">Vyzkoušet nástroje zdarma</a>
+      <a class="btn btn-gold" href="https://tokva.cz/nastroje/">Vyzkoušet nástroje zdarma</a>
     </div>
-    <p class="brana-pozn">Zdarma. Stačí jednou zadat e-mail, příště vstoupíte rovnou.</p>
+    <p class="brana-pozn">Zdarma. Výsledky všech bezplatných nástrojů odemknete jedním zadáním e-mailu.</p>
     </div>
     <figure class="hero-obraz">
       <video poster="videa/meric-ukazka-nahled.jpg" width="480" height="770" autoplay muted loop playsinline preload="metadata" aria-label="Ukázka Měřiče plýtvání na mobilu: měření přípravy objednávky a výsledek s rozložením času">
@@ -271,8 +271,8 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
       <div class="step"><span class="step-num">04</span><div><h3>Uvidíte, co vaše změna přinesla</h3><p>Porovnání měření před a po vám ukáže, jestli se provoz zlepšil a kde má smysl pokračovat.</p></div></div>
     </div>
     <div class="kroky-cta">
-      <a class="btn btn-gold" href="https://tokva.cz/kde-zacit/" onclick="trackTokvaEvent('prvni_krok_click',{source_tool:'homepage',placement:'kroky'})">Najít první krok zdarma</a>
-      <p class="brana-pozn">Úvodní diagnostika zabere přibližně 10 minut.</p>
+      <a class="btn btn-gold" href="https://tokva.cz/kde-zacit/" onclick="trackTokvaEvent('prvni_krok_click',{source_tool:'homepage',placement:'kroky'})">Najít první krok pro můj provoz</a>
+      <p class="brana-pozn">Zdarma. Výsledky všech bezplatných nástrojů odemknete jedním zadáním e-mailu.</p>
     </div>
   </section>
 
@@ -285,8 +285,8 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
       <p class="duvera-podpis">Gabriela Tomíčková<span>10 let KAIZEN ve výrobě, 6 let vedení skladu</span></p>
     </div>
     <div class="duvera-cta">
-      <a class="btn btn-gold" href="https://tokva.cz/nastroje/" onclick="return vyzkouset(event)">Vyzkoušet nástroje zdarma</a>
-      <p class="brana-pozn">Zdarma. Stačí jednou zadat e-mail, příště vstoupíte rovnou.</p>
+      <a class="btn btn-gold" href="https://tokva.cz/nastroje/">Vyzkoušet nástroje zdarma</a>
+      <p class="brana-pozn">Zdarma. Výsledky všech bezplatných nástrojů odemknete jedním zadáním e-mailu.</p>
     </div>
   </section>
 
@@ -331,17 +331,6 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script defer src="supabase-client.js"></script>
 <script defer src="auth.js"></script>
-<script src="brana.js" data-nastroj="homepage"></script>
-<script>
-// "Vyzkoušet nástroje zdarma": kdo už e-mail zadal (nebo je přihlášený), jde
-// rovnou do katalogu; jinak se nejdřív ukáže okno s e-mailem.
-function vyzkouset(e) {
-  if (typeof window.tokvaBranaOtevrit !== 'function') return true;
-  e.preventDefault();
-  window.tokvaBranaOtevrit(function () { location.href = 'https://tokva.cz/nastroje/'; });
-  return false;
-}
-</script>
 <script>
 window.addEventListener('DOMContentLoaded', function () {
 // Přihlašovací stav v horní liště: ukáže jméno firmy + Odhlásit, když je uživatel

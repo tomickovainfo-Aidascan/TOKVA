@@ -6,11 +6,16 @@
 // jen když je zaškrtnuté (atribut SOUHLAS_NOVINKY = "ano"), aby se dřív
 // daný souhlas nepřepsal na "ne".
 //
-// Použití na stránce nástroje:
-//   <script src="../../brana.js" data-zamknout=".main"></script>
-// data-zamknout = CSS selektor(y) částí, které se zamknou (oddělené čárkou).
-// Texty, příběhy a FAQ zůstávají vidět (Google, AI vyhledávače).
-// Úvodní stránka volá window.tokvaBranaOtevrit() z tlačítka.
+// Použití na stránce nástroje (od 22. 10. 2026):
+//   <script src="../../brana.js" data-vysledek="#vysledky" data-delka="Zabere přibližně 5 minut."></script>
+// Nástroj jde vyplnit celý. Až se ukáže výsledek (data-vysledek, selektory
+// oddělené čárkou), je rozmazaný v mlze a vyskočí okno s e-mailem. Kde je
+// výsledek vidět hned od načtení (kalkulačky), okno samo nevyskočí, je jen
+// mlha s tlačítkem.
+// data-delka = věta pod štítky v hlavičce; dokud není odemčeno, přidá se za
+// ni věta, že na konci se zadá e-mail.
+// Starý režim data-zamknout (zamčený celý nástroj) zůstává, nikde se nepoužívá.
+// window.tokvaBranaOtevrit() otevře okno s obecným textem (5× Proč).
 (function () {
   'use strict';
 
@@ -22,6 +27,15 @@
   var skript = document.currentScript;
   var zamknout = skript ? (skript.getAttribute('data-zamknout') || '') : '';
   var nazevNastroje = skript ? (skript.getAttribute('data-nastroj') || '') : '';
+  var vysledek = skript ? (skript.getAttribute('data-vysledek') || '') : '';
+  var delka = skript ? (skript.getAttribute('data-delka') || '') : '';
+  // data-vysledek-az: mlha až když je splněná podmínka. "#id" = prvek je vidět
+  // a má v textu nenulovou číslici (např. délka trasy), "!#id" = prvek NENÍ
+  // vidět (např. štítek "Příklad" zmizel).
+  var vysledekAz = skript ? (skript.getAttribute('data-vysledek-az') || '') : '';
+  // data-vysledek-okno="ne": okno samo nevyskočí, jen mlha s tlačítkem
+  // (nástroje, kde se měří dlouho a výsledek roste průběžně).
+  var oknoSamo = !skript || skript.getAttribute('data-vysledek-okno') !== 'ne';
 
   function nacist() {
     try { return JSON.parse(localStorage.getItem(KLIC) || 'null'); } catch (e) { return null; }
@@ -69,7 +83,14 @@
     '.tb-karta h3{font-family:"Poppins",Arial,sans-serif;font-size:18px;font-weight:800;margin:0 0 8px;color:#111;}' +
     '.tb-karta p{font-size:14px;color:#555;line-height:1.6;margin:0 0 16px;}' +
     '.tb-karta .tb-pozn{font-size:12.5px;color:#777;margin:10px 0 0;}' +
-    '@media print{.tb-ov,.tb-kryt{display:none !important;}}';
+    '.tb-pozn-mala{font-size:12px !important;color:#888 !important;line-height:1.5 !important;text-align:center;margin:14px 0 0 !important;}' +
+    '.tb-info{font-size:14px;line-height:1.6;margin:16px 0 0;max-width:640px;}' +
+    '.tb-mlha{position:relative;}' +
+    '.tb-mlha>*:not(.tb-mlha-karta){filter:blur(8px);opacity:.55;pointer-events:none;user-select:none;-webkit-user-select:none;}' +
+    '.tb-mlha-karta{position:relative;z-index:60;max-width:420px;margin:0 auto 18px;background:#fff;border:1px solid #e8e6e0;border-top:3px solid #e9a91b;border-radius:12px;padding:22px 20px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.10);font-family:"DM Sans",Arial,sans-serif;box-sizing:border-box;}' +
+    '.tb-mlha-karta h3{font-family:"Poppins",Arial,sans-serif;font-size:18px;font-weight:800;margin:0 0 8px;color:#111;}' +
+    '.tb-mlha-karta p{font-size:14px;color:#555;line-height:1.6;margin:0 0 14px;}' +
+    '@media print{.tb-ov,.tb-kryt,.tb-mlha-karta{display:none !important;}.tb-mlha>*{visibility:hidden !important;}}';
 
   var ov = null;
   var poOdemceni = [];
@@ -88,16 +109,16 @@
     ov.innerHTML =
       '<div class="tb-box">' +
         '<button type="button" class="tb-x" aria-label="Zavřít">×</button>' +
-        '<h3 id="tb-nadpis">Odemkněte všechny bezplatné nástroje</h3>' +
-        '<p>Jeden e-mail a máte otevřené kalkulačky, měřiče, kvízy i audity. Příště už vstoupíte rovnou.</p>' +
+        '<h3 id="tb-nadpis"></h3>' +
+        '<p class="tb-text"></p>' +
         '<form class="tb-form" novalidate>' +
-          '<input type="email" name="email" placeholder="vas@email.cz" autocomplete="email" inputmode="email" aria-label="Váš e-mail">' +
+          '<input type="email" name="email" placeholder="Váš e-mail" autocomplete="email" inputmode="email" aria-label="Váš e-mail">' +
           '<div class="tb-chyba" role="alert"></div>' +
           '<label class="tb-souhlas"><input type="checkbox" name="souhlas"> <span>Souhlasím se zasíláním tipů a novinek k Tokvě na tento e-mail. Odhlásit se můžu kdykoliv.</span></label>' +
-          '<button type="submit" class="tb-btn">Odemknout nástroje</button>' +
+          '<button type="submit" class="tb-btn"></button>' +
         '</form>' +
-        '<p class="tb-zpet">Už jste tu byli? Zadejte stejný e-mail a vstoupíte rovnou.</p>' +
         '<p class="tb-zasady">E-mail použiju k odemčení nástrojů. Víc v <a href="' + ZASADY + '" target="_blank" rel="noopener">zásadách ochrany osobních údajů</a>.</p>' +
+        '<p class="tb-pozn-mala">Odemčení si pamatuje tento prohlížeč. Na jiném zařízení nebo po smazání dat prohlížeče bude potřeba e-mail zadat znovu.</p>' +
       '</div>' +
       '<iframe name="tb-brevo-cil" title="odeslání formuláře" style="display:none;"></iframe>';
     document.body.appendChild(ov);
@@ -110,12 +131,31 @@
 
   function zavrit() { if (ov) ov.classList.remove('tb-ukaz'); }
 
-  function otevrit() {
+  var TEXTY = {
+    vysledek: {
+      nadpis: 'Váš výsledek je připravený',
+      text: 'Zadejte e-mail a prohlédněte si výsledek. Odemknete tím i ostatní bezplatné nástroje, příště už e-mail zadávat nemusíte.',
+      tlacitko: 'Zobrazit výsledek zdarma'
+    },
+    obecne: {
+      nadpis: 'Odemkněte bezplatné nástroje',
+      text: 'Jeden e-mail odemkne výsledky všech bezplatných nástrojů Tokvy. Příště už ho zadávat nemusíte.',
+      tlacitko: 'Odemknout nástroje zdarma'
+    }
+  };
+  var rezim = 'obecne';
+
+  function otevrit(r) {
     pripravitOkno();
+    rezim = (r === 'vysledek') ? 'vysledek' : 'obecne';
+    var t = TEXTY[rezim];
+    ov.querySelector('#tb-nadpis').textContent = t.nadpis;
+    ov.querySelector('.tb-text').textContent = t.text;
+    ov.querySelector('.tb-btn').textContent = t.tlacitko;
     ov.classList.add('tb-ukaz');
     var pole = ov.querySelector('input[type=email]');
     setTimeout(function () { try { pole.focus(); } catch (e) {} }, 50);
-    sledovat('brana_zobrazena');
+    sledovat(rezim === 'vysledek' ? 'brana_zobrazena_vysledek' : 'brana_zobrazena');
   }
 
   function sledovat(udalost) {
@@ -170,11 +210,13 @@
       zavrit();
       odemknoutStranku();
       btn.disabled = false;
-      btn.textContent = 'Odemknout nástroje';
+      btn.textContent = TEXTY[rezim].tlacitko;
     }, 400);
   }
 
   function odemknoutStranku() {
+    odkrytVysledky();
+    document.querySelectorAll('.tb-info-email').forEach(function (e) { e.remove(); });
     document.querySelectorAll('[data-tb-inert]').forEach(function (d) { d.removeAttribute('inert'); d.removeAttribute('data-tb-inert'); });
     document.querySelectorAll('.tb-kryt').forEach(function (k) {
       var obal = k.parentElement;
@@ -229,12 +271,112 @@
           '<p>Stačí jednou zadat e-mail a odemknete všechny bezplatné nástroje Tokvy.</p>' +
           '<button type="button" class="tb-btn">Odemknout nástroje zdarma</button>' +
           '<p class="tb-pozn">Už jste tu byli? Zadejte stejný e-mail a vstoupíte rovnou.</p></div>';
-        kryt.querySelector('.tb-btn').onclick = otevrit;
+        kryt.querySelector('.tb-btn').onclick = function () { otevrit(); };
       } else {
-        kryt.addEventListener('click', otevrit);
+        kryt.addEventListener('click', function () { otevrit(); });
       }
       obal.appendChild(kryt);
     });
+  }
+
+  // ---- Mlha na výsledcích ----
+  var hlidac = null;
+  var oknoUkazano = false;
+  var videtPriStartu = [];
+
+  function vysledkoveCasti() {
+    var out = [];
+    vysledek.split(',').forEach(function (sel) {
+      sel = sel.trim();
+      if (!sel) return;
+      document.querySelectorAll(sel).forEach(function (el) { if (out.indexOf(el) < 0) out.push(el); });
+    });
+    return out;
+  }
+  function jeVidet(el, minVyska) {
+    if (!el.getClientRects().length) return false;
+    var cs = getComputedStyle(el);
+    return cs.visibility !== 'hidden' && el.offsetHeight > (minVyska || 10);
+  }
+  function zahalit(el, sKartou) {
+    el.classList.add('tb-mlha');
+    if (!el.hasAttribute('data-tb-klik')) {
+      el.setAttribute('data-tb-klik', '1');
+      el.addEventListener('click', function (e) {
+        if (!el.classList.contains('tb-mlha') || e.target.closest('.tb-mlha-karta')) return;
+        otevrit('vysledek');
+      });
+    }
+    var karta = null;
+    for (var i = 0; i < el.children.length; i++) if (el.children[i].classList.contains('tb-mlha-karta')) karta = el.children[i];
+    if (sKartou && !karta) {
+      karta = document.createElement('div');
+      karta.className = 'tb-mlha-karta';
+      karta.innerHTML = '<h3>' + TEXTY.vysledek.nadpis + '</h3>' +
+        '<p>Zadejte e-mail a prohlédněte si výsledek. Odemknete tím i ostatní bezplatné nástroje.</p>' +
+        '<button type="button" class="tb-btn">' + TEXTY.vysledek.tlacitko + '</button>';
+      karta.querySelector('.tb-btn').onclick = function () { otevrit('vysledek'); };
+      el.insertBefore(karta, el.firstChild);
+    }
+    // Ať se pod mlhou nedá klikat ani tabulátorem dostat do polí a tlačítek.
+    for (var j = 0; j < el.children.length; j++) {
+      var d = el.children[j];
+      if (d.classList.contains('tb-mlha-karta') || d.hasAttribute('data-tb-inert')) continue;
+      d.setAttribute('inert', '');
+      d.setAttribute('data-tb-inert', '1');
+    }
+  }
+  function podminkaSplnena() {
+    if (!vysledekAz) return true;
+    var neg = vysledekAz.charAt(0) === '!';
+    var el = document.querySelector(neg ? vysledekAz.slice(1) : vysledekAz);
+    if (neg) return !el || !jeVidet(el, 1);
+    return !!el && jeVidet(el, 1) && /[1-9]/.test(el.textContent || '');
+  }
+  function zkontrolovatVysledky() {
+    if (odemceno()) { odkrytVysledky(); return; }
+    if (!podminkaSplnena()) return;
+    var casti = vysledkoveCasti();
+    var prvni = true;
+    casti.forEach(function (el) {
+      if (!jeVidet(el)) return;
+      zahalit(el, prvni);
+      prvni = false;
+      // Okno samo vyskočí jen když se výsledek ukázal až po vyplnění
+      // (ne u kalkulaček, kde je výsledek vidět od začátku).
+      if (oknoSamo && !oknoUkazano && videtPriStartu.indexOf(el) < 0) {
+        oknoUkazano = true;
+        setTimeout(function () { if (!odemceno()) otevrit('vysledek'); }, 600);
+      }
+    });
+  }
+  function odkrytVysledky() {
+    if (hlidac) { clearInterval(hlidac); hlidac = null; }
+    document.querySelectorAll('.tb-mlha-karta').forEach(function (k) { k.remove(); });
+    document.querySelectorAll('.tb-mlha').forEach(function (el) { el.classList.remove('tb-mlha'); });
+  }
+  function hlidatVysledky() {
+    if (!vysledek) return;
+    pripravitOkno();
+    videtPriStartu = podminkaSplnena() ? vysledkoveCasti().filter(function (e) { return jeVidet(e); }) : [];
+    zkontrolovatVysledky();
+    hlidac = setInterval(zkontrolovatVysledky, 400);
+  }
+  function infoODelce() {
+    if (!delka) return;
+    var meta = document.querySelector('.hero-meta');
+    if (!meta) return;
+    var p = document.createElement('p');
+    p.className = 'tb-info';
+    p.textContent = delka;
+    try { p.style.color = getComputedStyle(meta.parentNode.querySelector('p') || meta).color; } catch (e) {}
+    if (!odemceno()) {
+      var s = document.createElement('span');
+      s.className = 'tb-info-email';
+      s.textContent = ' Na konci zadáte e\u2011mail a zobrazíte si výsledek. Tím zároveň odemknete výsledky všech nástrojů zdarma v tomto prohlížeči.';
+      p.appendChild(s);
+    }
+    meta.parentNode.insertBefore(p, meta.nextSibling);
   }
 
   // Volání z úvodní stránky / tlačítek. Když už je odemčeno, rovnou pokračuje.
@@ -251,8 +393,14 @@
   };
 
   function start() {
+    if (!document.querySelector('.tb-info')) {
+      // CSS je potřeba i pro řádek s délkou
+      pripravitOkno();
+      infoODelce();
+    }
     if (odemceno()) { predvyplnit(); return; }
     zamknoutCasti();
+    hlidatVysledky();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
