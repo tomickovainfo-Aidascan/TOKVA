@@ -1331,7 +1331,7 @@ function upravitProBlok(jePro) {
 
 function renderUcetNav() {
   const proOdkazEl = document.getElementById('nav-pro-odkaz');
-  if (proOdkazEl) proOdkazEl.style.display = ucetSession ? 'none' : '';
+  if (proOdkazEl) proOdkazEl.style.display = ''; // Pro uživatelům ho schová menu.js (třída tokva-ma-pro)
   const btn = document.getElementById('nav-ucet-btn');
   const info = document.getElementById('nav-ucet-info');
   if (!ucetSession) {

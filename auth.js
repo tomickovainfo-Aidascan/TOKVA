@@ -115,6 +115,8 @@ function nastavitTextyProPro(jePro) {
     document.head.appendChild(st);
   }
   document.documentElement.classList.toggle('tokva-ma-pro', !!jePro);
+  // Zapamatovat pro menu.js, ať i stránky bez kontroly členství vědí, že je Pro.
+  try { localStorage.setItem('tokva_ma_pro', jePro ? '1' : '0'); } catch (e) {}
 }
 
 // Ukáže/schová trvalý odkaz na Akční plán v horní liště appky - jen appky,

@@ -17,6 +17,8 @@
     '.menu-zlate{background:#e9a91b !important;border-color:#e9a91b !important;color:#000 !important;font-weight:700 !important;text-decoration:none !important;}' +
     '.menu-zlate:hover{background:#976e12 !important;border-color:#976e12 !important;color:#fff !important;}' +
     '.menu-kontejner{gap:8px;}' +
+    // Kdo má Tokva Pro: bez Otevřít Tokvu zdarma, Můj příběh a Víc o Tokva Pro.
+    'html.tokva-ma-pro .menu-zlate,html.tokva-ma-pro .menu-pribeh,html.tokva-ma-pro #nav-pro-odkaz,html.tokva-ma-pro .menu-pro{display:none !important;}' +
     '.menu-prepinac{display:none !important;cursor:pointer;font-family:inherit;background:transparent;}' +
     '@media (max-width:700px){' +
       '.menu-kontejner{gap:8px !important;}' +
@@ -26,6 +28,12 @@
     '}';
 
   function text(el) { return (el.textContent || '').replace(/\s+/g, ' ').trim(); }
+
+  // Pro uživatel (přihlášený a auth.js si zapamatoval Pro): třídu nastavit
+  // hned, ať menu neblikne. auth.js ji pak případně opraví.
+  try {
+    if (localStorage.getItem('sb-uiqjzeubhhnzspkoekxx-auth-token') && localStorage.getItem('tokva_ma_pro') === '1') document.documentElement.classList.add('tokva-ma-pro');
+  } catch (e) {}
 
   function start() {
     var kont = document.querySelector('.topbar-right') || document.querySelector('.nav-right');
@@ -80,23 +88,9 @@
     // Katalog má "Všechny nástroje" jako název stránky vlevo, odkaz nepotřebuje.
     var jeKatalog = /^\/nastroje\/?$/.test(location.pathname);
     if (!vsechny && !jeKatalog) vsechny = odkaz(KATALOG, 'Všechny nástroje');
-    // Přihlášený do Tokvy: bez „Otevřít Tokvu zdarma“ a „Můj příběh“.
-    var prihlaseny = false;
-    try { prihlaseny = !!localStorage.getItem('sb-uiqjzeubhhnzspkoekxx-auth-token'); } catch (e) {}
-    if (prihlaseny) {
-      if (pribeh) pribeh.remove();
-      if (zlate) zlate.remove();
-      pribeh = null; zlate = null;
-      var za0 = null;
-      [vsechny, pro].forEach(function (el) {
-        if (!el) return;
-        kont.insertBefore(el, za0 ? za0.nextSibling : kont.firstChild);
-        za0 = el;
-      });
-      pridatPrepinac(null);
-      return;
-    }
     if (!pribeh) pribeh = odkaz(PRIBEH, 'Můj příběh');
+    pribeh.classList.add('menu-pribeh');
+    if (pro) pro.classList.add('menu-pro');
     if (!zlate) {
       zlate = odkaz(VSTUP, 'Otevřít Tokvu zdarma', 'menu-zlate');
       zlate.addEventListener('click', function () {

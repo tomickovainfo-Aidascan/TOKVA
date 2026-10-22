@@ -223,7 +223,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3vw,34px); font-weig
     console.warn('Přihlašovací vrstva se nepodařila načíst.', e);
   }
   const proOdkazEl = document.getElementById('nav-pro-odkaz');
-  if (proOdkazEl) proOdkazEl.style.display = session ? 'none' : '';
+  if (proOdkazEl) proOdkazEl.style.display = ''; // Pro uživatelům ho schová menu.js (třída tokva-ma-pro)
   if (session && clenstvi) {
     const jePro = maAktivniPro(clenstvi);
     info.style.display = 'inline-block';

@@ -1208,7 +1208,7 @@ async function nacistPrihlaseniStav() {
 
 function renderUcetNav() {
   const proOdkazEl = document.getElementById('nav-pro-odkaz');
-  if (proOdkazEl) proOdkazEl.style.display = session ? 'none' : '';
+  if (proOdkazEl) proOdkazEl.style.display = ''; // Pro uživatelům ho schová menu.js (třída tokva-ma-pro)
   const btn = document.getElementById('nav-ucet-btn');
   const info = document.getElementById('nav-ucet-info');
   const historieBtn = document.getElementById('nav-historie-btn');
