@@ -43,7 +43,9 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--dark); line-height:1.7; font-size:16px; }
-.topbar { background:var(--black); color:var(--white); padding:14px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:200; border-bottom:2px solid var(--gold); }
+.topbar { background:var(--black); color:var(--white); padding:14px 32px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:200; border-bottom:2px solid var(--gold); flex-wrap:wrap; row-gap:8px; }
+.topbar-right { display:flex; align-items:center; flex-wrap:wrap; row-gap:8px; }
+.topbar-login:hover { background:var(--gold); color:var(--black); }
 .topbar .brand { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; text-decoration:none; color:var(--white); }
 .topbar .brand span { color:var(--gold); }
 .topbar-login { color:var(--gold); text-decoration:none; font-size:13px; font-weight:700; border:1px solid var(--gold); padding:7px 16px; border-radius:6px; }
@@ -182,6 +184,20 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .vsechny-funkce summary::after{content:" ↓";}
 .vsechny-funkce[open] summary::after{content:" ↑";}
 .vsechny-funkce[open]{padding-bottom:18px;}
+.cenik{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 16px;}
+.cenik-karta{display:flex;flex-direction:column;gap:4px;text-align:left;font:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.18);border-radius:12px;padding:16px 16px 14px;color:#fff;transition:border-color .15s,background .15s;}
+.cenik-karta:hover{border-color:var(--gold);}
+.cenik-karta.vybrana{border-color:var(--gold);background:rgba(233,169,27,.12);}
+.cenik-nazev{font-family:'Poppins',sans-serif;font-weight:800;font-size:16px;}
+.cenik-lide{font-size:13px;color:rgba(255,255,255,.65);}
+.cenik-cena{font-family:'Poppins',sans-serif;font-weight:800;font-size:24px;color:var(--gold);margin-top:8px;}
+.cenik-cena small{font-size:13px;font-weight:600;color:rgba(255,255,255,.7);margin-left:2px;}
+.cenik-bezna{font-size:12px;color:rgba(255,255,255,.5);}
+.cenik-podminky{background:rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;margin-bottom:18px;}
+.cenik-podminky p{font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.82);margin:0 0 8px;}
+.cenik-podminky p:last-child{margin-bottom:0;}
+.cenik-podminky b{color:#fff;}
+@media (max-width:640px){.cenik{grid-template-columns:1fr;}}
 </style>
 <script type="application/ld+json">
 {
@@ -279,7 +295,9 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
 <div class="topbar">
   <a class="brand" href="https://tokva.cz/">Tokva</a>
-  <a class="topbar-login" href="https://tokva.cz/prihlaseni.html">Moje Tokva</a>
+  <div class="topbar-right">
+    <a class="topbar-login" href="https://tokva.cz/prihlaseni.html">Přihlásit se</a>
+  </div>
 </div>
 
 <main class="main">
@@ -433,14 +451,31 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <h2>Objednat Tokva Pro</h2>
     <p id="objednavka-platba-popis">Vyberte variantu, cena se doplní sama. Platí se převodem na fakturu, appku na Pro přepnu po přijetí platby.</p>
     <div id="objednavka-cena-popis">
-      <p>Zakladatelská cena platí pro prvních 20 firem napořád, ne jen první rok:</p>
-      <ul class="obj-ceny">
-        <li>Pro jednotlivce <b>499&nbsp;Kč</b> měsíčně, dál 690&nbsp;Kč</li>
-        <li>Tým 2 až 5 lidí <b>1&nbsp;390&nbsp;Kč</b> měsíčně, dál 1&nbsp;990&nbsp;Kč</li>
-        <li>Tým 6 až 15 lidí <b>2&nbsp;690&nbsp;Kč</b> měsíčně, dál 4&nbsp;490&nbsp;Kč</li>
-      </ul>
-      <p>Žádný závazek: přestat můžete kdykoliv a bez výpovědi. Týden před koncem předplatného vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma. Předtím si můžete výsledky stáhnout jedním exportem.</p>
-      <p id="objednavka-podminka-popis">Za tu cenu vás poprosím o dvě věci: vyplníte tři krátké dotazníky (než začnete, po prvním použití a po měsíci provozu) a necháte mě vidět, jak appku vaše firma používá. Ne kdo konkrétně, jen firma jako celek. Podle toho appku doladím.</p>
+      <div class="cenik">
+        <button type="button" class="cenik-karta" data-var="1" onclick="vybratVariantu('1')">
+          <span class="cenik-nazev">Jednotlivec</span>
+          <span class="cenik-lide">1 uživatel</span>
+          <span class="cenik-cena">499&nbsp;Kč<small>/měsíc</small></span>
+          <span class="cenik-bezna">běžná cena 690&nbsp;Kč</span>
+        </button>
+        <button type="button" class="cenik-karta" data-var="5" onclick="vybratVariantu('5')">
+          <span class="cenik-nazev">Menší tým</span>
+          <span class="cenik-lide">2 až 5 uživatelů</span>
+          <span class="cenik-cena">1&nbsp;390&nbsp;Kč<small>/měsíc</small></span>
+          <span class="cenik-bezna">běžná cena 1&nbsp;990&nbsp;Kč</span>
+        </button>
+        <button type="button" class="cenik-karta" data-var="15" onclick="vybratVariantu('15')">
+          <span class="cenik-nazev">Větší tým</span>
+          <span class="cenik-lide">6 až 15 uživatelů</span>
+          <span class="cenik-cena">2&nbsp;690&nbsp;Kč<small>/měsíc</small></span>
+          <span class="cenik-bezna">běžná cena 4&nbsp;490&nbsp;Kč</span>
+        </button>
+      </div>
+      <div class="cenik-podminky">
+        <p><b>Zakladatelská cena pro prvních 20 firem.</b> Zůstává vám, dokud předplatné nepřerušíte. Ceny jsou konečné, nejsem plátce DPH.</p>
+        <p id="objednavka-podminka-popis"><b>Co za ni chci:</b> zpětnou vazbu. Tři krátké dotazníky, každý zhruba na 10 minut: než začnete, po prvním použití a po měsíci provozu. A necháte mě vidět, jak appku vaše firma používá. Ne kdo konkrétně, jen firma jako celek. Podle toho appku doladím.</p>
+        <p><b>Bez závazku a bez automatického prodlužování.</b> Týden před koncem předplatného vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma. Předtím si můžete výsledky stáhnout jedním exportem.</p>
+      </div>
     </div>
 
     <form id="objednavka-form" onsubmit="return odeslatObjednavku(event)">
@@ -534,6 +569,14 @@ async function nacistZbyvajiciMista() {
     const { data, error } = await supabaseClient.rpc('pocet_zakladajicich_clenu');
     if (error) throw error;
     zbyvaZakladatelskych = Math.max(0, 20 - (data || 0));
+    if (zbyvaZakladatelskych === 0) {
+      // Zakladatelská místa jsou pryč: karty ukážou běžné ceny.
+      document.querySelectorAll('.cenik-karta').forEach(function (k) {
+        var v = k.getAttribute('data-var');
+        k.querySelector('.cenik-cena').innerHTML = CENA_BEZNA[v].toLocaleString('cs-CZ') + '&nbsp;Kč<small>/měsíc</small>';
+        var b = k.querySelector('.cenik-bezna'); if (b) b.remove();
+      });
+    }
   } catch (ex) {
     console.warn('Počet zakladajících členů se nepodařilo zjistit.', ex);
     // bezpečný předpoklad při selhání dotazu: radši běžná cena, než omylem
@@ -683,5 +726,20 @@ function cookiesOdmitnout() {
   document.getElementById('cookies-bar').style.display = 'none';
 }
 </script>
+<script>
+function vybratVariantu(v){
+  var sel=document.getElementById('obj-varianta'); if(!sel) return;
+  sel.value=v; if(typeof prepocitatCenu==='function') prepocitatCenu();
+  zvyraznitKartu();
+}
+function zvyraznitKartu(){
+  var sel=document.getElementById('obj-varianta'); if(!sel) return;
+  document.querySelectorAll('.cenik-karta').forEach(function(k){k.classList.toggle('vybrana',k.getAttribute('data-var')===sel.value);});
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var sel=document.getElementById('obj-varianta'); if(sel){sel.addEventListener('change',zvyraznitKartu); zvyraznitKartu();}
+});
+</script>
+<script src="/menu.js"></script>
 </body>
 </html>
