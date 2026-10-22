@@ -12,6 +12,7 @@
   var CSS = '' +
     '.menu-zlate{background:#e9a91b !important;border-color:#e9a91b !important;color:#000 !important;font-weight:700 !important;text-decoration:none !important;}' +
     '.menu-zlate:hover{background:#976e12 !important;border-color:#976e12 !important;color:#fff !important;}' +
+    '.menu-kontejner{gap:8px;}' +
     '.menu-prepinac{display:none !important;cursor:pointer;font-family:inherit;background:transparent;}' +
     '@media (max-width:700px){' +
       '.menu-kontejner{gap:8px !important;}' +
