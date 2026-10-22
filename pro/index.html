@@ -204,6 +204,8 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .obj-postup li{font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.85);}
 .obj-postup p{font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.82);margin:0;}
 .obj-postup a{color:var(--gold);font-weight:700;}
+.cenik-box{margin-bottom:36px;}
+.cenik-dal{display:inline-block;margin-top:4px;}
 </style>
 <script type="application/ld+json">
 {
@@ -321,7 +323,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   <p class="lead" style="margin-bottom:22px;">Tokva Pro propojí výsledky, úkoly a opakovaná měření na jednom místě. Budete vědět, co změnit, kdo to udělá a jestli opatření pomohlo.</p>
 
   <div class="hero-cta">
-    <a href="#objednavka" class="btn-gold">Vybrat variantu Pro</a>
+    <a href="#ceny" class="btn-gold">Vybrat variantu Pro</a>
     <a href="https://tokva.cz/vstup/" class="btn-link">Ještě si chci projít nástroje zdarma</a>
   </div>
   <p class="hero-trust">Od 499&nbsp;Kč měsíčně pro jednoho uživatele, zakladatelská cena. Bez automatického prodlužování.</p>
@@ -360,13 +362,6 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <p class="screenshoty-pozn">Obrázky jsou z appky Tokva s ukázkovými daty.</p>
   </div>
 
-  <h2 class="pilire-uvod">Z praxe: co ukáže druhé měření</h2>
-  <div class="hero-proof praxe-blok">
-    <p><strong>Sklad, pět lidí, jedna směna.</strong> Přeskládali jsme zboží a zjednodušili jeden formulář. Po změně klesl naměřený čas ze 40 na 15 minut denně na člověka.</p>
-    <p>Při 5 lidech, 250 pracovních dnech a nákladech zhruba 364&nbsp;Kč na hodinu to odpovídá přibližně <strong>189&nbsp;400&nbsp;Kč ročně v uvolněné pracovní kapacitě</strong>. Nejsou to peníze navíc na účtu. Je to čas, který lidé můžou věnovat práci, která má smysl.</p>
-    <p>Měřila jsem tehdy ručně se stopkami, ještě než vznikla Tokva.</p>
-  </div>
-
   <h2 class="pilire-uvod">Co s výsledkem uděláte v Tokvě Pro</h2>
   <p class="pilire-uvod-sub">Nástroj zdarma vám dá výsledek. Pro se postará o to, co s ním bude dál.</p>
   <div class="pilire">
@@ -386,6 +381,13 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
       <h3>Hotovo ještě neznamená vyřešeno</h3>
       <p>Hotové opatření přepnete do stavu Ověřit výsledek. V Moje Tokva pak zůstává mezi otevřenými úkoly, dokud ho po druhém měření neuzavřete. Bez toho se nikdy nedozvíte, jestli změna zabrala, nebo jen vypadala dobře na poradě.</p>
     </div>
+  </div>
+
+  <h2 class="pilire-uvod">Z praxe: co ukáže druhé měření</h2>
+  <div class="hero-proof praxe-blok">
+    <p><strong>Sklad, pět lidí, jedna směna.</strong> Přeskládali jsme zboží a zjednodušili jeden formulář. Po změně klesl naměřený čas ze 40 na 15 minut denně na člověka.</p>
+    <p>Při 5 lidech, 250 pracovních dnech a nákladech zhruba 364&nbsp;Kč na hodinu to odpovídá přibližně <strong>189&nbsp;400&nbsp;Kč ročně v uvolněné pracovní kapacitě</strong>. Nejsou to peníze navíc na účtu. Je to čas, který lidé můžou věnovat práci, která má smysl.</p>
+    <p>Měřila jsem tehdy ručně se stopkami, ještě než vznikla Tokva.</p>
   </div>
 
   <p class="hero-pains" style="margin-top:8px;">Poznáváte se v tomhle? Chyby při expedici, hledání materiálu, zbytečná chůze, opakované přepisování stejných čísel, čekání mezi kroky, špatné předávání informací mezi směnami. <a href="https://tokva.cz/vstup/" style="color:var(--gold-dark);font-weight:700;">Začněte u nástrojů zdarma, změřte to a vraťte se sem s číslem.</a></p>
@@ -425,6 +427,38 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   <div class="note">Objednat můžete hned. Zakladatelská cena platí pro prvních 20 firem. S prvními firmami Tokvu Pro dál ladím podle toho, co v provozu opravdu potřebují. Appky zdarma fungují naplno i bez Pro, stačí jednou zadat e-mail.</div>
 
   <p class="podpora-note">Podporu dělám vždycky osobně já, Gabriela Tomíčková. Kdybyste kromě appky potřebovali pomoc přímo ve firmě, najdete mě na <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a>.</p>
+
+  <div class="objednavka-box cenik-box" id="ceny">
+    <h2>Varianty a ceny</h2>
+    <div id="objednavka-cena-popis">
+      <div class="cenik">
+        <button type="button" class="cenik-karta" data-var="1" onclick="vybratVariantu('1')">
+          <span class="cenik-nazev">Jednotlivec</span>
+          <span class="cenik-lide">1 uživatel</span>
+          <span class="cenik-cena">499&nbsp;Kč<small>/měsíc</small></span>
+          <span class="cenik-bezna">běžná cena 690&nbsp;Kč</span>
+        </button>
+        <button type="button" class="cenik-karta" data-var="5" onclick="vybratVariantu('5')">
+          <span class="cenik-nazev">Menší tým</span>
+          <span class="cenik-lide">2 až 5 uživatelů</span>
+          <span class="cenik-cena">1&nbsp;390&nbsp;Kč<small>/měsíc</small></span>
+          <span class="cenik-bezna">běžná cena 1&nbsp;990&nbsp;Kč</span>
+        </button>
+        <button type="button" class="cenik-karta" data-var="15" onclick="vybratVariantu('15')">
+          <span class="cenik-nazev">Větší tým</span>
+          <span class="cenik-lide">6 až 15 uživatelů</span>
+          <span class="cenik-cena">2&nbsp;690&nbsp;Kč<small>/měsíc</small></span>
+          <span class="cenik-bezna">běžná cena 4&nbsp;490&nbsp;Kč</span>
+        </button>
+      </div>
+      <div class="cenik-podminky">
+        <p><b>Zakladatelská cena pro prvních 20 firem.</b> Zůstává vám, dokud předplatné nepřerušíte. Ceny jsou konečné, nejsem plátce DPH.</p>
+        <p id="objednavka-podminka-popis"><b>Co za ni chci:</b> zpětnou vazbu. Tři krátké dotazníky, každý zhruba na 10 minut: než začnete, po prvním použití a po měsíci provozu. A necháte mě vidět, jak appku vaše firma používá. Ne kdo konkrétně, jen firma jako celek. Podle toho appku doladím.</p>
+        <p><b>Bez závazku a bez automatického prodlužování.</b> Týden před koncem předplatného vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma. Předtím si můžete výsledky stáhnout jedním exportem.</p>
+      </div>
+    </div>
+    <a href="#objednavka" class="btn-gold cenik-dal">Pokračovat k objednávce</a>
+  </div>
 
   <h2 class="faq-nadpis">Časté otázky</h2>
   <div class="faq-item">
@@ -467,35 +501,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
   <div class="objednavka-box" id="objednavka">
     <h2>Objednat Tokva Pro</h2>
-    <p id="objednavka-platba-popis">Vyberte variantu, cena se doplní sama.</p>
-    <div id="objednavka-cena-popis">
-      <div class="cenik">
-        <button type="button" class="cenik-karta" data-var="1" onclick="vybratVariantu('1')">
-          <span class="cenik-nazev">Jednotlivec</span>
-          <span class="cenik-lide">1 uživatel</span>
-          <span class="cenik-cena">499&nbsp;Kč<small>/měsíc</small></span>
-          <span class="cenik-bezna">běžná cena 690&nbsp;Kč</span>
-        </button>
-        <button type="button" class="cenik-karta" data-var="5" onclick="vybratVariantu('5')">
-          <span class="cenik-nazev">Menší tým</span>
-          <span class="cenik-lide">2 až 5 uživatelů</span>
-          <span class="cenik-cena">1&nbsp;390&nbsp;Kč<small>/měsíc</small></span>
-          <span class="cenik-bezna">běžná cena 1&nbsp;990&nbsp;Kč</span>
-        </button>
-        <button type="button" class="cenik-karta" data-var="15" onclick="vybratVariantu('15')">
-          <span class="cenik-nazev">Větší tým</span>
-          <span class="cenik-lide">6 až 15 uživatelů</span>
-          <span class="cenik-cena">2&nbsp;690&nbsp;Kč<small>/měsíc</small></span>
-          <span class="cenik-bezna">běžná cena 4&nbsp;490&nbsp;Kč</span>
-        </button>
-      </div>
-      <div class="cenik-podminky">
-        <p><b>Zakladatelská cena pro prvních 20 firem.</b> Zůstává vám, dokud předplatné nepřerušíte. Ceny jsou konečné, nejsem plátce DPH.</p>
-        <p id="objednavka-podminka-popis"><b>Co za ni chci:</b> zpětnou vazbu. Tři krátké dotazníky, každý zhruba na 10 minut: než začnete, po prvním použití a po měsíci provozu. A necháte mě vidět, jak appku vaše firma používá. Ne kdo konkrétně, jen firma jako celek. Podle toho appku doladím.</p>
-        <p><b>Bez závazku a bez automatického prodlužování.</b> Týden před koncem předplatného vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma. Předtím si můžete výsledky stáhnout jedním exportem.</p>
-      </div>
-    </div>
-
+    <p id="objednavka-platba-popis">Variantu můžete změnit i tady ve formuláři, cena se doplní sama.</p>
     <div class="obj-postup">
       <p class="obj-postup-nadpis">Jak objednávka proběhne</p>
       <ol>
@@ -730,7 +736,7 @@ async function odeslatObjednavku(e) {
     }
 
     document.getElementById('objednavka-form').style.display = 'none';
-    document.getElementById('objednavka-cena-popis').style.display = 'none';
+    document.getElementById('ceny').style.display = 'none';
     document.getElementById('objednavka-vs').textContent = 'Variabilní symbol k platbě: ' + variabilniSymbol;
     if (window.__objPrihlaseny) {
       document.getElementById('objednavka-dokoncit').innerHTML = 'Objednávka je přiřazená k vašemu účtu. Do příchodu platby uvidíte appky ve verzi zdarma, pak vám Pro zapnu.';
@@ -787,6 +793,7 @@ function vybratVariantu(v){
   var sel=document.getElementById('obj-varianta'); if(!sel) return;
   sel.value=v; if(typeof prepocitatCenu==='function') prepocitatCenu();
   zvyraznitKartu();
+  var o=document.getElementById('objednavka'); if(o) o.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function zvyraznitKartu(){
   var sel=document.getElementById('obj-varianta'); if(!sel) return;
