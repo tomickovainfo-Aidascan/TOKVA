@@ -74,7 +74,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 
 .hero { padding:64px 0 44px; }
 .brana-pozn{font-size:13px;color:var(--mid);margin-top:10px;}
-.duvera-box{background:#fff;border:1px solid var(--border2);border-left:4px solid var(--gold);border-radius:10px;padding:24px 26px;max-width:720px;}
+.duvera-box{background:#fff;border:1px solid var(--border2);border-left:4px solid var(--gold);border-radius:10px;padding:24px 26px;max-width:720px;display:flex;gap:22px;align-items:flex-start;}
+.duvera-foto{width:96px;height:96px;border-radius:50%;object-fit:cover;object-position:50% 30%;flex-shrink:0;}
+.duvera-odkaz{display:inline-block;margin-top:12px;color:var(--gold-dark);font-weight:700;font-size:14.5px;text-decoration:none;}
+.duvera-odkaz:hover{text-decoration:underline;}
+@media (max-width:560px){.duvera-box{flex-direction:column;gap:14px;}}
 .duvera-box p{font-size:15.5px;line-height:1.75;color:var(--dark);margin-bottom:12px;}
 .duvera-podpis{font-weight:700;margin:16px 0 0 !important;}
 .duvera-podpis span{display:block;font-weight:400;font-size:13px;color:var(--mid);}
@@ -260,12 +264,14 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 
 
   <section class="duvera">
-    <h2 class="section-title">Proč tomu věřit</h2>
+    <h2 class="section-title">Kdo stojí za Tokvou</h2>
     <div class="duvera-box">
-      <p>Tokvu jsem postavila podle toho, co mi fungovalo v praxi. Jako vedoucí velkoobchodního skladu s 20 lidmi jsem za čtyři roky dostala sklad tam, kde stejná práce se stejnými lidmi zabrala o 30 % méně hodin. Další dva roky už pobočka běžela sama a stačilo, že jsem na ni dohlížela na dálku.</p>
-      <p>Bylo to poznat i na výplatách: zmizely dlouholeté přesčasy a zbyly peníze na odměny.</p>
-      <p>Žádné drahé systémy. Jen dívat se, měřit a měnit to, co má smysl. Tokva je pro vedoucí skladu, mistry ve výrobě a majitele malých firem, kteří svůj provoz znají a nechtějí studovat metodiku. Provede vás stejnými kroky, jaké bych s vámi dělala já.</p>
-      <p class="duvera-podpis">Gabriela Tomíčková<span>10 let KAIZEN ve výrobě, 6 let vedení skladu</span></p>
+      <img class="duvera-foto" src="obrazky/gabriela-tomickova.jpg" width="96" height="96" alt="Gabriela Tomíčková" loading="lazy">
+      <div>
+        <p>Tokvu jsem postavila podle toho, co mi 16 let fungovalo v provozu. Ve skladu s 20 lidmi jsme za čtyři roky zvládli stejnou práci za o 30 % méně hodin. Bez drahých systémů. Jen dívat se, měřit a měnit to, co má smysl.</p>
+        <p class="duvera-podpis">Gabriela Tomíčková<span>10 let KAIZEN ve výrobě, 6 let vedení skladu</span></p>
+        <a class="duvera-odkaz" href="https://tokva.cz/muj-pribeh/">Přečtěte si můj příběh →</a>
+      </div>
     </div>
     <div class="duvera-cta">
       <a class="btn btn-gold" href="https://tokva.cz/vstup/">Otevřít Tokvu zdarma</a>
