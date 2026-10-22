@@ -198,6 +198,12 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .cenik-podminky p:last-child{margin-bottom:0;}
 .cenik-podminky b{color:#fff;}
 @media (max-width:640px){.cenik{grid-template-columns:1fr;}}
+.obj-postup{background:rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;margin-bottom:18px;}
+.obj-postup-nadpis{font-family:'Poppins',sans-serif;font-weight:800;font-size:14px;color:#fff;margin:0 0 6px;}
+.obj-postup ol{margin:0 0 10px 20px;padding:0;}
+.obj-postup li{font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.85);}
+.obj-postup p{font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.82);margin:0;}
+.obj-postup a{color:var(--gold);font-weight:700;}
 </style>
 <script type="application/ld+json">
 {
@@ -241,7 +247,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
       "name": "Jak se platí?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Převodem na fakturu. Pošlu vám ji na e-mail z objednávky a appku na Pro přepnu, jakmile platba dorazí."
+        "text": "Převodem. Po odeslání objednávky vám na e-mail přijdou platební údaje. Jakmile platba dorazí, zapnu vám Tokva Pro a pošlu fakturu, už zaplacenou."
       }
     },
     {
@@ -404,7 +410,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   <ul class="stav-list">
     <li><b>Kolegové ve firmě.</b> Pozvete je e-mailem, role majitel, správce a člen řídí, kdo co smí upravovat a mazat.</li>
     <li><b>Export a tisk.</b> Výsledky všech nástrojů vytisknete nebo stáhnete do tabulky. Akční plán i souhrn projektu vytisknete na poradu.</li>
-    <li><b>Objednávka a faktura.</b> Objednáte přímo tady na stránce, platí se převodem na fakturu, appku na Pro přepnu po přijetí platby.</li>
+    <li><b>Objednávka a faktura.</b> Objednáte přímo tady na stránce a zaplatíte převodem. Po přijetí platby vám zapnu Pro a pošlu fakturu.</li>
   </ul>
   </details>
 
@@ -431,7 +437,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   </div>
   <div class="faq-item">
     <h3>Jak se platí?</h3>
-    <p>Převodem na fakturu. Pošlu vám ji na e-mail z objednávky a appku na Pro přepnu, jakmile platba dorazí.</p>
+    <p>Převodem. Po odeslání objednávky vám na e-mail přijdou platební údaje. Jakmile platba dorazí, zapnu vám Tokva Pro a pošlu fakturu, už zaplacenou.</p>
   </div>
   <div class="faq-item">
     <h3>Jsou naše data v bezpečí?</h3>
@@ -449,7 +455,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
   <div class="objednavka-box" id="objednavka">
     <h2>Objednat Tokva Pro</h2>
-    <p id="objednavka-platba-popis">Vyberte variantu, cena se doplní sama. Platí se převodem na fakturu, appku na Pro přepnu po přijetí platby.</p>
+    <p id="objednavka-platba-popis">Vyberte variantu, cena se doplní sama.</p>
     <div id="objednavka-cena-popis">
       <div class="cenik">
         <button type="button" class="cenik-karta" data-var="1" onclick="vybratVariantu('1')">
@@ -478,6 +484,18 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
       </div>
     </div>
 
+    <div class="obj-postup">
+      <p class="obj-postup-nadpis">Jak objednávka proběhne</p>
+      <ol>
+        <li>Odešlete objednávku.</li>
+        <li>Do e-mailu vám přijdou platební údaje.</li>
+        <li>Zaplatíte převodem.</li>
+        <li>Zapnu vám Tokva Pro a pošlu fakturu, už zaplacenou.</li>
+      </ol>
+      <p id="obj-ucet-novy">Objednávkou si zároveň vytvoříte účet pro svou firmu. <b>Už účet v Tokvě máte?</b> <a href="https://tokva.cz/prihlaseni.html?zpet=https%3A%2F%2Ftokva.cz%2Fpro%2F%23objednavka">Přihlaste se</a> a vraťte se sem. Heslo pak zadávat nebudete a Pro se zapne k vaší firmě.</p>
+      <p id="obj-ucet-prihlaseny" style="display:none;">Jste přihlášení jako <b id="obj-prihlaseny-email"></b>. Tokva Pro se zapne k vaší firmě, heslo nezadáváte.</p>
+    </div>
+
     <form id="objednavka-form" onsubmit="return odeslatObjednavku(event)">
       <div class="obj-field">
         <label>Varianta *</label>
@@ -499,7 +517,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
         <div class="obj-field"><label>Telefon</label><input type="tel" id="obj-telefon"></div>
       </div>
       <div class="obj-field"><label>E-mail (bude i přihlašovací) *</label><input type="email" id="obj-email" required></div>
-      <div class="obj-row">
+      <div class="obj-row" id="obj-hesla">
         <div class="obj-field"><label>Heslo *</label><input type="password" id="obj-heslo" required minlength="6"></div>
         <div class="obj-field"><label>Heslo znovu *</label><input type="password" id="obj-heslo2" required minlength="6"></div>
       </div>
@@ -589,6 +607,25 @@ async function nacistZbyvajiciMista() {
 }
 nacistZbyvajiciMista();
 
+// Kdo už je přihlášený, nevytváří nový účet: skryjí se hesla, e-mail se
+// vezme z účtu a objednávka se přiřadí k jeho firmě (podle e-mailu majitele).
+(async function () {
+  try {
+    const { data } = await supabaseClient.auth.getSession();
+    const u = data && data.session && data.session.user;
+    if (!u || !u.email) return;
+    window.__objPrihlaseny = true;
+    document.getElementById('obj-hesla').style.display = 'none';
+    document.getElementById('obj-heslo').required = false;
+    document.getElementById('obj-heslo2').required = false;
+    const em = document.getElementById('obj-email');
+    em.value = u.email; em.readOnly = true;
+    document.getElementById('obj-ucet-novy').style.display = 'none';
+    document.getElementById('obj-prihlaseny-email').textContent = u.email;
+    document.getElementById('obj-ucet-prihlaseny').style.display = '';
+  } catch (e) { console.warn('Přihlášení se nepodařilo zjistit.', e); }
+})();
+
 // signup_started - jen první interakce s formulářem, ne každé písmenko.
 document.getElementById('objednavka-form').addEventListener('input', function () {
   trackTokvaEvent('signup_started', { placement: 'pro_page' });
@@ -625,12 +662,13 @@ async function odeslatObjednavku(e) {
     err.style.display = 'block';
     return false;
   }
-  if (heslo !== heslo2) {
+  const prihlasenyRezim = !!window.__objPrihlaseny;
+  if (!prihlasenyRezim && heslo !== heslo2) {
     err.textContent = 'Hesla se neshodují.';
     err.style.display = 'block';
     return false;
   }
-  if (heslo.length < 6) {
+  if (!prihlasenyRezim && heslo.length < 6) {
     err.textContent = 'Heslo musí mít aspoň 6 znaků.';
     err.style.display = 'block';
     return false;
@@ -638,7 +676,10 @@ async function odeslatObjednavku(e) {
 
   btn.disabled = true;
   try {
-    const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({ email, password: heslo, options: { data: { company_name: firma } } });
+    // Přihlášený zákazník (už má účet a firmu): bez registrace, jen objednávka.
+    const { data: signUpData, error: signUpError } = prihlasenyRezim
+      ? { data: null, error: null }
+      : await supabaseClient.auth.signUp({ email, password: heslo, options: { data: { company_name: firma } } });
     if (signUpError) throw signUpError;
     // signup_completed jen když účet opravdu vznikl. Supabase u e-mailu,
     // který už účet má, může vrátit "úspěch" bez identity, to nová
@@ -679,7 +720,10 @@ async function odeslatObjednavku(e) {
     document.getElementById('objednavka-form').style.display = 'none';
     document.getElementById('objednavka-cena-popis').style.display = 'none';
     document.getElementById('objednavka-vs').textContent = 'Variabilní symbol k platbě: ' + variabilniSymbol;
-    if (window.__firmaZalozena) {
+    if (window.__objPrihlaseny) {
+      document.getElementById('objednavka-dokoncit').innerHTML = 'Objednávka je přiřazená k vašemu účtu. Do příchodu platby uvidíte appky ve verzi zdarma, pak vám Pro zapnu.';
+      var pb = document.querySelector('#objednavka-ok .btn-secondary-dark'); if (pb) pb.style.display = 'none';
+    } else if (window.__firmaZalozena) {
       document.getElementById('objednavka-dokoncit').innerHTML = 'Účet i firma jsou založené. Přihlásit se můžete rovnou, do příchodu platby uvidíte appky ve verzi zdarma.';
     }
     document.getElementById('objednavka-ok').style.display = 'block';
