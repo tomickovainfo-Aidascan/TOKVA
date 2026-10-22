@@ -404,7 +404,7 @@ const TOOLS = [
     proKoho:"Majitel nebo manažer výroby či skladu, co tuší, že se někde ztrácí čas, ale nemá to podložené čísly.",
     url:"nastroje/meric-plytvani-free/", souvisejici:["spaghetti-sklad","kalkulacka","kviz-komunikace"],
     metaTitle:"Měřič plýtvání zdarma: produktivita za 10 minut | Tokva",
-    metaDescription:"Zjistěte výpočet produktivity práce ve vaší firmě za 10 minut. Bez stopek a papíru, zdarma online, výsledek hned na stránce.",
+    metaDescription:"Zjistěte výpočet produktivity práce ve vaší firmě za 10 minut. Bez stopek a papíru, zdarma online, stačí zadat e-mail.",
     ucelMetoda:"Měřič plýtvání je jednoduchá časová studie jednoho konkrétního procesu. Místo stopek a papíru klikáte na tlačítko podle toho, co zrovna pracovník dělá, appka sama měří, jak dlouho která činnost trvá. Na konci uvidíte, kolik času padá na skutečnou práci, a kolik na chození, hledání, čekání, papírování nebo kontrolu.\n\nKdo zná metodu KAIZEN, pozná v těch kategoriích klasické druhy plýtvání, takzvané muda. Znát ji ale vůbec nemusíte, appka funguje stejně dobře i bez toho.",
     kdyPouzit:{
       otazky:[
@@ -444,7 +444,7 @@ const TOOLS = [
     ],
     design2a:{
       heroLines:["Kde vám","reálně mizí čas."],
-      heroNote:"3 cykly zdarma · stačí e-mail<br>výsledek hned",
+      heroNote:"3 cykly zdarma · stačí e-mail<br>výsledek na stránce",
       ctaLabel:"Chci si to změřit",
       stats:[
         {num:"7", lbl:"kategorií času"},
@@ -480,7 +480,7 @@ const TOOLS = [
     postup:[
       "Zadejte základní údaje o provozu: počet lidí, počet směn a mzdové náklady.",
       "Zadejte čísla o ztrátách: kolik se zbytečně chodí, kolik se ručně přepisuje, kolik se čeká a kolik času se zbytečně ztratí u jedné dodávky nebo expedice.",
-      "Výsledek se spočítá okamžitě, přímo na stránce.",
+      "Výsledek se spočítá hned. Uvidíte ho po zadání e-mailu.",
       "Podívejte se, jaká je vaše výchozí situace a kolik vás plýtvání reálně stojí, vezměte to jako startovní čáru. U kategorie, kde ztrácíte nejvíc času, začněte a udělejte si detailnější rozbor procesu."
     ],
     vstupy:"Počet pracovníků, počet směn, délka směny, mzdové náklady, a pět čísel o ztrátách: zbytečná chůze a přesuny, ruční administrativa, čekání a prostoje, počet dodávek a expedic týdně a zbytečný čas u jedné z nich.",
@@ -498,7 +498,7 @@ const TOOLS = [
     ],
     design2a:{
       heroLines:["Kolik vás stojí","obyčejná rutina?"],
-      heroNote:"Stačí e-mail · výsledek hned<br>orientační odhad za půl minuty",
+      heroNote:"Zdarma · stačí e-mail<br>orientační odhad za půl minuty",
       ctaLabel:"Chci znát svoje číslo",
       stats:[
         {num:"4", lbl:"základní údaje o provozu"},
@@ -515,7 +515,7 @@ const TOOLS = [
     } },
 
   { id:"mini-audit", group:"free", name:"Mini audit skladu", krok:1, oblasti:["sklad"], benefit:"Za 5 minut zjistíte, kde váš sklad ztrácí čas a kapacitu.",
-    popis:"Za 5 minut víte, kde váš sklad ztrácí čas, lidi a kapacitu.\n\n10 otázek ze skutečného provozu. Bez teorie, bez přípravy. Konkrétní tipy pro 3 nejkritičtější oblasti hned na stránce.",
+    popis:"Za 5 minut víte, kde váš sklad ztrácí čas, lidi a kapacitu.\n\n10 otázek ze skutečného provozu. Bez teorie, bez přípravy. Na konci dostanete konkrétní tipy pro 3 nejkritičtější oblasti.",
     proKoho:"Vedoucí skladu s týmem 3 až 30 lidí.",
     url:"nastroje/mini-audit-skladu/", souvisejici:["kalkulacka","meric-pro","kviz-sklad","spaghetti-sklad","kalkulacka-naklady-skladu"],
     kdyPouzit:{
@@ -534,10 +534,10 @@ const TOOLS = [
     postup:[
       "Spusťte audit, žádná příprava ani podklady nejsou potřeba.",
       "Odpovězte na 10 otázek o svém skladu, podle skutečného stavu, ne podle toho, jak by to mělo být.",
-      "Dostanete skóre a konkrétní tipy pro 3 oblasti, kde to bolí nejvíc, hned na stránce."
+      "Dostanete skóre a konkrétní tipy pro 3 oblasti, kde to bolí nejvíc. Uvidíte je po zadání e-mailu."
     ],
     vstupy:"Odpovědi na 10 otázek o vašem skladu, e-mail jen nepovinně, pokud chcete výsledek i poslat.",
-    vystupy:"Skóre 0 až 30 bodů (čím míň, tím líp) se slovním hodnocením (třeba „firma ztrácí významnou kapacitu každý týden“), přehled odpovědí po jednotlivých otázkách, a konkrétní tipy pro 3 nejkritičtější oblasti, hned na stránce. Druhý audit a porovnání otázku po otázce jsou v Tokva Pro.",
+    vystupy:"Skóre 0 až 30 bodů (čím míň, tím líp) se slovním hodnocením (třeba „firma ztrácí významnou kapacitu každý týden“), přehled odpovědí po jednotlivých otázkách, a konkrétní tipy pro 3 nejkritičtější oblasti, po zadání e-mailu přímo na stránce. Druhý audit a porovnání otázku po otázce jsou v Tokva Pro.",
     priklad:"Petr vedl sklad v Hradci. 12 lidí, příjem zboží každý den, dva až tři kamiony týdně. Stěžoval si, že lidi nestíhají. Uvažoval o posilách.\n\nAudit odhalil dva problémy. Při příjmu kamionu nebylo jasné, kdo kontroluje zboží a kdo ho zaskladňuje, dělal to vždy ten, kdo byl zrovna volný. Zboží proto čekalo na zaskladnění průměrně 2,5 hodiny po vyložení, leželo na rampě a blokovalo provoz. Druhý problém byly výjimky, poškozené zboží, chybějící položky, nesouhlasící množství, bez jasného postupu to každý řešil jinak.\n\nJedno pravidlo pro příjem zkrátilo dobu příjmu kamionu ze 3 hodin na 55 minut, tedy o 2 hodiny a 5 minut. Při 10 kamionech za měsíc to dělá 250 hodin ročně, při 300 Kč nákladu na hodinu 75 000 Kč.\n\nPosily nepřišly. Čas se našel jinde.",
     chyby:[
       "Přeskočit otázku, na kterou přesně neznáte odpověď. Nevím je taky odpověď, a často důležitá, ukazuje, kde se ve skladu vůbec nesleduje, co se děje.",
@@ -550,7 +550,7 @@ const TOOLS = [
     ],
     design2a:{
       heroLines:["Za 5 minut víte,","kde sklad ztrácí čas."],
-      heroNote:"10 otázek · bez přípravy<br>tipy hned na stránce",
+      heroNote:"10 otázek · bez přípravy<br>tipy po zadání e-mailu",
       ctaLabel:"Chci si audit udělat",
       stats:[
         {num:"10", lbl:"otázek ze skutečného provozu"},
@@ -588,7 +588,7 @@ const TOOLS = [
       "Dostanete skóre v procentech, rozpad podle 5 oblastí a jedno konkrétní doporučení, co řešit jako první."
     ],
     vstupy:"Odpovědi na 10 otázek o vaší výrobě, e-mail jen nepovinně, pokud chcete výsledek i poslat.",
-    vystupy:"Skóre v procentech (podíl problémů, čím nižší, tím líp) se slovním hodnocením (třeba „výroba ztrácí významnou kapacitu“), rozpad výsledku do 5 oblastí (tok výroby, čekání a prostoje, pohyb a pracoviště, standard a kvalita, řízení problémů) a jedno konkrétní doporučení, co řešit jako první, hned na stránce. Druhý audit a porovnání otázku po otázce jsou v Tokva Pro.",
+    vystupy:"Skóre v procentech (podíl problémů, čím nižší, tím líp) se slovním hodnocením (třeba „výroba ztrácí významnou kapacitu“), rozpad výsledku do 5 oblastí (tok výroby, čekání a prostoje, pohyb a pracoviště, standard a kvalita, řízení problémů) a jedno konkrétní doporučení, co řešit jako první, po zadání e-mailu přímo na stránce. Druhý audit a porovnání otázku po otázce jsou v Tokva Pro.",
     priklad:"Ilustrační příklad z typu situací, které ve výrobě řeším nejčastěji. Montážní linka, 8 lidí, sériová výroba. Vedoucí chtěl žádat o posilu, lidi nestíhali. Materiál pro jednu operaci ležel na paletě u vstupu haly, ne u pracoviště. Operátorky si pro něj chodily samy, několikrát za směnu, a každá jinou trasou.\n\nPřesun palety blíž k pracovišti a jedno jasné pravidlo, kdo doplňuje, zkrátily čas jedné operace o čtvrtinu. Beze změny počtu lidí.\n\nPosila nakonec nebyla potřeba. Čas se našel jinde.",
     chyby:[
       "Přeskočit otázku, na kterou přesně neznáte odpověď. Nevím je taky odpověď, a často důležitá, ukazuje, kde se ve výrobě vůbec nesleduje, co se děje.",
@@ -601,7 +601,7 @@ const TOOLS = [
     ],
     design2a:{
       heroLines:["Za 5 minut víte,","kde výroba ztrácí čas."],
-      heroNote:"10 otázek · bez přípravy<br>doporučení hned na stránce",
+      heroNote:"10 otázek · bez přípravy<br>doporučení po zadání e-mailu",
       ctaLabel:"Chci si audit udělat",
       stats:[
         {num:"10", lbl:"otázek ze skutečného provozu"},
@@ -637,10 +637,10 @@ const TOOLS = [
     postup:[
       "Spusťte kvíz rovnou, žádná příprava ani podklady nejsou potřeba.",
       "Odpovězte na 10 otázek o svém provozu, vždy tři možnosti a jedno kliknutí.",
-      "Dostanete skóre a konkrétní tipy, co sledovat jako první, hned na stránce."
+      "Dostanete skóre a konkrétní tipy, co sledovat jako první. Uvidíte je po zadání e-mailu."
     ],
     vstupy:"Odpovědi na 10 otázek o vašem provozu, e-mail jen nepovinně, pokud chcete výsledek i poslat.",
-    vystupy:"Skóre 0 až 20 problémových bodů (čím míň, tím líp) se slovním hodnocením (třeba „provoz řídí vás, ne vy provoz“), přehled po jednotlivých oblastech, kde vám chybí přehled, a konkrétní tipy pro oblasti, kde to bolí nejvíc, hned na stránce. Druhý kvíz a porovnání otázku po otázce jsou v Tokva Pro.",
+    vystupy:"Skóre 0 až 20 problémových bodů (čím míň, tím líp) se slovním hodnocením (třeba „provoz řídí vás, ne vy provoz“), přehled po jednotlivých oblastech, kde vám chybí přehled, a konkrétní tipy pro oblasti, kde to bolí nejvíc, po zadání e-mailu přímo na stránce. Druhý kvíz a porovnání otázku po otázce jsou v Tokva Pro.",
     priklad:"Ilustrační příklad. Vedoucí skladu, 15 lidí, firma fungovala. Na papíře v pohodě. Přišel kvíz.\n\nNeznal náklady na metr čtvereční. Nevedl statistiku chyb. Nevěděl, kolik ho stojí odchod jednoho člověka. Tři procesy závisely na jednom skladníkovi, který byl u firmy přes deset let. Kdyby odešel, nikdo by nevěděl, jak to dělá.\n\nKaždou z těchto věcí věděl, že nějak fungují. Ale číslo k žádné z nich neměl.\n\nKvíz nezjistil, co nefunguje. Zjistil, co neví. A to byl první krok k tomu, aby to začal řídit.\n\nZačal si chyby tahat ze systému a dělat z nich jednoduchý přehled. Ukázalo se, že nejčastější chybou při vychystávání je záměna dvou podobných lahví vodky. Mohl ten problém začít řešit, protože už o něm věděl.",
     chyby:[
       "Odpovídat, jak by to mělo být, ne jak to skutečně je. Kvíz ukáže reálný stav jen tehdy, když odpovídáte upřímně.",
@@ -1099,7 +1099,7 @@ const TOOLS = [
     ],
     design2a:{
       heroLines:["Kolik vás reálně","stojí 1 m² skladu?"],
-      heroNote:"Stačí e-mail · výsledek hned<br>orientační odhad za pár minut",
+      heroNote:"Zdarma · stačí e-mail<br>orientační odhad za pár minut",
       ctaLabel:"Chci znát svoje číslo",
       stats:[
         {num:"7", lbl:"kategorií nákladů budovy"},
