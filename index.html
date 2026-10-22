@@ -104,7 +104,9 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 .krok-text .step-num{display:block;margin-bottom:4px;}
 .krok-text h3{font-family:'Poppins',sans-serif;font-size:16px;font-weight:800;line-height:1.3;margin-bottom:6px;}
 .krok-text p{font-size:14px;line-height:1.6;color:var(--mid);}
-.ukazka-odkaz{margin-top:18px;}
+.ukazka-odkaz{margin-top:10px;}
+.kroky-pozn{font-size:12.5px;color:var(--mid);margin-top:12px;}
+.krok-pro{display:inline-block;vertical-align:middle;margin-left:8px;background:#111;color:var(--gold);font-family:"DM Sans",sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:5px;}
 .ukazka-odkaz button{background:none;border:none;padding:0;font:inherit;font-weight:700;font-size:14.5px;color:var(--gold-dark);cursor:pointer;}
 .ukazka-odkaz button:hover{text-decoration:underline;}
 #ukazka-okno{margin:auto;border:none;padding:0;background:transparent;max-width:min(360px,92vw);overflow:visible;}
@@ -268,9 +270,10 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
       </div>
       <div class="krok-karta">
         <picture><source srcset="obrazky/krok-4.webp" type="image/webp"><img src="obrazky/krok-4.jpg" width="720" height="540" alt="Tokva Pro: porovnání dvou výpočtů, ztráta klesla o 975 000 Kč ročně" loading="lazy"></picture>
-        <div class="krok-text"><span class="step-num">04</span><h3>Tokva porovná stav před změnou a po ní</h3><p>Ukáže, jestli se provoz opravdu zlepšil a kde má smysl pokračovat.</p></div>
+        <div class="krok-text"><span class="step-num">04 <span class="krok-pro">Tokva Pro</span></span><h3>Tokva porovná stav před změnou a po ní</h3><p>Ukáže, jestli se provoz opravdu zlepšil a kde má smysl pokračovat.</p></div>
       </div>
     </div>
+    <p class="kroky-pozn">Obrázky jsou z appky Tokva s ukázkovými daty.</p>
     <p class="ukazka-odkaz"><button type="button" onclick="document.getElementById('ukazka-okno').showModal();var v=document.getElementById('ukazka-video');v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});trackTokvaEvent('ukazka_click',{placement:'kroky'})">▶ Pustit celou ukázku (75 s)</button></p>
     <dialog id="ukazka-okno" onclick="if(event.target===this)this.close()" onclose="document.getElementById('ukazka-video').pause()">
       <button type="button" class="ukazka-zavrit" aria-label="Zavřít" onclick="this.closest('dialog').close()">×</button>
