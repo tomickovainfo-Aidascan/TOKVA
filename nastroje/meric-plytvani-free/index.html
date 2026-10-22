@@ -419,6 +419,19 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   </div>
 </div>
 
+<!-- UKAZKA (video, vidi ho kazdy i pred odemcenim) -->
+<section class="meric-ukazka-blok" style="max-width:760px;margin:32px auto 8px;padding:0 20px;display:flex;gap:28px;align-items:center;flex-wrap:wrap;justify-content:center;">
+  <video poster="../../videa/meric-ukazka-nahled.jpg" width="480" height="770" autoplay muted loop playsinline preload="metadata" style="display:block;width:240px;max-width:70vw;height:auto;border-radius:22px;border:8px solid #111;box-shadow:0 14px 28px rgba(0,0,0,.16);background:#f4f3ef;" aria-label="Ukázka: měření přípravy objednávky na mobilu a výsledek s rozložením času">
+    <source src="../../videa/meric-ukazka.webm" type="video/webm">
+    <source src="../../videa/meric-ukazka.mp4" type="video/mp4">
+  </video>
+  <div style="flex:1 1 260px;max-width:380px;">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold-dark,#976e12);margin-bottom:8px;">Takhle to vypadá</div>
+    <p style="font-size:15.5px;line-height:1.7;color:var(--dark,#111);margin:0 0 10px;">Mobil v ruce, ťukáte na to, co člověk zrovna dělá. Po pár cyklech vidíte, kolik času je práce a kolik chůze, hledání nebo papírování.</p>
+    <p style="font-size:12.5px;color:var(--mid,#545454);margin:0;">Skutečné měření 3 cyklů přípravy objednávky, zrychleně.</p>
+  </div>
+</section>
+
 <!-- SETUP -->
 <div class="main" id="setup">
 
@@ -473,10 +486,6 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
     </div>
 
     <h2 class="howto-divider-title">Jak appka funguje krok za krokem</h2>
-    <figure class="meric-ukazka" style="margin:0 auto 22px;max-width:300px;text-align:center;">
-      <video src="../../videa/meric-ukazka.mp4" poster="../../videa/meric-ukazka-nahled.jpg" width="480" height="770" autoplay muted loop playsinline preload="metadata" style="display:block;width:100%;height:auto;border-radius:22px;border:8px solid #111;box-shadow:0 14px 28px rgba(0,0,0,.16);background:#f4f3ef;" aria-label="Ukázka: měření přípravy objednávky na mobilu a výsledek s rozložením času"></video>
-      <figcaption style="font-size:12.5px;color:var(--mid);margin-top:10px;line-height:1.5;">Ukázka z mobilu, zrychleně: měření 3 cyklů přípravy objednávky a výsledek.</figcaption>
-    </figure>
     <div class="steps-list" style="margin-bottom:18px;">
       <div class="step-item"><div class="step-num">1</div><div>Zapište název procesu, který měříte, a klikněte na tlačítko dané činnosti vždy <strong>na začátku</strong>, ne na konci</div></div>
       <div class="step-item"><div class="step-num">2</div><div>Appka automaticky ukončí předchozí činnost a začne měřit novou, jakmile kliknete na další tlačítko</div></div>
