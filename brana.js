@@ -369,6 +369,15 @@
     hlidac = setInterval(zkontrolovatVysledky, 400);
   }
   function infoODelce() {
+    var hotova = document.querySelector('.tb-info');
+    if (hotova) {
+      // Řádek je přímo v HTML (vidí ho i vyhledávače a AI). Kdo už odemkl,
+      // větu o e-mailu nepotřebuje.
+      var m = document.querySelector('.hero-meta');
+      try { if (m) hotova.style.color = getComputedStyle(m.parentNode.querySelector('p') || m).color; } catch (e) {}
+      if (odemceno()) hotova.querySelectorAll('.tb-info-email').forEach(function (e) { e.remove(); });
+      return;
+    }
     if (!delka) return;
     var meta = document.querySelector('.hero-meta');
     if (!meta) return;
@@ -399,11 +408,8 @@
   };
 
   function start() {
-    if (!document.querySelector('.tb-info')) {
-      // CSS je potřeba i pro řádek s délkou
-      pripravitOkno();
-      infoODelce();
-    }
+    pripravitOkno();
+    infoODelce();
     if (odemceno()) { predvyplnit(); return; }
     zamknoutCasti();
     hlidatVysledky();
