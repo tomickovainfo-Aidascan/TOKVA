@@ -555,7 +555,6 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 </style>
 <style id="tokva-pro-texty-css">html:not(.tokva-ma-pro) .jen-s-pro, html.tokva-ma-pro .jen-bez-pro{display:none !important;}</style>
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
-<link rel="stylesheet" href="../../appka-ram.css">
 </head>
 <body data-tisk-hlavicka>
 
@@ -642,16 +641,73 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
       <span>5 minut</span>
       <span>Výsledek ihned</span>
     </div>
-    <a class="appka-start" href="#appka">Spustit appku ↓</a>
   </div>
 </div>
 
-<section class="appka-ram" id="appka" aria-label="Appka Mini audit skladu">
-<div class="appka-ram-hlavicka">
-  <span class="appka-ram-stitek">Appka zdarma</span>
-  <span class="appka-ram-nazev">Mini audit skladu</span>
-  <p class="appka-ram-pozn">Tady začíná appka. Odpovězte na 10 otázek, výsledek se ukáže na konci.</p>
+<div class="content-block">
+  <div class="content-inner">
+
+    <details class="info-detail">
+      <summary class="info-summary">Jak appka funguje a pro koho to je</summary>
+      <div style="margin-top:22px;display:flex;flex-direction:column;gap:32px;">
+
+    <div class="d-example">
+      <div class="d-example-eyebrow">Z praxe</div>
+      <h2>Vedoucí si myslel, že chybí ruce. Chyběla jasná pravidla.</h2>
+      <div class="d-example-grid">
+        <div class="d-example-text">
+          <p>Sklad v Hradci, 12 lidí, denní příjem zboží. U příjmu kamionu nebylo jasné, kdo zboží kontroluje a kdo zaskladňuje, takže leželo na rampě v průměru 2,5 hodiny.</p>
+          <p>Jedno jasné pravidlo zkrátilo příjem ze 3 hodin na 55 minut. Při 10 kamionech měsíčně to je 250 hodin a 75 000 Kč ročně. Posily nakonec nebyly potřeba.</p>
+          <p>Častěji ale vídám opak. Změny se udělají, kontrolní audit nepřijde a dodnes nikdo neví, jestli pomohly a co přinesly. Proto má smysl projít ten samý audit za čtvrt roku znovu a položit obě skóre vedle sebe.</p>
+        </div>
+        <div class="d-example-stat">
+          <div class="stat-num">250 h</div>
+          <div class="stat-note">ročně navíc uvolnilo jedno jasné pravidlo u příjmu zboží, beze změny počtu lidí.</div>
+        </div>
+      </div>
+      <div class="trust-line">Otázky v auditu vycházejí z kontrolních bodů, které jsem procházela ručně ve skladech různého charakteru. Nic vymyšleného, jen to, co v provozu skutečně bolí.</div>
+    </div>
+
+    <div class="two-col">
+      <div class="content-card">
+        <h2 class="content-card-title">Hodí se vám to, pokud:</h2>
+        <ul class="check-list">
+          <li>Máte pocit, že někde ztrácíte čas, ale nevíte přesně kde</li>
+          <li>Lidi jsou v napětí, každý řeší věci jinak, pořád se na něco ptají nebo čekají na rozhodnutí</li>
+          <li>Chcete přijít za vedením nebo majitelem s konkrétním zjištěním, ne s pocitem</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h2 class="content-card-title">Tři kroky, žádná věda:</h2>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div>Spustíte audit hned. Žádná příprava, žádné podklady.</div></div>
+          <div class="step-item"><div class="step-num">2</div><div>Odpovíte na 10 otázek ze svého provozu. Většinou jedno kliknutí.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div>Dostanete skóre a konkrétní tipy pro 3 oblasti, kde to bolí nejvíc.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <h2 class="content-card-title">Co k tomu nepotřebujete:</h2>
+      <div class="no-need-grid">
+        <div class="no-need-item">Konzultanta ani poradce</div>
+        <div class="no-need-item">Přípravu ani podklady</div>
+        <div class="no-need-item">Přesná data ze systému</div>
+        <div class="no-need-item">Znalost štíhlé výroby ani KAIZEN</div>
+      </div>
+      <div class="time-note">Stačí znát svůj sklad a 5 minut klidu.</div>
+    </div>
+
+      </div>
+    
+    <div class="collapse-back">
+      <a class="collapse-back-link" onclick="const d=this.closest('details'); d.open=false; d.scrollIntoView({behavior:'smooth',block:'start'}); return false;" href="#">↑ Sbalit</a>
+    </div>
+  </details>
+
+  </div>
 </div>
+
 <div class="progress-nav">
   <div class="progress-nav-inner">
     <span class="progress-nav-label">Postup</span>
@@ -1068,73 +1124,6 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
   </div>
 
 </div>
-</section>
-
-<div class="content-block">
-  <div class="content-inner">
-
-    <details class="info-detail">
-      <summary class="info-summary">Jak appka funguje a pro koho to je</summary>
-      <div style="margin-top:22px;display:flex;flex-direction:column;gap:32px;">
-
-    <div class="d-example">
-      <div class="d-example-eyebrow">Z praxe</div>
-      <h2>Vedoucí si myslel, že chybí ruce. Chyběla jasná pravidla.</h2>
-      <div class="d-example-grid">
-        <div class="d-example-text">
-          <p>Sklad v Hradci, 12 lidí, denní příjem zboží. U příjmu kamionu nebylo jasné, kdo zboží kontroluje a kdo zaskladňuje, takže leželo na rampě v průměru 2,5 hodiny.</p>
-          <p>Jedno jasné pravidlo zkrátilo příjem ze 3 hodin na 55 minut. Při 10 kamionech měsíčně to je 250 hodin a 75 000 Kč ročně. Posily nakonec nebyly potřeba.</p>
-          <p>Častěji ale vídám opak. Změny se udělají, kontrolní audit nepřijde a dodnes nikdo neví, jestli pomohly a co přinesly. Proto má smysl projít ten samý audit za čtvrt roku znovu a položit obě skóre vedle sebe.</p>
-        </div>
-        <div class="d-example-stat">
-          <div class="stat-num">250 h</div>
-          <div class="stat-note">ročně navíc uvolnilo jedno jasné pravidlo u příjmu zboží, beze změny počtu lidí.</div>
-        </div>
-      </div>
-      <div class="trust-line">Otázky v auditu vycházejí z kontrolních bodů, které jsem procházela ručně ve skladech různého charakteru. Nic vymyšleného, jen to, co v provozu skutečně bolí.</div>
-    </div>
-
-    <div class="two-col">
-      <div class="content-card">
-        <h2 class="content-card-title">Hodí se vám to, pokud:</h2>
-        <ul class="check-list">
-          <li>Máte pocit, že někde ztrácíte čas, ale nevíte přesně kde</li>
-          <li>Lidi jsou v napětí, každý řeší věci jinak, pořád se na něco ptají nebo čekají na rozhodnutí</li>
-          <li>Chcete přijít za vedením nebo majitelem s konkrétním zjištěním, ne s pocitem</li>
-        </ul>
-      </div>
-      <div class="content-card">
-        <h2 class="content-card-title">Tři kroky, žádná věda:</h2>
-        <div class="steps-list">
-          <div class="step-item"><div class="step-num">1</div><div>Spustíte audit hned. Žádná příprava, žádné podklady.</div></div>
-          <div class="step-item"><div class="step-num">2</div><div>Odpovíte na 10 otázek ze svého provozu. Většinou jedno kliknutí.</div></div>
-          <div class="step-item"><div class="step-num">3</div><div>Dostanete skóre a konkrétní tipy pro 3 oblasti, kde to bolí nejvíc.</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="content-card">
-      <h2 class="content-card-title">Co k tomu nepotřebujete:</h2>
-      <div class="no-need-grid">
-        <div class="no-need-item">Konzultanta ani poradce</div>
-        <div class="no-need-item">Přípravu ani podklady</div>
-        <div class="no-need-item">Přesná data ze systému</div>
-        <div class="no-need-item">Znalost štíhlé výroby ani KAIZEN</div>
-      </div>
-      <div class="time-note">Stačí znát svůj sklad a 5 minut klidu.</div>
-    </div>
-
-      </div>
-    
-    <div class="collapse-back">
-      <a class="collapse-back-link" onclick="const d=this.closest('details'); d.open=false; d.scrollIntoView({behavior:'smooth',block:'start'}); return false;" href="#">↑ Sbalit</a>
-    </div>
-  </details>
-
-  </div>
-</div>
-
-
 
 <div class="post-audit">
   <div class="post-audit-inner">
