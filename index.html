@@ -100,6 +100,11 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(28px,4vw,44px); font-weig
 .lead { font-size:17px; color:var(--mid); margin-bottom:14px; max-width:680px; }
 .proof { font-size:13.5px; font-weight:700; color:var(--gold-dark); letter-spacing:.2px; margin-bottom:30px; }
 .hero-ctas { display:flex; flex-wrap:wrap; gap:12px; }
+.hero-mrizka{display:grid;grid-template-columns:1fr;gap:28px;align-items:center;}
+.hero-obraz{margin:0;justify-self:center;max-width:260px;}
+.hero-obraz img{display:block;width:100%;height:auto;filter:drop-shadow(0 18px 30px rgba(0,0,0,.18));}
+.hero-obraz figcaption{font-size:12.5px;color:var(--mid);text-align:center;margin-top:12px;line-height:1.5;}
+@media (min-width:960px){ .hero-mrizka{grid-template-columns:minmax(0,1fr) 300px;gap:48px;} .hero-obraz{max-width:300px;} }
 .btn { font-family:'Poppins',sans-serif; font-size:14px; font-weight:700; text-decoration:none; padding:14px 24px; border-radius:8px; display:inline-block; transition:all .15s; }
 .btn-gold { background:var(--gold); color:var(--black); }
 .btn-gold:hover { background:var(--gold-dark); color:var(--white); }
@@ -203,6 +208,8 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 <main class="wrap">
 
   <section class="hero" style="border-top:none;">
+   <div class="hero-mrizka">
+    <div class="hero-text">
     <p class="pro-koho">Pro OSVČ, majitele malých výrobních firem, vedoucí skladů a mistry</p>
     <h1>Zjistěte, kde ve výrobě nebo skladu ztrácíte čas. A co změnit jako první.</h1>
     <p class="lead">Tokva je webová aplikace, která vás provede měřením provozu a hledáním příčin problémů. Získáte konkrétní podklady pro rozhodnutí, co zlepšit.</p>
@@ -211,6 +218,12 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
       <a class="btn btn-gold" href="https://tokva.cz/nastroje/" onclick="return vyzkouset(event)">Vyzkoušet nástroje zdarma</a>
     </div>
     <p class="brana-pozn">Zdarma. Stačí jednou zadat e-mail, příště vstoupíte rovnou.</p>
+    </div>
+    <figure class="hero-obraz">
+      <img src="obrazky/meric-vysledek.webp" width="720" height="1233" alt="Výsledek Měřiče plýtvání na mobilu: rozložení času na práci, přesun, hledání a administrativu a odhad, kolik stojí čas mimo přímou práci za rok" fetchpriority="high">
+      <figcaption>Skutečný výsledek z Měřiče plýtvání: 3 cykly přípravy objednávky změřené mobilem.</figcaption>
+    </figure>
+   </div>
   </section>
 
   <section>
