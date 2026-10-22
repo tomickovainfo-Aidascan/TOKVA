@@ -91,10 +91,10 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .faze-sloupce{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
 @media (max-width:860px){.faze-sloupce{grid-template-columns:1fr 1fr;}}
 @media (max-width:520px){.faze-sloupce{grid-template-columns:1fr;}}
-.faze-sloupec{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:120px;}
-.faze-sloupec-hlavicka{margin-bottom:2px;}
-.faze-sloupec-hlavicka .cislo{font-family:"DM Mono",monospace;font-size:10px;color:var(--gold-dark);font-weight:700;}
-.faze-sloupec-hlavicka h4{font-family:"Poppins",sans-serif;font-size:13px;font-weight:800;letter-spacing:.4px;color:var(--dark);margin-top:2px;}
+.faze-sloupec{background:var(--white);border:1px solid var(--border);border-top:3px solid var(--gold);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:120px;}
+.faze-sloupec-hlavicka{margin-bottom:4px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.faze-sloupec-hlavicka .cislo{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--gold-light);font-family:"DM Mono",monospace;font-size:11px;color:var(--gold-dark);font-weight:700;}
+.faze-sloupec-hlavicka h4{font-family:"Poppins",sans-serif;font-size:14px;font-weight:800;letter-spacing:.4px;color:var(--dark);margin-top:2px;}
 .faze-sloupec-hlavicka .pod{font-size:11px;color:var(--light);}
 .faze-prazdno{font-size:12px;color:var(--light);font-style:italic;padding:10px 2px;}
 .faze-karta{background:var(--paper);border:1px solid var(--border);border-radius:8px;padding:10px 11px;text-decoration:none;color:inherit;display:block;cursor:pointer;transition:border .15s;}
@@ -141,8 +141,9 @@ body.prezentace .faze-krok-nav button{background:rgba(255,255,255,.08);border:1p
 body.prezentace .faze-krok-nav button:hover{border-color:var(--gold);color:var(--gold);}
 body.prezentace .faze-krok-nav button:disabled{opacity:.3;cursor:default;}
 body.prezentace .faze-krok-oznaceni{font-family:"DM Mono",monospace;font-size:13px;color:rgba(255,255,255,.5);letter-spacing:1px;}
-body.prezentace .faze-sloupec{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);min-height:50vh;padding:26px 28px;}
-body.prezentace .faze-sloupec-hlavicka .cislo{color:var(--gold);font-size:13px;}
+body.prezentace .faze-sloupec{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-top:3px solid var(--gold);min-height:50vh;padding:26px 28px;}
+body.prezentace .faze-sloupec-hlavicka .cislo{color:#000;background:var(--gold);font-size:13px;width:28px;height:28px;}
+body.prezentace .faze-sloupec-hlavicka{border-bottom-color:rgba(255,255,255,.12);}
 body.prezentace .faze-sloupec-hlavicka h4{color:var(--white);font-size:22px;margin-top:6px;}
 body.prezentace .faze-sloupec-hlavicka .pod{color:rgba(255,255,255,.45);font-size:14px;}
 body.prezentace .faze-prazdno{color:rgba(255,255,255,.35);font-size:15px;padding:20px 2px;}
@@ -1124,7 +1125,7 @@ function shrnutiKartaHtml() {
 function jedenSloupecHtml(rada, polozky, cislo) {
   const obsah = polozky.length ? polozky.map(fazeKartaHtml).join('') : '<div class="faze-prazdno">Zatím nic</div>';
   return '<div class="faze-sloupec">' +
-    '<div class="faze-sloupec-hlavicka"><div class="cislo">' + cislo + '.</div><h4>' + rada.nadpis + '</h4><div class="pod">' + rada.pod + '</div></div>' +
+    '<div class="faze-sloupec-hlavicka"><div class="cislo">' + cislo + '</div><h4>' + rada.nadpis + '</h4><div class="pod">' + rada.pod + '</div></div>' +
     obsah + '</div>';
 }
 
