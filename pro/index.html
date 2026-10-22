@@ -176,6 +176,12 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   .notify-form { flex-direction:column; }
   .notify-form button { width:100%; }
 }
+.vsechny-funkce{margin:28px 0 24px;border:1px solid var(--border2);border-radius:10px;background:var(--white);padding:4px 22px;}
+.vsechny-funkce summary{cursor:pointer;font-weight:700;color:var(--gold-dark);font-size:15px;padding:14px 0;list-style:none;}
+.vsechny-funkce summary::-webkit-details-marker{display:none;}
+.vsechny-funkce summary::after{content:" ↓";}
+.vsechny-funkce[open] summary::after{content:" ↑";}
+.vsechny-funkce[open]{padding-bottom:18px;}
 </style>
 <script type="application/ld+json">
 {
@@ -329,7 +335,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <p>Měřila jsem tehdy ručně se stopkami, ještě než vznikla Tokva.</p>
   </div>
 
-  <h2 class="pilire-uvod">Co Pro přidá k nástrojům zdarma</h2>
+  <h2 class="pilire-uvod">Co s výsledkem uděláte v Tokvě Pro</h2>
   <p class="pilire-uvod-sub">Nástroj zdarma vám dá výsledek. Pro se postará o to, co s ním bude dál.</p>
   <div class="pilire">
     <div class="pilir">
@@ -350,10 +356,10 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     </div>
   </div>
 
-  <p class="hero-pains" style="margin-top:8px;">Poznáváte se v tomhle? Chyby při expedici, hledání materiálu, zbytečná chůze, opakované přepisování stejných čísel, čekání mezi kroky, špatné předávání informací mezi směnami. <a href="https://tokva.cz/reseni-problemu/" style="color:var(--gold-dark);font-weight:700;">Začněte u nástrojů zdarma, změřte to a vraťte se sem s číslem.</a></p>
+  <p class="hero-pains" style="margin-top:8px;">Poznáváte se v tomhle? Chyby při expedici, hledání materiálu, zbytečná chůze, opakované přepisování stejných čísel, čekání mezi kroky, špatné předávání informací mezi směnami. <a href="https://tokva.cz/vstup/" style="color:var(--gold-dark);font-weight:700;">Začněte u nástrojů zdarma, změřte to a vraťte se sem s číslem.</a></p>
 
-  <div class="stav-nadpis"><h2>Co Tokva Pro dnes reálně umí</h2></div>
-  <p class="stav-popis">Žádný plán do budoucna. Tohle appka dělá už teď, na živém webu.</p>
+  <details class="vsechny-funkce">
+    <summary>Zobrazit všechny funkce</summary>
 
   <h3 class="stav-skupina">Výsledky na jednom místě</h3>
   <ul class="stav-list">
@@ -382,8 +388,9 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     <li><b>Export a tisk.</b> Výsledky všech nástrojů vytisknete nebo stáhnete do tabulky. Akční plán i souhrn projektu vytisknete na poradu.</li>
     <li><b>Objednávka a faktura.</b> Objednáte přímo tady na stránce, platí se převodem na fakturu, appku na Pro přepnu po přijetí platby.</li>
   </ul>
+  </details>
 
-  <div class="note">Tokva Pro funguje a objednat ho můžete hned. Zakladatelská cena platí pro prvních 20 firem. S prvními firmami ho dál ladím podle toho, co v provozu opravdu potřebují. Appky zdarma fungují naplno i bez Pro, stačí jednou zadat e-mail.</div>
+  <div class="note">Objednat můžete hned. Zakladatelská cena platí pro prvních 20 firem. S prvními firmami Tokvu Pro dál ladím podle toho, co v provozu opravdu potřebují. Appky zdarma fungují naplno i bez Pro, stačí jednou zadat e-mail.</div>
 
   <p class="podpora-note">Podporu dělám vždycky osobně já, Gabriela Tomíčková. Kdybyste kromě appky potřebovali pomoc přímo ve firmě, najdete mě na <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a>.</p>
 
