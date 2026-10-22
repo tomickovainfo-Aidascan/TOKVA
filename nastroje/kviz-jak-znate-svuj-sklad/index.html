@@ -1874,6 +1874,11 @@ function vyber(el, q, body) {
   odpovedi[q] = body;
   document.getElementById('dal' + q).disabled = false;
   updateProgress();
+  // Sám přejde na další otázku, u poslední zůstává ruční tlačítko.
+  if (q < 10) setTimeout(function () {
+    var akt = document.getElementById('q' + q);
+    if (akt && akt.classList.contains('active')) dal(q);
+  }, 350);
 }
 
 function dal(q) {

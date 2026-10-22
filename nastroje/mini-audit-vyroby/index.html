@@ -1350,6 +1350,7 @@ function vyberMoznost(el, q, body) {
   nevimSet.delete(q);
   document.getElementById('dal' + q).disabled = false;
   updateProgress();
+  autoDalsi(q);
 }
 
 function vyberNevim(el, q) {
@@ -1360,6 +1361,18 @@ function vyberNevim(el, q) {
   nevimSet.add(q);
   document.getElementById('dal' + q).disabled = false;
   updateProgress();
+  autoDalsi(q);
+}
+
+// Po výběru odpovědi appka sama přejde na další otázku (na mobilu není
+// potřeba hledat tlačítko Další). U poslední otázky zůstává ruční
+// "Zobrazit výsledky", ať jde poslední odpověď ještě změnit.
+function autoDalsi(q) {
+  if (q >= 10) return;
+  setTimeout(function () {
+    var akt = document.getElementById('q' + q);
+    if (akt && akt.classList.contains('active')) dalsiOtazka(q);
+  }, 350);
 }
 
 function dalsiOtazka(q) {

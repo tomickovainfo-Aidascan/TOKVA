@@ -2568,6 +2568,12 @@ function vybrat(qid, typ, oi, el){
       const pts = el.getAttribute('data-points');
       odpovedi[qid] = pts!=='' ? parseInt(pts,10) : 0;
     }
+    // Jednovýběrová otázka: appka sama přejde na další (u poslední zůstává
+    // ruční "Zobrazit výsledek", u vícevýběrových ručně "Další").
+    const kdy = aktualniOtazka;
+    if(kdy < OTAZKY.length - 1){
+      setTimeout(function(){ if(aktualniOtazka === kdy) dalOtazka(); }, 350);
+    }
   } else if(typ==='checkbox'){
     el.classList.toggle('on');
     el.setAttribute('aria-checked', el.classList.contains('on') ? 'true' : 'false');
