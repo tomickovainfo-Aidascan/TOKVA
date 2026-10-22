@@ -8,6 +8,10 @@
   var VSTUP = 'https://tokva.cz/vstup/';
   var KATALOG = 'https://tokva.cz/nastroje/';
   var PRIBEH = 'https://tokva.cz/muj-pribeh/';
+  // data-jen-sbalit: stránky po přihlášení (Přehled, Projekty…) – nic
+  // nepřidávat ani nepřeskládávat, jen na mobilu schovat položky pod Menu.
+  var skript = document.currentScript;
+  var jenSbalit = !!(skript && skript.hasAttribute('data-jen-sbalit'));
 
   var CSS = '' +
     '.menu-zlate{background:#e9a91b !important;border-color:#e9a91b !important;color:#000 !important;font-weight:700 !important;text-decoration:none !important;}' +
@@ -43,6 +47,26 @@
       return a;
     }
     function najdi(fn) { return deti.filter(fn)[0] || null; }
+    function pridatPrepinac(zaCo) {
+      // Mobil: tlačítko Menu, ostatní položky se schovají.
+      var prep = document.createElement('button');
+      prep.type = 'button';
+      prep.className = trida + ' menu-prepinac';
+      prep.setAttribute('aria-expanded', 'false');
+      prep.textContent = 'Menu';
+      prep.addEventListener('click', function () {
+        var otevreno = kont.classList.toggle('menu-sbaleno') === false;
+        prep.setAttribute('aria-expanded', otevreno ? 'true' : 'false');
+        prep.textContent = otevreno ? 'Zavřít' : 'Menu';
+      });
+      kont.insertBefore(prep, zaCo ? zaCo.nextSibling : kont.firstChild);
+      kont.classList.add('menu-kontejner', 'menu-sbaleno');
+    }
+
+    if (jenSbalit) {
+      pridatPrepinac(null);
+      return;
+    }
 
     var vsechny = najdi(function (d) { return d.id === 'nav-vsechny-nastroje' || text(d) === 'Všechny nástroje'; });
     var pribeh = najdi(function (d) { return text(d) === 'Můj příběh'; });
@@ -74,19 +98,7 @@
       za = el;
     });
 
-    // Mobil: tlačítko Menu
-    var prep = document.createElement('button');
-    prep.type = 'button';
-    prep.className = trida + ' menu-prepinac';
-    prep.setAttribute('aria-expanded', 'false');
-    prep.textContent = 'Menu';
-    prep.addEventListener('click', function () {
-      var otevreno = kont.classList.toggle('menu-sbaleno') === false;
-      prep.setAttribute('aria-expanded', otevreno ? 'true' : 'false');
-      prep.textContent = otevreno ? 'Zavřít' : 'Menu';
-    });
-    kont.insertBefore(prep, zlate.nextSibling);
-    kont.classList.add('menu-kontejner', 'menu-sbaleno');
+    pridatPrepinac(zlate);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
