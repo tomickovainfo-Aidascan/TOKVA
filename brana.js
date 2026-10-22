@@ -37,6 +37,12 @@
   // (nástroje, kde se měří dlouho a výsledek roste průběžně).
   var oknoSamo = !skript || skript.getAttribute('data-vysledek-okno') !== 'ne';
 
+  // ?brana=znovu zapomene odemčení v tomhle prohlížeči (na natáčení ukázky
+  // nebo testování, když nejde anonymní okno).
+  try {
+    if (new URLSearchParams(location.search).get('brana') === 'znovu') localStorage.removeItem(KLIC);
+  } catch (e) {}
+
   function nacist() {
     try { return JSON.parse(localStorage.getItem(KLIC) || 'null'); } catch (e) { return null; }
   }
