@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Co potřebujete ve firmě zlepšit? | Tokva</title>
+<meta name="description" content="Vyberte, co chcete ve firmě zlepšit: sklad, výroba, administrativa, nebo lidé a komunikace. Nevíte, čím začít? Krátký kvíz vám poradí. Nástroje zdarma.">
+<link rel="canonical" href="https://tokva.cz/vstup/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+window.trackTokvaEvent = function (n, p) { if (typeof window.gtag === "function") window.gtag("event", n, Object.assign({}, p || {}, { page_path: location.pathname })); };
+</script>
+<style>
+  :root{--gold:#e9a91b;--gold-dark:#976e12;--gold-light:#fdf3d9;--black:#000;--dark:#111;--mid:#545454;--silver:#a8a6a6;--white:#fff;--paper:#fafaf8;--border:#e8e8e8;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'DM Sans',sans-serif;color:var(--dark);background:var(--paper);}
+  a{text-decoration:none;}
+  .topbar{background:var(--black);color:var(--white);padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:200;border-bottom:2px solid var(--gold);flex-wrap:wrap;row-gap:8px;}
+  .topbar .brand{font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;color:var(--white);}
+  .topbar-right{display:flex;align-items:center;flex-wrap:wrap;row-gap:8px;}
+  .topbar-login{color:var(--gold);font-size:13px;font-weight:700;border:1px solid var(--gold);padding:7px 16px;border-radius:6px;}
+  .topbar-login:hover{background:var(--gold);color:var(--black);}
+
+  .wrap{max-width:720px;margin:0 auto;padding:48px 24px 64px;}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:12px;}
+  h1{font-family:'Poppins',sans-serif;font-weight:900;font-size:clamp(26px,4vw,38px);letter-spacing:-0.5px;line-height:1.15;margin:0 0 12px;}
+  .uvod{font-size:16px;line-height:1.7;color:var(--mid);margin:0 0 28px;}
+
+  .karta{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:28px 26px;}
+  .postup{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mid);margin-bottom:10px;}
+  .postup-lista{height:6px;background:#eee;border-radius:3px;overflow:hidden;margin-bottom:22px;}
+  .postup-lista span{display:block;height:100%;background:var(--gold);transition:width .25s;}
+  .otazka{font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(19px,2.6vw,23px);line-height:1.3;margin:0 0 18px;}
+  .moznosti{display:grid;gap:10px;}
+  .moznost{display:block;width:100%;text-align:left;font:inherit;font-size:15.5px;line-height:1.45;color:var(--dark);background:var(--paper);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s;}
+  .moznost:hover,.moznost:focus-visible{border-color:var(--gold);background:var(--gold-light);outline:none;}
+  .zpet{margin-top:18px;background:none;border:none;font:inherit;font-size:13.5px;color:var(--mid);cursor:pointer;padding:0;}
+  .zpet:hover{color:var(--gold-dark);}
+
+  .vysledek-oblast{font-family:'Poppins',sans-serif;font-weight:900;font-size:clamp(28px,4.4vw,40px);line-height:1.1;margin:4px 0 12px;}
+  .vysledek-text{font-size:16px;line-height:1.7;color:var(--dark);margin:0 0 20px;}
+  .btn{display:inline-block;font-family:'Poppins',sans-serif;font-weight:700;font-size:14.5px;padding:14px 24px;border-radius:8px;}
+  .btn-gold{background:var(--gold);color:var(--black);}
+  .btn-gold:hover{background:var(--gold-dark);color:var(--white);}
+  .pozn{font-size:13px;color:var(--mid);margin:10px 0 0;}
+  .dalsi{margin-top:24px;padding-top:18px;border-top:1px solid var(--border);font-size:14.5px;line-height:1.7;color:var(--mid);}
+  .dalsi a{color:var(--gold-dark);font-weight:700;}
+  .skryte{display:none;}
+
+  .site-footer{background:#fff;border-top:1px solid #e8e8e8;padding:22px 24px;font-family:'DM Sans',sans-serif;}
+  .footer-in{max-width:1040px;margin:0 auto;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+  .footer-sl{font-size:13px;line-height:1.8;color:#545454;}
+  .footer-sl strong{color:#111;}
+  .footer-sl a{color:#545454;text-decoration:underline;text-underline-offset:2px;}
+  .footer-vpravo{text-align:right;}
+  @media (max-width:700px){.topbar{padding:12px 16px;}.wrap{padding:32px 18px 48px;}.karta{padding:22px 18px;}.site-footer{padding:20px 16px;}.footer-in{flex-direction:column;gap:10px;}.footer-vpravo{text-align:left;}}
+
+  .wrap-siroka{max-width:1080px;}
+  .area-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .area-card{background:#f0efe9;border:1.5px solid #dcdad3;border-radius:14px;padding:30px 28px 26px;color:var(--dark);transition:border-color .15s,transform .15s,background .15s;display:flex;flex-direction:column;min-height:190px;}
+  .area-card:hover{border-color:var(--gold);background:var(--white);transform:translateY(-2px);}
+  .area-card.first{background:var(--dark);border-color:var(--dark);color:var(--white);}
+  .area-card h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:20px;margin:0 0 10px;}
+  .area-card p{font-size:14.5px;color:var(--mid);margin:0 0 20px;flex-grow:1;line-height:1.5;}
+  .area-card.first p{color:rgba(255,255,255,.6);}
+  .area-card .go{font-size:13.5px;font-weight:700;color:var(--gold-dark);}
+  .area-card.first .go{color:var(--gold);}
+  .moznosti-dalsi{margin-top:44px;padding-top:28px;border-top:1px solid var(--border);display:grid;gap:22px;max-width:720px;}
+  .moznosti-dalsi h3{font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;margin:0 0 6px;}
+  .moznosti-dalsi p{font-size:15px;line-height:1.65;color:var(--mid);margin:0 0 8px;}
+  .moznosti-dalsi a{color:var(--gold-dark);font-weight:700;}
+  .moznosti-dalsi a:hover{color:var(--dark);}
+  @media (max-width:900px){.area-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:600px){.area-grid{grid-template-columns:1fr;}.area-card{min-height:0;padding:24px 22px 22px;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="https://tokva.cz/">Tokva</a>
+  <div class="topbar-right">
+    <a class="topbar-login" href="https://tokva.cz/nastroje/">Všechny nástroje</a>
+    <a class="topbar-login" href="https://tokva.cz/pro/">Víc o Tokva Pro</a>
+    <a class="topbar-login" href="https://tokva.cz/prihlaseni.html">Přihlásit se</a>
+  </div>
+</div>
+
+<main class="wrap wrap-siroka">
+  <h1>Co potřebujete ve firmě zlepšit?</h1>
+  <p class="uvod">Nemusíte znát správnou metodu ani vědět, který nástroj hledáte. Začněte tím, co právě řešíte.</p>
+
+  <div class="area-grid">
+    <a class="area-card first" href="https://tokva.cz/kde-zacit/" onclick="trackTokvaEvent('vstup_volba',{oblast:'nevim'})">
+      <h2>Nevím, čím začít</h2>
+      <p>Něco nefunguje, ale nedokážete přesně říct co.</p>
+      <span class="go">→ Najít správný první krok</span>
+    </a>
+    <a class="area-card" href="https://tokva.cz/sklad/" onclick="trackTokvaEvent('vstup_volba',{oblast:'sklad'})">
+      <h2>Sklad</h2>
+      <p>Málo místa, zbytečné chození, hledání, čekání nebo pomalá expedice.</p>
+      <span class="go">→ Řešit problémy ve skladu</span>
+    </a>
+    <a class="area-card" href="https://tokva.cz/vyroba/" onclick="trackTokvaEvent('vstup_volba',{oblast:'vyroba'})">
+      <h2>Výroba</h2>
+      <p>Prostoje, zbytečný pohyb, nízký výkon nebo problém, který se pořád vrací.</p>
+      <span class="go">→ Řešit problémy ve výrobě</span>
+    </a>
+    <a class="area-card" href="https://tokva.cz/administrativa/" onclick="trackTokvaEvent('vstup_volba',{oblast:'admin'})">
+      <h2>Administrativa</h2>
+      <p>Den je plný práce, ale čas mizí v rutině, přepisování nebo přeskakování mezi úkoly.</p>
+      <span class="go">→ Řešit administrativu</span>
+    </a>
+    <a class="area-card" href="https://tokva.cz/lide-a-komunikace/" onclick="trackTokvaEvent('vstup_volba',{oblast:'lide'})">
+      <h2>Lidé a komunikace</h2>
+      <p>Informace se ztrácejí, zadání nejsou jasná nebo lidé čekají jeden na druhého.</p>
+      <span class="go">→ Řešit komunikaci</span>
+    </a>
+  </div>
+
+  <div class="moznosti-dalsi">
+    <div>
+      <h3>Chci postupovat od zjištění problému až k řešení</h3>
+      <p>Prohlédněte si doporučený postup a vyberte krok, který právě potřebujete.</p>
+      <a href="https://tokva.cz/reseni-problemu/" onclick="trackTokvaEvent('vstup_volba',{oblast:'postup'})">Ukázat postup řešení →</a>
+    </div>
+    <p>Hledáte konkrétní nástroj? <a href="https://tokva.cz/nastroje/" onclick="trackTokvaEvent('vstup_volba',{oblast:'katalog'})">Zobrazit všechny nástroje →</a></p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-in">
+    <div class="footer-sl">
+      <div><strong>Tokva</strong> · Gabriela Tomíčková · IČO 75905311</div>
+      <div><a href="mailto:tomickova.info@gmail.com">tomickova.info@gmail.com</a> · <a href="tel:+420608221039">+420 608 221 039</a></div>
+    </div>
+    <div class="footer-sl footer-vpravo">
+      <div><a href="https://tokva.cz/ochrana-osobnich-udaju/">Zásady ochrany osobních údajů</a> · <a href="https://tokva.cz/obchodni-podminky/">Obchodní podmínky</a></div>
+      <div><a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a></div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Cookies a Google Analytics stejně jako na úvodní stránce -->
+<div class="cookies-bar" id="cookies-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;">
+  <p style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin:0;flex:1;min-width:200px;">Tento web používá analytické cookies (Google Analytics) pro měření návštěvnosti. <a href="https://tokva.cz/ochrana-osobnich-udaju/" style="color:#e9a91b;">Zásady ochrany osobních údajů</a></p>
+  <div style="display:flex;gap:8px;">
+    <button onclick="cookiesOdmitnout()" style="background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);border-radius:4px;padding:8px 14px;font-size:13px;cursor:pointer;">Odmítnout</button>
+    <button onclick="cookiesSouhlasit()" style="background:#e9a91b;color:#000;border:none;border-radius:4px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;">Souhlasím</button>
+  </div>
+</div>
+<script>
+function spustitGA() {
+  var s = document.createElement("script"); s.async = true;
+  s.src = "https://www.googletagmanager.com/gtag/js?id=G-NJWW5ZX4J9";
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { dataLayer.push(arguments); };
+  gtag("js", new Date()); gtag("config", "G-NJWW5ZX4J9");
+}
+function cookiesSouhlasit() { try { localStorage.setItem('cookies_souhlas', 'ano'); } catch (e) {} document.getElementById('cookies-bar').style.display = 'none'; spustitGA(); }
+function cookiesOdmitnout() { try { localStorage.setItem('cookies_souhlas', 'ne'); } catch (e) {} document.getElementById('cookies-bar').style.display = 'none'; }
+(function () {
+  var s = null; try { s = localStorage.getItem('cookies_souhlas'); } catch (e) {}
+  if (s === 'ano') spustitGA(); else if (s === null) document.getElementById('cookies-bar').style.display = 'flex';
+})();
+</script>
+</body>
+</html>
