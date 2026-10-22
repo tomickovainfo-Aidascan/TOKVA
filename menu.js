@@ -80,6 +80,22 @@
     // Katalog má "Všechny nástroje" jako název stránky vlevo, odkaz nepotřebuje.
     var jeKatalog = /^\/nastroje\/?$/.test(location.pathname);
     if (!vsechny && !jeKatalog) vsechny = odkaz(KATALOG, 'Všechny nástroje');
+    // Přihlášený do Tokvy: bez „Otevřít Tokvu zdarma“ a „Můj příběh“.
+    var prihlaseny = false;
+    try { prihlaseny = !!localStorage.getItem('sb-uiqjzeubhhnzspkoekxx-auth-token'); } catch (e) {}
+    if (prihlaseny) {
+      if (pribeh) pribeh.remove();
+      if (zlate) zlate.remove();
+      pribeh = null; zlate = null;
+      var za0 = null;
+      [vsechny, pro].forEach(function (el) {
+        if (!el) return;
+        kont.insertBefore(el, za0 ? za0.nextSibling : kont.firstChild);
+        za0 = el;
+      });
+      pridatPrepinac(null);
+      return;
+    }
     if (!pribeh) pribeh = odkaz(PRIBEH, 'Můj příběh');
     if (!zlate) {
       zlate = odkaz(VSTUP, 'Otevřít Tokvu zdarma', 'menu-zlate');
