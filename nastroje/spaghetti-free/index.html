@@ -704,14 +704,14 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 <div class="post-app">
   <div class="post-app-inner">
 
-    <div>
+    <div class="po-vysledku">
       <h2 class="content-card-title">Co udělat ještě dnes</h2>
       <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Vytiskněte diagram</strong> a položte ho na stůl tomu, kdo po té trase chodí. Jediná otázka: které kolečko je tady zbytečné?</p>
       <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Vyberte tři nejčastěji vychystávané položky</strong> a přesuňte je blíž k výdeji. Nic se nekupuje, jen se přerovnává.</p>
       <p style="font-size:14px;color:var(--mid);line-height:1.75;"><strong style="color:var(--dark);">Za týden nakreslete tutéž trasu znovu</strong> a porovnejte metry. U Anduly stačilo přesunout šest položek a trasa byla o 44&nbsp;% kratší.</p>
     </div>
 
-    <div class="pro-final-panel" id="pro-final-panel">
+    <div class="po-vysledku pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
       <h2 class="pro-final-title">Současný stav a návrh v jednom plánku. A rozdíl v metrech.</h2>
       <p class="pro-final-text">Co jste právě nakreslili, je současný stav. V Pro nakreslíte do stejného plánku návrh nového rozmístění vedle něj a appka spočítá rozdíl v metrech i procentech. Na poradu pak nejdete s pocitem, ale s číslem.</p>
@@ -723,30 +723,30 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <div>
       <h2 class="content-card-title">Nejčastější otázky</h2>
       <div class="faq-block">
-        <div class="faq-item">
-          <div class="faq-q">Musím nastavit měřítko, aby čísla dávala smysl?</div>
+        <details class="faq-item">
+          <summary class="faq-q">Musím nastavit měřítko, aby čísla dávala smysl?</summary>
           <div class="faq-a">Ano, bez měřítka appka neví, jaké vzdálenosti na plánku odpovídají skutečným metrům. Stačí ale označit dva body, jejichž reálnou vzdálenost znáte (třeba délku regálu), a appka si dopočítá zbytek sama.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Jde appka použít i na mobilu nebo tabletu?</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Jde appka použít i na mobilu nebo tabletu?</summary>
           <div class="faq-a">Ano, ovládá se dotykem stejně jako myší. Jedním prstem přidáváte body trasy klepnutím, dvěma prsty plánek přibližujete a posouváte.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Můžu zaznamenat víc tras najednou?</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Můžu zaznamenat víc tras najednou?</summary>
           <div class="faq-a">Ano, tlačítkem „+ Nová zakázka“ přidáte do stejného plánku další trasu, každá dostane vlastní barvu, takže je uvidíte vedle sebe.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Co se stane s plánkem, který nahraju?</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Co se stane s plánkem, který nahraju?</summary>
           <div class="faq-a">V bezplatné verzi zůstává plánek jen ve vašem prohlížeči, nikam se neposílá. Rozpracovaný nákres si prohlížeč pamatuje, dokud nedáte Začít znovu. V Tokva Pro se nákres i s plánkem ukládá do účtu vaší firmy.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Jak si výsledek ověřím krokoměrem?</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Jak si výsledek ověřím krokoměrem?</summary>
           <div class="faq-a">Před vychystáváním si poznačte hodnotu krokoměru a po skončení ji odečtěte. Stačí Google Fit na Androidu nebo vestavěná aplikace Zdraví na iPhonu.</div>
-        </div>
+        </details>
       </div>
     </div>
 
-    <div class="navazujici-odkazy">
+    <div class="po-vysledku navazujici-odkazy">
       <h2 class="content-card-title">Kam dál</h2>
       <p>Chcete pracoviště přerovnat tak, aby se zbytečně nechodilo? <a href="../5S_audit/">5S pro každého smrtelníka →</a></p>
       <p>Chcete znát čas, ne jen metry? <a href="../meric-plytvani-free/">Měřič plýtvání →</a></p>
@@ -1979,5 +1979,6 @@ document.addEventListener('keydown', function(e){
 </script>
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
+<script src="/po-vysledku.js" data-vysledek="#stats-bar" data-az="#stat-celkem"></script>
 </body>
 </html>

@@ -1219,6 +1219,7 @@ body.je-pro .jen-free { display:none; }
   <div class="post-calc-inner">
     <div class="post-calc-grid">
       <div>
+        <div class="po-vysledku">
         <h2 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h2>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Fotky před a po jsou důkaz, že se něco změnilo. To hlavní ale teprve přijde: jestli to vydrží.</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;">Naplánujte si první kontrolu do pár týdnů a sledujte, jestli pracoviště drží nový standard, nebo se pomalu vrací do starého stavu. Prověřte to časem, ne jen jednou hned po úklidu.</p>
@@ -1227,20 +1228,21 @@ body.je-pro .jen-free { display:none; }
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Vyfoťte stav standardu</strong> tak, jak ho chcete vidět vždycky. To je měřítko, se kterým budete při kontrole srovnávat.</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Řekněte lidem na tom pracovišti, kdy kontrola bude.</strong> Standard, o kterém vědí dva lidi, není standard.</p>
         <p class="jen-bez-pro" style="font-size:14px;color:var(--mid);line-height:1.75;">Kontrolu můžete zdarma dělat, kdykoli chcete. Tokva Pro ji uloží se skóre a ukáže vývoj v čase.</p>
+        </div>
         <div class="faq-block">
           <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
-          <div class="faq-item">
-            <div class="faq-q">Jak často mám kontrolovat 5S standard?</div>
+          <details class="faq-item">
+            <summary class="faq-q">Jak často mám kontrolovat 5S standard?</summary>
             <div class="faq-a">Zpočátku klidně jednou týdně, později stačí jednou za měsíc. Důležité je nepřestat úplně, jinak se pracoviště pomalu vrátí do starého stavu.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Standard se nedrží, co s tím?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Standard se nedrží, co s tím?</summary>
             <div class="faq-a">Hledejte příčinu. Většinou to není lenost, ale že standard nesedí na skutečný provoz. Upravte ho, ať ho lidi reálně dodrží.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Musím udělat všech pět kroků najednou?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Musím udělat všech pět kroků najednou?</summary>
             <div class="faq-a">Ne, appka si pamatuje postup u každého místa zvlášť, můžete se k rozdělané appce kdykoli vrátit.</div>
-          </div>
+          </details>
         </div>
       <div data-tokva-zpetna-vazba data-nastroj="5s-audit"></div>
       </div>
@@ -1248,7 +1250,7 @@ body.je-pro .jen-free { display:none; }
   </div>
 </div>
 
-<div class="dalsi-nastroje-wrap" id="dalsi-nastroje">
+<div class="po-vysledku dalsi-nastroje-wrap" id="dalsi-nastroje">
   <h2 class="content-card-title">Navazující nástroje</h2>
   <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Pořádek je první krok. Tyhle tři appky se hodí, až budete chtít vědět, kde se i na uklizeném pracovišti pořád ztrácí čas.</p>
   <div class="dalsi-nastroje-grid">
@@ -3370,5 +3372,6 @@ function cookiesOdmitnout() {
 </script>
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
+<script src="/po-vysledku.js" data-vysledek=".vysledek-panel"></script>
 </body>
 </html>

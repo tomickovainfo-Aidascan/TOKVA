@@ -695,6 +695,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
     <div class="post-calc-grid">
 
       <div>
+        <div class="po-vysledku">
         <h2 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h2>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Číslo vás překvapilo? Nebo přesně potvrdilo, co jste tušili?</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Teď víte, kolik vás rutina stojí a která položka vychází nejdráž.</p>
@@ -709,16 +710,17 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <p class="jen-bez-pro" style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Kalkulačku můžete zdarma použít, kolikrát chcete, jen si výpočet nikam neuloží. Tokva Pro výpočty uloží k projektu a po změně je automaticky porovná vedle sebe.</p>
         <p class="jen-bez-pro" style="font-size:14px;line-height:1.75;margin-bottom:14px;"><a href="https://tokva.cz/pro/" target="_blank" onclick="trackTokvaEvent('pro_click',{source_tool:'kalkulacka_ztrat',placement:'result'})" style="color:var(--gold-dark);font-weight:700;">Co umí Tokva Pro a kolik stojí →</a></p>
         <a href="#btn-ulozit-vychozi" id="cta-ulozit-dole" class="vysledek-cta" onclick="event.preventDefault();document.getElementById('btn-ulozit-vychozi').scrollIntoView({behavior:'smooth',block:'center'});">Uložit tenhle výpočet jako výchozí stav →</a>
+        </div>
         <div class="faq-block" style="margin-top:24px;">
           <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
-          <div class="faq-item">
-            <div class="faq-q">Je výsledek přesný?</div>
+          <details class="faq-item">
+            <summary class="faq-q">Je výsledek přesný?</summary>
             <div class="faq-a">Není, a záměrně. Cílem není přesný audit, ale rychlá orientace. Pokud vás výsledek překvapí, teprve pak má smysl měřit přesněji, například Měřičem plýtvání.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Potřebuji znát přesné minuty?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Potřebuji znát přesné minuty?</summary>
             <div class="faq-a">Ne. Zadejte odhad. Vedoucí, který v provozu stojí denně, ho má v hlavě. Výsledek bude dostatečně blízko realitě.</div>
-          </div>
+          </details>
         </div>
       <div data-tokva-zpetna-vazba data-nastroj="kalkulacka"></div>
       </div>
@@ -728,7 +730,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   </div>
 </div>
 
-<div class="dalsi-nastroje-wrap">
+<div class="po-vysledku dalsi-nastroje-wrap">
   <h2 class="content-card-title">Navazující nástroje</h2>
   <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Vyberte podle toho, co vám vyšlo nejdráž. Nahoře u výsledku vám appka jeden rovnou doporučí.</p>
   <div class="dalsi-nastroje-grid">
@@ -1735,5 +1737,6 @@ function cookiesOdmitnout() {
 
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
+<script src="/po-vysledku.js" data-vysledek=".results"></script>
 </body>
 </html>

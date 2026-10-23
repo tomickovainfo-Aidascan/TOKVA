@@ -1179,6 +1179,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   <div class="post-calc-inner">
     <div class="post-calc-grid">
       <div>
+        <div class="po-vysledku">
         <h3 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h3>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Překvapilo vás číslo? Nebo potvrdilo, co jste tušili?</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Podívejte se na rozpad, která kategorie tvoří největší podíl. Tam se dá nejrychleji ušetřit. Energie? Zkontrolujte tarif a izolaci. Revize? Srovnejte nabídky. Odpisy? Přehodnoťte, co opravdu potřebujete.</p>
@@ -1188,24 +1189,25 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Napište si do kalendáře, kdy výpočet uděláte znovu.</strong> Pololetí stačí, hlavně ať porovnáváte stejně spočítaná čísla.</p>
         <p class="jen-bez-pro" style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Kalkulačku můžete zdarma použít znovu, kdykoli chcete. Tokva Pro výpočty uloží a automaticky je porovná vedle sebe.</p>
         <p class="jen-s-pro" style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Uložený výpočet najdete v Uložených výpočtech na téhle stránce. Až ho za půl roku spočítáte znovu, zaškrtněte oba a dejte Porovnat vybrané.</p>
+        </div>
         <div class="faq-block" style="margin-top:24px;">
           <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
-          <div class="faq-item">
-            <div class="faq-q">Je výsledek přesný?</div>
+          <details class="faq-item">
+            <summary class="faq-q">Je výsledek přesný?</summary>
             <div class="faq-a">Přesnost záleží na tom, co zadáte. Použijte skutečná čísla z faktur a smluv, pak výsledek velmi dobře odpovídá realitě. Kalkulačka nepočítá mzdy ani mobilní techniku.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Proč jsou tam odpisy vybavení?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Proč jsou tam odpisy vybavení?</summary>
             <div class="faq-a">Regály za 250 000 Kč rozložené na 15 let stojí 1 389 Kč měsíčně. To je reálný náklad, jen ho nevidíte v měsíční faktuře. Bez odpisů by kalkulačka ukazovala nižší číslo, ale nepravdivé.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Co je oportunitní náklad kapitálu u vlastní budovy?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Co je oportunitní náklad kapitálu u vlastní budovy?</summary>
             <div class="faq-a">Peníze vázané v nemovitosti mohly být investovány jinam. Oportunitní náklad ukazuje, co „stojí“ vlastnit budovu oproti pronájmu, i když reálně žádné nájemné neplatíte.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Neznám přesné výše revizí. Co mám zadat?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Neznám přesné výše revizí. Co mám zadat?</summary>
             <div class="faq-a">Žádné typické průměry přesně neznáme, aby appka netvrdila víc, než ví. Když číslo nemáte, nechte pole na nule a počítejte s tím, že výsledek bude nižší než reálný náklad na m². Pro rozhodování o konkrétní investici (stěhování, pronájem, koupě) použijte skutečná čísla ze svých smluv a faktur.</div>
-          </div>
+          </details>
         </div>
       <div data-tokva-zpetna-vazba data-nastroj="kalkulacka-naklady-skladu"></div>
       </div>
@@ -1213,7 +1215,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   </div>
 </div>
 
-<div class="dalsi-nastroje-wrap">
+<div class="po-vysledku dalsi-nastroje-wrap">
   <h2 class="content-card-title">Navazující nástroje</h2>
   <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Číslo za metr víte. Tyhle appky pomohou s tím, proč je takové, jaké je.</p>
   <div class="dalsi-nastroje-grid">
@@ -1238,7 +1240,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
   </div>
 </div>
 
-<div class="main-pro-final" id="main-pro-final">
+<div class="po-vysledku main-pro-final" id="main-pro-final">
   <div class="pro-final-panel">
     <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
     <div class="pro-final-title">Druhý výpočet vedle prvního</div>
@@ -2817,5 +2819,6 @@ function tisknoutNakladySkladu() {
 
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
+<script src="/po-vysledku.js" data-vysledek=".results"></script>
 </body>
 </html>

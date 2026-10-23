@@ -1,5 +1,6 @@
 // Stránky nástrojů: co patří až k výsledku, ukázat až s výsledkem (23. 10. 2026).
 // Použití: <script src="/po-vysledku.js" data-vysledek="#vysledky"></script>
+// (volitelně data-az="#id": navíc musí mít prvek nenulové číslo)
 // a prvkům, které se mají ukázat až po dokončení, dát třídu "po-vysledku".
 // Jakmile je výsledek na stránce vidět, dostane <html> třídu "tokva-hotovo".
 // Když člověk začne znovu a výsledek zmizí, třída zase zmizí.
@@ -9,6 +10,8 @@
   'use strict';
   var skript = document.currentScript;
   var vyber = skript ? skript.getAttribute('data-vysledek') : '';
+  // data-az="#id": výsledek se počítá, až má prvek nenulové číslo (Spaghetti).
+  var az = skript ? skript.getAttribute('data-az') : '';
 
   var css = document.createElement('style');
   css.textContent =
@@ -33,8 +36,13 @@
     }
     return false;
   }
+  function splnenoAz() {
+    if (!az) return true;
+    var e = document.querySelector(az);
+    return !!(e && /[1-9]/.test(e.textContent || ''));
+  }
   function tik() {
-    document.documentElement.classList.toggle('tokva-hotovo', jeVidet());
+    document.documentElement.classList.toggle('tokva-hotovo', jeVidet() && splnenoAz());
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tik);
   else tik();
