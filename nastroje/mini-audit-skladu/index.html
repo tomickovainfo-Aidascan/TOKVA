@@ -1144,7 +1144,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 <div class="post-audit">
   <div class="post-audit-inner">
 
-    <div>
+    <div class="po-vysledku">
       <h2 class="content-card-title">Co dělat s výsledkem?</h2>
       <p class="post-text">Teď máte skóre a víte, které tři oblasti vám ukrojily nejvíc bodů. Konkrétní tipy k nim najdete přímo u výsledku.</p>
       <p class="post-text" style="margin-bottom:8px;">Dál to má tři kroky. Ten třetí většina lidí vynechá, a přitom až v něm se změna potvrdí:</p>
@@ -1159,7 +1159,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
       <a href="#pro-final-panel" class="post-cta jen-bez-pro" onclick="event.preventDefault();document.getElementById('pro-final-panel').scrollIntoView({behavior:'smooth',block:'center'});">Automatické porovnání v Tokva Pro →</a>
     </div>
 
-    <div>
+    <div class="po-vysledku">
       <h2 class="content-card-title">Navazující nástroje</h2>
       <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Vyberte podle toho, která oblast vám vyšla nejhůř.</p>
       <div class="dalsi-nastroje-col">
@@ -1180,33 +1180,33 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 
     <div class="faq-block">
       <h2 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h2>
-      <div class="faq-item">
-        <div class="faq-q">Co když nevím odpověď na některou otázku v auditu?</div>
+      <details class="faq-item">
+        <summary class="faq-q">Co když nevím odpověď na některou otázku v auditu?</summary>
         <div class="faq-a">Zvolte „Nevím / nemáme data“. Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku. Nevědět je samo o sobě důležité zjištění, ne totéž co „nemáme problém“.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Musím projít celý Mini audit skladu najednou?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Musím projít celý Mini audit skladu najednou?</summary>
         <div class="faq-a">Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později. Projděte ji v jednom sezení.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Jak může deset otázek něco poznat o mém skladu?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Jak může deset otázek něco poznat o mém skladu?</summary>
         <div class="faq-a">Nepozná všechno. Pozná, kde se ptát dál. Otázky jsou kontrolní body, které jsem procházela ve skladech ručně, a skóre vám řekne, kterou oblast si vzít jako první.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Hodí se audit i pro malý sklad nebo pro výrobu?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Hodí se audit i pro malý sklad nebo pro výrobu?</summary>
         <div class="faq-a">Pro malý sklad ano. Otázky míří na pravidla, toky a předávání, ne na velikost. Pro výrobu je tu samostatný <a href="../mini-audit-vyroby/">Mini audit výroby</a>.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Co s výsledkem, když vyjde dobře?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Co s výsledkem, když vyjde dobře?</summary>
         <div class="faq-a">Pak máte podloženo, že problém není ve skladu, a to je taky odpověď. Podívejte se na to, co skladu předchází.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Jak často má smysl audit opakovat?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Jak často má smysl audit opakovat?</summary>
         <div class="faq-a">Po každé větší změně, jinak jednou za čtvrt roku. Dřív se stav nestihne usadit.</div>
-      </div>
+      </details>
     </div>
 
-    <div class="pro-final-panel" id="pro-final-panel">
+    <div class="po-vysledku pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
       <h2 class="pro-final-title">Víte, kde to vázne. Srovnalo se to?</h2>
       <p class="pro-final-text">Bezplatný audit ukáže jedno skóre k dnešku. Tokva Pro postaví dva audity vedle sebe, otázku po otázce, a ukáže, co se zlepšilo, co zhoršilo a co zůstalo stejné. To je podklad, se kterým se jde za majitelem podruhé.</p>
@@ -2522,5 +2522,6 @@ document.addEventListener('keydown', function(e){
 
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
+<script src="/po-vysledku.js" data-vysledek="#vysledky"></script>
 </body>
 </html>
