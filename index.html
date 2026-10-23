@@ -97,10 +97,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 @media (max-width:700px){.site-footer{padding:20px 16px;}.footer-in{flex-direction:column;gap:10px;}.footer-vpravo{text-align:left;}}
 .duvera-cta{margin-top:26px;}
 .kroky-cta{margin-top:30px;}
-.kroky-karty{display:grid;gap:56px;margin-top:8px;}
-.krok-karta{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:48px;align-items:center;}
+.kroky-karty{display:grid;gap:40px;margin-top:8px;}
+.krok-karta{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:44px;align-items:center;}
+.krok-karta picture{max-width:460px;justify-self:end;width:100%;}
+#obr-okno{margin:auto;border:none;padding:0;background:transparent;max-width:min(900px,94vw);overflow:visible;}
+#obr-okno::backdrop{background:rgba(0,0,0,.8);}
+#obr-okno img{display:block;width:100%;height:auto;max-height:88vh;object-fit:contain;border-radius:10px;background:#fff;}
 .krok-karta picture{order:2;}
-.krok-karta img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:top;border:1px solid #e6e3dc;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.07);background:#fff;}
+.krok-karta img{display:block;width:100%;height:auto;cursor:zoom-in;border:1px solid #e6e3dc;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.07);background:#fff;}
 .krok-text .step-num{display:block;margin-bottom:6px;}
 .krok-text h3{font-family:'Poppins',sans-serif;font-size:21px;font-weight:800;line-height:1.3;margin-bottom:10px;}
 .krok-text p{font-size:16px;line-height:1.7;color:var(--mid);max-width:440px;}
@@ -117,7 +121,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 #ukazka-okno::backdrop{background:rgba(0,0,0,.75);}
 #ukazka-okno video{display:block;width:100%;height:auto;max-height:86vh;border-radius:20px;border:6px solid #111;background:#111;}
 .ukazka-zavrit{position:absolute;top:-40px;right:0;background:none;border:none;color:#fff;font-size:32px;line-height:1;cursor:pointer;}
-@media (max-width:760px){.kroky-karty{gap:40px;}.krok-karta{grid-template-columns:1fr;gap:18px;}}
+@media (max-width:760px){.kroky-karty{gap:34px;}.krok-karta{grid-template-columns:1fr;gap:14px;}.krok-karta picture{max-width:340px;justify-self:start;}}
 
 .pro-koho { font-family:'Poppins',sans-serif; font-size:18px; font-weight:700; color:var(--gold-dark); margin-bottom:14px; max-width:760px; line-height:1.4; }
 @media (max-width:600px){ .pro-koho { font-size:16px; } }
@@ -281,7 +285,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <h2 class="section-title">Od prvního zjištění k řešení. S podporou Tokvy v každém kroku.</h2>
     <div class="kroky-karty">
       <div class="krok-karta">
-        <picture><source srcset="obrazky/krok-1.webp" type="image/webp"><img src="obrazky/krok-1.jpg" width="960" height="720" alt="Výsledek kvízu Kde začít: doporučená oblast Sklad" loading="lazy"></picture>
+        <picture><source srcset="obrazky/krok-1.webp" type="image/webp"><img src="obrazky/krok-1.jpg" width="800" height="749" alt="Výsledek kvízu Kde začít: doporučená oblast Sklad" loading="lazy"></picture>
         <div class="krok-text"><span class="step-num">01</span><h3>Tokva vám ukáže, kde začít</h3><p>Pár jednoduchých otázek o vašem provozu a Tokva doporučí oblast, kterou má smysl řešit jako první.</p></div>
       </div>
       <div class="krok-karta">
@@ -293,12 +297,23 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
         <div class="krok-text"><span class="step-num">03</span><h3>Tokva pomůže najít příčinu a další krok</h3><p>Otázkami vás dovede k pravděpodobné příčině problému a pomůže určit, co změnit jako první.</p></div>
       </div>
       <div class="krok-karta">
-        <picture><source srcset="obrazky/krok-4.webp" type="image/webp"><img src="obrazky/krok-4.jpg" width="960" height="720" alt="Tokva Pro: porovnání dvou výpočtů, ztráta klesla o 975 000 Kč ročně" loading="lazy"></picture>
+        <picture><source srcset="obrazky/krok-4.webp" type="image/webp"><img src="obrazky/krok-4.jpg" width="800" height="434" alt="Tokva Pro: porovnání dvou výpočtů, ztráta klesla o 975 000 Kč ročně" loading="lazy"></picture>
         <div class="krok-text"><span class="step-num">04 <span class="krok-pro">Tokva Pro</span></span><h3>Tokva porovná stav před změnou a po&nbsp;ní</h3><p>Ukáže, jestli se provoz opravdu zlepšil a kde má smysl pokračovat.</p></div>
       </div>
     </div>
     <p class="kroky-pozn">Obrázky jsou z appky Tokva s ukázkovými daty.</p>
     <p class="ukazka-odkaz"><button type="button" onclick="document.getElementById('ukazka-okno').showModal();var v=document.getElementById('ukazka-video');v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});trackTokvaEvent('ukazka_click',{placement:'kroky'})">▶ Pustit celou ukázku (75 s)</button></p>
+    <dialog id="obr-okno" onclick="this.close()"><button type="button" class="ukazka-zavrit" aria-label="Zavřít">×</button><img src="" alt=""></dialog>
+    <script>
+    // Klepnutím na obrázek kroku se otevře ve velkém.
+    document.querySelectorAll('.krok-karta img').forEach(function (i) {
+      i.addEventListener('click', function () {
+        var o = document.getElementById('obr-okno'), v = o.querySelector('img');
+        v.src = i.currentSrc || i.src; v.alt = i.alt;
+        if (o.showModal) o.showModal();
+      });
+    });
+    </script>
     <dialog id="ukazka-okno" onclick="if(event.target===this)this.close()" onclose="document.getElementById('ukazka-video').pause()">
       <button type="button" class="ukazka-zavrit" aria-label="Zavřít" onclick="this.closest('dialog').close()">×</button>
       <video id="ukazka-video" poster="videa/tokva-ukazka-nahled.jpg" muted playsinline controls preload="none" width="720" height="1402">
