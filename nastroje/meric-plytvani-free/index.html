@@ -652,6 +652,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   <div class="post-calc-inner">
     <div class="post-calc-grid">
       <div>
+        <div class="po-vysledku">
         <h2 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h2>
         <p id="co-delat-text" style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Teď máte rozložení času v procentech a víte, která kategorie ukrojila nejvíc. Konkrétní tipy se vám ukážou pod grafem podle vašich vlastních čísel.</p>
         <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:8px;">Dál to má tři kroky. Ten třetí většina lidí vynechá, a přitom až v něm se změna potvrdí:</p>
@@ -663,32 +664,33 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
         <p class="jen-s-pro" style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Tokva Pro už máte. Dnešní měření si přeneste do Měřiče Pro tlačítkem níž. Tam se uloží do historie a po změně ho porovnáte s druhým měřením.</p>
         <p class="jen-bez-pro" style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">Měřič můžete zdarma používat opakovaně, v jednom měření změříte 3 cykly. Tokva Pro vám měření uloží k projektu a automaticky je porovná, v procentech i v korunách.</p>
         <a href="#pro-cta" style="display:inline-block;font-size:14px;font-weight:700;color:var(--gold-dark);text-decoration:none;" onclick="event.preventDefault();document.getElementById('pro-cta').scrollIntoView({behavior:'smooth',block:'center'});">Automatické porovnání v Tokva Pro →</a>
+        </div>
         <div class="faq-block" style="margin-top:24px;">
           <h3 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h3>
-          <div class="faq-item">
-            <div class="faq-q">Jak přesné je měření v appce Měřič plýtvání?</div>
+          <details class="faq-item">
+            <summary class="faq-q">Jak přesné je měření v appce Měřič plýtvání?</summary>
             <div class="faq-a">Podle toho, jak klikáte. Pokud jste přesní vy, je přesný i výsledek. Neměříte odhadem jako u kalkulačky, měříte reálný čas mezi kliknutími. Čím víc cyklů změříte, tím spolehlivější je průměr.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Co když zapomenu kliknout na začátku činnosti?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Co když zapomenu kliknout na začátku činnosti?</summary>
             <div class="faq-a">Ten čas se přičte k předchozí kategorii, protože appka měří do dalšího kliknutí. U jednoho zapomenutého kliknutí to výsledek zásadně nepokazí, jen buďte při měření o to pozornější.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Kolik cyklů mám změřit, abych tomu mohl věřit?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Kolik cyklů mám změřit, abych tomu mohl věřit?</summary>
             <div class="faq-a">Tři cykly stačí na první orientaci. Pokud se jednotlivé cykly hodně liší (appka to ukáže v sekci Variabilita cyklů), změřte další samostatné kolo. Víc než počet cyklů ale rozhoduje druhé měření po změně: teprve to ukáže, jestli změna zabrala.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Je Měřič plýtvání to samé jako klasická časová studie?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Je Měřič plýtvání to samé jako klasická časová studie?</summary>
             <div class="faq-a">Princip je stejný, jen bez stopek a papíru. Appka dělá to samé, co byste jinak dělali ručně, jen automaticky měří a rovnou spočítá rozložení času.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Můžu appku použít pro víc pracovníků na stejném procesu?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Můžu appku použít pro víc pracovníků na stejném procesu?</summary>
             <div class="faq-a">Ano, změřte proces u víc lidí postupně a porovnejte výsledky ručně. Automatické porovnání cyklů mezi sebou je ve verzi Pro.</div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q">Hodí se Měřič plýtvání i mimo sklad, třeba ve výrobě?</div>
+          </details>
+          <details class="faq-item">
+            <summary class="faq-q">Hodí se Měřič plýtvání i mimo sklad, třeba ve výrobě?</summary>
             <div class="faq-a">Ano, kategorie (práce, přesun, hledání, čekání, administrativa, kontrola, příprava) sedí na jakoukoliv opakující se operaci, ve skladu i na lince.</div>
-          </div>
+          </details>
         </div>
       <div data-tokva-zpetna-vazba data-nastroj="meric-free"></div>
       </div>
@@ -696,7 +698,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   </div>
 </div>
 
-<div class="dalsi-nastroje-wrap" id="dalsi-nastroje">
+<div class="po-vysledku dalsi-nastroje-wrap" id="dalsi-nastroje">
   <h2 class="content-card-title">Navazující nástroje</h2>
   <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Vyberte podle toho, která kategorie vám vyšla nejvýš.</p>
   <div class="dalsi-nastroje-grid">
@@ -727,7 +729,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
   </div>
 </div>
 
-<div class="pro-cta-wrap">
+<div class="po-vysledku pro-cta-wrap">
   <!-- PRO CTA -->
   <div class="pro-cta" id="pro-cta">
     <div class="pro-cta-badge">Tokva Pro</div><span class="pro-cta-soon">Zakladatelský program</span>
@@ -1442,5 +1444,6 @@ document.addEventListener('keydown', function(e){
 </script>
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
+<script src="/po-vysledku.js" data-vysledek="#souhrn"></script>
 </body>
 </html>
