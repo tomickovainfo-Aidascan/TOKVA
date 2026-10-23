@@ -3208,8 +3208,18 @@ function ulozitEdit(id) {
   if (timeParts) {
     const d = new Date(z.timestamp);
     d.setHours(parseInt(timeParts[1]), parseInt(timeParts[2]), 0);
-    z.timestamp = d.getTime();
-    z.cas = timeEl.value.padStart(5, '0');
+    // Záznamy jdou za sebou. Nový čas nesmí být dřív než předchozí záznam
+    // ani později než další, jinak by vyšlo záporné trvání.
+    const i = zaznamy.indexOf(z);
+    const pred = i > 0 ? zaznamy[i - 1] : null;
+    const po = i < zaznamy.length - 1 ? zaznamy[i + 1] : null;
+    if ((pred && d.getTime() < pred.timestamp) || (po && d.getTime() > po.timestamp)) {
+      const rozsah = pred && po ? 'mezi ' + pred.cas + ' a ' + po.cas : (pred ? 'nejdřív ' + pred.cas : 'nejpozději ' + po.cas);
+      upozornit('Čas ' + timeEl.value + ' by se nevešel mezi sousední záznamy. Tady může být čas ' + rozsah + '. Čas záznamu se nezměnil, text ano.', 'Časy nejdou za sebou');
+    } else {
+      z.timestamp = d.getTime();
+      z.cas = timeEl.value.padStart(5, '0');
+    }
   } else if (timeEl.value.trim() !== z.cas) {
     upozornit('Čas „' + timeEl.value + '" není platný (0:00-23:59). Čas záznamu se nezměnil.', 'Neplatný čas');
   }

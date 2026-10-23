@@ -2312,7 +2312,9 @@ function renderMain() {
 
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-pct').textContent = splneno + ' / 5';
-  document.getElementById('progress-label').textContent = misto.nazev + ' - postup';
+  // Starší data: splněný krok bez povinné fotky (smazané dřív, než to appka hlídala).
+  const chybiFoto = (misto.splneno.s1 && !(misto.fotky || {}).s1_pred) || (misto.splneno.s4 && !(misto.fotky || {}).s4_po);
+  document.getElementById('progress-label').textContent = misto.nazev + ' - postup' + (chybiFoto ? ' (chybí povinná fotka, doplňte ji)' : '');
 
   const main = document.getElementById('main');
   main.innerHTML = '';
@@ -2795,6 +2797,13 @@ function smazatFoto(sId, typ) {
   const misto = aktivniMistoData();
   if (!misto) return;
   const klic = sId === 'standard' ? 'standard' : sId + '_' + typ;
+  // Povinná fotka u splněného kroku se nesmí ztratit, jinak by souhrn dál
+  // ukazoval 5/5 bez dokumentace. Jde ji ale vyměnit klepnutím na fotku.
+  const povinna = (klic === 's1_pred' || klic === 's4_po');
+  if (povinna && misto.splneno && misto.splneno[sId]) {
+    ukazatUpozorneni('Fotka ' + (typ === 'pred' ? 'před' : 'po') + ' je u splněného kroku povinná, proto ji nejde jen smazat. Když klepnete na fotku, vyberete novou a ta stará se nahradí. Smazat ji jde, až krok odškrtnete.');
+    return;
+  }
   ukazatPotvrzeni('Smazat tuhle fotku? Pak můžete nahrát jinou.', async () => {
     if (klic === 'standard') {
       if (misto.standard) { misto.standard.foto = null; delete misto.standard.foto_ts; }

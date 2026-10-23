@@ -1060,6 +1060,8 @@ function nacistSoubor(file) {
     img.onload = () => {
       layout = img;
       inicializovat();
+      // Nahraný plánek uložit hned, ne až po první změně (rychlé obnovení stránky ho dřív ztratilo).
+      try { ulozitRozpracovanyNakresIhned(); } catch (e) {}
     };
     img.onerror = () => {
       zobrazitUploadNotice('Tenhle soubor se nepodařilo načíst jako obrázek. Zkuste JPG, PNG nebo PDF.', false);
@@ -1116,6 +1118,8 @@ async function nacistPdf(file) {
     img.onload = () => {
       layout = img;
       inicializovat();
+      // Nahraný plánek uložit hned, ne až po první změně (rychlé obnovení stránky ho dřív ztratilo).
+      try { ulozitRozpracovanyNakresIhned(); } catch (e) {}
     };
     img.onerror = () => {
       zobrazitUploadNotice('PDF se sice načetlo, ale nepodařilo se z něj udělat obrázek. Zkuste ho uložit jako JPG/PNG a nahrát znovu.', false);

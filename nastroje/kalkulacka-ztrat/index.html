@@ -482,6 +482,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
           <div class="input-label" id="lbl-prostoje">Čekání a prostoje <span class="input-hint">min / směna / člověk</span></div>
           <div class="input-row"><input type="range" id="prostoje" aria-labelledby="lbl-prostoje" min="0" max="120" value="20" step="5" oninput="syncFromRange('prostoje')"><input type="number" class="input-val-edit" id="prostoje-num" aria-labelledby="lbl-prostoje" min="0" step="5" value="20" oninput="syncFromNumber('prostoje')"></div>
         </div>
+        <div id="ztraty-rozpor" role="status" style="display:none;font-size:12.5px;line-height:1.5;color:#976e12;background:#fdf3d9;border-radius:8px;padding:8px 12px;margin:-4px 0 14px;"></div>
         <div class="input-group">
           <div class="input-label" id="lbl-kamionu">Počet dodávek a expedic týdně</div>
           <div class="input-row"><input type="range" id="kamionu" aria-labelledby="lbl-kamionu" min="0" max="30" value="5" step="1" oninput="syncFromRange('kamionu')"><input type="number" class="input-val-edit" id="kamionu-num" aria-labelledby="lbl-kamionu" min="0" value="5" oninput="syncFromNumber('kamionu')"></div>
@@ -955,6 +956,19 @@ function update() {
   const kamionh = (kamionCas / 60) * kamionu;
   const prostojes = (prostoje / 60) * smeny * lide * 5;
   const celkem = chuzeh + adminh + kamionh + prostojes;
+  // Chůze, administrativa a prostoje jsou minuty na člověka za směnu. Dohromady
+  // nemůžou být víc než celá směna, jinak jsou čísla nejspíš špatně.
+  const rozpor = document.getElementById('ztraty-rozpor');
+  if (rozpor) {
+    const ztratyMin = chuze + admin + prostoje;
+    const smenaMin = delkaSmeny * 60;
+    if (smenaMin > 0 && ztratyMin > smenaMin) {
+      rozpor.textContent = 'Dohromady ' + ztratyMin.toLocaleString('cs-CZ') + ' minut ztrát na člověka, ale směna má jen ' + smenaMin.toLocaleString('cs-CZ') + ' minut. Zkontrolujte, jestli jsou čísla na směnu a na jednoho člověka.';
+      rozpor.style.display = 'block';
+    } else {
+      rozpor.style.display = 'none';
+    }
+  }
 
   // oprava: dřív se sazba násobila ještě jednou 1,34 (odvody), ale pole "Kolik vás stojí hodina
   // pracovníka celkem" už odvody obsahuje - dvojí započtení odstraněno
