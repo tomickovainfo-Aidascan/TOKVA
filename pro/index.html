@@ -218,6 +218,11 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 #objednavka{max-width:760px;}
 @media (max-width:760px){.ukazka-radek{grid-template-columns:1fr;gap:16px;}.screenshoty{gap:36px;}}
 .stred-cta{margin:0 0 34px;}
+.vyhody{margin:6px 0 48px;border-top:1px solid var(--border2);}
+.vyhoda{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:32px;padding:18px 0;border-bottom:1px solid var(--border2);align-items:baseline;}
+.vyhoda dt{font-family:'Poppins',sans-serif;font-weight:800;font-size:18px;color:var(--dark);line-height:1.35;}
+.vyhoda dd{margin:0;font-size:16px;line-height:1.65;color:var(--mid);}
+@media (max-width:640px){.vyhoda{grid-template-columns:1fr;gap:4px;padding:14px 0;}}
 </style>
 <script type="application/ld+json">
 {
@@ -374,24 +379,13 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 
   <h2 class="pilire-uvod">Jaké výhody má Tokva Pro</h2>
   <p class="pilire-uvod-sub">Nástroj zdarma vám dá výsledek. Pro vám pomůže převést výsledek do konkrétních úkolů a ověřit jejich přínos.</p>
-  <div class="pilire">
-    <div class="pilir">
-      <h3>Výsledky zůstanou u firmy</h3>
-      <p>V Pro máte výsledky uložené u firmy a můžete na ně navazovat: odpovědi, naměřené hodnoty, fotky i poznámky. Za půl roku se máte k čemu vrátit.</p>
-    </div>
-    <div class="pilir">
-      <h3>Uvidíte rozdíl mezi dvěma měřeními</h3>
-      <p>Změřili jste, něco změnili, změřili znovu. Appka postaví obě měření vedle sebe a ukáže, co se zlepšilo, co ne a co zůstalo stejné. Vy nepočítáte nic.</p>
-    </div>
-    <div class="pilir">
-      <h3>Ze zjištění se stane úkol se jménem a termínem</h3>
-      <p>Ne papír, co skončí v šuplíku. Úkol má odpovědného člověka, termín a fotku stavu před a po. Z úkolu se vždycky vrátíte na celý výsledek, ze kterého vznikl.</p>
-    </div>
-    <div class="pilir">
-      <h3>Hotovo ještě neznamená vyřešeno</h3>
-      <p>Hotové opatření přepnete do stavu Ověřit výsledek. V Moje Tokva pak zůstává mezi otevřenými úkoly, dokud ho po druhém měření neuzavřete. Druhé měření vám pomůže ověřit, jestli opatření skutečně pomohlo.</p>
-    </div>
-  </div>
+  <dl class="vyhody">
+    <div class="vyhoda"><dt>Výsledky máte pohromadě</dt><dd>Měření, odpovědi, fotky i poznámky zůstávají uložené u vaší firmy.</dd></div>
+    <div class="vyhoda"><dt>Rozdíl spočítá Tokva</dt><dd>Porovná dvě měření a ukáže, co se zlepšilo a co potřebuje další pozornost.</dd></div>
+    <div class="vyhoda"><dt>Každý ví, co má udělat</dt><dd>Úkol má odpovědného člověka, termín a odkaz na původní zjištění.</dd></div>
+    <div class="vyhoda"><dt>Na ověření nezapomenete</dt><dd>Dokončené opatření zůstane na očích, dokud neověříte, jestli pomohlo.</dd></div>
+    <div class="vyhoda"><dt>S nástroji zjistíte víc</dt><dd>Pro odemyká další funkce, například značení zastávek a poznámky ke konkrétním místům ve Spaghetti diagramu.</dd></div>
+  </dl>
 
   <h2 class="pilire-uvod">Z praxe: co ukáže druhé měření</h2>
   <div class="hero-proof praxe-blok">
