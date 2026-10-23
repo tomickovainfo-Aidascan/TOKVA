@@ -817,7 +817,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 <div class="post-kviz">
   <div class="post-kviz-inner">
 
-    <div>
+    <div class="po-vysledku">
       <h2 class="content-card-title">Navazující nástroje</h2>
       <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">První jde po příčině, druhá po čase.</p>
       <div class="dalsi-nastroje-grid">
@@ -839,34 +839,34 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <div>
       <h3 class="content-card-title">Nejčastější otázky</h3>
       <div class="faq-block">
-        <div class="faq-item">
-          <div class="faq-q">Je to test znalostí?</div>
+        <details class="faq-item">
+          <summary class="faq-q">Je to test znalostí?</summary>
           <div class="faq-a">Ne, jde o to, jak si ve firmě reálně předáváte informace, ne co byste teoreticky měli dělat. Odpovídejte podle skutečnosti, ne podle toho, jak by to mělo vypadat.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Co znamená skóre a pásmo?</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Co znamená skóre a pásmo?</summary>
           <div class="faq-a">Čím víc bodů, tím větší chaos v předávání informací. Kvíz vám navíc ukáže, která ze šesti oblastí (e-maily, WhatsApp, předání mezi lidmi, zodpovědnosti a další) vás brzdí nejvíc.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Mám kvíz dát vyplnit i kolegům?</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Mám kvíz dát vyplnit i kolegům?</summary>
           <div class="faq-a">Ano. Nejzajímavější není skóre, ale rozdíl: když majitel vidí komunikaci jako sedmičku a vedoucí směny jako dvacítku, víte, že se informace ztrácí někde mezi nimi. V Tokva Pro pošlete týmu odkaz, odpovědi jsou anonymní a vedle svého výsledku uvidíte průměr týmu.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Co když si u některé otázky nejsem jistý?</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Co když si u některé otázky nejsem jistý?</summary>
           <div class="faq-a">Odpovídejte podle posledního měsíce, ne podle výjimky. Když opravdu nevíte, zvolte „Nevím“. Kvíz s tím počítá a takovou otázku do skóre nezapočítá.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Vyšlo mi vysoké skóre. Máme špatný tým?</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Vyšlo mi vysoké skóre. Máme špatný tým?</summary>
           <div class="faq-a">Ne. Kvíz neměří lidi, měří předávání informací. Vysoké skóre skoro vždycky znamená, že vám chybí jedno místo, kde platné informace leží, a lidé to vyrovnávají tím, že se navzájem obvolávají.</div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">Jak často kvíz opakovat?</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Jak často kvíz opakovat?</summary>
           <div class="faq-a">Po každé změně, kterou v předávání informací uděláte, a jinak jednou za dva až tři měsíce. Častěji to nemá smysl, zvyky se mění pomalu.</div>
-        </div>
+        </details>
       </div>
     </div>
 
-    <div class="pro-final-panel" id="pro-final-panel">
+    <div class="po-vysledku pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
       <div class="pro-final-title">Co se změní, až kvíz vyplníte podruhé</div>
       <p style="font-size:13.5px;color:rgba(255,255,255,.8);line-height:1.7;margin:-6px 0 12px;">Kvíz i výsledek, který jste právě viděli, zůstávají zdarma. Tokva Pro k tomu umí jednu věc: uloží tenhle výsledek a za pár měsíců vám u všech šesti oblastí ukáže, o kolik se každá z nich posunula.</p>
@@ -3118,5 +3118,6 @@ function cookiesOdmitnout() {
 
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
+<script src="/po-vysledku.js" data-vysledek="#vysledek"></script>
 </body>
 </html>

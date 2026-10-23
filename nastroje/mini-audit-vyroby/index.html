@@ -1141,7 +1141,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 <div class="post-audit">
   <div class="post-audit-inner">
 
-    <div>
+    <div class="po-vysledku">
       <h2 class="content-card-title">Co dělat s výsledkem?</h2>
       <p class="post-text">Teď máte skóre v procentech, rozpad podle oblastí a jedno doporučení, co řešit jako první. Konkrétní tipy k nejslabším místům najdete přímo u výsledku.</p>
       <p class="post-text" style="margin-bottom:8px;">Dál to má tři kroky. Ten třetí většina lidí vynechá, a přitom až v něm se změna potvrdí:</p>
@@ -1156,7 +1156,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
       <a href="#pro-final-panel" class="post-cta jen-bez-pro" onclick="event.preventDefault();document.getElementById('pro-final-panel').scrollIntoView({behavior:'smooth',block:'center'});">Automatické porovnání v Tokva Pro →</a>
     </div>
 
-    <div>
+    <div class="po-vysledku">
       <h2 class="content-card-title">Navazující nástroje</h2>
       <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Vyberte podle toho, která oblast vám vyšla nejhůř.</p>
       <div class="dalsi-nastroje-col">
@@ -1177,37 +1177,37 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 
     <div class="faq-block">
       <h2 class="content-card-title" style="margin-bottom:4px;">Nejčastější otázky</h2>
-      <div class="faq-item">
-        <div class="faq-q">Co když nevím odpověď na některou otázku v auditu?</div>
+      <details class="faq-item">
+        <summary class="faq-q">Co když nevím odpověď na některou otázku v auditu?</summary>
         <div class="faq-a">Zvolte „Nevím / nemáme data“. Nepočítá se to automaticky jako nejhorší možnost, ale zvlášť se to ukáže ve výsledku. Nevědět je samo o sobě důležité zjištění, ne totéž co „máme to pod kontrolou“.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Musím projít celý Mini audit výroby najednou?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Musím projít celý Mini audit výroby najednou?</summary>
         <div class="faq-a">Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později. Projděte ji v jednom sezení.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Co appka Mini audit výroby vlastně kontroluje a analyzuje?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Co appka Mini audit výroby vlastně kontroluje a analyzuje?</summary>
         <div class="faq-a">Deset otázek pokrývá základní kontrolu výroby: jasnost priorit, tok materiálu, kapacitu výroby a to, jak se ve firmě řeší problémy. Je to rychlá orientační analýza výroby, ne náhrada podrobného měření. Na to slouží další appky (Měřič plýtvání, Spaghetti diagram).</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Jak může deset otázek něco poznat o mé výrobě?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Jak může deset otázek něco poznat o mé výrobě?</summary>
         <div class="faq-a">Nepozná všechno. Pozná, kde se ptát dál. Otázky jsou kontrolní body, které jsem ve výrobách procházela ručně, a skóre vám řekne, kterou oblast si vzít jako první.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Co znamená výsledek v procentech?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Co znamená výsledek v procentech?</summary>
         <div class="faq-a">Je to podíl problémů. Čím vyšší číslo, tím víc věcí u vás stojí na improvizaci a hašení místo jasného pravidla. Číslo samo nerozhoduje. Rozhoduje rozpad podle oblastí a hlavně rozdíl proti druhému auditu za čtvrt roku.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Hodí se audit i pro malou výrobu nebo pro zakázkovou?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Hodí se audit i pro malou výrobu nebo pro zakázkovou?</summary>
         <div class="faq-a">Ano. Otázky míří na priority, tok a předávání, ne na velikost ani sériovost. U zakázkové výroby si místo „co se má vyrábět“ dosaďte „která zakázka má přednost“.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Uvidí někdo moje odpovědi?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Uvidí někdo moje odpovědi?</summary>
         <div class="faq-a">Dokud si výsledek nenecháte poslat, tak ne. Bezplatný audit se nikam neukládá a po zavření stránky zmizí. Když si ho necháte poslat e-mailem, uloží se k vašemu e-mailu i odpovědi, abych vám mohla poslat odkaz na celý výsledek.</div>
-      </div>
+      </details>
     </div>
 
-    <div class="pro-final-panel" id="pro-final-panel">
+    <div class="po-vysledku pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
       <h2 class="pro-final-title">Víte, kde to vázne. Srovnalo se to?</h2>
       <p class="pro-final-text">Bezplatný audit ukáže jedno skóre k dnešku. Tokva Pro postaví dva audity vedle sebe, otázku po otázce, a ukáže, co se zlepšilo, co zhoršilo a co zůstalo stejné. To je podklad, se kterým se jde za majitelem podruhé. A ten se neodbývá pocitem.</p>
@@ -2608,5 +2608,6 @@ document.addEventListener('keydown', function(e){
 
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
+<script src="/po-vysledku.js" data-vysledek="#vysledky"></script>
 </body>
 </html>

@@ -1030,7 +1030,7 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 <div class="post-kviz">
   <div class="post-kviz-inner">
 
-    <div>
+    <div class="po-vysledku">
       <h2 class="content-card-title">Navazující nástroje</h2>
       <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Vyberte podle toho, co vám ve výsledku vyšlo nejhůř.</p>
       <div class="dalsi-nastroje-col">
@@ -1051,33 +1051,33 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 
     <div>
       <h2 class="content-card-title" style="margin-bottom:16px;">Nejčastější otázky</h2>
-      <div class="faq-item">
-        <div class="faq-q">Jaký je rozdíl mezi kvízem a mini auditem skladu?</div>
+      <details class="faq-item">
+        <summary class="faq-q">Jaký je rozdíl mezi kvízem a mini auditem skladu?</summary>
         <div class="faq-a">Kvíz odhaluje slepá místa v přehledu: co nevíte, co neměříte, kde chybí čísla. Mini audit skladu hledá, kde konkrétně vznikají ztráty v procesech.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Musím projít celý kvíz najednou?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Musím projít celý kvíz najednou?</summary>
         <div class="faq-a">Ano, trvá 5 minut. Appka zdarma se nedá uložit a dokončit později. Projděte ji v jednom sezení.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Co když u většiny otázek odpovím, že to nevím?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Co když u většiny otázek odpovím, že to nevím?</summary>
         <div class="faq-a">Pak jste právě našli nejlevnější zlepšení, které můžete udělat. Nevědět není chyba vedoucího, je to chybějící měření. Výsledek vám řekne, které z nich si vzít první.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Jsou moje odpovědi vidět?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Jsou moje odpovědi vidět?</summary>
         <div class="faq-a">Dokud si výsledek nenecháte poslat, tak ne. Bezplatný kvíz se nikam neukládá a po zavření stránky zmizí. Když si ho necháte poslat e-mailem, uloží se k vašemu e-mailu i odpovědi, abych vám mohla poslat odkaz na celý výsledek.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Můžu kvíz použít jako podklad pro vedení?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Můžu kvíz použít jako podklad pro vedení?</summary>
         <div class="faq-a">Pro to je udělaný. Výsledek vytisknete a máte černé na bílém, která čísla ve firmě nikdo nesleduje. Otázka „proč to nevíme“ se pak nedá odbýt pocitem.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Jak často má smysl kvíz opakovat?</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-q">Jak často má smysl kvíz opakovat?</summary>
         <div class="faq-a">Jednou za čtvrt roku, nebo po každé větší změně. Dřív se nově nasazené měření nestihne usadit.</div>
-      </div>
+      </details>
     </div>
 
-    <div class="pro-final-panel" id="pro-final-panel">
+    <div class="po-vysledku pro-final-panel" id="pro-final-panel">
       <div class="pro-final-badge">Tokva Pro</div><span class="pro-final-soon">Zakladatelský program</span>
       <h2 class="pro-final-title">Která slepá místa už nemáte?</h2>
       <p class="pro-final-text">Bezplatný kvíz ukáže, co o svém skladu nevíte dnes. Tokva Pro postaví dva kvízy vedle sebe, otázku po otázce, a ukáže, která čísla už máte a kde se za tu dobu nic nezměnilo. To je rozdíl mezi „je to lepší“ a „tady je šest věcí, které jsme za čtvrt roku změřili“.</p>
@@ -2275,5 +2275,6 @@ document.addEventListener('keydown', function(e){
 
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
+<script src="/po-vysledku.js" data-vysledek="#vysledky"></script>
 </body>
 </html>
