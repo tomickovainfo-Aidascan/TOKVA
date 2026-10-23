@@ -73,6 +73,13 @@ window.trackTokvaEvent = function (n, p) { if (typeof window.gtag === "function"
   .moznosti-dalsi a:hover{color:var(--dark);}
   @media (max-width:900px){.area-grid{grid-template-columns:repeat(2,1fr);}}
   @media (max-width:600px){.area-grid{grid-template-columns:1fr;}.area-card{min-height:0;padding:24px 22px 22px;}}
+
+/* Střídání pozadí sekcí (pruhy přes celou šířku) */
+.pas{box-sizing:border-box;}
+.pas-bila{background:#fff;box-shadow:0 0 0 100vmax #fff;clip-path:inset(0 -100vmax);}
+.pas-cerna{background:var(--dark);box-shadow:0 0 0 100vmax var(--dark);clip-path:inset(0 -100vmax);}
+.pas-zlata{background:var(--gold-light);box-shadow:0 0 0 100vmax var(--gold-light);clip-path:inset(0 -100vmax);}
+.moznosti-dalsi.pas{border-top:none;margin-top:48px;padding:36px 0;max-width:none;}
 </style>
 </head>
 <body>
@@ -118,7 +125,7 @@ window.trackTokvaEvent = function (n, p) { if (typeof window.gtag === "function"
     </a>
   </div>
 
-  <div class="moznosti-dalsi">
+  <div class="moznosti-dalsi pas pas-bila">
     <div>
       <h3>Chci postupovat od zjištění problému až k řešení</h3>
       <p>Prohlédněte si doporučený postup a vyberte krok, který právě potřebujete.</p>

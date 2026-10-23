@@ -67,6 +67,14 @@ window.trackTokvaEvent = function (n, p) { if (typeof window.gtag === "function"
   .pribeh-cta{margin-top:30px;padding-top:26px;border-top:1px solid var(--border);}
   .pribeh-cta .pozn{margin-top:10px;}
   @media (max-width:640px){.pribeh-uvod{grid-template-columns:1fr;gap:20px;}.pribeh-foto{max-width:240px;}}
+
+/* Střídání pozadí sekcí (pruhy přes celou šířku) */
+.pas{box-sizing:border-box;}
+.pas-bila{background:#fff;box-shadow:0 0 0 100vmax #fff;clip-path:inset(0 -100vmax);}
+.pas-cerna{background:var(--dark);box-shadow:0 0 0 100vmax var(--dark);clip-path:inset(0 -100vmax);}
+.pas-zlata{background:var(--gold-light);box-shadow:0 0 0 100vmax var(--gold-light);clip-path:inset(0 -100vmax);}
+.pribeh-pas{padding:8px 0 20px;margin:28px 0;}
+.pribeh-cta.pas{border-top:none;margin-top:40px;padding:36px 0;text-align:center;}
 </style>
 </head>
 <body>
@@ -106,17 +114,20 @@ window.trackTokvaEvent = function (n, p) { if (typeof window.gtag === "function"
   <p>Za čtyři roky jsme se dostali tam, kde stejná práce se stejnými lidmi zabrala o 30 % méně hodin. Zmizely dlouholeté přesčasy a zbyly peníze na odměny. Další dva roky už sklad běžel sám a stačilo, že jsem na něj dohlížela na dálku.</p>
   <p>Žádný drahý systém. Jen dívat se, měřit a měnit to, co má smysl.</p>
 
+  <div class="pas pas-bila pribeh-pas">
   <h2>Proč Tokva</h2>
   <p>Na rodičovské jsem si udělala rekvalifikaci na AI specialistku a začala stavět vlastní nástroje.</p>
   <p>Malé firmy a sklady řeší stejné problémy, jaké jsem řešila já. Jen nemají čas ani člověka, který by je změřil a hledal příčiny.</p>
   <p>Do Tokvy jsem proto dala postup, který jsem roky dělala ručně. Zjistit, kde provoz drhne. Změřit to. Najít příčinu. A ověřit, že změna pomohla. Tokva vás provede stejnými kroky, jaké bych s vámi dělala já.</p>
+
+  </div>
 
   <h2>Jak to vidím</h2>
   <p>Nepracuju podle učebnice. Selský rozum a pár propočtů udělají víc než deset příruček. Jen vědět, jak a kam koukat.</p>
   <p>A když něco nefunguje, většinou to není problém lidí. Je to problém procesu.</p>
   <p class="podpis">Gabriela Tomíčková, Vrchlabí</p>
 
-  <div class="pribeh-cta">
+  <div class="pribeh-cta pas pas-zlata">
     <a class="btn btn-gold" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'muj_pribeh'})">Otevřít Tokvu zdarma</a>
     <p class="pozn">Výsledky všech bezplatných nástrojů pak odemknete jedním zadáním e-mailu v tomto prohlížeči.</p>
   </div>
