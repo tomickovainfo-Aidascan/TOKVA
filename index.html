@@ -193,6 +193,12 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 }
 #nav-ucet-info,#nav-ucet-email{white-space:nowrap;border:none!important;background:none!important;padding:0!important;font-weight:400!important;color:var(--mid)!important;}
 @media (max-width:600px){#nav-ucet-info{display:none!important;}}
+/* Pruhy přes celou šířku okna, obsah zůstává v .wrap */
+.pas{border-top:none;}
+.pas-bila{background:#fff;box-shadow:0 0 0 100vmax #fff;clip-path:inset(0 -100vmax);}
+.pas-cerna{background:var(--dark);box-shadow:0 0 0 100vmax var(--dark);clip-path:inset(0 -100vmax);}
+.pas-zlata{background:var(--gold-light);box-shadow:0 0 0 100vmax var(--gold-light);clip-path:inset(0 -100vmax);}
+.pas + section{border-top:none;}
 </style>
 <style id="cookies-css">
 .cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
@@ -256,7 +262,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
   </section>
 
 
-  <section>
+  <section class="pas pas-bila">
     <h2 class="section-title">Od prvního zjištění k řešení. S podporou Tokvy v každém kroku.</h2>
     <div class="kroky-karty">
       <div class="krok-karta">
@@ -299,7 +305,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     </div>
   </section>
 
-  <section class="pilot-pozvanka">
+  <section class="pilot-pozvanka" style="border-top:none;">
     <div class="pilot-box">
       <p><strong>Hledám 3 firmy na pilotní provoz.</strong> Řešíte zbytečné chození, hledání, čekání nebo chyby, které se pořád vracejí? Půl roku Tokva Pro zdarma a moje podpora.</p>
       <a class="pilot-odkaz" href="https://tokva.cz/pilot/" onclick="trackTokvaEvent('pilot_click',{source_tool:'homepage',placement:'panel'})">Podmínky pilotu →</a>
@@ -307,7 +313,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
   </section>
 
 
-  <section class="pro-section" id="pro-section" style="margin:0 -24px; padding-left:24px; padding-right:24px;">
+  <section class="pro-section pas pas-cerna" id="pro-section">
     <h2 class="section-title" style="color:var(--gold);">Jedna appka vyřeší jednu otázku. Tokva Pro propojí celý problém.</h2>
     <p class="lead">Bezplatné nástroje vám pomůžou rychle zjistit, co se děje. V Tokva Pro jsou výsledky navázané na vaši firmu a projekty, takže nemusíte pokaždé začínat znovu.</p>
     <div class="pro-grid">
@@ -319,7 +325,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <a class="btn btn-obrys" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'homepage',placement:'section'})">Zjistit více o Tokva Pro</a>
   </section>
 
-  <section class="zaver">
+  <section class="zaver pas pas-zlata">
     <h2 class="section-title">Začněte jedním problémem.</h2>
     <p class="lead">Vyberte, co vás právě zdržuje, a Tokva vám nabídne první krok.</p>
     <a class="btn btn-gold" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'zaver'})">Otevřít Tokvu zdarma</a>

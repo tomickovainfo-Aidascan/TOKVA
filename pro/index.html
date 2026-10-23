@@ -230,6 +230,13 @@ details.faq-item summary h3{margin:0;}
 details.faq-item summary::after{content:"+";font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;color:var(--gold-dark);line-height:1;flex-shrink:0;}
 details.faq-item[open] summary::after{content:"−";}
 details.faq-item > p{padding:0 20px 16px;margin:0;}
+.pas-bila{background:#fff;box-shadow:0 0 0 100vmax #fff;clip-path:inset(0 -100vmax);}
+.pas-cerna{background:var(--dark);box-shadow:0 0 0 100vmax var(--dark);clip-path:inset(0 -100vmax);border-radius:0 !important;}
+.screenshoty.pas{padding:48px 0;margin:44px 0 48px;}
+.cenik-box.pas{padding:44px 0;margin:48px 0;}
+.faq-pas{padding:44px 0 36px;margin:0 0 48px;}
+.faq-pas .faq-item{background:var(--paper);}
+.faq-pas .faq-nadpis{margin-top:0;}
 </style>
 <script type="application/ld+json">
 {
@@ -348,7 +355,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
     </div>
   </div>
 
-  <div class="screenshoty">
+  <div class="screenshoty pas pas-bila">
     <div class="ukazka-radek">
       <div class="ukazka-text"><h3>Celý projekt přehledně na jedné stránce.</h3><p>Zjištění, měření, opatření i jejich výsledky máte pohromadě.</p><p><b>Prezentační mód jedním kliknutím.</b> Na poradu tak nemusíte chystat zvláštní prezentaci.</p></div>
       <figure class="ukazka-obr"><picture><source srcset="screenshoty/projekt-pc.webp" type="image/webp"><img src="screenshoty/projekt-pc.png" width="1330" height="790" alt="Projekt v Tokva Pro: výsledky a úkoly ve fázích Vidět, Změřit, Změnit a Ověřit" loading="lazy"></picture></figure>
@@ -427,7 +434,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
 
   <p class="podpora-note">Podporu dělám vždycky osobně já, Gabriela Tomíčková. Kdybyste kromě appky potřebovali pomoc přímo ve firmě, najdete mě na <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a>.</p>
 
-  <div class="objednavka-box cenik-box" id="ceny">
+  <div class="objednavka-box cenik-box pas pas-cerna" id="ceny">
     <h2>Varianty a ceny</h2>
     <div id="objednavka-cena-popis">
       <div class="cenik">
@@ -459,6 +466,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
     <a href="#objednavka" class="btn-gold cenik-dal">Pokračovat k objednávce</a>
   </div>
 
+  <div class="pas pas-bila faq-pas">
   <h2 class="faq-nadpis">Časté otázky</h2>
   <details class="faq-item">
     <summary><h3>Co získám oproti nástrojům zdarma?</h3></summary>
@@ -488,7 +496,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
     <summary><h3>Kdo má přístup k našim datům?</h3></summary>
     <p>Jen přihlášení členové vaší firmy podle své role. Data každé firmy jsou oddělená na úrovni databáze, bez přihlášení se k nim nedostane nikdo.</p>
   </details>
-
+  </div>
 
   <div class="objednavka-box" id="objednavka">
     <h2>Objednat Tokva Pro</h2>
