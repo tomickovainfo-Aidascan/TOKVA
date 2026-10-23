@@ -2683,6 +2683,8 @@ nacistPrihlaseniStav();
 <script>
 document.addEventListener('keydown', function(e){
   if (e.key !== 'Enter') return;
+  // Enter na odkazu, tlačítku (třeba Menu), výběru nebo rozbalovací otázce patří tomu prvku, ne zkratce Další.
+  if (e.target && e.target.closest && e.target.closest('a, button, select, summary, [role="button"]')) return;
   if (e.target && e.target.tagName === 'TEXTAREA') return;
   if (e.target && e.target.hasAttribute && e.target.hasAttribute('onkeydown')) return;
   var otevreny = Array.prototype.find.call(document.querySelectorAll('.modal-overlay, .notice-overlay'), function(el){

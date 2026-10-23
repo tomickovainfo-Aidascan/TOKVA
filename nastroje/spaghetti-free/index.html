@@ -404,6 +404,9 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 .back-to-card-link:hover{text-decoration:underline;}
 #nav-ucet-info,#nav-ucet-email{white-space:nowrap;border:none!important;background:none!important;padding:0!important;font-weight:400!important;color:var(--mid)!important;}
 @media (max-width:600px){#nav-ucet-info{display:none!important;}}
+.upload-btn{display:inline-block;margin-top:14px;background:#e9a91b;color:#000;border:none;border-radius:8px;padding:10px 20px;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+.upload-btn:hover{background:#c48e10;}
+.upload-btn:focus-visible{outline:3px solid #111;outline-offset:2px;}
 </style>
 
 <style id="cookies-css">
@@ -567,6 +570,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
     <div class="upload-zone-icon">📷</div>
     <p><strong>Klikněte nebo přetáhněte plánek skladu či výroby</strong></p>
     <small>JPG, PNG, PDF: obrázek půdorysu nebo fotka plánku</small>
+    <button type="button" class="upload-btn" onclick="event.stopPropagation();document.getElementById('file-input').click()">Vybrat plánek</button>
     <input type="file" id="file-input" accept="image/*,application/pdf" onchange="nahratLayout(this)">
   </div>
   <div id="upload-notice" style="display:none;margin:-6px 0 16px;padding:9px 14px;border-radius:8px;font-size:12.5px;line-height:1.6;"></div>
@@ -1922,6 +1926,8 @@ nacistPrihlaseniStav();
 <script>
 document.addEventListener('keydown', function(e){
   if (e.key !== 'Enter') return;
+  // Enter na odkazu, tlačítku (třeba Menu), výběru nebo rozbalovací otázce patří tomu prvku, ne zkratce Další.
+  if (e.target && e.target.closest && e.target.closest('a, button, select, summary, [role="button"]')) return;
   const otevrenyModal = document.querySelector('.modal-overlay.visible');
   if (otevrenyModal) {
     const btn = otevrenyModal.querySelector('.btn-modal-ok');

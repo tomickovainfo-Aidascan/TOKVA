@@ -2552,6 +2552,8 @@ function zpetOtazka(){
 // do psaní do textových polí (vlastní odpověď u "Jinak").
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Enter') return;
+  // Enter na odkazu, tlačítku (třeba Menu), výběru nebo rozbalovací otázce patří tomu prvku, ne zkratce Další.
+  if (e.target && e.target.closest && e.target.closest('a, button, select, summary, [role="button"]')) return;
   if(e.target && (e.target.tagName === 'TEXTAREA' || (e.target.tagName === 'INPUT' && e.target.type === 'text'))) return;
   const kvizEl = document.getElementById('kviz');
   if(!kvizEl || kvizEl.style.display === 'none') return;

@@ -45,7 +45,26 @@
     if (localStorage.getItem('sb-uiqjzeubhhnzspkoekxx-auth-token') && localStorage.getItem('tokva_ma_pro') === '1') document.documentElement.classList.add('tokva-ma-pro');
   } catch (e) {}
 
+  // Odkaz „Přeskočit na hlavní obsah“, ukáže se až při prvním stisku Tab.
+  function preskocit() {
+    if (document.querySelector('.preskocit-obsah')) return;
+    var cil = document.querySelector('main, #main, .main');
+    if (!cil) return;
+    if (!cil.id) cil.id = 'hlavni-obsah';
+    if (!cil.hasAttribute('tabindex')) cil.setAttribute('tabindex', '-1');
+    var st = document.createElement('style');
+    st.textContent = '.preskocit-obsah{position:absolute;left:12px;top:-60px;z-index:10000;background:#e9a91b;color:#000;font-weight:700;padding:10px 16px;border-radius:6px;text-decoration:none;font-family:"DM Sans",sans-serif;}' +
+      '.preskocit-obsah:focus{top:12px;}' + '#' + cil.id + ':focus{outline:none;}';
+    document.head.appendChild(st);
+    var a = document.createElement('a');
+    a.className = 'preskocit-obsah';
+    a.href = '#' + cil.id;
+    a.textContent = 'Přeskočit na hlavní obsah';
+    document.body.insertBefore(a, document.body.firstChild);
+  }
+
   function start() {
+    preskocit();
     var kont = document.querySelector('.topbar-right') || document.querySelector('.nav-right');
     if (!kont || kont.classList.contains('menu-kontejner')) return;
     var deti = Array.prototype.slice.call(kont.children);
@@ -86,6 +105,15 @@
         var otevreno = kont.classList.toggle('menu-sbaleno') === false;
         prep.setAttribute('aria-expanded', otevreno ? 'true' : 'false');
         prep.textContent = otevreno ? 'Zavřít' : 'Menu';
+      });
+      // Escape rozbalené menu zase sbalí a vrátí kurzor na tlačítko Menu.
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape' || kont.classList.contains('menu-sbaleno')) return;
+        if (getComputedStyle(prep).display === 'none') return;
+        kont.classList.add('menu-sbaleno');
+        prep.setAttribute('aria-expanded', 'false');
+        prep.textContent = 'Menu';
+        try { prep.focus(); } catch (er) {}
       });
       kont.insertBefore(prep, zaCo ? zaCo.nextSibling : kont.firstChild);
       kont.classList.add('menu-kontejner', 'menu-sbaleno');

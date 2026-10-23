@@ -131,11 +131,30 @@
 
     ov.querySelector('.tb-x').onclick = zavrit;
     ov.addEventListener('click', function (e) { if (e.target === ov) zavrit(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ov.classList.contains('tb-ukaz')) zavrit(); });
+    document.addEventListener('keydown', function (e) {
+      if (!ov.classList.contains('tb-ukaz')) return;
+      if (e.key === 'Escape') { zavrit(); return; }
+      // Tab zůstává uvnitř okna, ať se klávesnicí nedá utéct do stránky za ním.
+      if (e.key !== 'Tab') return;
+      var prvky = Array.prototype.filter.call(
+        ov.querySelectorAll('.tb-box button, .tb-box input, .tb-box a[href]'),
+        function (el) { return el.offsetParent !== null && !el.disabled; });
+      if (!prvky.length) return;
+      var prvni = prvky[0], posledni = prvky[prvky.length - 1];
+      var uvnitr = ov.contains(document.activeElement);
+      if (e.shiftKey && (document.activeElement === prvni || !uvnitr)) { e.preventDefault(); posledni.focus(); }
+      else if (!e.shiftKey && (document.activeElement === posledni || !uvnitr)) { e.preventDefault(); prvni.focus(); }
+    });
     ov.querySelector('.tb-form').addEventListener('submit', odeslat);
   }
 
-  function zavrit() { if (ov) ov.classList.remove('tb-ukaz'); }
+  // Kde byl kurzor před otevřením okna, tam se po zavření vrátí.
+  var fokusPred = null;
+  function zavrit() {
+    if (ov) ov.classList.remove('tb-ukaz');
+    if (fokusPred && document.contains(fokusPred)) { try { fokusPred.focus(); } catch (e) {} }
+    fokusPred = null;
+  }
 
   var TEXTY = {
     vysledek: {
@@ -158,6 +177,7 @@
     ov.querySelector('#tb-nadpis').textContent = t.nadpis;
     ov.querySelector('.tb-text').textContent = t.text;
     ov.querySelector('.tb-btn').textContent = t.tlacitko;
+    if (!ov.classList.contains('tb-ukaz')) fokusPred = document.activeElement;
     ov.classList.add('tb-ukaz');
     var pole = ov.querySelector('input[type=email]');
     setTimeout(function () { try { pole.focus(); } catch (e) {} }, 50);

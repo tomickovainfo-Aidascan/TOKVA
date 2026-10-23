@@ -203,6 +203,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 .pas-cerna{background:var(--dark);box-shadow:0 0 0 100vmax var(--dark);clip-path:inset(0 -100vmax);}
 .pas-zlata{background:var(--gold-light);box-shadow:0 0 0 100vmax var(--gold-light);clip-path:inset(0 -100vmax);}
 .pas + section{border-top:none;}
+.krok-karta img:focus-visible{outline:3px solid #e9a91b;outline-offset:3px;}
 </style>
 <style id="cookies-css">
 .cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
@@ -307,12 +308,25 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <script>
     // Klepnutím na obrázek kroku se otevře ve velkém.
     document.querySelectorAll('.krok-karta img').forEach(function (i) {
+        // Klávesnice: obrázek je tlačítko, Enter nebo mezerník ho otevře.
+        i.setAttribute('tabindex', '0');
+        i.setAttribute('role', 'button');
+        i.setAttribute('aria-label', 'Zvětšit ukázku: ' + i.alt);
+        i.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); i.click(); }
+        });
       i.addEventListener('click', function () {
         var o = document.getElementById('obr-okno'), v = o.querySelector('img');
         v.src = i.currentSrc || i.src; v.alt = i.alt;
+        o._zdroj = i;
         if (o.showModal) o.showModal();
       });
     });
+    // Po zavření (i klávesou Escape) se kurzor vrátí na obrázek, ze kterého se otevíralo.
+    (function () {
+      var o = document.getElementById('obr-okno');
+      o.addEventListener('close', function () { if (o._zdroj) { try { o._zdroj.focus(); } catch (e) {} } });
+    })();
     </script>
     <dialog id="ukazka-okno" onclick="if(event.target===this)this.close()" onclose="document.getElementById('ukazka-video').pause()">
       <button type="button" class="ukazka-zavrit" aria-label="Zavřít" onclick="this.closest('dialog').close()">×</button>
@@ -457,5 +471,6 @@ function cookiesOdmitnout() {
 }
 </script>
 <script src="/menu.js"></script>
+<script src="/video-pauza.js"></script>
 </body>
 </html>

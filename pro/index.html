@@ -247,6 +247,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
 .faq-pas{padding:44px 0 36px;margin:0 0 48px;}
 .faq-pas .faq-item{background:var(--paper);}
 .faq-pas .faq-nadpis{margin-top:0;}
+.ukazka-obr img:focus-visible{outline:3px solid #e9a91b;outline-offset:3px;}
 </style>
 <script type="application/ld+json">
 {
@@ -402,13 +403,26 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
     <script>
     // Klepnutím se otevře celý screenshot. Na mobilu se v něm dá posouvat do strany.
     document.querySelectorAll('.ukazka-obr img[data-velky]').forEach(function (i) {
+        // Klávesnice: obrázek je tlačítko, Enter nebo mezerník ho otevře.
+        i.setAttribute('tabindex', '0');
+        i.setAttribute('role', 'button');
+        i.setAttribute('aria-label', 'Zvětšit ukázku: ' + i.alt);
+        i.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); i.click(); }
+        });
       i.addEventListener('click', function () {
         var o = document.getElementById('obr-okno'), v = o.querySelector('img');
         v.src = i.getAttribute('data-velky'); v.alt = i.alt;
         v.style.width = window.innerWidth <= 700 ? '900px' : '';
+        o._zdroj = i;
         if (o.showModal) o.showModal();
       });
     });
+    // Po zavření (i klávesou Escape) se kurzor vrátí na obrázek, ze kterého se otevíralo.
+    (function () {
+      var o = document.getElementById('obr-okno');
+      o.addEventListener('close', function () { if (o._zdroj) { try { o._zdroj.focus(); } catch (e) {} } });
+    })();
     </script>
   </div>
 
@@ -553,32 +567,32 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
     <form id="objednavka-form" onsubmit="return odeslatObjednavku(event)">
       <p class="obj-skupina prvni">Varianta</p>
       <div class="obj-field">
-        <label>Varianta *</label>
+        <label for="obj-varianta">Varianta *</label>
         <select id="obj-varianta" required onchange="prepocitatCenu()">
           <option value="1">Pro jednotlivce (1 osoba)</option>
           <option value="5">Tým 2 až 5 lidí</option>
           <option value="15">Tým 6 až 15 lidí</option>
         </select>
       </div>
-      <div class="obj-field"><label>Cena</label><input type="text" id="obj-cena" readonly></div>
+      <div class="obj-field"><label for="obj-cena">Cena</label><input type="text" id="obj-cena" readonly></div>
       <p class="obj-skupina">Firma a fakturace</p>
-      <div class="obj-field"><label>Firma *</label><input type="text" id="obj-firma" required></div>
+      <div class="obj-field"><label for="obj-firma">Firma *</label><input type="text" id="obj-firma" required></div>
       <div class="obj-row">
-        <div class="obj-field"><label>IČO *</label><input type="text" id="obj-ico" required></div>
-        <div class="obj-field"><label>DIČ</label><input type="text" id="obj-dic"></div>
+        <div class="obj-field"><label for="obj-ico">IČO *</label><input type="text" id="obj-ico" required></div>
+        <div class="obj-field"><label for="obj-dic">DIČ</label><input type="text" id="obj-dic"></div>
       </div>
-      <div class="obj-field"><label>Fakturační adresa</label><input type="text" id="obj-adresa" placeholder="Ulice, město, PSČ"></div>
+      <div class="obj-field"><label for="obj-adresa">Fakturační adresa</label><input type="text" id="obj-adresa" placeholder="Ulice, město, PSČ"></div>
       <p class="obj-skupina">Kontakt a přihlášení</p>
       <div class="obj-row">
-        <div class="obj-field"><label>Kontaktní osoba *</label><input type="text" id="obj-osoba" required></div>
-        <div class="obj-field"><label>Telefon</label><input type="tel" id="obj-telefon"></div>
+        <div class="obj-field"><label for="obj-osoba">Kontaktní osoba *</label><input type="text" id="obj-osoba" required></div>
+        <div class="obj-field"><label for="obj-telefon">Telefon</label><input type="tel" id="obj-telefon"></div>
       </div>
-      <div class="obj-field"><label>E-mail (bude i přihlašovací) *</label><input type="email" id="obj-email" required></div>
+      <div class="obj-field"><label for="obj-email">E-mail (bude i přihlašovací) *</label><input type="email" id="obj-email" required></div>
       <div class="obj-row" id="obj-hesla">
-        <div class="obj-field"><label>Heslo *</label><input type="password" id="obj-heslo" required minlength="6"></div>
-        <div class="obj-field"><label>Heslo znovu *</label><input type="password" id="obj-heslo2" required minlength="6"></div>
+        <div class="obj-field"><label for="obj-heslo">Heslo *</label><input type="password" id="obj-heslo" required minlength="6"></div>
+        <div class="obj-field"><label for="obj-heslo2">Heslo znovu *</label><input type="password" id="obj-heslo2" required minlength="6"></div>
       </div>
-      <div class="obj-field"><label>Poznámka</label><textarea id="obj-poznamka" rows="2"></textarea></div>
+      <div class="obj-field"><label for="obj-poznamka">Poznámka</label><textarea id="obj-poznamka" rows="2"></textarea></div>
       <label class="obj-souhlas" style="display:flex;align-items:flex-start;gap:10px;margin:14px 0 4px;font-size:13px;line-height:1.5;color:rgba(255,255,255,.8);cursor:pointer;">
         <input type="checkbox" id="obj-souhlas" required style="margin-top:3px;width:16px;height:16px;flex-shrink:0;">
         <span>Přečetl(a) jsem si <a href="https://tokva.cz/obchodni-podminky/" target="_blank" rel="noopener" style="color:var(--gold);">obchodní podmínky</a> a souhlasím s nimi. *</span>
