@@ -103,13 +103,13 @@ a.krok-row { text-decoration:none; }
 .krok-row:hover { border-color:var(--gold); transform:translateX(2px); }
 .krok-row .krok-benefit { font-size:14.5px; font-weight:600; color:var(--dark); line-height:1.5; }
 .krok-row .krok-meta { display:flex; align-items:center; gap:10px; flex-shrink:0; }
-.krok-row .krok-name { font-size:12px; color:var(--silver); white-space:nowrap; }
+.krok-row .krok-name { font-size:13px; font-weight:600; color:var(--mid); white-space:nowrap; }
 .krok-row .krok-tag { font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:1px; padding:4px 8px; border-radius:100px; background:var(--gold-light); color:var(--gold-dark); white-space:nowrap; }
 .krok-row .krok-tag.custom { background:#eef1f3; color:#5b6670; }
 .krok-row .arr { width:11px; height:7px; min-width:11px; color:var(--gold-dark); }
 .krok-row.paid { background:#1c1c1c; border-color:#1c1c1c; }
 .krok-row.paid .krok-benefit { color:var(--white); }
-.krok-row.paid .krok-name { color:rgba(255,255,255,.45); }
+.krok-row.paid .krok-name { color:rgba(255,255,255,.72); }
 .krok-row.paid .krok-tag { background:rgba(233,169,27,.15); color:var(--gold); }
 .krok-row.paid .arr { color:var(--gold); }
 .krok-row.paid:hover { border-color:var(--gold); }
@@ -299,8 +299,23 @@ a.krok-row { text-decoration:none; }
 </head>
 <body>
 
+<style id="cookies-css-2">
+/* Cookies lišta (23. 10.): čitelnější text, Odmítnout jako normální tlačítko, na mobilu nižší */
+#cookies-bar{padding:12px 20px !important;gap:10px 16px !important;}
+#cookies-bar p{color:rgba(255,255,255,.85) !important;font-size:13px !important;line-height:1.5 !important;}
+#cookies-bar .cookies-no,#cookies-bar .cookies-ok{border-radius:6px !important;padding:9px 18px !important;font-size:13.5px !important;font-weight:700 !important;}
+#cookies-bar .cookies-no{background:transparent !important;color:#fff !important;border:1.5px solid rgba(255,255,255,.6) !important;}
+#cookies-bar .cookies-no:hover{background:rgba(255,255,255,.12) !important;}
+#cookies-bar .cookies-ok{border:1.5px solid #e9a91b !important;}
+@media (max-width:600px){
+#cookies-bar{padding:10px 14px !important;}
+#cookies-bar p{min-width:0 !important;flex:1 1 100% !important;font-size:12.5px !important;}
+#cookies-bar .cookies-btns{width:100%;}
+#cookies-bar .cookies-btns button{flex:1;}
+}
+</style>
 <div class="cookies-bar" id="cookies-bar" style="display:none;">
-  <p>Tento web používá analytické cookies (Google Analytics) pro měření návštěvnosti. <a href="https://tokva.cz/ochrana-osobnich-udaju/">Zásady ochrany osobních údajů</a></p>
+  <p>Používám analytické cookies (Google Analytics) k měření návštěvnosti. <a href="https://tokva.cz/ochrana-osobnich-udaju/">Víc v zásadách</a></p>
   <div class="cookies-btns">
     <button class="cookies-no" onclick="cookiesOdmitnout()">Odmítnout</button>
     <button class="cookies-ok" onclick="cookiesSouhlasit()">Souhlasím</button>

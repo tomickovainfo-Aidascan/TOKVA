@@ -213,8 +213,23 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 </style>
 </head>
 <body>
+<style id="cookies-css-2">
+/* Cookies lišta (23. 10.): čitelnější text, Odmítnout jako normální tlačítko, na mobilu nižší */
+#cookies-bar{padding:12px 20px !important;gap:10px 16px !important;}
+#cookies-bar p{color:rgba(255,255,255,.85) !important;font-size:13px !important;line-height:1.5 !important;}
+#cookies-bar .cookies-no,#cookies-bar .cookies-ok{border-radius:6px !important;padding:9px 18px !important;font-size:13.5px !important;font-weight:700 !important;}
+#cookies-bar .cookies-no{background:transparent !important;color:#fff !important;border:1.5px solid rgba(255,255,255,.6) !important;}
+#cookies-bar .cookies-no:hover{background:rgba(255,255,255,.12) !important;}
+#cookies-bar .cookies-ok{border:1.5px solid #e9a91b !important;}
+@media (max-width:600px){
+#cookies-bar{padding:10px 14px !important;}
+#cookies-bar p{min-width:0 !important;flex:1 1 100% !important;font-size:12.5px !important;}
+#cookies-bar .cookies-btns{width:100%;}
+#cookies-bar .cookies-btns button{flex:1;}
+}
+</style>
 <div class="cookies-bar" id="cookies-bar" style="display:none;">
-  <p>Tento web používá analytické cookies (Google Analytics) pro měření návštěvnosti. <a href="https://tokva.cz/ochrana-osobnich-udaju/">Zásady ochrany osobních údajů</a></p>
+  <p>Používám analytické cookies (Google Analytics) k měření návštěvnosti. <a href="https://tokva.cz/ochrana-osobnich-udaju/">Víc v zásadách</a></p>
   <div class="cookies-btns">
     <button class="cookies-no" onclick="cookiesOdmitnout()">Odmítnout</button>
     <button class="cookies-ok" onclick="cookiesSouhlasit()">Souhlasím</button>

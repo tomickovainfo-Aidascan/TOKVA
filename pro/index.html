@@ -128,7 +128,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .notify-box h3 { font-family:'Poppins',sans-serif; font-weight:800; font-size:16px; color:var(--white); margin-bottom:8px; }
 .notify-box p { font-size:13.5px; color:rgba(255,255,255,.65); margin-bottom:18px; max-width:480px; }
 .notify-form { display:flex; gap:10px; flex-wrap:wrap; }
-.notify-form input[type="email"] { flex:1; min-width:220px; padding:12px 16px; border-radius:8px; border:1.5px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; }
+.notify-form input[type="email"] { flex:1; min-width:220px; padding:12px 16px; border-radius:8px; border:1.5px solid rgba(255,255,255,.3); background:rgba(255,255,255,.09); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; }
 .notify-form input[type="email"]::placeholder { color:rgba(255,255,255,.4); }
 .notify-form input[type="email"]:focus { outline:none; border-color:var(--gold); }
 .notify-form button { background:var(--gold); color:var(--black); border:none; border-radius:8px; padding:12px 22px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:14px; cursor:pointer; transition:background .15s; white-space:nowrap; }
@@ -145,8 +145,10 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .objednavka-cena { font-weight:800; color:var(--gold); white-space:nowrap; }
 .objednavka-vs { font-weight:700; font-size:15px; margin:10px 0; }
 .obj-field { margin-bottom:12px; }
-.obj-field label { display:block; font-size:12px; font-weight:700; color:rgba(255,255,255,.6); margin-bottom:5px; }
-.obj-field input, .obj-field textarea, .obj-field select { width:100%; padding:11px 14px; border-radius:8px; border:1.5px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; box-sizing:border-box; }
+.obj-skupina { font-family:'Poppins',sans-serif; font-size:14px; font-weight:800; color:var(--gold); margin:26px 0 12px; padding-top:18px; border-top:1px solid rgba(255,255,255,.14); }
+.obj-skupina.prvni { margin-top:6px; padding-top:0; border-top:none; }
+.obj-field label { display:block; font-size:12px; font-weight:700; color:rgba(255,255,255,.82); margin-bottom:5px; }
+.obj-field input, .obj-field textarea, .obj-field select { width:100%; padding:11px 14px; border-radius:8px; border:1.5px solid rgba(255,255,255,.3); background:rgba(255,255,255,.09); color:var(--white); font-family:'DM Sans',sans-serif; font-size:14px; box-sizing:border-box; }
 .obj-field select option { background:var(--dark,#111); color:var(--white); }
 .obj-field input[readonly] { color:var(--gold); font-weight:700; }
 .obj-field input::placeholder, .obj-field textarea::placeholder { color:rgba(255,255,255,.35); }
@@ -159,8 +161,8 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .objednavka-err { display:none; font-size:13px; color:#ff9d9d; margin-top:12px; }
 .objednavka-ok { display:none; }
 .objednavka-ok p { font-size:14px; color:var(--white); margin-bottom:14px; line-height:1.6; }
-.objednavka-ok .btn-secondary-dark { display:inline-block; background:transparent; color:var(--gold); border:1.5px solid var(--gold); border-radius:8px; padding:11px 20px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:13.5px; text-decoration:none; }
-.objednavka-ok .btn-secondary-dark:hover { background:var(--gold); color:var(--black); }
+.btn-secondary-dark { display:inline-block; background:transparent; color:var(--gold); border:1.5px solid var(--gold); border-radius:8px; padding:11px 20px; font-family:'DM Sans',sans-serif; font-weight:700; font-size:13.5px; text-decoration:none; }
+.btn-secondary-dark:hover { background:var(--gold); color:var(--black); }
 .objednavka-privacy { font-size:11.5px; color:rgba(255,255,255,.4); margin-top:16px; }
 .objednavka-privacy a { color:rgba(255,255,255,.55); }
 
@@ -315,8 +317,23 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
 </style>
 </head>
 <body>
+<style id="cookies-css-2">
+/* Cookies lišta (23. 10.): čitelnější text, Odmítnout jako normální tlačítko, na mobilu nižší */
+#cookies-bar{padding:12px 20px !important;gap:10px 16px !important;}
+#cookies-bar p{color:rgba(255,255,255,.85) !important;font-size:13px !important;line-height:1.5 !important;}
+#cookies-bar .cookies-no,#cookies-bar .cookies-ok{border-radius:6px !important;padding:9px 18px !important;font-size:13.5px !important;font-weight:700 !important;}
+#cookies-bar .cookies-no{background:transparent !important;color:#fff !important;border:1.5px solid rgba(255,255,255,.6) !important;}
+#cookies-bar .cookies-no:hover{background:rgba(255,255,255,.12) !important;}
+#cookies-bar .cookies-ok{border:1.5px solid #e9a91b !important;}
+@media (max-width:600px){
+#cookies-bar{padding:10px 14px !important;}
+#cookies-bar p{min-width:0 !important;flex:1 1 100% !important;font-size:12.5px !important;}
+#cookies-bar .cookies-btns{width:100%;}
+#cookies-bar .cookies-btns button{flex:1;}
+}
+</style>
 <div class="cookies-bar" id="cookies-bar" style="display:none;">
-  <p>Tento web používá analytické cookies (Google Analytics) pro měření návštěvnosti. <a href="https://tokva.cz/ochrana-osobnich-udaju/">Zásady ochrany osobních údajů</a></p>
+  <p>Používám analytické cookies (Google Analytics) k měření návštěvnosti. <a href="https://tokva.cz/ochrana-osobnich-udaju/">Víc v zásadách</a></p>
   <div class="cookies-btns">
     <button class="cookies-no" onclick="cookiesOdmitnout()">Odmítnout</button>
     <button class="cookies-ok" onclick="cookiesSouhlasit()">Souhlasím</button>
@@ -514,6 +531,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
     </div>
 
     <form id="objednavka-form" onsubmit="return odeslatObjednavku(event)">
+      <p class="obj-skupina prvni">Varianta</p>
       <div class="obj-field">
         <label>Varianta *</label>
         <select id="obj-varianta" required onchange="prepocitatCenu()">
@@ -523,12 +541,14 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
         </select>
       </div>
       <div class="obj-field"><label>Cena</label><input type="text" id="obj-cena" readonly></div>
+      <p class="obj-skupina">Firma a fakturace</p>
       <div class="obj-field"><label>Firma *</label><input type="text" id="obj-firma" required></div>
       <div class="obj-row">
         <div class="obj-field"><label>IČO *</label><input type="text" id="obj-ico" required></div>
         <div class="obj-field"><label>DIČ</label><input type="text" id="obj-dic"></div>
       </div>
       <div class="obj-field"><label>Fakturační adresa</label><input type="text" id="obj-adresa" placeholder="Ulice, město, PSČ"></div>
+      <p class="obj-skupina">Kontakt a přihlášení</p>
       <div class="obj-row">
         <div class="obj-field"><label>Kontaktní osoba *</label><input type="text" id="obj-osoba" required></div>
         <div class="obj-field"><label>Telefon</label><input type="tel" id="obj-telefon"></div>

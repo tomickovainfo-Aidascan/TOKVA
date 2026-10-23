@@ -88,8 +88,8 @@
     '.tb-karta{position:sticky;top:90px;max-width:420px;margin:40px auto;background:#fff;border:1px solid #e8e6e0;border-top:3px solid #e9a91b;border-radius:12px;padding:24px 22px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.08);font-family:"DM Sans",Arial,sans-serif;}' +
     '.tb-karta h3{font-family:"Poppins",Arial,sans-serif;font-size:18px;font-weight:800;margin:0 0 8px;color:#111;}' +
     '.tb-karta p{font-size:14px;color:#555;line-height:1.6;margin:0 0 16px;}' +
-    '.tb-karta .tb-pozn{font-size:12.5px;color:#777;margin:10px 0 0;}' +
-    '.tb-pozn-mala{font-size:12px !important;color:#888 !important;line-height:1.5 !important;text-align:center;margin:14px 0 0 !important;}' +
+    '.tb-karta .tb-pozn{font-size:12.5px;color:#5f5d5a;margin:10px 0 0;}' +
+    '.tb-pozn-mala{font-size:12px !important;color:#666 !important;line-height:1.5 !important;text-align:center;margin:14px 0 0 !important;}' +
     '.tb-info{font-size:14px;line-height:1.6;margin:16px 0 0;max-width:640px;}' +
     '.tb-mlha{position:relative;}' +
     '.tb-mlha>*:not(.tb-mlha-karta){filter:blur(8px);opacity:.55;pointer-events:none;user-select:none;-webkit-user-select:none;}' +

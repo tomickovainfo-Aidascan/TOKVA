@@ -81,7 +81,7 @@
      málo pro běžný text (potřeba aspoň 4,5:1) - číslo v poli šlo špatně
      přečíst. Tahle tmavší varianta na stejném pozadí vychází na ~5,5:1. */
   --gold-text-dark: #86590a;
-  --black: #000; --dark: #111; --mid: #545454; --light: #a8a6a6;
+  --black: #000; --dark: #111; --mid: #545454; --light: #7c7975;
   --white: #fff; --paper: #f5f4f0; --border: #e2e2e2; --red: #d63c3c;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -107,7 +107,7 @@ nav { background:var(--white); border-bottom:2px solid var(--gold); padding:13px
 .hero h1 em { color:var(--gold); font-style:normal; }
 .hero p { font-size:16px; color:rgba(255,255,255,0.55); max-width:600px; line-height:1.75; font-weight:300; }
 .hero-meta { display:flex; gap:18px; flex-wrap:wrap; margin-top:22px; }
-.hero-meta span { font-size:12px; color:rgba(255,255,255,0.35); display:flex; align-items:center; gap:6px; }
+.hero-meta span { font-size:13px; color:rgba(255,255,255,.65); display:flex; align-items:center; gap:6px; }
 .hero-meta span::before { content:"\25CF"; color:var(--gold); font-size:7px; }
 
 .main { max-width:1040px; margin:0 auto; padding:40px 40px 80px; }
@@ -183,9 +183,9 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 
 
 footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
-.footer-brand { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:rgba(255,255,255,0.4); }
+.footer-brand { font-family:"Poppins",sans-serif; font-size:13px; font-weight:700; color:rgba(255,255,255,.7); }
 .footer-brand span { color:var(--gold); }
-.footer-legal { font-size:11px; color:rgba(255,255,255,0.2); }
+.footer-legal { font-size:11.5px; color:rgba(255,255,255,.6); }
 
 
 .content-block { background:var(--white); border-bottom:1px solid var(--border); padding:40px; }
@@ -322,8 +322,23 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 </head>
 <body>
 
+<style id="cookies-css-2">
+/* Cookies lišta (23. 10.): čitelnější text, Odmítnout jako normální tlačítko, na mobilu nižší */
+#cookies-bar{padding:12px 20px !important;gap:10px 16px !important;}
+#cookies-bar p{color:rgba(255,255,255,.85) !important;font-size:13px !important;line-height:1.5 !important;}
+#cookies-bar .cookies-no,#cookies-bar .cookies-ok{border-radius:6px !important;padding:9px 18px !important;font-size:13.5px !important;font-weight:700 !important;}
+#cookies-bar .cookies-no{background:transparent !important;color:#fff !important;border:1.5px solid rgba(255,255,255,.6) !important;}
+#cookies-bar .cookies-no:hover{background:rgba(255,255,255,.12) !important;}
+#cookies-bar .cookies-ok{border:1.5px solid #e9a91b !important;}
+@media (max-width:600px){
+#cookies-bar{padding:10px 14px !important;}
+#cookies-bar p{min-width:0 !important;flex:1 1 100% !important;font-size:12.5px !important;}
+#cookies-bar .cookies-btns{width:100%;}
+#cookies-bar .cookies-btns button{flex:1;}
+}
+</style>
 <div id="cookies-bar" class="cookies-bar" style="display:none;">
-  <p>Tento web používá Google Analytics ke zlepšování obsahu. Víc v <a href="https://tokva.cz/ochrana-osobnich-udaju/" target="_blank">zásadách ochrany osobních údajů</a>.</p>
+  <p>Používám analytické cookies (Google Analytics) k měření návštěvnosti. <a href="https://tokva.cz/ochrana-osobnich-udaju/">Víc v zásadách</a></p>
   <div class="cookies-btns">
     <button class="cookies-no" onclick="cookiesOdmitnout()">Odmítnout</button>
     <button class="cookies-ok" onclick="cookiesSouhlasit()">Souhlasím</button>
