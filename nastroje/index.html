@@ -404,7 +404,7 @@ const TOOLS = [
     proKoho:"Majitel nebo manažer výroby či skladu, co tuší, že se někde ztrácí čas, ale nemá to podložené čísly.",
     url:"nastroje/meric-plytvani-free/", souvisejici:["spaghetti-sklad","kalkulacka","kviz-komunikace"],
     metaTitle:"Měřič plýtvání zdarma: produktivita za 10 minut | Tokva",
-    metaDescription:"Zjistěte výpočet produktivity práce ve vaší firmě za 10 minut. Bez stopek a papíru, zdarma online, stačí zadat e-mail.",
+    metaDescription:"Zjistěte výpočet produktivity práce ve vaší firmě, první měření přibližně za 10 minut. Bez stopek a papíru, zdarma online, stačí zadat e-mail.",
     ucelMetoda:"Měřič plýtvání je jednoduchá časová studie jednoho konkrétního procesu. Místo stopek a papíru klikáte na tlačítko podle toho, co zrovna pracovník dělá, appka sama měří, jak dlouho která činnost trvá. Na konci uvidíte, kolik času padá na skutečnou práci, a kolik na chození, hledání, čekání, papírování nebo kontrolu.\n\nKdo zná metodu KAIZEN, pozná v těch kategoriích klasické druhy plýtvání, takzvané muda. Znát ji ale vůbec nemusíte, appka funguje stejně dobře i bez toho.",
     kdyPouzit:{
       otazky:[
@@ -783,8 +783,8 @@ const TOOLS = [
     } },
 
   // PLACENÉ SAMOSTATNĚ
-  { id:"meric-pro", group:"paid-solo", name:"Měřič plýtvání Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Změříte čas přesněji, s vlastními kroky procesu a exportem dat.",
-    popis:"Jde do hloubky víc než bezplatná verze. Pro výrobní firmy a sklady, co chtějí přesnější čísla a víc kontextu.",
+  { id:"meric-pro", group:"paid-solo", name:"Měřič plýtvání Pro", krok:3, oblasti:["sklad","vyroba"], benefit:"Podrobnější měření podle vašeho procesu.",
+    popis:"Vlastní činnosti, více měřených cyklů, přepočet na náklady a uložená historie. Pro výrobní firmy a sklady, kterým už nestačí rychlé měření.",
     proKoho:"Kdo si vyzkoušel bezplatnou verzi a chce dál.",
     prodejniStranka:"nastroje/meric-plytvani-pro/", souvisejici:["spaghetti-vyroba","mini-audit"],
     kdyPouzit:{
@@ -899,7 +899,7 @@ const TOOLS = [
     } },
 
   { id:"5s-audit", group:"free", name:"5S pro každého smrtelníka", krok:3, oblasti:["sklad","vyroba","administrativa"], benefit:"Uspořádáte pracoviště krok za krokem, s fotkami před a po.",
-    popis:"Krok po kroku uspořádáte jedno pracoviště, s fotkami před a po, zdarma bez časového omezení.\n\nKontrola pracoviště po čase se skóre, víc pracovišť, tisk reportu a úkoly jsou v Tokva Pro.",
+    popis:"Průvodce uspořádáním pracoviště. Krok po kroku uspořádáte jedno pracoviště, s fotkami před a po, zdarma bez časového omezení.\n\nKontrola pracoviště po čase se skóre, víc pracovišť, tisk reportu a úkoly jsou v Tokva Pro.",
     proKoho:"Vedoucí skladu, výroby nebo dílny, co chce uklidit konkrétní pracoviště podle metody 5S krok za krokem, s fotkami jako důkazem, ne jen na oko.",
     url:"nastroje/5S_audit/", souvisejici:["meric-free","spaghetti-sklad"], prodejniStranka:null, prodejniNote:"Bezplatná verze je dostupná hned výš. Víc najdete v Tokva Pro.",
     kdyPouzit:{
@@ -954,8 +954,8 @@ const TOOLS = [
       }
     } },
 
-  { id:"5x-proc", group:"free", name:"5× Proč AI kouč", krok:3, oblasti:["sklad","vyroba","administrativa","lide"], benefit:"AI kouč vás dovede k opravdové příčině problému, ne jen k příznaku.",
-    popis:"AI kouč vás provede rozhovorem a dovede ke kořenu problému. Strukturovaný výstup s příčinou a prvním krokem, zdarma.\n\nUložené analýzy a navazující úkoly s ověřením výsledku jsou v Tokva Pro.",
+  { id:"5x-proc", group:"free", name:"5× Proč AI kouč", krok:3, oblasti:["sklad","vyroba","administrativa","lide"], benefit:"AI kouč vám pomůže prozkoumat možné příčiny a navrhne první krok k jejich ověření.",
+    popis:"AI kouč vás provede rozhovorem a pomůže prozkoumat možné příčiny problému. Na konci máte pravděpodobnou příčinu a první krok k jejímu ověření.\n\nJedna kompletní analýza zdarma na e-mail. Další analýzy, jejich ukládání a navazující úkoly jsou součástí Tokvy Pro.",
     proKoho:"Vedoucí skladu nebo výroby, co řeší furt stejný problém dokola a chce se dostat k tomu, co ho fakt způsobuje, ne jen hasit znovu a znovu.",
     url:"nastroje/5x-proc-ai-kouc/", souvisejici:["meric-free","casova-studie"], prodejniStranka:null, prodejniNote:"Bezplatná verze je dostupná hned výš. Víc najdete v Tokva Pro.",
     kdyPouzit:{
@@ -974,7 +974,7 @@ const TOOLS = [
     postup:[
       "Zadejte e-mail a spusťte analýzu zdarma (1 kompletní analýza), nebo se přihlaste do Tokva Pro, kde jich spustíte, kolik chcete.",
       "Popište problém a odpovídejte na otázky AI kouče, jednu po druhé, co nejkonkrétněji.",
-      "Na konci dostanete strukturovaný výstup s kořenovou příčinou a prvním krokem, ke stažení jako TXT nebo k vytištění (v Tokva Pro navíc rovnou založíte 2 navazující úkoly)."
+      "Na konci dostanete strukturovaný výstup s pravděpodobnou příčinou a prvním krokem k jejímu ověření, ke stažení jako TXT nebo k vytištění (v Tokva Pro navíc rovnou založíte 2 navazující úkoly)."
     ],
     vstupy:"E-mail (pro spuštění bezplatné verze), popis problému a odpovědi na otázky AI kouče v průběhu rozhovoru.",
     vystupy:"Strukturovaný textový výstup s deseti oddíly, původní a upřesněný problém, celý řetězec pěti proč, kořenová příčina, přispívající faktory, fakta versus domněnky, doporučené opatření, první krok do 24 hodin, jak ověřit výsledek, otevřené otázky. Ke stažení jako TXT nebo k vytištění, v Tokva Pro navíc uložený v historii a rovnou zdroj pro 2 navazující úkoly.",
@@ -992,10 +992,10 @@ const TOOLS = [
     ],
     design2a:{
       heroLines:["Od výmluvy","ke skutečné příčině"],
-      heroNote:"Stačí e-mail · 1 analýza zdarma<br>vede vás AI kouč, krok za krokem",
+      heroNote:"Jedna kompletní analýza zdarma na e-mail<br>vede vás AI kouč, krok za krokem",
       ctaLabel:"Chci spustit analýzu",
       stats:[
-        {num:"5×", lbl:"proč, dokud nenajdete kořenovou příčinu"},
+        {num:"5×", lbl:"proč, dokud se nedostanete pod povrch problému"},
         {num:"10", lbl:"oddílů strukturovaného výstupu"},
         {num:"1", lbl:"kompletní analýza zdarma"},
         {num:"24", lbl:"hodin, do kdy je proveditelný první krok"}
