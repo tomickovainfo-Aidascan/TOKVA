@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
+<script>
+// Google Analytics se spouští až po souhlasu s cookies (/cookies.js na konci stránky).
+window.trackTokvaEvent = function (eventName, parameters = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", eventName, { ...parameters, page_path: window.location.pathname });
+};
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, follow">
@@ -180,5 +187,6 @@
 </footer>
 
 <script src="/menu.js"></script>
+<script src="/cookies.js"></script>
 </body>
 </html>

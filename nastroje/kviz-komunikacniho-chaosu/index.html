@@ -3004,6 +3004,8 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
   else if (s === null) { document.getElementById('cookies-bar').style.display = 'flex'; }
 })();
 function spustitGA() {
+  if (window.__tokvaGA) return;
+  window.__tokvaGA = true;
   var s = document.createElement('script');
   s.async = true;
   s.src = 'https://www.googletagmanager.com/gtag/js?id=G-NJWW5ZX4J9';

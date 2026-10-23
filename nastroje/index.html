@@ -1552,6 +1552,8 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 })();
 
 function spustitGA() {
+  if (window.__tokvaGA) return;
+  window.__tokvaGA = true;
   var s = document.createElement('script');
   s.async = true;
   s.src = 'https://www.googletagmanager.com/gtag/js?id=' + NASTROJOVNA_GA_ID;

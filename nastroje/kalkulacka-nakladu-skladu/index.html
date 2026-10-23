@@ -1750,6 +1750,12 @@ function update() {
   document.getElementById("res-rok").textContent       = fmt(celkem * 12);
   document.getElementById("res-m2-rok").textContent    = fmtM2(m2Rok);
   document.getElementById("res-podil").textContent     = podil + " %";
+  // Plocha 0 (nebo prázdná): cena za m² nedává smysl, místo čísla upozornění.
+  if (!(getVal("plocha") > 0)) {
+    document.getElementById("res-m2-mesic").textContent = "?";
+    document.getElementById("res-m2-rok").textContent = "?";
+    document.getElementById("res-hero-sub").textContent = "Zadejte plochu skladu větší než 0 m², jinak cenu za metr spočítat nejde.";
+  }
 
   // ── Breakdown ──
   const cats = [zakladni, energie, pojisteni, revize, provoz, odpisy, ostatniPlusRezervaMesic];
@@ -1801,6 +1807,8 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 })();
 
 function spustitGA() {
+  if (window.__tokvaGA) return;
+  window.__tokvaGA = true;
   if (window.__gaLoaded) return;
   window.__gaLoaded = true;
   var sc = document.createElement('script');
