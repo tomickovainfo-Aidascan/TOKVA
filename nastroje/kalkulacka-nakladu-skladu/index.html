@@ -1545,10 +1545,14 @@ function oznamitZahajeni() {
   trackTokvaEvent('tool_started', { tool_name: 'kalkulacka_nakladu_skladu', tool_version: 'free' });
 }
 let toolDokoncenoOdeslano = false;
+// Kalkulačka počítá průběžně, takže „dokončení“ nejde poznat podle tlačítka.
+// Počítá se, až člověk změní aspoň 3 různá čísla (ne hned první změna),
+// a posílá se i to, jestli už má výsledek odemčený e-mailem.
 function oznamitDokonceni() {
-  if (toolDokoncenoOdeslano) return;
+  if (toolDokoncenoOdeslano || dotcenaPole.size < 3) return;
   toolDokoncenoOdeslano = true;
-  trackTokvaEvent('tool_completed', { tool_name: 'kalkulacka_nakladu_skladu', tool_version: 'free' });
+  const res = document.querySelector('.results');
+  trackTokvaEvent('tool_completed', { tool_name: 'kalkulacka_nakladu_skladu', tool_version: 'free', tool_type: 'kalkulacka', odemceno: !(res && res.classList.contains('tb-mlha')) });
 }
 
 // Hláška pod polem, když zadané číslo bylo mimo povolený rozsah a appka ho

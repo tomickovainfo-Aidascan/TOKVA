@@ -365,7 +365,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
 
   <div class="hero-cta">
     <a href="#ceny" class="btn-gold">Vybrat variantu Pro</a>
-    <a href="https://tokva.cz/vstup/" class="btn-link">Ještě si chci projít nástroje zdarma</a>
+    <a href="https://tokva.cz/vstup/" class="btn-link" onclick="trackTokvaEvent('vstup_click',{placement:'pro_hero'})">Ještě si chci projít nástroje zdarma</a>
   </div>
   <p class="hero-trust">Od 499&nbsp;Kč měsíčně pro jednoho uživatele, zakladatelská cena. Bez automatického prodlužování.</p>
 
@@ -446,7 +446,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
   <p class="hero-pains" style="margin-top:8px;">Poznáváte se v tomhle? Chyby při expedici, hledání materiálu, zbytečná chůze, opakované přepisování stejných čísel, čekání mezi kroky, špatné předávání informací mezi směnami.</p>
   <div class="hero-cta stred-cta">
     <a href="#ceny" class="btn-gold">Vybrat variantu Pro</a>
-    <a href="https://tokva.cz/vstup/" class="btn-link">Ještě jste Tokvu nezkusili? Nejdřív si můžete vyzkoušet nástroje zdarma.</a>
+    <a href="https://tokva.cz/vstup/" class="btn-link" onclick="trackTokvaEvent('vstup_click',{placement:'pro_stred'})">Ještě jste Tokvu nezkusili? Nejdřív si můžete vyzkoušet nástroje zdarma.</a>
   </div>
 
   <details class="vsechny-funkce">
@@ -788,6 +788,8 @@ async function odeslatObjednavku(e) {
       return false;
     }
 
+    // Objednávka je opravdu uložená (máme variabilní symbol). Platba se měří zvlášť.
+    trackTokvaEvent('objednavka_odeslana', { plan_variant: varianta, value: aktualniCenaKc, currency: 'CZK', placement: window.__objPrihlaseny ? 'prihlaseny' : 'novy_ucet' });
     document.getElementById('objednavka-form').style.display = 'none';
     document.getElementById('ceny').style.display = 'none';
     document.getElementById('objednavka-vs').textContent = 'Variabilní symbol k platbě: ' + variabilniSymbol;

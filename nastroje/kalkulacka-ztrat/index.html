@@ -773,10 +773,15 @@ function oznamitZahajeni() {
   trackTokvaEvent('tool_started', { tool_name: 'kalkulacka_ztrat', tool_version: 'free' });
 }
 let toolDokoncenoOdeslano = false;
+// Kalkulačka počítá průběžně, takže „dokončení“ nejde poznat podle tlačítka.
+// Počítá se, až člověk změní aspoň 3 různá čísla (ne hned první změna),
+// a posílá se i to, jestli už má výsledek odemčený e-mailem.
+const zmenenaPole = new Set();
 function oznamitDokonceni() {
-  if (toolDokoncenoOdeslano) return;
+  if (toolDokoncenoOdeslano || zmenenaPole.size < 3) return;
   toolDokoncenoOdeslano = true;
-  trackTokvaEvent('tool_completed', { tool_name: 'kalkulacka_ztrat', tool_version: 'free' });
+  const res = document.querySelector('.results');
+  trackTokvaEvent('tool_completed', { tool_name: 'kalkulacka_ztrat', tool_version: 'free', tool_type: 'kalkulacka', odemceno: !(res && res.classList.contains('tb-mlha')) });
 }
 
 // Appka dřív nechala rozpracovaná čísla zmizet i tichým odchodem na přihlášení
@@ -864,6 +869,7 @@ document.addEventListener('change', function (e) {
 
 // slider <-> ruční číslo, obousměrně, se stejnými mezemi
 function syncFromRange(id) {
+  zmenenaPole.add(id);
   document.getElementById(id + "-num").value = document.getElementById(id).value;
   oznamitZahajeni();
   hasRozpracovanyVypocet = true;
@@ -884,6 +890,7 @@ const NEOBVYKLE = {
   'kamion-cas': [v => v > 480, 'Víc než 8 hodin na jednu dodávku. Zkontrolujte, jestli je číslo správně.']
 };
 function syncFromNumber(id, konec) {
+  zmenenaPole.add(id);
   const range = document.getElementById(id);
   const num = document.getElementById(id + "-num");
   const min = +range.min, max = +range.max;

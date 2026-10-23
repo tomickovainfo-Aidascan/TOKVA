@@ -223,6 +223,27 @@
         f.appendChild(i);
       });
       document.body.appendChild(f);
+      // Odemčení v prohlížeči (brana_odemceno) a odeslání kontaktu do Breva
+      // jsou dvě různé věci. Odpověď Breva přečíst nejde (jiná doména), ale
+      // když se skrytý rámeček načte, Brevo formulář přijal a odpověděl:
+      // brana_kontakt_odeslan. Když do 15 s neodpoví: brana_kontakt_bez_odpovedi.
+      var ram = ov && ov.querySelector('iframe[name="tb-brevo-cil"]');
+      if (ram) {
+        var hotovo = false;
+        var poNacteni = function () {
+          if (hotovo) return;
+          hotovo = true;
+          ram.removeEventListener('load', poNacteni);
+          sledovat('brana_kontakt_odeslan');
+        };
+        ram.addEventListener('load', poNacteni);
+        setTimeout(function () {
+          if (hotovo) return;
+          hotovo = true;
+          ram.removeEventListener('load', poNacteni);
+          sledovat('brana_kontakt_bez_odpovedi');
+        }, 15000);
+      }
       f.submit();
       setTimeout(function () { f.remove(); }, 3000);
     } catch (e) {
