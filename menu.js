@@ -20,7 +20,17 @@
     // Kdo má Tokva Pro: bez Otevřít Tokvu zdarma, Můj příběh a Víc o Tokva Pro.
     'html.tokva-ma-pro .menu-zlate,html.tokva-ma-pro .menu-pribeh,html.tokva-ma-pro #nav-pro-odkaz,html.tokva-ma-pro .menu-pro{display:none !important;}' +
     '.menu-prepinac{display:none !important;cursor:pointer;font-family:inherit;background:transparent;}' +
+    // Jednotný vzhled lišty a tlačítek na webu i v nástrojích (23. 10.).
+    // Černá lišta = web, bílá = nástroje. Barvy zůstávají, velikosti jsou stejné.
+    '.menu-lista{min-height:64px;box-sizing:border-box;padding-top:12px !important;padding-bottom:12px !important;}' +
+    '.menu-lista .brand,.menu-lista .nav-brand{font-size:16px !important;}' +
+    '.menu-kontejner > a,.menu-kontejner > button,.menu-kontejner > span{font-family:"DM Sans",sans-serif !important;font-size:13px !important;font-weight:700 !important;line-height:1.35 !important;padding:8px 16px !important;border-radius:6px !important;border-width:1.5px !important;}' +
+    '.menu-lista-svetla .menu-kontejner > a:not(.menu-zlate),.menu-lista-svetla .menu-kontejner > button{color:#111 !important;background:#fff !important;border-color:#c9c5bc !important;border-style:solid !important;}' +
+    '.menu-lista-svetla .menu-kontejner > a:not(.menu-zlate):hover,.menu-lista-svetla .menu-kontejner > button:hover{border-color:#e9a91b !important;}' +
+    '.menu-lista-svetla .menu-kontejner > .nav-aktivni{border-color:#e9a91b !important;}' +
     '@media (max-width:700px){' +
+      '.menu-lista{min-height:58px;padding-top:10px !important;padding-bottom:10px !important;padding-left:16px !important;padding-right:16px !important;}' +
+      '.menu-kontejner > a,.menu-kontejner > button{padding:8px 14px !important;}' +
       '.menu-kontejner{gap:8px !important;}' +
       '.menu-prepinac{display:inline-flex !important;align-items:center;}' +
       '.menu-sbaleno > :not(.menu-zlate):not(.menu-prepinac){display:none !important;}' +
@@ -42,6 +52,16 @@
     var vzor = deti.filter(function (d) { return d.tagName === 'A'; })[0] || deti[0];
     if (!vzor) return;
     var trida = vzor.className.split(' ').filter(function (c) { return c && c.indexOf('menu-') !== 0; })[0] || '';
+
+    // Lišta (rodič kontejneru) dostane společnou třídu, světlá i druhou.
+    var lista = kont.parentElement;
+    if (lista) {
+      lista.classList.add('menu-lista');
+      try {
+        var bg = getComputedStyle(lista).backgroundColor.match(/\d+/g);
+        if (bg && (+bg[0] + +bg[1] + +bg[2]) > 600) lista.classList.add('menu-lista-svetla');
+      } catch (e) {}
+    }
 
     var st = document.createElement('style');
     st.textContent = CSS;
