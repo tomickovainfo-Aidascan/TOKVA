@@ -951,7 +951,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
   <!-- VYSLEDKY -->
   <div class="vysledky-wrap" id="vysledky">
     <div class="skore-hero" id="skore-hero">
-      <div class="skore-cislo" id="skore-cislo">0<span class="skore-max">/30</span></div>
+      <div class="skore-cislo" id="skore-cislo"></div>
       <div class="skore-label" id="skore-label"></div>
       <div class="skore-popis" id="skore-popis"></div>
     </div>
@@ -1426,8 +1426,11 @@ function kodPoOdeslaniEmailu() {
 }
 function obnovitVysledekZOdkazu() {
   let kod = new URLSearchParams(window.location.search).get('odpovedi');
-  const poEmailu = !kod ? kodPoOdeslaniEmailu() : null;
-  if (poEmailu) kod = poEmailu;
+  // Po odeslání výsledku e-mailem Brevo stránku načte znovu. Kód může být
+  // i v adrese (nový výsledek se do ní zapisuje), proto se porovnává.
+  const zEmailu = kodPoOdeslaniEmailu();
+  if (!kod && zEmailu) kod = zEmailu;
+  const poEmailu = zEmailu && zEmailu === kod ? zEmailu : null;
   if (!kod || !/^[0-3n]{10}$/.test(kod)) return;
   zobrazenoZOdkazu = true;
   for (let q = 1; q <= 10; q++) {
@@ -1447,6 +1450,15 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 function zobrazVysledky() {
   try {
   if (!zobrazenoZOdkazu) oznamitDokonceni();
+  if (!zobrazenoZOdkazu) {
+    // Kód nového výsledku zapsat do adresy, ať obnovení stránky ukáže tenhle
+    // výsledek, ne starý z odkazu v e-mailu (ani prázdný audit).
+    try {
+      const u = new URL(location.href);
+      u.searchParams.set('odpovedi', kodOdpovediProUlozeni());
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    } catch (e) {}
+  }
   hasRozpracovanyAudit = false;
   const skore = vypocitejSkore();
   const maxS = maxSkore();
