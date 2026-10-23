@@ -223,6 +223,13 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .vyhoda dt{font-family:'Poppins',sans-serif;font-weight:800;font-size:18px;color:var(--dark);line-height:1.35;}
 .vyhoda dd{margin:0;font-size:16px;line-height:1.65;color:var(--mid);}
 @media (max-width:640px){.vyhoda{grid-template-columns:1fr;gap:4px;padding:14px 0;}}
+details.faq-item{padding:0;}
+details.faq-item summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;}
+details.faq-item summary::-webkit-details-marker{display:none;}
+details.faq-item summary h3{margin:0;}
+details.faq-item summary::after{content:"+";font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;color:var(--gold-dark);line-height:1;flex-shrink:0;}
+details.faq-item[open] summary::after{content:"−";}
+details.faq-item > p{padding:0 20px 16px;margin:0;}
 </style>
 <script type="application/ld+json">
 {
@@ -231,39 +238,31 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Nemáme čas na další appku.",
+      "name": "Co získám oproti nástrojům zdarma?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Nemusíte zavádět všechno najednou. Začněte jedním problémem a jedním nástrojem. První audit zabere přibližně pět minut. Další kroky zvolíte podle výsledku."
+        "text": "Výsledky uložené u firmy, úkoly s odpovědným člověkem a termínem a porovnání dvou měření. Když jednomu člověku ušetříte pět minut denně, je to při 21 pracovních dnech a nákladech 300 Kč na hodinu zhruba 525 Kč měsíčně. Taková úspora času může pokrýt cenu předplatného."
       }
     },
     {
       "@type": "Question",
-      "name": "Lidi u nás nic vyplňovat nebudou.",
+      "name": "Kolik času zabere začít?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A nemusí. Nástroje obvykle vyplňuje jeden člověk, ten, kdo provoz řeší. Ostatní se dozví výsledek, ne dotazník."
+        "text": "Nemusíte zavádět všechno najednou. Začněte jedním problémem a jedním nástrojem. První audit zabere přibližně pět minut a další krok vám Tokva doporučí podle výsledku."
       }
     },
     {
       "@type": "Question",
-      "name": "Co z toho mám za 499 Kč měsíčně?",
+      "name": "Musí Tokvu používat všichni ve firmě?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Výsledky, které se neztratí, úkoly s termínem a porovnání dvou měření. Když jednomu člověku ušetříte pět minut denně, je to při 21 pracovních dnech v měsíci a nákladech 300 Kč na hodinu zhruba 525 Kč měsíčně. Taková úspora času může pokrýt cenu předplatného."
+        "text": "Ne. Nástroje obvykle vyplňuje jeden člověk, ten, kdo provoz řeší. Kolegy pozvete, jen když chcete, a ostatní se dozví výsledek, ne dotazník."
       }
     },
     {
       "@type": "Question",
-      "name": "Nevím, co bych měl měřit.",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Začnete nástrojem zdarma, ten vás otázkami provede. Po výsledku Tokva doporučí další krok."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Jak se platí?",
+      "name": "Jak se platí a kdy získám přístup?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Převodem. Po odeslání objednávky vám na e-mail přijdou platební údaje. Do 1 pracovního dne od připsání platby vám zapnu Tokva Pro a pošlu fakturu, už zaplacenou."
@@ -271,34 +270,26 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
     },
     {
       "@type": "Question",
-      "name": "Jsou naše data v bezpečí?",
+      "name": "Můžu předplatné kdykoliv ukončit?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Data každé firmy jsou oddělená na úrovni databáze. Dostanou se k nim jen přihlášení členové vaší firmy podle své role."
+        "text": "Ano, bez výpovědi. Předplatné je měsíční a samo se neprodlužuje. Týden před koncem vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma."
       }
     },
     {
       "@type": "Question",
-      "name": "Kdo vidí naše výsledky?",
+      "name": "Co se potom stane s našimi výsledky?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Jen členové vaší firmy podle přidělené role. Bez přihlášení se k výsledkům nedostane nikdo."
+        "text": "Zůstanou uložené u vaší firmy ještě 12 měsíců. Ve verzi zdarma je neuvidíte, ale když se k Pro vrátíte, najdete je, jak jste je nechali. Před koncem předplatného si je můžete stáhnout exportem. Po 12 měsících je smažu a nejméně 30 dní předem vás upozorním e-mailem."
       }
     },
     {
       "@type": "Question",
-      "name": "Můžu s Pro kdykoliv přestat?",
+      "name": "Kdo má přístup k našim datům?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Ano, bez výpovědi. Předplatné je měsíční. Týden před koncem vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma. Předtím si můžete výsledky stáhnout jedním exportem."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Co se stane s našimi uloženými výsledky, když Pro neprodloužíme?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Zůstanou uložené u vaší firmy ještě 12 měsíců. Ve verzi zdarma je neuvidíte, ale když se během té doby k Pro vrátíte, najdete všechno tak, jak jste to nechali. Pokud je chcete mít po ruce i bez Pro, stáhněte si je před koncem předplatného exportem. Po 12 měsících data smažu a nejméně 30 dní předem vás na to upozorním e-mailem. Když budete chtít data smazat dřív, stačí napsat."
+        "text": "Jen přihlášení členové vaší firmy podle své role. Data každé firmy jsou oddělená na úrovni databáze, bez přihlášení se k nim nedostane nikdo."
       }
     }
   ]
@@ -469,42 +460,34 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
   </div>
 
   <h2 class="faq-nadpis">Časté otázky</h2>
-  <div class="faq-item">
-    <h3>Nemáme čas na další appku.</h3>
-    <p>Nemusíte zavádět všechno najednou. Začněte jedním problémem a jedním nástrojem. První audit zabere přibližně pět minut. Další kroky zvolíte podle výsledku.</p>
-  </div>
-  <div class="faq-item">
-    <h3>Lidi u nás nic vyplňovat nebudou.</h3>
-    <p>A nemusí. Nástroje obvykle vyplňuje jeden člověk, ten, kdo provoz řeší. Ostatní se dozví výsledek, ne dotazník.</p>
-  </div>
-  <div class="faq-item">
-    <h3>Co z toho mám za 499 Kč měsíčně?</h3>
-    <p>Výsledky, které se neztratí, úkoly s termínem a porovnání dvou měření. Když jednomu člověku ušetříte pět minut denně, je to při 21 pracovních dnech v měsíci a nákladech 300 Kč na hodinu zhruba 525 Kč měsíčně. Taková úspora času může pokrýt cenu předplatného.</p>
-  </div>
-  <div class="faq-item">
-    <h3>Nevím, co bych měl měřit.</h3>
-    <p>Začnete nástrojem zdarma, ten vás otázkami provede. Po výsledku Tokva doporučí další krok.</p>
-  </div>
-  <div class="faq-item">
-    <h3>Jak se platí?</h3>
+  <details class="faq-item">
+    <summary><h3>Co získám oproti nástrojům zdarma?</h3></summary>
+    <p>Výsledky uložené u firmy, úkoly s odpovědným člověkem a termínem a porovnání dvou měření. Když jednomu člověku ušetříte pět minut denně, je to při 21 pracovních dnech a nákladech 300 Kč na hodinu zhruba 525 Kč měsíčně. Taková úspora času může pokrýt cenu předplatného.</p>
+  </details>
+  <details class="faq-item">
+    <summary><h3>Kolik času zabere začít?</h3></summary>
+    <p>Nemusíte zavádět všechno najednou. Začněte jedním problémem a jedním nástrojem. První audit zabere přibližně pět minut a další krok vám Tokva doporučí podle výsledku.</p>
+  </details>
+  <details class="faq-item">
+    <summary><h3>Musí Tokvu používat všichni ve firmě?</h3></summary>
+    <p>Ne. Nástroje obvykle vyplňuje jeden člověk, ten, kdo provoz řeší. Kolegy pozvete, jen když chcete, a ostatní se dozví výsledek, ne dotazník.</p>
+  </details>
+  <details class="faq-item">
+    <summary><h3>Jak se platí a kdy získám přístup?</h3></summary>
     <p>Převodem. Po odeslání objednávky vám na e-mail přijdou platební údaje. Do 1 pracovního dne od připsání platby vám zapnu Tokva Pro a pošlu fakturu, už zaplacenou.</p>
-  </div>
-  <div class="faq-item">
-    <h3>Jsou naše data v bezpečí?</h3>
-    <p>Data každé firmy jsou oddělená na úrovni databáze. Dostanou se k nim jen přihlášení členové vaší firmy podle své role.</p>
-  </div>
-  <div class="faq-item">
-    <h3>Kdo vidí naše výsledky?</h3>
-    <p>Jen členové vaší firmy podle přidělené role. Bez přihlášení se k výsledkům nedostane nikdo.</p>
-  </div>
-  <div class="faq-item">
-    <h3>Můžu s Pro kdykoliv přestat?</h3>
-    <p>Ano, bez výpovědi. Předplatné je měsíční. Týden před koncem vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma. Předtím si můžete výsledky stáhnout jedním exportem.</p>
-  </div>
-  <div class="faq-item">
-    <h3>Co se stane s našimi uloženými výsledky, když Pro neprodloužíme?</h3>
-    <p>Zůstanou uložené u vaší firmy ještě 12 měsíců. Ve verzi zdarma je neuvidíte, ale když se během té doby k Pro vrátíte, najdete všechno tak, jak jste to nechali. Pokud je chcete mít po ruce i bez Pro, stáhněte si je před koncem předplatného exportem. Po 12 měsících data smažu a nejméně 30 dní předem vás na to upozorním e-mailem. Když budete chtít data smazat dřív, stačí napsat.</p>
-  </div>
+  </details>
+  <details class="faq-item">
+    <summary><h3>Můžu předplatné kdykoliv ukončit?</h3></summary>
+    <p>Ano, bez výpovědi. Předplatné je měsíční a samo se neprodlužuje. Týden před koncem vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma.</p>
+  </details>
+  <details class="faq-item">
+    <summary><h3>Co se potom stane s našimi výsledky?</h3></summary>
+    <p>Zůstanou uložené u vaší firmy ještě 12 měsíců. Ve verzi zdarma je neuvidíte, ale když se k Pro vrátíte, najdete je, jak jste je nechali. Před koncem předplatného si je můžete stáhnout exportem. Po 12 měsících je smažu a nejméně 30 dní předem vás upozorním e-mailem.</p>
+  </details>
+  <details class="faq-item">
+    <summary><h3>Kdo má přístup k našim datům?</h3></summary>
+    <p>Jen přihlášení členové vaší firmy podle své role. Data každé firmy jsou oddělená na úrovni databáze, bez přihlášení se k nim nedostane nikdo.</p>
+  </details>
 
 
   <div class="objednavka-box" id="objednavka">
