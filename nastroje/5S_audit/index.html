@@ -1290,7 +1290,8 @@ body.je-pro .jen-free { display:none; }
     </div>
     <label for="input-misto" style="display:block;font-size:12px;font-weight:600;color:var(--mid);margin-bottom:6px;">Název místa</label>
     <input class="modal-input" id="input-misto" placeholder="Např. Kuchyň, Dílna, Kancelář..."
-      onkeydown="if(event.key==='Enter') ulozitMisto()">
+      onkeydown="if(event.key==='Enter') ulozitMisto()" oninput="document.getElementById('misto-chyba').textContent=''">
+    <div id="misto-chyba" role="alert" style="font-size:12.5px;color:#c0392b;margin-top:6px;"></div>
     <select id="misto-projekt-select" class="projekt-select-5s" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-top:10px;font-family:'DM Sans',sans-serif;">
       <option value="">Bez projektu</option>
       <option value="__novy__">+ Nový projekt…</option>
@@ -2123,7 +2124,12 @@ async function projektIdZeSelectu(selectId, novyNazevId) {
 
 async function ulozitMisto() {
   const nazev = document.getElementById('input-misto').value.trim();
-  if (!nazev) return;
+  if (!nazev) {
+    document.getElementById('misto-chyba').textContent = 'Zadejte název pracoviště.';
+    document.getElementById('input-misto').focus();
+    return;
+  }
+  document.getElementById('misto-chyba').textContent = '';
   oznamitZahajeni();
   let projektId = null;
   if (clenstvi) {

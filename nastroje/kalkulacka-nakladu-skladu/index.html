@@ -1551,6 +1551,28 @@ function oznamitDokonceni() {
   trackTokvaEvent('tool_completed', { tool_name: 'kalkulacka_nakladu_skladu', tool_version: 'free' });
 }
 
+// Hláška pod polem, když zadané číslo bylo mimo povolený rozsah a appka ho
+// po dopsání upravila. Během psaní se číslo nepřepisuje (dřív se při psaní
+// 500 hned po první číslici 5 vnutilo minimum a z 500 se stalo 1 200).
+function ukazatMez(num, text) {
+  const rad = num.closest('.input-row') || num.parentElement;
+  let el = rad.nextElementSibling;
+  if (!el || !el.classList || !el.classList.contains('mez-pozn')) {
+    el = document.createElement('div');
+    el.className = 'mez-pozn';
+    el.setAttribute('role', 'status');
+    el.style.cssText = 'font-size:12px;color:#976e12;margin:4px 0 0;line-height:1.4;';
+    rad.parentNode.insertBefore(el, rad.nextSibling);
+  }
+  el.textContent = text;
+  clearTimeout(el._t);
+  el._t = setTimeout(function () { el.remove(); }, 6000);
+}
+document.addEventListener('change', function (e) {
+  const n = e.target;
+  if (n && n.classList && n.classList.contains('input-val-edit') && /-num$/.test(n.id)) syncFromNumber(n.id.replace(/-num$/, ''), true);
+});
+
 function syncFromRange(id) {
   const num = document.getElementById(id + '-num');
   if (num) num.value = document.getElementById(id).value;
@@ -1560,14 +1582,23 @@ function syncFromRange(id) {
   oznamitDokonceni();
   ulozitRozpracovanyVstup();
 }
-function syncFromNumber(id) {
+function syncFromNumber(id, konec) {
   const range = document.getElementById(id);
   const num = document.getElementById(id + '-num');
-  let v = +num.value;
-  if (isNaN(v)) return;
-  dotcenaPole.add(id);
   const min = +range.min, max = +range.max;
-  if (v < min) v = min;
+  let v = +num.value;
+  if (num.value === '' || isNaN(v)) {
+    if (!konec) return;
+    v = min;
+  }
+  dotcenaPole.add(id);
+  // Během psaní číslo nepřepisovat (dřív se ze 100 stalo 5 000: po první
+  // číslici 1 se hned vnutilo minimum 50). Minimum se hlídá až po dopsání.
+  if (!konec && v < min) return;
+  if (konec && v < min) {
+    ukazatMez(num, 'Nejmenší hodnota je ' + min.toLocaleString('cs-CZ') + '. Upraveno na ' + min.toLocaleString('cs-CZ') + '.');
+    v = min;
+  }
   // Posuvník má vlastní horní mez jen kvůli tomu, aby šel prstem/myší
   // rozumně ovládat - dřív se stejná mez tiše vnutila i číselnému poli, takže
   // třeba zadaný nájem 999 999 999 Kč appka potichu přepsala na 400 000 Kč

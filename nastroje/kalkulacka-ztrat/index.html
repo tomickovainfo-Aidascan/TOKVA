@@ -847,6 +847,28 @@ async function novyVypocetZtrat() {
   hasRozpracovanyVypocet = false;
 }
 
+// Hláška pod polem, když zadané číslo bylo mimo povolený rozsah a appka ho
+// po dopsání upravila. Během psaní se číslo nepřepisuje (dřív se při psaní
+// 500 hned po první číslici 5 vnutilo minimum a z 500 se stalo 1 200).
+function ukazatMez(num, text) {
+  const rad = num.closest('.input-row') || num.parentElement;
+  let el = rad.nextElementSibling;
+  if (!el || !el.classList || !el.classList.contains('mez-pozn')) {
+    el = document.createElement('div');
+    el.className = 'mez-pozn';
+    el.setAttribute('role', 'status');
+    el.style.cssText = 'font-size:12px;color:#976e12;margin:4px 0 0;line-height:1.4;';
+    rad.parentNode.insertBefore(el, rad.nextSibling);
+  }
+  el.textContent = text;
+  clearTimeout(el._t);
+  el._t = setTimeout(function () { el.remove(); }, 6000);
+}
+document.addEventListener('change', function (e) {
+  const n = e.target;
+  if (n && n.classList && n.classList.contains('input-val-edit') && /-num$/.test(n.id)) syncFromNumber(n.id.replace(/-num$/, ''), true);
+});
+
 // slider <-> ruční číslo, obousměrně, se stejnými mezemi
 function syncFromRange(id) {
   document.getElementById(id + "-num").value = document.getElementById(id).value;
@@ -856,15 +878,25 @@ function syncFromRange(id) {
   update();
   oznamitDokonceni();
 }
-function syncFromNumber(id) {
+function syncFromNumber(id, konec) {
   const range = document.getElementById(id);
   const num = document.getElementById(id + "-num");
-  let v = +num.value;
-  if (isNaN(v)) return;
   const min = +range.min, max = +range.max;
-  if (v < min) v = min;
-  if (v > max) v = max;
-  num.value = v;
+  let v = +num.value;
+  if (num.value === '' || isNaN(v)) {
+    if (!konec) return;
+    v = +range.value;
+  }
+  if (!konec) {
+    // Během psaní číslo nepřepisovat. Mimo rozsah se zatím nepočítá.
+    if (v < min || v > max) return;
+  } else {
+    const zadano = v;
+    if (v < min) v = min;
+    if (v > max) v = max;
+    if (v !== zadano) ukazatMez(num, 'Tady jde zadat ' + min.toLocaleString('cs-CZ') + ' až ' + max.toLocaleString('cs-CZ') + '. Upraveno na ' + v.toLocaleString('cs-CZ') + '.');
+    num.value = v;
+  }
   range.value = v;
   oznamitZahajeni();
   hasRozpracovanyVypocet = true;

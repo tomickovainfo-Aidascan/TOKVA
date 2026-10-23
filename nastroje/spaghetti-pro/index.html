@@ -1322,6 +1322,16 @@ function naplanovatUlozeniRozpracovanehoNakresu() {
   clearTimeout(draftUlozeniTimeout);
   draftUlozeniTimeout = setTimeout(ulozitRozpracovanyNakresIhned, 1500);
 }
+// Pojistka: při odchodu ze stránky, zavření nebo uspání telefonu uložit
+// hned, ne až po 1,5 s odkladu - jinak se poslední změna nemusí zachovat.
+function dokoncitUlozeniNakresu() {
+  if (!draftUlozeniTimeout) return;
+  clearTimeout(draftUlozeniTimeout);
+  draftUlozeniTimeout = null;
+  try { ulozitRozpracovanyNakresIhned(); } catch (e) {}
+}
+window.addEventListener('pagehide', dokoncitUlozeniNakresu);
+document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') dokoncitUlozeniNakresu(); });
 function ulozitRozpracovanyNakresIhned() {
   // oprava (P2, fáze 7): dřív se draft neuložil, dokud nemela aspon jedna
   // zakázka 2 body trasy - takže nahraný plánek bez rozkreslené trasy
