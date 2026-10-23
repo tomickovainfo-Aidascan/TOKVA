@@ -2069,6 +2069,14 @@ async function zacitZnovu() {
   // uměl být kus práce (10 otázek + poznámky k akčnímu plánu).
   if (!(await tokvaPotvrdit('Smazat vyplněné odpovědi a začít test znovu?', 'Začít znovu', true))) return;
   ukladanyKod = null; // nové vyplnění se uloží jako nový výsledek
+  // Nové vyplnění: zapomenout výsledek z odkazu v e-mailu. Dřív v adrese zůstal
+  // starý kód odpovědí a po obnovení stránky se vrátil starý výsledek.
+  if (zobrazenoZOdkazu) { zobrazenoZOdkazu = false; toolDokoncenoOdeslano = false; }
+  try {
+    const u = new URL(location.href);
+    if (u.searchParams.has('odpovedi')) { u.searchParams.delete('odpovedi'); history.replaceState(null, '', u.pathname + u.search + u.hash); }
+  } catch (e) {}
+  const pnZnovu = document.querySelector('.progress-nav'); if (pnZnovu) pnZnovu.style.display = '';
   Object.keys(odpovedi).forEach(k => delete odpovedi[k]);
   ['akce-nazev', 'akce-osoba', 'akce-investice', 'akce-prinos', 'akce-termin'].forEach(id => {
     const pole = document.getElementById(id);

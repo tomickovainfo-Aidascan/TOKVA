@@ -890,6 +890,28 @@ function dokoncitUlozeniNakresu() {
 }
 window.addEventListener('pagehide', dokoncitUlozeniNakresu);
 document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') dokoncitUlozeniNakresu(); });
+// Velký plánek (fotka z mobilu má klidně 5 MB) se do úložiště prohlížeče
+// nevešel a rozpracovaný nákres se tiše neuložil. Pro průběžné uložení se
+// proto zmenší na nejvýš 2000 px (plátno je vždycky menší, trasy sedí dál).
+let ulozenyZdrojLayout = null, ulozenyZdrojPro = null;
+function zdrojLayoutProUlozeni() {
+  if (!layout) return null;
+  if (ulozenyZdrojPro === layout) return ulozenyZdrojLayout;
+  let src = layout.src;
+  if (src && src.length > 1500000 && layout.naturalWidth) {
+    try {
+      const k = Math.min(1, 2000 / Math.max(layout.naturalWidth, layout.naturalHeight));
+      const c = document.createElement('canvas');
+      c.width = Math.round(layout.naturalWidth * k);
+      c.height = Math.round(layout.naturalHeight * k);
+      c.getContext('2d').drawImage(layout, 0, 0, c.width, c.height);
+      src = c.toDataURL('image/jpeg', 0.82);
+    } catch (e) {}
+  }
+  ulozenyZdrojPro = layout;
+  ulozenyZdrojLayout = src;
+  return src;
+}
 function ulozitRozpracovanyNakresIhned() {
   // oprava (P2, fáze 7): dřív se draft neuložil, dokud nemela aspon jedna
   // zakázka 2 body trasy - takže nahraný plánek bez rozkreslené trasy
@@ -898,7 +920,7 @@ function ulozitRozpracovanyNakresIhned() {
   if (!layout) { smazatRozpracovanyNakres(); return; }
   try {
     localStorage.setItem(DRAFT_KEY_SPAGHETTI_FREE, JSON.stringify({
-      layoutSrc: layout.src,
+      layoutSrc: zdrojLayoutProUlozeni(),
       zakazky, aktivniZakazka, meritko, meritkoNastaveno,
       cas: Date.now()
     }));

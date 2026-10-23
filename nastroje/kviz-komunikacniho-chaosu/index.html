@@ -2487,7 +2487,10 @@ function vykreslitOtazky(){
     const on = (q.typ==='checkbox') ? (vybIdx instanceof Set && vybIdx.has(oi)) : (vybIdx===oi);
     return `<div class="q-opt${on?' on':''}" data-q="${q.id}" data-points="${o.b!==undefined?o.b:''}" data-nevim="${o.nevim?'1':''}" data-oi="${oi}" role="${roleOpt}" tabindex="0" aria-checked="${on?'true':'false'}" onclick="vybrat('${q.id}','${q.typ}',${oi},this)">${o.t}</div>`;
   }).join('');
-  const otherOn = vybIdx==='other';
+  // U vícevýběrové otázky je „Jinak“ uložené v množině spolu s ostatními
+  // volbami. Dřív se kontrolovalo jen vybIdx==='other', takže po návratu na
+  // otázku vypadalo „Jinak“ nevybrané a pole s vlastní odpovědí zmizelo.
+  const otherOn = vybIdx==='other' || (vybIdx instanceof Set && vybIdx.has('other'));
   const otherVal = odpovedi[q.id+'_text'] || '';
   const otherField = q.other ? `<div class="q-opt${otherOn?' on':''}" data-q="${q.id}" data-oi="other" role="checkbox" tabindex="0" aria-checked="${otherOn?'true':'false'}" onclick="vybratJine('${q.id}',this)">Jinak (napsat vlastní)</div>
       <div class="q-opt-other"><input type="text" id="other-${q.id}" class="${otherOn?'show':''}" value="${otherVal.replace(/"/g,'&quot;')}" placeholder="Napište vlastní odpověď" oninput="zapsatJine('${q.id}',this.value)"></div>` : '';
