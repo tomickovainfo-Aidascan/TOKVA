@@ -84,6 +84,18 @@
     deti.forEach(function (d) {
       if (d.tagName === 'A' && /prihlaseni\.html/.test(d.getAttribute('href') || '') && text(d) === 'Moje Tokva') d.textContent = 'Přihlásit se';
     });
+    // Přihlášený na stránce, která si účet sama neřeší (statický odkaz
+    // „Přihlásit se“): místo přihlášení odkaz na Přehled.
+    var maToken = false;
+    try { maToken = !!localStorage.getItem('sb-uiqjzeubhhnzspkoekxx-auth-token'); } catch (e) {}
+    if (maToken) {
+      deti.forEach(function (d) {
+        if (d.tagName === 'A' && d.id !== 'nav-ucet-btn' && /prihlaseni\.html/.test(d.getAttribute('href') || '')) {
+          d.textContent = 'Přehled';
+          d.href = 'https://tokva.cz/moje-tokva/';
+        }
+      });
+    }
 
     // Katalog má "Všechny nástroje" jako název stránky vlevo, odkaz nepotřebuje.
     var jeKatalog = /^\/nastroje\/?$/.test(location.pathname);
