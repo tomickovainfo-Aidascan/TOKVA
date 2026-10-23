@@ -215,7 +215,15 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .ukazka-text p{font-size:16px;line-height:1.7;color:var(--mid);margin-bottom:10px;}
 .ukazka-text p b{color:var(--dark);}
 .ukazka-obr{margin:0;}
-.ukazka-obr img{display:block;width:100%;height:auto;border:1px solid #e6e3dc;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.07);background:#fff;}
+.ukazka-obr figcaption{display:none;font-size:12.5px;color:var(--mid);margin-top:8px;}
+@media (max-width:700px){.ukazka-obr figcaption{display:block;}}
+#obr-okno{margin:auto;border:none;padding:0;background:transparent;max-width:96vw;overflow:visible;}
+#obr-okno::backdrop{background:rgba(0,0,0,.85);}
+#obr-okno .obr-posun{overflow:auto;max-height:90vh;max-width:96vw;border-radius:10px;background:#fff;}
+#obr-okno img{display:block;max-width:none;height:auto;}
+@media (min-width:701px){#obr-okno img{max-width:min(1300px,94vw);max-height:88vh;}}
+#obr-okno .obr-zavrit{position:absolute;top:-42px;right:0;background:none;border:none;color:#fff;font-size:34px;line-height:1;cursor:pointer;}
+.ukazka-obr img{display:block;width:100%;height:auto;cursor:zoom-in;border:1px solid #e6e3dc;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.07);background:#fff;}
 .screenshoty-pozn{font-size:12.5px;color:var(--mid);margin:-24px 0 0;}
 #objednavka{max-width:760px;}
 @media (max-width:760px){.ukazka-radek{grid-template-columns:1fr;gap:16px;}.screenshoty{gap:36px;}}
@@ -375,21 +383,33 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
   <div class="screenshoty pas pas-bila">
     <div class="ukazka-radek">
       <div class="ukazka-text"><h3>Celý projekt přehledně na jedné stránce.</h3><p>Zjištění, měření, opatření i jejich výsledky máte pohromadě.</p><p><b>Prezentační mód jedním kliknutím.</b> Na poradu tak nemusíte chystat zvláštní prezentaci.</p></div>
-      <figure class="ukazka-obr"><picture><source srcset="screenshoty/projekt-pc.webp" type="image/webp"><img src="screenshoty/projekt-pc.png" width="1330" height="790" alt="Projekt v Tokva Pro: výsledky a úkoly ve fázích Vidět, Změřit, Změnit a Ověřit" loading="lazy"></picture></figure>
+      <figure class="ukazka-obr"><picture><source media="(max-width:700px)" srcset="screenshoty/projekt-m.webp" type="image/webp"><source media="(max-width:700px)" srcset="screenshoty/projekt-m.png" width="656" height="428"><source srcset="screenshoty/projekt-pc.webp" type="image/webp"><img data-velky="screenshoty/projekt-pc.png" src="screenshoty/projekt-pc.png" width="1330" height="790" alt="Projekt v Tokva Pro: výsledky a úkoly ve fázích Vidět, Změřit, Změnit a Ověřit" loading="lazy"></picture><figcaption>Klepnutím zobrazíte celou obrazovku.</figcaption></figure>
     </div>
     <div class="ukazka-radek">
       <div class="ukazka-text"><h3>Přehled: hned víte, co je potřeba řešit.</h3><p>Otevřené úkoly, rozpracované projekty a poslední výsledky máte na jednom místě.</p></div>
-      <figure class="ukazka-obr"><picture><source srcset="screenshoty/prehled-pc.webp" type="image/webp"><img src="screenshoty/prehled-pc.png" width="1295" height="587" alt="Moje Tokva: otevřené akce, rozpracované projekty a poslední výsledky nástrojů" loading="lazy"></picture></figure>
+      <figure class="ukazka-obr"><picture><source media="(max-width:700px)" srcset="screenshoty/prehled-m.webp" type="image/webp"><source media="(max-width:700px)" srcset="screenshoty/prehled-m.png" width="630" height="587"><source srcset="screenshoty/prehled-pc.webp" type="image/webp"><img data-velky="screenshoty/prehled-pc.png" src="screenshoty/prehled-pc.png" width="1295" height="587" alt="Moje Tokva: otevřené akce, rozpracované projekty a poslední výsledky nástrojů" loading="lazy"></picture><figcaption>Klepnutím zobrazíte celou obrazovku.</figcaption></figure>
     </div>
     <div class="ukazka-radek">
       <div class="ukazka-text"><h3>Ze zjištění je úkol.</h3><p>S odpovědným člověkem, termínem a odkazem na výsledek, ze kterého vznikl.</p></div>
-      <figure class="ukazka-obr"><picture><source srcset="screenshoty/akcni-plan-pc.webp" type="image/webp"><img src="screenshoty/akcni-plan-pc.png" width="1272" height="432" alt="Akční plán: úkol z 5× Proč s odpovědnou osobou, termínem a odkazem na výsledek" loading="lazy"></picture></figure>
+      <figure class="ukazka-obr"><picture><source media="(max-width:700px)" srcset="screenshoty/akcni-plan-m.webp" type="image/webp"><source media="(max-width:700px)" srcset="screenshoty/akcni-plan-m.png" width="612" height="244"><source srcset="screenshoty/akcni-plan-pc.webp" type="image/webp"><img data-velky="screenshoty/akcni-plan-pc.png" src="screenshoty/akcni-plan-pc.png" width="1272" height="432" alt="Akční plán: úkol z 5× Proč s odpovědnou osobou, termínem a odkazem na výsledek" loading="lazy"></picture><figcaption>Klepnutím zobrazíte celou obrazovku.</figcaption></figure>
     </div>
     <div class="ukazka-radek">
       <div class="ukazka-text"><h3>Tokva porovná dvě měření a přehledně ukáže, co se změnilo.</h3><p>Hned uvidíte, jestli vaše opatření pomohlo.</p></div>
-      <figure class="ukazka-obr"><picture><source srcset="../obrazky/krok-4.webp" type="image/webp"><img src="../obrazky/krok-4.jpg" width="960" height="720" alt="Porovnání dvou výpočtů: ztráta klesla z 1 987 500 na 1 012 500 Kč za rok" loading="lazy"></picture></figure>
+      <figure class="ukazka-obr"><picture><source srcset="../obrazky/krok-4.webp" type="image/webp"><img data-velky="../obrazky/krok-4.jpg" src="../obrazky/krok-4.jpg" width="800" height="434" alt="Porovnání dvou výpočtů: ztráta klesla z 1 987 500 na 1 012 500 Kč za rok" loading="lazy"></picture></figure>
     </div>
     <p class="screenshoty-pozn">Obrázky jsou z appky Tokva s ukázkovými daty.</p>
+    <dialog id="obr-okno" onclick="if(event.target===this)this.close()"><button type="button" class="obr-zavrit" aria-label="Zavřít" onclick="this.closest('dialog').close()">×</button><div class="obr-posun"><img src="" alt=""></div></dialog>
+    <script>
+    // Klepnutím se otevře celý screenshot. Na mobilu se v něm dá posouvat do strany.
+    document.querySelectorAll('.ukazka-obr img[data-velky]').forEach(function (i) {
+      i.addEventListener('click', function () {
+        var o = document.getElementById('obr-okno'), v = o.querySelector('img');
+        v.src = i.getAttribute('data-velky'); v.alt = i.alt;
+        v.style.width = window.innerWidth <= 700 ? '900px' : '';
+        if (o.showModal) o.showModal();
+      });
+    });
+    </script>
   </div>
 
   <h2 class="pilire-uvod">Jaké výhody má Tokva Pro</h2>
