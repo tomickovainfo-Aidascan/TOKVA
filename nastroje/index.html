@@ -59,6 +59,11 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 .sb-item { display:flex; align-items:center; gap:6px; width:100%; border-radius:8px; padding:5px 7px 5px 13px; margin-bottom:6px; font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:600; border:1.5px solid transparent; line-height:1.35; transition:transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s, background .2s, color .2s, border-color .2s; }
 .sb-item .ic { width:8px; height:8px; min-width:8px; border-radius:50%; border:1.5px solid currentColor; transition:background .2s; }
 .sb-item.active .ic { background:currentColor; }
+/* Mezera za kroužkem i bez podpory "gap" (starší prohlížeče v tabletech kroužek nalepily na text). */
+.sb-item-link { gap:0; }
+.sb-item-link .ic { margin-right:10px; }
+.sb-item { gap:0; }
+.sb-item-info { margin-left:6px; }
 /* Jméno appky = přímý odkaz na appku samotnou, otevře se v novém okně */
 .sb-item-link { display:flex; align-items:center; gap:10px; flex:1; min-width:0; padding:6px 0; text-align:left; text-decoration:none; color:inherit; font:inherit; cursor:pointer; }
 /* Kolečko "i" = odkaz na kartu appky (popis, FAQ, návaznosti) uvnitř katalogu */
