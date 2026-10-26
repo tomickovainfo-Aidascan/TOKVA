@@ -299,6 +299,11 @@ a.krok-row { text-decoration:none; }
 .cookies-no:hover { color:rgba(255,255,255,.7); }
 #nav-ucet-info,#nav-ucet-email{white-space:nowrap;border:none!important;background:none!important;padding:0!important;font-weight:400!important;color:var(--mid)!important;}
 @media (max-width:600px){#nav-ucet-info{display:none!important;}}
+
+/* Šipka v řádku vždy na stejném místě vpravo (dřív se na tabletu se
+   starším prohlížečem posouvala podle délky textu). */
+.krok-row { position:relative; padding-right:46px !important; }
+.krok-row .arr { position:absolute; right:20px; top:50%; margin-top:-4px; }
 </style>
 <style id="tokva-menu-css">.topbar-login.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#000)!important;font-weight:700;}</style>
 </head>

@@ -407,6 +407,10 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 .upload-btn{display:inline-block;margin-top:14px;background:#e9a91b;color:#000;border:none;border-radius:8px;padding:10px 20px;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
 .upload-btn:hover{background:#c48e10;}
 .upload-btn:focus-visible{outline:3px solid #111;outline-offset:2px;}
+.odebrat-planek{position:absolute;top:8px;right:8px;z-index:5;width:34px;height:34px;border-radius:50%;border:1.5px solid #c9c5bc;background:rgba(255,255,255,.95);color:#111;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.12);}
+.odebrat-planek:hover{border-color:#c0392b;color:#c0392b;}
+.odebrat-planek:focus-visible{outline:3px solid #e9a91b;outline-offset:2px;}
+#main-canvas[style*="none"] ~ .odebrat-planek{display:none;}
 </style>
 
 <style id="cookies-css">
@@ -685,6 +689,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
   <!-- CANVAS -->
   <div class="canvas-outer" id="canvas-outer">
     <canvas id="main-canvas" style="display:none;"></canvas>
+    <button type="button" class="odebrat-planek no-print" onclick="event.stopPropagation();resetovat()" title="Odebrat plánek" aria-label="Odebrat plánek a začít znovu">✕</button>
   </div>
 
   <!-- ZAKÁZKY -->
@@ -797,7 +802,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 <div class="modal-overlay" id="modal-reset">
   <div class="modal">
     <h3>Začít úplně znovu?</h3>
-    <p>Všechny trasy budou smazány.</p>
+    <p>Plánek i všechny trasy budou smazány.</p>
     <div class="modal-btns">
       <button class="btn-modal-cancel" onclick="zavritModalReset()">Zrušit</button>
       <button class="btn-modal-ok" onclick="potvrditReset()">Smazat a začít znovu</button>
