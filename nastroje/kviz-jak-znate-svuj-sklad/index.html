@@ -1954,7 +1954,9 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 function tokvaEscKviz(t) { return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function zobrazVysledky() {
   if (!zobrazenoZOdkazu) oznamitDokonceni();
-  if (!zobrazenoZOdkazu) {
+  // Jen když je výsledek odemčený e-mailem (jinak by obnovení stránky s kódem
+  // v adrese obešlo e-mailovou bránu).
+  if (!zobrazenoZOdkazu && typeof window.tokvaBranaOdemceno === 'function' && window.tokvaBranaOdemceno()) {
     // Kód nového výsledku zapsat do adresy, ať obnovení stránky ukáže tenhle
     // výsledek, ne starý z odkazu v e-mailu (ani prázdný audit).
     try {

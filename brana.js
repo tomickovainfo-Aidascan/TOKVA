@@ -55,9 +55,13 @@
   // Bránu přeskočí: přihlášený do Tokvy, odkaz z výsledkového e-mailu
   // (?odpovedi=), otevření uloženého výsledku (?vysledek=) a kolegové
   // vyplňující anonymní týmový kvíz (?tym=) - po nich e-mail chtít nesmíme.
+  // Rozhoduje adresa, se kterou se stránka otevřela, ne pozdější změny.
+  // Nástroje si totiž po dokončení zapisují výsledek do adresy (?odpovedi=)
+  // a brána se tím dřív sama vypnula.
+  var ADRESA_PRI_OTEVRENI = location.search;
   function preskocit() {
     if (jePrihlaseny()) return true;
-    var q = new URLSearchParams(location.search);
+    var q = new URLSearchParams(ADRESA_PRI_OTEVRENI);
     return q.has('odpovedi') || q.has('vysledek') || q.has('tym');
   }
   function odemceno() { return !!nacist() || preskocit(); }
