@@ -1983,7 +1983,8 @@ async function pridatDoAkcnihoPlanu() {
 async function ulozitZarazeniProjektuVysledek() {
   const stav = document.getElementById('s-projekt-stav');
   const select = document.getElementById('s-projekt-select');
-  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Měření se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  if (!clenstvi) { stav.textContent = 'Zařadit měření jde po přihlášení do Tokva Pro.'; return; }
+  if (!posledniToolRunId) { stav.textContent = 'Měření se do účtu zatím neuložilo. Zkontrolujte připojení a zkuste to za chvíli znovu.'; return; }
   stav.textContent = 'Ukládám…';
   try {
     let projektId = select.value || null;
@@ -2022,7 +2023,8 @@ async function pridatDoAkcnihoPlanuVysledek() {
   const stav = document.getElementById('s-akce-stav');
   const nazev = (document.getElementById('s-akce-nazev').value || '').trim();
   if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
-  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Měření se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  if (!clenstvi) { stav.textContent = 'Zařadit měření jde po přihlášení do Tokva Pro.'; return; }
+  if (!posledniToolRunId) { stav.textContent = 'Měření se do účtu zatím neuložilo. Zkontrolujte připojení a zkuste to za chvíli znovu.'; return; }
   stav.textContent = 'Ukládám…';
   try {
     const selectProjekt = document.getElementById('s-akce-projekt-select');
