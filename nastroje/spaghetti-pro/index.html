@@ -1431,14 +1431,18 @@ async function ulozitProjektDoSupabase(zaznam) {
       hlavni_hodnota_cislo: hlavniCislo,
       hlavni_hodnota_jednotka: hlavniJednotka,
       hlavni_hodnota_typ: hlavniTyp,
-      data: zaznam
+      // Plánek do účtu zmenšený stejně jako pro průběžné uložení (velká fotka
+      // z mobilu dřív uložení do účtu zpomalila nebo shodila).
+      data: Object.assign({}, zaznam, { layoutSrc: (layout && zaznam.layoutSrc === layout.src) ? zdrojLayoutProUlozeni() : zaznam.layoutSrc })
     };
     let runId = null;
     if (existujici && existujici.length) {
-      await supabaseClient.from('tool_runs').update(payload).eq('id', existujici[0].id);
+      const { error: chybaUpravy } = await supabaseClient.from('tool_runs').update(payload).eq('id', existujici[0].id);
+      if (chybaUpravy) throw chybaUpravy;
       runId = existujici[0].id;
     } else {
-      const { data: novy } = await supabaseClient.from('tool_runs').insert(payload).select().single();
+      const { data: novy, error: chybaVlozeni } = await supabaseClient.from('tool_runs').insert(payload).select().single();
+      if (chybaVlozeni) throw chybaVlozeni;
       runId = novy ? novy.id : null;
     }
     pripravitPanelyProNakres(runId, zaznam.nazev);
@@ -2002,12 +2006,28 @@ async function pridatDoAkcnihoPlanu() {
   }
 }
 
+// Panely Zařadit k projektu / Přidat do akčního plánu potřebují záznam
+// nákresu v účtu. Dřív appka jen hlásila „ještě se ukládá, zkuste za chvíli“,
+// i když nákres nikdo neuložil nebo uložení do účtu potichu selhalo, takže
+// hláška nezmizela nikdy. Teď řekne, co udělat, nebo nákres rovnou uloží.
+async function zajistitToolRunId(stav) {
+  if (posledniToolRunId && clenstvi) return true;
+  if (!jePro || !clenstvi) { stav.textContent = 'Zařadit nákres jde po přihlášení do Tokva Pro.'; return false; }
+  if (!aktualniProjektId) { stav.textContent = 'Nejdřív nákres uložte tlačítkem Uložit nákres nahoře, pak ho můžete zařadit.'; return false; }
+  stav.textContent = 'Ukládám nákres do účtu…';
+  const p = nacistSeznamProjektu().find(x => x.id === aktualniProjektId);
+  if (p) await ulozitProjektDoSupabase(p);
+  if (!posledniToolRunId) await najitToolRunIdProNakres(aktualniProjektId);
+  if (!posledniToolRunId) { stav.textContent = 'Nákres se do účtu nepodařilo uložit. Zkontrolujte připojení a zkuste to znovu.'; return false; }
+  return true;
+}
+
 // Panel "Zařadit k projektu" přímo v toolbaru - přiřadí právě otevřený/
 // uložený nákres k projektu, bez založení úkolu v akčním plánu.
 async function ulozitZarazeniProjektuVysledek() {
   const stav = document.getElementById('s-projekt-stav');
   const select = document.getElementById('s-projekt-select');
-  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Nákres se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  if (!(await zajistitToolRunId(stav))) return;
   stav.textContent = 'Ukládám…';
   try {
     let projektId = select.value || null;
@@ -2045,7 +2065,7 @@ async function pridatDoAkcnihoPlanuVysledek() {
   const stav = document.getElementById('s-akce-stav');
   const nazev = (document.getElementById('s-akce-nazev').value || '').trim();
   if (!nazev) { stav.textContent = 'Napište, co se má udělat.'; return; }
-  if (!posledniToolRunId || !clenstvi) { stav.textContent = 'Nákres se ještě ukládá do účtu, zkuste to prosím za chvíli.'; return; }
+  if (!(await zajistitToolRunId(stav))) return;
   stav.textContent = 'Ukládám…';
   try {
     const selectProjekt = document.getElementById('s-akce-projekt-select');
