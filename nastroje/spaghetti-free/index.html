@@ -926,6 +926,7 @@ function ulozitRozpracovanyNakresIhned() {
   try {
     localStorage.setItem(DRAFT_KEY_SPAGHETTI_FREE, JSON.stringify({
       layoutSrc: zdrojLayoutProUlozeni(),
+      canvasW: canvas && canvas.width ? canvas.width : null,
       zakazky, aktivniZakazka, meritko, meritkoNastaveno,
       cas: Date.now()
     }));
@@ -949,6 +950,7 @@ function zkusitObnovitRozpracovanyNakres() {
     aktivniZakazka = Math.min(draft.aktivniZakazka || 0, zakazky.length - 1);
     meritko = draft.meritko || 1;
     meritkoNastaveno = !!draft.meritkoNastaveno;
+    ulozenaSirkaPlatna = draft.canvasW || null;
     inicializovat();
     const status = document.getElementById('kalibrace-status');
     if (status && meritkoNastaveno) status.textContent = 'Měřítko nastavené. Klidně ho nastavte znovu, pokud se spletete.';
@@ -1030,6 +1032,7 @@ window.addEventListener('DOMContentLoaded', () => {
 // UPLOAD
 // =============================================
 function nahratLayout(input) {
+  ulozenaSirkaPlatna = null; // nový plánek: plátno podle šířky stránky
   if (input.files[0]) nacistSoubor(input.files[0]);
 }
 
@@ -1145,6 +1148,26 @@ function zobrazitChrome() {
   if (header) header.style.display = '';
   if (howto) howto.style.display = '';
 }
+// Velikost plátna. Body tras se ukládají v souřadnicích plátna, takže nákres
+// si pamatuje šířku plátna, na kterém vznikl (canvasW), a při otevření se
+// plátno nastaví přesně na ni. Dřív se šířka brala z aktuální plochy na
+// stránce a po otevření z paměti mohly trasy ujet mimo plánek. Starší nákresy
+// bez canvasW dostanou šířku jako při nahrání plánku (celá šířka obsahu).
+let ulozenaSirkaPlatna = null;
+function rozmeryPlatna() {
+  let scale;
+  if (ulozenaSirkaPlatna && layout.naturalWidth) {
+    scale = ulozenaSirkaPlatna / layout.naturalWidth;
+  } else {
+    const outer = document.getElementById('canvas-outer');
+    const rodic = outer.parentElement;
+    const cs = getComputedStyle(rodic);
+    const maxW = rodic.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0) - 2;
+    scale = Math.min(maxW / layout.naturalWidth, 800 / layout.naturalHeight, 1);
+  }
+  return [layout.naturalWidth * scale, layout.naturalHeight * scale];
+}
+
 function inicializovat() {
   document.getElementById('upload-zone').style.display = 'none';
   document.getElementById('setup-panel').style.display = 'block';
@@ -1152,10 +1175,9 @@ function inicializovat() {
   canvas.style.display = 'block';
 
   // Nastav canvas
-  const maxW = canvas.parentElement.clientWidth;
-  const scale = Math.min(maxW / layout.naturalWidth, 800 / layout.naturalHeight, 1);
-  canvas.width = layout.naturalWidth * scale;
-  canvas.height = layout.naturalHeight * scale;
+  const [sirkaPlatna, vyskaPlatna] = rozmeryPlatna();
+  canvas.width = sirkaPlatna;
+  canvas.height = vyskaPlatna;
   zoom = 1; offsetX = 0; offsetY = 0;
   prepocitatFitZoom();
   vycentrovatPohled();

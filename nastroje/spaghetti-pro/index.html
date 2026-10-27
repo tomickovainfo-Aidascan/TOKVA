@@ -1048,6 +1048,7 @@ window.addEventListener('DOMContentLoaded', () => {
 // UPLOAD
 // =============================================
 function nahratLayout(input) {
+  ulozenaSirkaPlatna = null; // nový plánek: plátno podle šířky stránky
   if (input.files[0]) nacistSoubor(input.files[0]);
 }
 
@@ -1147,6 +1148,26 @@ function skrytUploadNotice() {
   el.style.display = 'none';
 }
 
+// Velikost plátna. Body tras se ukládají v souřadnicích plátna, takže nákres
+// si pamatuje šířku plátna, na kterém vznikl (canvasW), a při otevření se
+// plátno nastaví přesně na ni. Dřív se šířka brala z aktuální plochy na
+// stránce a po otevření z paměti mohly trasy ujet mimo plánek. Starší nákresy
+// bez canvasW dostanou šířku jako při nahrání plánku (celá šířka obsahu).
+let ulozenaSirkaPlatna = null;
+function rozmeryPlatna() {
+  let scale;
+  if (ulozenaSirkaPlatna && layout.naturalWidth) {
+    scale = ulozenaSirkaPlatna / layout.naturalWidth;
+  } else {
+    const outer = document.getElementById('canvas-outer');
+    const rodic = outer.parentElement;
+    const cs = getComputedStyle(rodic);
+    const maxW = rodic.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0) - 2;
+    scale = Math.min(maxW / layout.naturalWidth, 800 / layout.naturalHeight, 1);
+  }
+  return [layout.naturalWidth * scale, layout.naturalHeight * scale];
+}
+
 function inicializovat() {
   document.getElementById('upload-zone').style.display = 'none';
   document.getElementById('setup-panel').style.display = 'block';
@@ -1154,10 +1175,9 @@ function inicializovat() {
   canvas.style.display = 'block';
 
   // Nastav canvas
-  const maxW = canvas.parentElement.clientWidth;
-  const scale = Math.min(maxW / layout.naturalWidth, 800 / layout.naturalHeight, 1);
-  canvas.width = layout.naturalWidth * scale;
-  canvas.height = layout.naturalHeight * scale;
+  const [sirkaPlatna, vyskaPlatna] = rozmeryPlatna();
+  canvas.width = sirkaPlatna;
+  canvas.height = vyskaPlatna;
   // Ulozit puvodni rozmery pro spravne kresleni pri zoomu
   canvas._layoutW = canvas.width;
   canvas._layoutH = canvas.height;
@@ -1373,6 +1393,7 @@ function ulozitRozpracovanyNakresIhned() {
     localStorage.setItem(DRAFT_KEY_SPAGHETTI, JSON.stringify({
       nazevProjektu, aktualniProjektId,
       layoutSrc: zdrojLayoutProUlozeni(),
+      canvasW: canvas && canvas.width ? canvas.width : null,
       zakazky, zastavky, poznamky, meritko, meritkoNastaveno, nakladyHod, rychlostChuze,
       cas: Date.now()
     }));
@@ -1568,6 +1589,7 @@ function potvrditUlozeniProjektu() {
     zastavky: JSON.parse(JSON.stringify(zastavky)),
     poznamky: JSON.parse(JSON.stringify(poznamky)),
     meritko: meritko,
+    canvasW: canvas && canvas.width ? canvas.width : null,
     nakladyHod: nakladyHod,
     rychlostChuze: rychlostChuze
   };
@@ -1762,6 +1784,7 @@ function nacistProjekt(id) {
 // který ještě není v místním seznamu (jiné zařízení, otevřeno přes odkaz
 // ?vysledek= z Akčního plánu), ne jen podle id z lokálního uložiště.
 function nacistProjektZeZaznamu(p) {
+  ulozenaSirkaPlatna = p.canvasW || null;
   aktualniProjektId = p.id;
   nazevProjektu = p.nazev;
   zakazky = JSON.parse(JSON.stringify(p.zakazky || []));
@@ -1792,10 +1815,9 @@ function nacistProjektZeZaznamu(p) {
     document.getElementById('canvas-placeholder').style.display = 'none';
     canvas.style.display = 'block';
 
-    const maxW = canvas.parentElement.clientWidth;
-    const scale = Math.min(maxW / layout.naturalWidth, 800 / layout.naturalHeight, 1);
-    canvas.width = layout.naturalWidth * scale;
-    canvas.height = layout.naturalHeight * scale;
+    const [sirkaPlatna, vyskaPlatna] = rozmeryPlatna();
+    canvas.width = sirkaPlatna;
+    canvas.height = vyskaPlatna;
     canvas._layoutW = canvas.width;
     canvas._layoutH = canvas.height;
     zoom = 1; offsetX = 0; offsetY = 0;
@@ -3478,6 +3500,7 @@ function prevzitNakresZFree() {
     localStorage.setItem(DRAFT_KEY_SPAGHETTI, JSON.stringify({
       nazevProjektu: '', aktualniProjektId: null,
       layoutSrc: free.layoutSrc,
+      canvasW: free.canvasW || null,
       zakazky: zak, zastavky: [], poznamky: [],
       meritko: free.meritko || 1, meritkoNastaveno: !!free.meritkoNastaveno,
       nakladyHod: 300, rychlostChuze: 4.5,
@@ -3505,6 +3528,7 @@ function zkusitObnovitRozpracovanyNakres() {
   poznamky = draft.poznamky || [];
   meritko = draft.meritko || 1;
   meritkoNastaveno = !!draft.meritkoNastaveno;
+  ulozenaSirkaPlatna = draft.canvasW || null;
   nakladyHod = draft.nakladyHod || 300;
   rychlostChuze = draft.rychlostChuze || 4.5;
   aktivniZakazka = 0;
@@ -3525,10 +3549,9 @@ function zkusitObnovitRozpracovanyNakres() {
     document.getElementById('canvas-placeholder').style.display = 'none';
     canvas.style.display = 'block';
 
-    const maxW = canvas.parentElement.clientWidth;
-    const scale = Math.min(maxW / layout.naturalWidth, 800 / layout.naturalHeight, 1);
-    canvas.width = layout.naturalWidth * scale;
-    canvas.height = layout.naturalHeight * scale;
+    const [sirkaPlatna, vyskaPlatna] = rozmeryPlatna();
+    canvas.width = sirkaPlatna;
+    canvas.height = vyskaPlatna;
     canvas._layoutW = canvas.width;
     canvas._layoutH = canvas.height;
     zoom = 1; offsetX = 0; offsetY = 0;
