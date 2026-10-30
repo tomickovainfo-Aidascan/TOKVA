@@ -263,6 +263,13 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
 .faq-pas{padding:44px 0 36px;margin:0 0 48px;}
 .faq-pas .faq-item{background:var(--paper);}
 .faq-pas .faq-nadpis{margin-top:0;}
+.ukazky-karty{gap:22px !important;margin:52px 0 48px !important;}
+.ukazky-hlava h2{font-family:'Poppins',sans-serif;font-size:26px;font-weight:800;line-height:1.25;color:var(--dark);margin:0 0 6px;}
+.ukazky-hlava p{font-size:16px;color:var(--mid);margin:0 0 4px;}
+.ukazky-karty .ukazka-radek{background:#fff;border:1px solid var(--border2);border-radius:14px;padding:26px 28px;grid-template-columns:minmax(0,.8fr) minmax(0,2fr);gap:32px;box-shadow:0 6px 20px rgba(0,0,0,.04);}
+.ukazky-karty .ukazka-obr img{box-shadow:none;}
+.ukazky-karty .screenshoty-pozn{margin:-6px 0 0;}
+@media (max-width:760px){.ukazky-karty .ukazka-radek{grid-template-columns:1fr;padding:18px 16px;gap:14px;}.ukazky-hlava h2{font-size:22px;}}
 .ukazka-obr img:focus-visible{outline:3px solid #e9a91b;outline-offset:3px;}
 </style>
 <script type="application/ld+json">
@@ -433,7 +440,8 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
     <a href="#objednavka" class="btn-gold cenik-dal">Pokračovat k objednávce</a>
   </div>
 
-  <div class="screenshoty pas pas-bila">
+  <div class="screenshoty ukazky-karty">
+    <div class="ukazky-hlava"><h2>Jak Tokva Pro vypadá uvnitř</h2></div>
     <div class="ukazka-radek">
       <div class="ukazka-text"><h3>Celý projekt přehledně na jedné stránce.</h3><p>Zjištění, měření, opatření i jejich výsledky máte pohromadě.</p><p><b>Prezentační režim jedním kliknutím.</b> Na poradu tak nemusíte chystat zvláštní prezentaci.</p></div>
       <figure class="ukazka-obr"><picture><source media="(max-width:700px)" srcset="screenshoty/projekt-m.webp" type="image/webp" width="656" height="428"><source media="(max-width:700px)" srcset="screenshoty/projekt-m.png" width="656" height="428"><source srcset="screenshoty/projekt-pc.webp" type="image/webp"><img data-velky="screenshoty/projekt-pc.png" src="screenshoty/projekt-pc.png" width="1330" height="790" alt="Projekt v Tokva Pro: výsledky a úkoly ve fázích Vidět, Změřit, Změnit a Ověřit" loading="lazy"></picture><figcaption>Klepnutím zobrazíte celou obrazovku.</figcaption></figure>
