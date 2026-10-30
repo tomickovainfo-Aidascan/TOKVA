@@ -303,7 +303,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
       </div>
     </div>
     <p class="kroky-pozn">Obrázky jsou z appky Tokva s ukázkovými daty.</p>
-    <p class="ukazka-odkaz"><button type="button" onclick="document.getElementById('ukazka-okno').showModal();var v=document.getElementById('ukazka-video');v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});trackTokvaEvent('ukazka_click',{placement:'kroky'})">▶ Pustit celou ukázku (75 s)</button></p>
+    <p class="ukazka-odkaz"><button type="button" onclick="document.getElementById('ukazka-okno').showModal();var v=document.getElementById('ukazka-video');v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});trackTokvaEvent('ukazka_click',{placement:'kroky'})">▶ Pustit celou ukázku (80 s)</button></p>
     <dialog id="obr-okno" onclick="this.close()"><button type="button" class="ukazka-zavrit" aria-label="Zavřít">×</button><img src="" alt=""></dialog>
     <script>
     // Klepnutím na obrázek kroku se otevře ve velkém.
@@ -330,7 +330,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     </script>
     <dialog id="ukazka-okno" onclick="if(event.target===this)this.close()" onclose="document.getElementById('ukazka-video').pause()">
       <button type="button" class="ukazka-zavrit" aria-label="Zavřít" onclick="this.closest('dialog').close()">×</button>
-      <video id="ukazka-video" poster="videa/tokva-ukazka-nahled.jpg" muted playsinline controls preload="none" width="720" height="1402">
+      <video id="ukazka-video" poster="videa/tokva-ukazka-nahled.jpg" muted playsinline controls preload="none" width="720" height="1400">
         <source src="videa/tokva-ukazka.mp4" type="video/mp4">
       </video>
     </dialog>
