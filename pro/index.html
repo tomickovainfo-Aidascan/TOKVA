@@ -186,7 +186,7 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .vsechny-funkce summary::after{content:" ↓";}
 .vsechny-funkce[open] summary::after{content:" ↑";}
 .vsechny-funkce[open]{padding-bottom:18px;}
-.cenik{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 16px;align-items:stretch;}
+.cenik{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 16px;align-items:stretch;}
 .cenik-karta,.cenik-karta-zdarma{position:relative;display:flex;flex-direction:column;gap:4px;text-align:left;font:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.18);border-radius:12px;padding:16px 16px 14px;color:#fff;transition:border-color .15s,background .15s;}
 .cenik-karta:hover,.cenik-karta-zdarma:hover{border-color:var(--gold);}
 .cenik-karta.vybrana{border-color:var(--gold);background:rgba(233,169,27,.12);}
@@ -202,17 +202,18 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 #ceny{scroll-margin-top:80px;}
 .cenik-karta-zdarma{text-decoration:none;background:transparent !important;border-style:dashed !important;}
 .cenik-karta-zdarma .cenik-cena{color:#fff;}
-.cenik-jistoty{font-size:13px;color:rgba(255,255,255,.7) !important;margin:-4px 0 4px !important;}
+.cenik-jistoty{max-width:none !important;font-size:13px;color:rgba(255,255,255,.7) !important;margin:-4px 0 4px !important;}
 .cenik-stitek{position:absolute;top:-11px;left:14px;background:var(--gold);color:#000;font-family:'Poppins',sans-serif;font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;border-radius:100px;}
 .cenik-seznam{display:flex;flex-direction:column;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);flex:1;}
 .cenik-pro-koho{font-size:13px;line-height:1.4;color:var(--gold);font-weight:600;margin-top:4px;min-height:2.8em;}
 .cenik-uvod{font-size:12.5px;font-weight:700;color:rgba(255,255,255,.6);}
-.cenik-bod{font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.88);padding-left:20px;position:relative;}
-.cenik-bod::before{content:"";position:absolute;left:2px;top:5px;width:9px;height:5px;border-left:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(-45deg);}
+.cenik-bod{font-size:13px;line-height:1.45;color:rgba(255,255,255,.88);padding-left:17px;position:relative;white-space:nowrap;}
+.cenik-bod::before{content:"";position:absolute;left:1px;top:5px;width:9px;height:5px;border-left:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(-45deg);}
 .cenik-vybrat{margin-top:14px;align-self:stretch;text-align:center;font-family:'Poppins',sans-serif;font-weight:800;font-size:13px;padding:9px 12px;border-radius:8px;border:1.5px solid rgba(255,255,255,.3);color:#fff;}
 .cenik-karta:hover .cenik-vybrat,.cenik-karta.vybrana .cenik-vybrat{background:var(--gold);border-color:var(--gold);color:#000;}
 .cenik-karta-zdarma:hover .cenik-vybrat{border-color:var(--gold);color:var(--gold);}
 .cenik-karta[data-var="5"]{border-color:rgba(233,169,27,.55);}
+.cenik-karta,.cenik-karta-zdarma{padding-left:14px !important;padding-right:14px !important;}
 @media (max-width:980px){.cenik{grid-template-columns:repeat(2,1fr);row-gap:22px;}}
 @media (max-width:640px){.cenik{grid-template-columns:1fr;}}
 .obj-postup{background:rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;margin-bottom:18px;}
@@ -378,11 +379,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
   <h1>Od výsledku měření ke změně, kterou můžete ověřit.</h1>
   <p class="lead" style="margin-bottom:22px;">Tokva Pro propojí výsledky, úkoly a opakovaná měření na jednom místě.<br><span class="sipka" aria-hidden="true"></span>Budete vědět, co změnit, kdo to udělá a jestli opatření pomohlo.</p>
 
-  <div class="hero-cta">
-    <a href="#ceny" class="btn-gold">Vybrat variantu Pro</a>
-    <a href="https://tokva.cz/vstup/" class="btn-link" onclick="trackTokvaEvent('vstup_click',{placement:'pro_hero'})">Ještě si chci projít nástroje zdarma</a>
-  </div>
-  <p class="hero-trust">Od 499&nbsp;Kč měsíčně pro jednoho uživatele, zakladatelská cena. Bez automatického prodlužování.</p>
+
 
 
   <div class="objednavka-box cenik-box pas pas-cerna" id="ceny">
@@ -396,7 +393,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
           <span class="cenik-pro-koho">Hodí se, když chcete Tokvu nejdřív vyzkoušet</span>
           <span class="cenik-cena">0&nbsp;Kč</span>
           <span class="cenik-bezna">stačí jednou zadat e-mail</span>
-          <span class="cenik-seznam"><span class="cenik-bod">11 nástrojů, výsledek hned</span><span class="cenik-bod">výsledek na e-mail a tisk</span><span class="cenik-bod">výsledky jen v tomto prohlížeči</span></span>
+          <span class="cenik-seznam"><span class="cenik-uvod">Co dostanete:</span><span class="cenik-bod">11 nástrojů</span><span class="cenik-bod">Výsledek na e-mail, tisk</span><span class="cenik-bod">Výsledky jen v tomto prohlížeči</span></span>
           <span class="cenik-vybrat">Otevřít nástroje zdarma</span>
         </a>
         <button type="button" class="cenik-karta" data-var="1" onclick="vybratVariantu('1')">
@@ -405,7 +402,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
           <span class="cenik-pro-koho">Hodí se pro OSVČ a firmy do 5 zaměstnanců</span>
           <span class="cenik-cena">499&nbsp;Kč<small>/měsíc</small></span>
           <span class="cenik-bezna">zakladatelská cena, později 690&nbsp;Kč</span>
-          <span class="cenik-seznam"><span class="cenik-uvod">Vše ze Zdarma, navíc:</span><span class="cenik-bod">výsledky uložené u firmy, na každém zařízení</span><span class="cenik-bod">historie a porovnání před a po</span><span class="cenik-bod">akční plán, projekty, prezentační režim na poradu</span><span class="cenik-bod">Měřič plýtvání Pro a Spaghetti Pro</span><span class="cenik-bod">export všech dat</span></span>
+          <span class="cenik-seznam"><span class="cenik-uvod">Co dostanete:</span><span class="cenik-bod">Rozšířené funkce nástrojů</span><span class="cenik-bod">Výsledky uložené u vaší firmy</span><span class="cenik-bod">Historie a porovnávání výsledků</span><span class="cenik-bod">Akční plán, projekty, prezentace</span><span class="cenik-bod">Export dat</span><span class="cenik-bod">11 nástrojů</span></span>
           <span class="cenik-vybrat">Vybrat</span>
         </button>
         <button type="button" class="cenik-karta" data-var="5" onclick="vybratVariantu('5')">
@@ -414,7 +411,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
           <span class="cenik-pro-koho">Hodí se pro firmy zhruba do 30 zaměstnanců</span>
           <span class="cenik-cena">1&nbsp;390&nbsp;Kč<small>/měsíc</small></span>
           <span class="cenik-bezna">zakladatelská cena, později 1&nbsp;990&nbsp;Kč</span>
-          <span class="cenik-seznam"><span class="cenik-uvod">Vše z Jednotlivce, navíc:</span><span class="cenik-bod">2 až 5 lidí ve firmě</span><span class="cenik-bod">role majitel, správce, člen</span><span class="cenik-bod">jeden společný akční plán pro celý tým</span></span>
+          <span class="cenik-seznam"><span class="cenik-uvod">Co dostanete:</span><span class="cenik-bod">2 až 5 lidí ve firmě</span><span class="cenik-bod">Role majitel, správce, člen</span><span class="cenik-bod">Rozšířené funkce nástrojů</span><span class="cenik-bod">Výsledky uložené u vaší firmy</span><span class="cenik-bod">Historie a porovnávání výsledků</span><span class="cenik-bod">Akční plán, projekty, prezentace</span><span class="cenik-bod">Export dat</span><span class="cenik-bod">11 nástrojů</span></span>
           <span class="cenik-vybrat">Vybrat</span>
         </button>
         <button type="button" class="cenik-karta" data-var="15" onclick="vybratVariantu('15')">
@@ -423,7 +420,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
           <span class="cenik-pro-koho">Hodí se pro firmy zhruba od 30 do 100 zaměstnanců</span>
           <span class="cenik-cena">2&nbsp;690&nbsp;Kč<small>/měsíc</small></span>
           <span class="cenik-bezna">zakladatelská cena, později 4&nbsp;490&nbsp;Kč</span>
-          <span class="cenik-seznam"><span class="cenik-uvod">Vše z Menšího týmu, navíc:</span><span class="cenik-bod">6 až 15 lidí ve firmě</span></span>
+          <span class="cenik-seznam"><span class="cenik-uvod">Co dostanete:</span><span class="cenik-bod">6 až 15 lidí ve firmě</span><span class="cenik-bod">Role majitel, správce, člen</span><span class="cenik-bod">Rozšířené funkce nástrojů</span><span class="cenik-bod">Výsledky uložené u vaší firmy</span><span class="cenik-bod">Historie a porovnávání výsledků</span><span class="cenik-bod">Akční plán, projekty, prezentace</span><span class="cenik-bod">Export dat</span><span class="cenik-bod">11 nástrojů</span></span>
           <span class="cenik-vybrat">Vybrat</span>
         </button>
       </div>
