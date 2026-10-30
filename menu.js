@@ -1,6 +1,6 @@
 // Jednotné horní menu na veřejných stránkách a v nástrojích (od 22. 10. 2026).
 // Pořadí: Otevřít Tokvu zdarma (zlaté) · Všechny nástroje · Můj příběh ·
-// Víc o Tokva Pro · Přihlásit se. Odkazy, které stránka nemá, doplní; ty, co
+// Varianty a ceny · Přihlásit se. Odkazy, které stránka nemá, doplní; ty, co
 // má, jen přeskládá (zůstanou jim id a chování z auth.js).
 // Na mobilu je vidět jen zlaté tlačítko a „Menu“, zbytek se rozbalí.
 (function () {
@@ -17,7 +17,7 @@
     '.menu-zlate{background:#e9a91b !important;border-color:#e9a91b !important;color:#000 !important;font-weight:700 !important;text-decoration:none !important;}' +
     '.menu-zlate:hover{background:#976e12 !important;border-color:#976e12 !important;color:#fff !important;}' +
     '.menu-kontejner{gap:8px;}' +
-    // Kdo má Tokva Pro: bez Otevřít Tokvu zdarma, Můj příběh a Víc o Tokva Pro.
+    // Kdo má Tokva Pro: bez Otevřít Tokvu zdarma, Můj příběh a Varianty a ceny.
     'html.tokva-ma-pro .menu-zlate,html.tokva-ma-pro .menu-pribeh,html.tokva-ma-pro #nav-pro-odkaz,html.tokva-ma-pro .menu-pro{display:none !important;}' +
     '.menu-prepinac{display:none !important;cursor:pointer;font-family:inherit;background:transparent;}' +
     // Jednotný vzhled lišty a tlačítek na webu i v nástrojích (23. 10.).
@@ -126,7 +126,7 @@
 
     var vsechny = najdi(function (d) { return d.id === 'nav-vsechny-nastroje' || text(d) === 'Všechny nástroje'; });
     var pribeh = najdi(function (d) { return text(d) === 'Můj příběh'; });
-    var pro = najdi(function (d) { return d.id === 'nav-pro-odkaz' || text(d) === 'Víc o Tokva Pro'; });
+    var pro = najdi(function (d) { return d.id === 'nav-pro-odkaz' || (text(d) === 'Víc o Tokva Pro' || text(d) === 'Varianty a ceny'); });
     var zlate = najdi(function (d) { return d.classList.contains('menu-zlate'); });
     // Odkaz na přihlášení se všude jmenuje stejně.
     deti.forEach(function (d) {

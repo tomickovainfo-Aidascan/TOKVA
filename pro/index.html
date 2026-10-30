@@ -186,9 +186,9 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .vsechny-funkce summary::after{content:" ↓";}
 .vsechny-funkce[open] summary::after{content:" ↑";}
 .vsechny-funkce[open]{padding-bottom:18px;}
-.cenik{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 16px;}
-.cenik-karta{display:flex;flex-direction:column;gap:4px;text-align:left;font:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.18);border-radius:12px;padding:16px 16px 14px;color:#fff;transition:border-color .15s,background .15s;}
-.cenik-karta:hover{border-color:var(--gold);}
+.cenik{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 16px;align-items:stretch;}
+.cenik-karta,.cenik-karta-zdarma{position:relative;display:flex;flex-direction:column;gap:4px;text-align:left;font:inherit;cursor:pointer;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.18);border-radius:12px;padding:16px 16px 14px;color:#fff;transition:border-color .15s,background .15s;}
+.cenik-karta:hover,.cenik-karta-zdarma:hover{border-color:var(--gold);}
 .cenik-karta.vybrana{border-color:var(--gold);background:rgba(233,169,27,.12);}
 .cenik-nazev{font-family:'Poppins',sans-serif;font-weight:800;font-size:16px;}
 .cenik-lide{font-size:13px;color:rgba(255,255,255,.65);}
@@ -199,6 +199,21 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.4vw,36px); font-we
 .cenik-podminky p{font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.82);margin:0 0 8px;}
 .cenik-podminky p:last-child{margin-bottom:0;}
 .cenik-podminky b{color:#fff;}
+#ceny{scroll-margin-top:80px;}
+.cenik-karta-zdarma{text-decoration:none;background:transparent !important;border-style:dashed !important;}
+.cenik-karta-zdarma .cenik-cena{color:#fff;}
+.cenik-jistoty{font-size:13px;color:rgba(255,255,255,.7) !important;margin:-4px 0 4px !important;}
+.cenik-stitek{position:absolute;top:-11px;left:14px;background:var(--gold);color:#000;font-family:'Poppins',sans-serif;font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;padding:3px 10px;border-radius:100px;}
+.cenik-seznam{display:flex;flex-direction:column;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);flex:1;}
+.cenik-pro-koho{font-size:13px;line-height:1.4;color:var(--gold);font-weight:600;margin-top:4px;min-height:2.8em;}
+.cenik-uvod{font-size:12.5px;font-weight:700;color:rgba(255,255,255,.6);}
+.cenik-bod{font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.88);padding-left:20px;position:relative;}
+.cenik-bod::before{content:"";position:absolute;left:2px;top:5px;width:9px;height:5px;border-left:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(-45deg);}
+.cenik-vybrat{margin-top:14px;align-self:stretch;text-align:center;font-family:'Poppins',sans-serif;font-weight:800;font-size:13px;padding:9px 12px;border-radius:8px;border:1.5px solid rgba(255,255,255,.3);color:#fff;}
+.cenik-karta:hover .cenik-vybrat,.cenik-karta.vybrana .cenik-vybrat{background:var(--gold);border-color:var(--gold);color:#000;}
+.cenik-karta-zdarma:hover .cenik-vybrat{border-color:var(--gold);color:var(--gold);}
+.cenik-karta[data-var="5"]{border-color:rgba(233,169,27,.55);}
+@media (max-width:980px){.cenik{grid-template-columns:repeat(2,1fr);row-gap:22px;}}
 @media (max-width:640px){.cenik{grid-template-columns:1fr;}}
 .obj-postup{background:rgba(255,255,255,.05);border-radius:10px;padding:14px 16px;margin-bottom:18px;}
 .obj-postup-nadpis{font-family:'Poppins',sans-serif;font-weight:800;font-size:14px;color:#fff;margin:0 0 6px;}
@@ -370,15 +385,55 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
   <p class="hero-trust">Od 499&nbsp;Kč měsíčně pro jednoho uživatele, zakladatelská cena. Bez automatického prodlužování.</p>
 
 
-  <div class="compare">
-    <div class="compare-col free">
-      <div class="compare-title">ZDARMA</div>
-      <p class="compare-veta">Použijete nástroj a hned vidíte výsledek.</p>
+  <div class="objednavka-box cenik-box pas pas-cerna" id="ceny">
+    <h2>Varianty a ceny</h2>
+    <p class="cenik-jistoty">Ceny jsou konečné, nejsem plátce DPH <span aria-hidden="true">·</span> Bez automatického prodlužování <span aria-hidden="true">·</span> Výsledky si kdykoliv stáhnete</p>
+    <div id="objednavka-cena-popis">
+      <div class="cenik">
+        <a class="cenik-karta-zdarma" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'pro_cenik'})">
+          <span class="cenik-nazev">Zdarma</span>
+          <span class="cenik-lide">1 uživatel</span>
+          <span class="cenik-pro-koho">Hodí se, když chcete Tokvu nejdřív vyzkoušet</span>
+          <span class="cenik-cena">0&nbsp;Kč</span>
+          <span class="cenik-bezna">stačí jednou zadat e-mail</span>
+          <span class="cenik-seznam"><span class="cenik-bod">11 nástrojů, výsledek hned</span><span class="cenik-bod">výsledek na e-mail a tisk</span><span class="cenik-bod">výsledky jen v tomto prohlížeči</span></span>
+          <span class="cenik-vybrat">Otevřít nástroje zdarma</span>
+        </a>
+        <button type="button" class="cenik-karta" data-var="1" onclick="vybratVariantu('1')">
+          <span class="cenik-nazev">Jednotlivec</span>
+          <span class="cenik-lide">1 uživatel</span>
+          <span class="cenik-pro-koho">Hodí se pro OSVČ a firmy do 5 zaměstnanců</span>
+          <span class="cenik-cena">499&nbsp;Kč<small>/měsíc</small></span>
+          <span class="cenik-bezna">běžná cena 690&nbsp;Kč</span>
+          <span class="cenik-seznam"><span class="cenik-uvod">Vše ze Zdarma, navíc:</span><span class="cenik-bod">výsledky uložené u firmy, na každém zařízení</span><span class="cenik-bod">historie a porovnání před a po</span><span class="cenik-bod">akční plán, projekty, prezentační režim na poradu</span><span class="cenik-bod">Měřič plýtvání Pro a Spaghetti Pro</span><span class="cenik-bod">export všech dat</span></span>
+          <span class="cenik-vybrat">Vybrat</span>
+        </button>
+        <button type="button" class="cenik-karta" data-var="5" onclick="vybratVariantu('5')">
+          <span class="cenik-stitek">Doporučuji</span><span class="cenik-nazev">Menší tým</span>
+          <span class="cenik-lide">2 až 5 uživatelů</span>
+          <span class="cenik-pro-koho">Hodí se pro firmy zhruba do 30 zaměstnanců</span>
+          <span class="cenik-cena">1&nbsp;390&nbsp;Kč<small>/měsíc</small></span>
+          <span class="cenik-bezna">běžná cena 1&nbsp;990&nbsp;Kč</span>
+          <span class="cenik-seznam"><span class="cenik-uvod">Vše z Jednotlivce, navíc:</span><span class="cenik-bod">2 až 5 lidí ve firmě</span><span class="cenik-bod">role majitel, správce, člen</span><span class="cenik-bod">jeden společný akční plán pro celý tým</span></span>
+          <span class="cenik-vybrat">Vybrat</span>
+        </button>
+        <button type="button" class="cenik-karta" data-var="15" onclick="vybratVariantu('15')">
+          <span class="cenik-nazev">Větší tým</span>
+          <span class="cenik-lide">6 až 15 uživatelů</span>
+          <span class="cenik-pro-koho">Hodí se pro firmy zhruba od 30 do 100 zaměstnanců</span>
+          <span class="cenik-cena">2&nbsp;690&nbsp;Kč<small>/měsíc</small></span>
+          <span class="cenik-bezna">běžná cena 4&nbsp;490&nbsp;Kč</span>
+          <span class="cenik-seznam"><span class="cenik-uvod">Vše z Menšího týmu, navíc:</span><span class="cenik-bod">6 až 15 lidí ve firmě</span></span>
+          <span class="cenik-vybrat">Vybrat</span>
+        </button>
+      </div>
+      <div class="cenik-podminky">
+        <p><b>Zakladatelská cena pro prvních 20 firem.</b> Zachováte si ji po celou dobu nepřerušeného předplatného.</p>
+        <p id="objednavka-podminka-popis"><b>Co za ni chci:</b> zpětnou vazbu. Tři krátké dotazníky, každý zhruba na 10 minut: než začnete, po prvním použití a po měsíci provozu. A já uvidím, jak Tokvu používá vaše firma jako celek, ne kdo konkrétně. Podle toho appku doladím.</p>
+        <p><b>Bez závazku a bez automatického prodlužování.</b> Týden před koncem předplatného vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma. Předtím si můžete výsledky stáhnout jedním exportem.</p>
+      </div>
     </div>
-    <div class="compare-col pro">
-      <div class="compare-title">TOKVA PRO</div>
-      <p class="compare-veta">Uložíte výsledek, naplánujete změnu s odpovědným člověkem a dalším měřením ověříte, jestli pomohla.</p>
-    </div>
+    <a href="#objednavka" class="btn-gold cenik-dal">Pokračovat k objednávce</a>
   </div>
 
   <div class="screenshoty pas pas-bila">
@@ -484,38 +539,6 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
   <div class="note">Objednat můžete hned. Zakladatelská cena platí pro prvních 20 firem. S prvními firmami Tokvu Pro dál ladím podle toho, co v provozu opravdu potřebují. Appky zdarma fungují naplno i bez Pro, stačí jednou zadat e-mail.</div>
 
   <p class="podpora-note">Podporu dělám vždycky osobně já, Gabriela Tomíčková. Kdybyste kromě appky potřebovali pomoc přímo ve firmě, najdete mě na <a href="https://gabrielatomickova.cz" target="_blank" rel="noopener">gabrielatomickova.cz</a>.</p>
-
-  <div class="objednavka-box cenik-box pas pas-cerna" id="ceny">
-    <h2>Varianty a ceny</h2>
-    <div id="objednavka-cena-popis">
-      <div class="cenik">
-        <button type="button" class="cenik-karta" data-var="1" onclick="vybratVariantu('1')">
-          <span class="cenik-nazev">Jednotlivec</span>
-          <span class="cenik-lide">1 uživatel</span>
-          <span class="cenik-cena">499&nbsp;Kč<small>/měsíc</small></span>
-          <span class="cenik-bezna">běžná cena 690&nbsp;Kč</span>
-        </button>
-        <button type="button" class="cenik-karta" data-var="5" onclick="vybratVariantu('5')">
-          <span class="cenik-nazev">Menší tým</span>
-          <span class="cenik-lide">2 až 5 uživatelů</span>
-          <span class="cenik-cena">1&nbsp;390&nbsp;Kč<small>/měsíc</small></span>
-          <span class="cenik-bezna">běžná cena 1&nbsp;990&nbsp;Kč</span>
-        </button>
-        <button type="button" class="cenik-karta" data-var="15" onclick="vybratVariantu('15')">
-          <span class="cenik-nazev">Větší tým</span>
-          <span class="cenik-lide">6 až 15 uživatelů</span>
-          <span class="cenik-cena">2&nbsp;690&nbsp;Kč<small>/měsíc</small></span>
-          <span class="cenik-bezna">běžná cena 4&nbsp;490&nbsp;Kč</span>
-        </button>
-      </div>
-      <div class="cenik-podminky">
-        <p><b>Zakladatelská cena pro prvních 20 firem.</b> Zachováte si ji po celou dobu nepřerušeného předplatného. Ceny jsou konečné, nejsem plátce DPH.</p>
-        <p id="objednavka-podminka-popis"><b>Co za ni chci:</b> zpětnou vazbu. Tři krátké dotazníky, každý zhruba na 10 minut: než začnete, po prvním použití a po měsíci provozu. A já uvidím, jak Tokvu používá vaše firma jako celek, ne kdo konkrétně. Podle toho appku doladím.</p>
-        <p><b>Bez závazku a bez automatického prodlužování.</b> Týden před koncem předplatného vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma. Předtím si můžete výsledky stáhnout jedním exportem.</p>
-      </div>
-    </div>
-    <a href="#objednavka" class="btn-gold cenik-dal">Pokračovat k objednávce</a>
-  </div>
 
   <div class="pas pas-bila faq-pas">
   <h2 class="faq-nadpis">Časté otázky</h2>
@@ -857,7 +880,7 @@ function zvyraznitKartu(){
   document.querySelectorAll('.cenik-karta').forEach(function(k){k.classList.toggle('vybrana',k.getAttribute('data-var')===sel.value);});
 }
 document.addEventListener('DOMContentLoaded',function(){
-  var sel=document.getElementById('obj-varianta'); if(sel){sel.addEventListener('change',zvyraznitKartu); zvyraznitKartu();}
+  var sel=document.getElementById('obj-varianta'); if(sel){sel.addEventListener('change',zvyraznitKartu);}
 });
 </script>
 <script src="/menu.js"></script>

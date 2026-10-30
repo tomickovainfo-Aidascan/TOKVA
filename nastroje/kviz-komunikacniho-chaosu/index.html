@@ -486,7 +486,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <a href="https://tokva.cz/projekty/" class="nav-btn" id="nav-projekty" style="display:none;">Projekty</a>
     <a href="https://tokva.cz/akcni-plan/" class="nav-btn" id="nav-akcni-plan" style="display:none;">Akční plán</a>
     <a href="https://tokva.cz/nastaveni-firmy/" class="nav-btn" id="nav-nastaveni-firmy" style="display:none;">Nastavení firmy</a>
-    <a class="nav-btn" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'kviz_komunikace',placement:'nav'})" id="nav-pro-odkaz">Víc o Tokva Pro</a>
+    <a class="nav-btn" href="https://tokva.cz/pro/#ceny" onclick="trackTokvaEvent('pro_click',{source_tool:'kviz_komunikace',placement:'nav'})" id="nav-pro-odkaz">Varianty a ceny</a>
     <span class="nav-btn" id="nav-ucet-info" style="display:none;cursor:default;border-style:dashed;"></span>
     <span class="nav-btn" id="nav-ucet-email" style="display:none;cursor:default;border-style:dashed;"></span>
     <button class="nav-btn" id="nav-ucet-btn" onclick="klikNaUcet()">Přihlásit se</button>
@@ -2125,7 +2125,7 @@ async function renderTymStav(obsah) {
     if (pocet < MIN_DOPORUCENY_TYM) {
       const varovani = document.createElement('p');
       varovani.style.color = '#e9a91b';
-      varovani.textContent = 'S tak málo odpověďmi je snazší uhodnout, kdo co napsal. Doporučujeme počkat aspoň na ' + MIN_DOPORUCENY_TYM + ' odpovědí, nebo výsledek berte s rezervou a nevyvozujte z něj závěry o konkrétních lidech.';
+      varovani.textContent = 'S tak málo odpověďmi je snazší uhodnout, kdo co napsal. Doporučuji počkat aspoň na ' + MIN_DOPORUCENY_TYM + ' odpovědí, nebo výsledek berte s rezervou a nevyvozujte z něj závěry o konkrétních lidech.';
       obsah.appendChild(varovani);
     }
     const zobrazitBtn = document.createElement('button');
