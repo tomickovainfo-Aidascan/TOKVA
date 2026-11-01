@@ -365,6 +365,14 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 }
 #nav-ucet-info,#nav-ucet-email{white-space:nowrap;border:none!important;background:none!important;padding:0!important;font-weight:400!important;color:var(--mid)!important;}
 @media (max-width:600px){#nav-ucet-info{display:none!important;}}
+.dalsi-krok{background:#fdf3d9;color:#111;border:2px solid #e9a91b;border-radius:14px;padding:20px 20px 18px;margin:0 0 18px;text-align:left;}
+.dalsi-krok-nadpis{font-family:'Poppins',sans-serif;font-weight:800;font-size:19px;margin-bottom:12px;color:#111;}
+.dalsi-krok-proc{font-size:13.5px;line-height:1.5;color:#545454;margin:12px 0 0;}
+.dalsi-krok-proc a{color:#976e12;font-weight:700;}
+.dalsi-krok-hlavni{display:block;text-align:center;background:#e9a91b;color:#000;font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;padding:16px 18px;border-radius:10px;text-decoration:none;box-shadow:0 6px 16px rgba(151,110,18,.25);}
+.dalsi-krok-hlavni:hover{background:#976e12;color:#fff;}
+.dalsi-krok-druhy{display:block;text-align:center;margin-top:12px;border:1.5px solid #976e12;color:#976e12;background:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:14.5px;padding:11px 16px;border-radius:10px;text-decoration:none;}
+.dalsi-krok-druhy:hover{background:#976e12;color:#fff;}
 </style>
 
 <style id="cookies-css">
@@ -624,6 +632,7 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
 
   <div class="tbl-wrap"><table class="tbl" id="tbl"></table></div>
   <div class="graf-wrap"><div class="graf-title">Průměrné rozložení času</div><div id="graf"></div></div>
+  <div class="dalsi-krok" id="dalsi-krok" style="display:none;"></div>
 
   <div class="email-box" id="email-box">
     <div class="email-box-title">Chcete si tenhle výsledek uložit?</div>
@@ -695,37 +704,6 @@ footer{background:#0a0a0a;padding:18px 20px;display:flex;justify-content:space-b
         </div>
       <div data-tokva-zpetna-vazba data-nastroj="meric-free"></div>
       </div>
-    </div>
-  </div>
-</div>
-
-<div class="po-vysledku dalsi-nastroje-wrap" id="dalsi-nastroje">
-  <h2 class="content-card-title">Navazující nástroje</h2>
-  <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Vyberte podle toho, která kategorie vám vyšla nejvýš.</p>
-  <div class="dalsi-nastroje-grid">
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Hodně chůze a přesunů</div>
-      <div class="dalsi-nastroj-nazev">Spaghetti diagram</div>
-      <div class="dalsi-nastroj-popis">Nakreslete skutečnou trasu do plánku a uvidíte, kde se dá zkrátit.</div>
-      <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Spaghetti diagram</a>
-    </div>
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Rychlý odhad v Kč</div>
-      <div class="dalsi-nastroj-nazev">Kalkulačka ztrát</div>
-      <div class="dalsi-nastroj-popis">Odhad ztráty napříč celým provozem, ne jen u jednoho procesu.</div>
-      <a href="../kalkulacka-ztrat/" target="_blank" class="dalsi-nastroj-btn">Otevřít Kalkulačku ztrát</a>
-    </div>
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Proč se to pořád opakuje</div>
-      <div class="dalsi-nastroj-nazev">5× Proč AI kouč</div>
-      <div class="dalsi-nastroj-popis">Víte, kde to bolí. Kouč vám pomůže najít pravděpodobnou příčinu a první krok k jejímu ověření.</div>
-      <a href="../5x-proc-ai-kouc/" target="_blank" class="dalsi-nastroj-btn">Otevřít 5× Proč AI kouč</a>
-    </div>
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Širší pohled na sklad</div>
-      <div class="dalsi-nastroj-nazev">Mini audit skladu</div>
-      <div class="dalsi-nastroj-popis">10 otázek, které odhalí, kde všude ve skladu to skřípe.</div>
-      <a href="../mini-audit-skladu/" target="_blank" class="dalsi-nastroj-btn">Otevřít Mini audit skladu</a>
     </div>
   </div>
 </div>
@@ -1251,8 +1229,55 @@ function vykreslitSouhrn() {
   });
   if (!maNeco) insHtml = '';
   ins.innerHTML = insHtml;
+  vykreslitDalsiKrok(plyPct, pctZObrazenych);
 
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Co udělat teď (1. 11. 2026): podle kategorie plýtvání, která vyšla nejvýš.
+// Koruny Měřič ukazuje sám, Kalkulačku ztrát proto nenabízí.
+window.tokvaPostupVlastni = true;
+const DAL_NASTROJE = {
+  spaghetti: { url: '../spaghetti-free/', slozka: 'spaghetti', cta: 'Nakreslit Spaghetti diagram' },
+  proc:      { url: '../5x-proc-ai-kouc/', slozka: '5x-proc-ai-kouc', cta: 'Najít příčinu pomocí 5× Proč' },
+  s5:        { url: '../5S_audit/', slozka: '5S_audit', cta: 'Udělat pořádek podle 5S' },
+  kviz:      { url: '../kviz-komunikacniho-chaosu/', slozka: 'kviz-komunikacniho-chaosu', cta: 'Projít Kvíz komunikačního chaosu' },
+  casova:    { url: '../casova-studie/', slozka: 'casova-studie', cta: 'Zaznamenat den v Časové studii' }
+};
+const AUTOMATIZACE = '<a href="https://gabrielatomickova.cz/#nabidka">Napište mi →</a>';
+const DAL_PODLE_KAT = {
+  presun:   { kroky: ['spaghetti', 'proc'], text: 'Nejvíc času vám bere přesun. Nakreslete, kudy lidi opravdu chodí, a uvidíte, kde se dá trasa zkrátit.', zj: 'chuze' },
+  hledani:  { kroky: ['s5', 'kviz'], text: 'Nejvíc času vám bere hledání. Skoro vždycky za tím je, že věci nemají své pevné místo, a to 5S řeší přímo. Hledáte spíš podklady k zakázce nebo informace v mailech? Pak je to komunikace.', zj: 'chuze' },
+  cekani:   { kroky: ['proc', 'spaghetti'], text: 'Nejvíc času vám bere čekání. Příčina je skoro vždycky jinde, než kde se čeká. Najděte ji.', zj: 'prostoje' },
+  papiry:   { kroky: ['proc', 'casova'], text: 'Nejvíc času vám bere administrativa. Najděte, proč se dělá a jestli je všechna potřeba. Přepisujete stejné údaje víckrát? To jde často zautomatizovat. ' + AUTOMATIZACE, zj: 'admin' },
+  kontrola: { kroky: ['proc'], text: 'Nejvíc času vám bere kontrola. Kontroluje se tolik, protože chyby vznikají jinde. Najděte kde. Kontrolujete ručně papíry a doklady? To jde často zautomatizovat. ' + AUTOMATIZACE, zj: '' },
+  priprava: { kroky: ['s5', 'proc'], text: 'Nejvíc času vám bere příprava. Když má každá věc své místo a je připravená předem, příprava se zkrátí.', zj: '' }
+};
+function vykreslitDalsiKrok(plyPct, pctZObrazenych) {
+  const box = document.getElementById('dalsi-krok');
+  if (!box) return;
+  const P = window.tokvaPostup;
+  let nej = null, max = 0;
+  Object.keys(DAL_PODLE_KAT).forEach(function (k) { const p = pctZObrazenych(k); if (p > max) { max = p; nej = k; } });
+  let html = '<div class="dalsi-krok-nadpis">Co udělat teď</div>';
+  let doporuceno = [];
+  if (!nej || plyPct <= 20) {
+    html += '<p class="dalsi-krok-proc" style="margin-top:0;">Většina času je práce, to je dobrý výsledek. Změřte další proces, ať víte, kde to drží nejvíc.</p>';
+    if (P) P.zapsat({});
+  } else {
+    const def = DAL_PODLE_KAT[nej];
+    // Co už je v cestě hotové, nedoporučuju znovu. Když zbude málo, doplní se 5× Proč a 5S.
+    const kroky = def.kroky.concat(['proc', 's5']).filter(function (k, i, a) {
+      return a.indexOf(k) === i && !(P && P.hotovo(DAL_NASTROJE[k].slozka));
+    }).slice(0, nej === 'kontrola' ? 1 : 2);
+    doporuceno = kroky.map(function (k) { return DAL_NASTROJE[k].slozka; });
+    if (kroky[0]) html += '<a class="dalsi-krok-hlavni" href="' + DAL_NASTROJE[kroky[0]].url + '">' + DAL_NASTROJE[kroky[0]].cta + '&nbsp;→</a>';
+    html += '<p class="dalsi-krok-proc">' + def.text + '</p>';
+    if (kroky[1]) html += '<a class="dalsi-krok-druhy" href="' + DAL_NASTROJE[kroky[1]].url + '">' + DAL_NASTROJE[kroky[1]].cta + '&nbsp;→</a>';
+    if (P) P.zapsat({ zjisteni: def.zj ? [def.zj] : [], doporuceno: doporuceno, data: { nejhorsi: nej, pct: max } });
+  }
+  box.innerHTML = (P ? P.radek(doporuceno) : '') + html;
+  box.style.display = 'block';
 }
 
 function odeslatEmail(e) {
