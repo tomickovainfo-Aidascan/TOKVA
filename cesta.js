@@ -22,6 +22,8 @@
   bloky.forEach(function (b) {
     var s = {
       nazev: txt(b.querySelector('.krok-head h2')),
+      // data-postup na .krok-block: nástroje jdou po sobě (Potom:), jinak jsou to možnosti (Nebo zkuste:)
+      postup: b.hasAttribute('data-postup'),
       popis: txt(b.querySelector('.krok-head p')),
       nastroje: [].slice.call(b.querySelectorAll('a.krok-row')).map(function (a) {
         return { href: a.getAttribute('href'), jmeno: txt(a.querySelector('.krok-name')), prinos: txt(a.querySelector('.krok-benefit')), pro: /🔒/.test(a.textContent) };
@@ -98,7 +100,7 @@
       '<div class="cesta-krok"><span>Doporučuji začít tady</span></div>' +
       '<h2>' + esc(nadpis || s.nazev) + '</h2>' +
       '<a class="cesta-hlavni" href="' + esc(hlavni.href) + '" data-nastroj="' + esc(hlavni.jmeno) + '"><b>' + esc(hlavni.jmeno) + (hlavni.pro ? ' (Tokva Pro)' : '') + '</b><span>' + esc(hlavni.prinos) + '</span><em>Otevřít nástroj →</em></a>' +
-      (dalsi.length ? '<p class="cesta-alt-nadpis">Nebo zkuste:</p><div class="cesta-alt">' + dalsi.map(function (n) {
+      (dalsi.length ? '<p class="cesta-alt-nadpis">' + (s.postup ? 'Potom:' : 'Nebo zkuste:') + '</p><div class="cesta-alt">' + dalsi.map(function (n) {
         return '<a href="' + esc(n.href) + '" data-nastroj="' + esc(n.jmeno) + '"><span>' + esc(n.prinos) + '</span><b>' + esc(n.jmeno) + (n.pro ? ' 🔒' : '') + ' →</b></a>';
       }).join('') + '</div>' : '') +
       '<div class="cesta-odkazy"><button type="button" data-akce="dal">Projít další situace</button><a href="' + ROZCESTI + '">Zpět na rozcestí</a></div>';
