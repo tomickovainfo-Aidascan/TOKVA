@@ -1512,13 +1512,15 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 // Kdo ještě nezná ztrátu v korunách, jde nejdřív do Kalkulačky ztrát (30 vteřin,
 // hned číslo, motivace pokračovat). Kdo ji už použil, jde rovnou na nástroj
 // k nejslabšímu místu. Časová studie (celý den) jen když nic jiného není.
+window.tokvaPostupVlastni = true;
 function vykreslitDalsiKrok(slabaMista) {
   const box = document.getElementById('dalsi-krok');
   if (!box) return;
   if (!slabaMista.length) { box.style.display = 'none'; return; }
   const KALK = { url: '../kalkulacka-ztrat/', cta: 'Spočítat finanční dopad' };
+  const P = window.tokvaPostup;
   let znaKoruny = false;
-  try { znaKoruny = !!localStorage.getItem('kalk_ztrat_rozpracovany_vstup'); } catch (e) {}
+  try { znaKoruny = P ? P.hotovo('kalkulacka-ztrat') : !!localStorage.getItem('kalk_ztrat_rozpracovany_vstup'); } catch (e) {}
   const nastroje = [];
   slabaMista.forEach(function (q) { const c = CTA_ODKAZ[q]; if (c && c.url.indexOf('kalkulacka-ztrat') < 0 && !nastroje.some(function (n) { return n.url === c.url; })) nastroje.push(c); });
   nastroje.sort(function (a, b) { return (a.url.indexOf('casova-studie') >= 0) - (b.url.indexOf('casova-studie') >= 0); });
@@ -1527,8 +1529,16 @@ function vykreslitDalsiKrok(slabaMista) {
   const proc = hlavni === KALK
     ? 'Za 30 vteřin uvidíte, kolik vás tyhle ztráty stojí za rok. S číslem v korunách se líp rozhoduje, co řešit první.'
     : 'Ztrátu v korunách už znáte. Teď se pusťte do nejslabšího místa.';
-  box.innerHTML = '<div class="dalsi-krok-nadpis">Co udělat teď</div>' +
-    '<a class="dalsi-krok-hlavni" href="' + hlavni.url + '">' + hlavni.cta + ' →</a>' + '<p class="dalsi-krok-proc">' + proc + '</p>' +
+  // Zápis do cesty (postup.js): co nástroj zjistil a co doporučil. Otázky
+  // převedené na položky Kalkulačky ztrát, aby je další krok mohl porovnat.
+  const SLOZKA = function (u) { const m = /\.\.\/([^\/]+)\//.exec(u); return m ? m[1] : ''; };
+  const ZJ = { 2: 'prostoje', 3: 'chuze', 4: 'chuze', 5: 'prostoje', 6: 'prostoje' };
+  const zjisteni = [];
+  slabaMista.forEach(function (q) { const z = ZJ[q]; if (z && zjisteni.indexOf(z) < 0) zjisteni.push(z); });
+  const doporuceno = [SLOZKA(hlavni.url)].concat(druhy ? [SLOZKA(druhy.url)] : []);
+  if (P && !(typeof zobrazenoZOdkazu !== 'undefined' && zobrazenoZOdkazu)) P.zapsat({ zjisteni: zjisteni, doporuceno: doporuceno });
+  box.innerHTML = (P ? P.radek(doporuceno) : '') + '<div class="dalsi-krok-nadpis">Co udělat teď</div>' +
+    '<a class="dalsi-krok-hlavni" href="' + hlavni.url + '">' + hlavni.cta + '&nbsp;→</a>' + '<p class="dalsi-krok-proc">' + proc + '</p>' +
     
     (druhy ? '<a class="dalsi-krok-druhy" href="' + druhy.url + '">' + druhy.cta + ' →</a>' : '');
   box.style.display = 'block';

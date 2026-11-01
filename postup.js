@@ -60,7 +60,7 @@
       var o = nacist(), hot = {}, ven = [];
       o.kroky.forEach(function (x) { hot[x.nastroj] = 1; });
       hot[tady] = 1;
-      o.kroky.forEach(function (x) { (x.doporuceno || []).forEach(function (d) { if (!hot[d] && ven.indexOf(d) < 0) ven.push(d); }); });
+      o.kroky.forEach(function (x) { if (x.nastroj === tady) return; (x.doporuceno || []).forEach(function (d) { if (!hot[d] && ven.indexOf(d) < 0) ven.push(d); }); });
       return ven;
     },
     novy: function () { try { localStorage.removeItem(KLIC); } catch (e) {} },
