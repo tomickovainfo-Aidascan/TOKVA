@@ -125,6 +125,32 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .input-val-edit:focus { outline:none; border-color:var(--gold); }
 .settings-hint { font-size:11px; color:var(--light); margin-top:8px; line-height:1.5; }
 
+.dalsi-krok{background:#fdf3d9;color:#111;border:2px solid #e9a91b;border-radius:14px;padding:20px 20px 18px;}
+.dalsi-krok-nadpis{font-family:'Poppins',sans-serif;font-weight:800;font-size:19px;margin-bottom:12px;color:#111;}
+.dalsi-krok-proc{font-size:13.5px;line-height:1.5;color:#545454;margin:12px 0 0;}
+.dalsi-krok-hlavni{display:block;text-align:center;background:#e9a91b;color:#000;font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;padding:16px 18px;border-radius:10px;text-decoration:none;box-shadow:0 6px 16px rgba(151,110,18,.25);}
+.dalsi-krok-hlavni:hover{background:#976e12;color:#fff;}
+.dalsi-krok-druhy{display:block;text-align:center;margin-top:12px;border:1.5px solid #976e12;color:#976e12;background:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:14.5px;padding:11px 16px;border-radius:10px;text-decoration:none;}
+.dalsi-krok-druhy:hover{background:#976e12;color:#fff;}
+.stoji-row{padding:14px 20px;border-bottom:1px solid #f0f0f0;}
+.stoji-row:last-child{border-bottom:none;}
+.stoji-hlava{display:flex;justify-content:space-between;align-items:baseline;gap:12px;}
+.stoji-nazev{font-size:14px;font-weight:700;color:var(--dark);}
+.stoji-odkaz{font-size:13px;font-weight:700;color:#976e12;text-decoration:none;white-space:nowrap;}
+.stoji-odkaz:hover{text-decoration:underline;}
+.stoji-kc{font-family:"Poppins",sans-serif;font-size:20px;font-weight:800;color:var(--dark);margin:2px 0 4px;}
+.stoji-podil{font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--light);margin-left:6px;}
+.stoji-bar-bg{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:8px;}
+.stoji-bar{height:100%;background:var(--gold);border-radius:2px;}
+.stoji-proc{font-size:13px;color:var(--mid);line-height:1.5;}
+.stoji-row.prvni .stoji-kc{color:#976e12;}
+details.dalsi-cisla{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:0 20px;}
+details.dalsi-cisla > summary{cursor:pointer;padding:14px 0;font-size:13.5px;font-weight:700;color:var(--dark);list-style:none;display:flex;justify-content:space-between;}
+details.dalsi-cisla > summary::-webkit-details-marker{display:none;}
+details.dalsi-cisla > summary::after{content:"+";color:#976e12;font-size:18px;line-height:1;}
+details.dalsi-cisla[open] > summary::after{content:"\2212";}
+details.dalsi-cisla .result-grid{margin-bottom:10px;}
+details.dalsi-cisla .km-note{margin-bottom:16px;}
 .top-loss-box { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:20px 22px; }
 .top-loss-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--light); margin-bottom:8px; }
 .top-loss-name { font-family:"Poppins",sans-serif; font-size:18px; font-weight:800; color:var(--dark); margin-bottom:4px; }
@@ -312,6 +338,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 </style>
 <style id="tokva-pro-texty-css">html:not(.tokva-ma-pro) .jen-s-pro, html.tokva-ma-pro .jen-bez-pro{display:none !important;}</style>
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
+<script src="/prosle.js"></script>
 </head>
 <body>
 
@@ -502,6 +529,35 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div class="result-hero-sub">hodnota času, který podle zadaných odhadů nepřináší přímou hodnotu - orientační výpočet, ne přesný audit. Rok počítáme jako 250 pracovních dnů, tedy 50 týdnů po 5 dnech.</div>
       </div>
 
+      <div class="breakdown" id="kde-stoji">
+        <h2 class="breakdown-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Kde to stojí nejvíc
+        </h2>
+        <div id="stoji-seznam"></div>
+      </div>
+
+      <div class="dalsi-krok" id="dalsi-krok" style="display:none;"></div>
+
+      <div class="top-loss-box" id="top-loss-box" style="display:none;">
+        <div class="top-loss-label">Největší zdroj ztráty</div>
+        <div class="top-loss-name" id="top-loss-name">-</div>
+        <div class="top-loss-sub" id="top-loss-sub">Zadejte čísla vlevo, ukážeme vám, kam se podívat nejdřív.</div>
+        <div class="top-loss-tip" id="top-loss-tip" style="display:none;">Tady začněte. Jedna položka, jedna změna, jedno druhé měření.</div>
+        <a class="top-loss-cta" id="top-loss-cta" href="#" target="_blank" style="display:none;">Zjistit teď →</a>
+      </div>
+
+      <div class="uloz-btn-row" style="margin-top:16px;">
+        <input id="s-nazev-vypoctu" type="text" class="uloz-panel-vstup" placeholder="Název výpočtu (nepovinné), např. Sklad A, září" style="display:none;">
+        <button class="btn-gold" id="btn-ulozit-vychozi" style="width:100%;" onclick="ulozitVypocetZtrat()">Uložit jako výchozí stav <span class="pro-lock-badge">Pro</span></button>
+        <div class="uloz-hint" id="uloz-hint-vychozi">Za měsíc spočítáte to samé znovu a uvidíte rozdíl v korunách.</div>
+        <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="tisknoutZtraty()">🖨 Vytisknout výsledek</button>
+        <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="novyVypocetZtrat()">🔄 Nový výpočet</button>
+        <div id="s-ulozeno-stav" style="font-size:12.5px;margin-top:8px;display:none;"></div>
+      </div>
+
+      <details class="dalsi-cisla">
+        <summary>Další čísla: za měsíc, hodiny, lidé, kilometry</summary>
       <div class="result-grid">
         <div class="result-card">
           <div class="result-card-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
@@ -525,70 +581,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </div>
       </div>
       <div class="km-note">Kilometry: orientační přepočet rychlostí cca 4 km/h, 5 pracovních dní v týdnu, pro všechny zadané pracovníky dohromady.</div>
-
-      <div class="breakdown">
-        <h2 class="breakdown-title">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-          Kde ztráty vznikají
-        </h2>
-
-        <div class="breakdown-row">
-          <div class="breakdown-icon-box"></div>
-          <div class="breakdown-text">
-            <div class="breakdown-name">Zbytečná chůze a přesuny</div>
-            <div class="breakdown-desc">špatné rozmístění zboží, neoptimální trasy vychystání</div>
-          </div>
-          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-chuze" style="width:0%"></div></div></div>
-          <div class="breakdown-val" id="val-chuze">0 h/týd</div>
-        </div>
-
-        <div class="breakdown-row">
-          <div class="breakdown-icon-box"></div>
-          <div class="breakdown-text">
-            <div class="breakdown-name">Ruční administrativa</div>
-            <div class="breakdown-desc">přepisy, manuální kontroly, papírové záznamy</div>
-          </div>
-          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-admin" style="width:0%"></div></div></div>
-          <div class="breakdown-val" id="val-admin">0 h/týd</div>
-        </div>
-
-        <div class="breakdown-row">
-          <div class="breakdown-icon-box"></div>
-          <div class="breakdown-text">
-            <div class="breakdown-name">Čekání a prostoje</div>
-            <div class="breakdown-desc">čekání na materiál, instrukce, informace, hledání nářadí</div>
-          </div>
-          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-prostoje" style="width:0%"></div></div></div>
-          <div class="breakdown-val" id="val-prostoje">0 h/týd</div>
-        </div>
-
-        <div class="breakdown-row">
-          <div class="breakdown-icon-box"></div>
-          <div class="breakdown-text">
-            <div class="breakdown-name">Dodávky a expedice</div>
-            <div class="breakdown-desc">ruční zpracování, papírové záznamy, přeskládávání</div>
-          </div>
-          <div class="breakdown-bar-wrap"><div class="breakdown-bar-bg"><div class="breakdown-bar" id="bar-kamion" style="width:0%"></div></div></div>
-          <div class="breakdown-val" id="val-kamion">0 h/týd</div>
-        </div>
-      </div>
-
-      <div class="top-loss-box" id="top-loss-box">
-        <div class="top-loss-label">Největší zdroj ztráty</div>
-        <div class="top-loss-name" id="top-loss-name">-</div>
-        <div class="top-loss-sub" id="top-loss-sub">Zadejte čísla vlevo, ukážeme vám, kam se podívat nejdřív.</div>
-        <div class="top-loss-tip" id="top-loss-tip" style="display:none;">Tady začněte. Jedna položka, jedna změna, jedno druhé měření.</div>
-        <a class="top-loss-cta" id="top-loss-cta" href="#" target="_blank" style="display:none;">Zjistit teď →</a>
-      </div>
-
-      <div class="uloz-btn-row" style="margin-top:16px;">
-        <input id="s-nazev-vypoctu" type="text" class="uloz-panel-vstup" placeholder="Název výpočtu (nepovinné), např. Sklad A, září" style="display:none;">
-        <button class="btn-gold" id="btn-ulozit-vychozi" style="width:100%;" onclick="ulozitVypocetZtrat()">Uložit jako výchozí stav <span class="pro-lock-badge">Pro</span></button>
-        <div class="uloz-hint" id="uloz-hint-vychozi">Za měsíc spočítáte to samé znovu a uvidíte rozdíl v korunách.</div>
-        <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="tisknoutZtraty()">🖨 Vytisknout výsledek</button>
-        <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="novyVypocetZtrat()">🔄 Nový výpočet</button>
-        <div id="s-ulozeno-stav" style="font-size:12.5px;margin-top:8px;display:none;"></div>
-      </div>
+      </details>
 
       <!-- ZAŘADIT K PROJEKTU (Pro) -->
       <div class="breakdown" id="s-projekt-panel" style="display:none;margin-bottom:16px;">
@@ -720,31 +713,6 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
       </div>
 
 
-    </div>
-  </div>
-</div>
-
-<div class="po-vysledku dalsi-nastroje-wrap">
-  <h2 class="content-card-title">Navazující nástroje</h2>
-  <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Vyberte podle toho, co vám vyšlo nejdráž. Nahoře u výsledku vám appka jeden rovnou doporučí.</p>
-  <div class="dalsi-nastroje-grid">
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Hlavní další krok</div>
-      <div class="dalsi-nastroj-nazev">Měřič plýtvání</div>
-      <div class="dalsi-nastroj-popis">Změřte ztráty přímo v provozu. Za jednu směnu víte, kde přesně se ztrácí čas.</div>
-      <a href="../meric-plytvani-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Měřič plýtvání</a>
-    </div>
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Když jde hlavně o pohyb</div>
-      <div class="dalsi-nastroj-nazev">Spaghetti diagram</div>
-      <div class="dalsi-nastroj-popis">Nakreslete skutečnou trasu do plánku a uvidíte, kde se dá zkrátit.</div>
-      <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Spaghetti diagram</a>
-    </div>
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Když jde hlavně o administrativu</div>
-      <div class="dalsi-nastroj-nazev">Časová studie dne</div>
-      <div class="dalsi-nastroj-popis">Zaznamenejte celý den a zjistěte, kolik z něj je administrativa a hašení problémů.</div>
-      <a href="../casova-studie/" target="_blank" class="dalsi-nastroj-btn">Otevřít Časovou studii</a>
     </div>
   </div>
 </div>
@@ -994,14 +962,8 @@ function update() {
   document.getElementById("res-hodiny").textContent = fmt(celkem);
   document.getElementById("res-km").textContent = fmt(km);
   document.getElementById("res-uvazek").textContent = uvazek.toFixed(1);
-  document.getElementById("bar-chuze").style.width = (chuzeh/total*100) + "%";
-  document.getElementById("bar-admin").style.width = (adminh/total*100) + "%";
-  document.getElementById("bar-prostoje").style.width = (prostojes/total*100) + "%";
-  document.getElementById("bar-kamion").style.width = (kamionh/total*100) + "%";
-  document.getElementById("val-chuze").textContent = chuzeh.toFixed(1) + " h/týd";
-  document.getElementById("val-admin").textContent = adminh.toFixed(1) + " h/týd";
-  document.getElementById("val-prostoje").textContent = prostojes.toFixed(1) + " h/týd";
-  document.getElementById("val-kamion").textContent = kamionh.toFixed(1) + " h/týd";
+  vykreslitKdeStoji({ chuze: chuzeh, prostoje: prostojes, admin: adminh, kamion: kamionh }, celkem,
+    { lide, smeny, mzda, chuze, admin, prostoje, kamionu, kamionCas });
 
   aktualizovatNejvetsiZtratu({ chuze: chuzeh, prostoje: prostojes, admin: adminh, kamion: kamionh }, celkem);
 
@@ -1017,6 +979,92 @@ function update() {
       popis: document.getElementById('top-loss-sub').textContent
     }
   };
+}
+
+// Kde to stojí nejvíc a Co udělat teď (1. 11. 2026). Mapa dalších kroků:
+// největší položka určí nástroj, prošlé nástroje (prosle.js) se přeskočí,
+// cesta jde jen dopředu: změřit, najít příčinu, změnit.
+const NASTROJE_DAL = {
+  spaghetti: { url: '../spaghetti-free/', slozka: 'spaghetti', cta: 'Nakreslit Spaghetti diagram' },
+  meric:     { url: '../meric-plytvani-free/', slozka: 'meric-plytvani', cta: 'Změřit to v Měřiči plýtvání' },
+  casova:    { url: '../casova-studie/', slozka: 'casova-studie', cta: 'Zaznamenat den v Časové studii' },
+  proc:      { url: '../5x-proc-ai-kouc/', slozka: '5x-proc', cta: 'Najít příčinu pomocí 5× Proč' },
+  s5:        { url: '../5S_audit/', slozka: '5S', cta: 'Udělat pořádek podle 5S' }
+};
+const CESTA_DAL = { chuze: ['spaghetti', 'meric'], prostoje: ['meric', 'proc'], admin: ['meric', 'casova'], kamion: ['meric', 'spaghetti'], vse: ['meric', 'casova'] };
+const PROC_DAL = {
+  spaghetti: 'Nejvíc vás stojí chůze. Nakreslete, kudy lidi opravdu chodí, a uvidíte, kde se dá trasa zkrátit.',
+  meric_prostoje: 'Nejvíc vás stojí čekání. Změřte jednu směnu přímo v provozu a uvidíte, na co se čeká nejdéle.',
+  meric_admin: 'Nejvíc vás stojí administrativa. Změřte, kolik času jde opravdu na papíry a přepisování, a kde přesně.',
+  meric_kamion: 'Nejvíc vás stojí dodávky a expedice. Změřte jeden příjem nebo expedici a uvidíte, který krok trvá nejdéle.',
+  meric_chuze: 'Nejvíc vás stojí chůze. Změřte jednu směnu a uvidíte, kolik z ní je opravdu chození.',
+  meric_vse: 'Ztráty jsou rozložené do víc oblastí. Měřič ukáže, která z nich je v provozu ve skutečnosti největší.',
+  proc: 'Změřené to už máte. Teď najděte, proč to vzniká. Bez příčiny se problém za měsíc vrátí.',
+  s5: 'Příčinu znáte. Teď změňte jednu věc a za týden to spočítejte znovu.'
+};
+const STOJI = {
+  chuze:    { nazev: 'Zbytečná chůze a přesuny', odkaz: 'spaghetti', pricina: 'Většinou leží často brané věci daleko od místa, kde se s nimi pracuje.' },
+  prostoje: { nazev: 'Čekání a prostoje', odkaz: 'meric', pricina: 'Většinou se čeká na materiál, na informaci nebo na někoho, kdo má rozhodnout.' },
+  admin:    { nazev: 'Ruční administrativa', odkaz: 'meric', pricina: 'Většinou se stejný údaj píše víckrát nebo se hledá v papírech.' },
+  kamion:   { nazev: 'Dodávky a expedice', odkaz: 'meric', pricina: 'Většinou ruční kontrola papírů a přeskládávání, protože místo není připravené.' }
+};
+
+function proselNastroj(klic) {
+  let seznam = [];
+  try { seznam = typeof window.tokvaProsle === 'function' ? window.tokvaProsle() : []; } catch (e) {}
+  const slozka = NASTROJE_DAL[klic].slozka;
+  return seznam.some(function (s) { return s.indexOf(slozka) === 0; });
+}
+
+function vykreslitKdeStoji(hodnoty, celkem, v) {
+  const seznam = document.getElementById('stoji-seznam');
+  const box = document.getElementById('dalsi-krok');
+  if (!seznam || !box) return;
+  const hodinyRok = function (hTyden) { return hTyden / 5 * PRACOVNICH_DNU_ROK; };
+  const polozky = Object.keys(hodnoty).filter(function (k) { return hodnoty[k] > 0; })
+    .sort(function (a, b) { return hodnoty[b] - hodnoty[a]; });
+  if (!polozky.length || celkem <= 0) {
+    seznam.innerHTML = '<div class="stoji-row"><div class="stoji-proc">Zadejte čísla a uvidíte, která položka vás stojí nejvíc.</div></div>';
+    box.style.display = 'none';
+    return;
+  }
+  const smenyText = v.smeny === 1 ? '1 směna' : v.smeny + (v.smeny < 5 ? ' směny' : ' směn');
+  const lideText = v.lide + (v.lide === 1 ? ' člověk' : (v.lide < 5 ? ' lidé' : ' lidí'));
+  seznam.innerHTML = polozky.map(function (k, i) {
+    const h = hodinyRok(hodnoty[k]);
+    const kc = h * v.mzda;
+    const podil = Math.round(hodnoty[k] / celkem * 100);
+    let vypocet;
+    if (k === 'kamion') vypocet = v.kamionu + '× týdně, pokaždé ' + v.kamionCas + ' min. Za rok ' + fmt(h) + ' hodin.';
+    else vypocet = v[k] + ' min na člověka za směnu, ' + lideText + ', ' + smenyText + '. Za rok ' + fmt(h) + ' hodin.';
+    const cil = NASTROJE_DAL[STOJI[k].odkaz];
+    const odkaz = proselNastroj(STOJI[k].odkaz) ? '' : '<a class="stoji-odkaz" href="' + cil.url + '">Změřit →</a>';
+    return '<div class="stoji-row' + (i === 0 ? ' prvni' : '') + '">' +
+      '<div class="stoji-hlava"><span class="stoji-nazev">' + STOJI[k].nazev + '</span>' + odkaz + '</div>' +
+      '<div class="stoji-kc">' + fmt(kc) + ' Kč za rok<span class="stoji-podil">' + podil + ' %</span></div>' +
+      '<div class="stoji-bar-bg"><div class="stoji-bar" style="width:' + podil + '%"></div></div>' +
+      '<div class="stoji-proc">' + vypocet + ' ' + STOJI[k].pricina + '</div>' +
+      '</div>';
+  }).join('');
+
+  const nej = polozky[0];
+  const kategorie = hodnoty[nej] / celkem * 100 < 35 ? 'vse' : nej;
+  const [prvni, druha] = CESTA_DAL[kategorie];
+  let hlavni, druhy;
+  if (proselNastroj(prvni)) {
+    hlavni = proselNastroj('proc') ? 's5' : 'proc';
+    druhy = hlavni === 'proc' ? 's5' : null;
+  } else {
+    hlavni = prvni;
+    druhy = !proselNastroj(druha) ? druha : (druha === 'proc' ? 's5' : (proselNastroj('proc') ? 's5' : 'proc'));
+  }
+  const procText = PROC_DAL[hlavni === 'meric' ? 'meric_' + kategorie : hlavni];
+  const klik = function (k) { return ' onclick="if(typeof trackTokvaEvent===\'function\')trackTokvaEvent(\'dalsi_krok_klik\',{source_tool:\'kalkulacka_ztrat\',cil:\'' + k + '\'})"'; };
+  box.innerHTML = '<div class="dalsi-krok-nadpis">Co udělat teď</div>' +
+    '<a class="dalsi-krok-hlavni" href="' + NASTROJE_DAL[hlavni].url + '"' + klik(hlavni) + '>' + NASTROJE_DAL[hlavni].cta + '&nbsp;→</a>' +
+    '<p class="dalsi-krok-proc">' + procText + '</p>' +
+    (druhy ? '<a class="dalsi-krok-druhy" href="' + NASTROJE_DAL[druhy].url + '"' + klik(druhy) + '>' + NASTROJE_DAL[druhy].cta + '&nbsp;→</a>' : '');
+  box.style.display = 'block';
 }
 
 function aktualizovatNejvetsiZtratu(hodnoty, celkem) {
