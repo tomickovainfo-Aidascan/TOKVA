@@ -411,6 +411,8 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 .odebrat-planek:hover{border-color:#c0392b;color:#c0392b;}
 .odebrat-planek:focus-visible{outline:3px solid #e9a91b;outline-offset:2px;}
 #main-canvas[style*="none"] ~ .odebrat-planek{display:none;}
+.postup-box{background:#fdf3d9;border:2px solid #e9a91b;border-radius:14px;padding:16px 18px;margin:0 0 24px;font-size:14px;line-height:1.6;color:#333;}
+.postup-box p{margin:0;}.postup-box a{color:#976e12;font-weight:700;}
 </style>
 
 <style id="cookies-css">
@@ -425,7 +427,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 .cookies-no:hover{color:rgba(255,255,255,.7);}
 </style>
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
-<script src="/prosle.js"></script>
+<script src="/postup.js"></script>
 </head>
 <body>
 <style id="cookies-css-2">
@@ -716,6 +718,7 @@ footer { background:#0a0a0a; padding:20px 24px; display:flex; justify-content:sp
 <div class="post-app">
   <div class="post-app-inner">
 
+    <div class="postup-box" id="postup-spaghetti" style="display:none;"></div>
     <div class="po-vysledku">
       <h2 class="content-card-title">Co udělat dál</h2>
       <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;"><strong style="color:var(--dark);">Zjistěte, co se bere nejčastěji.</strong> Evidujete, kolikrát a v jakém množství se jednotlivé položky vyskladňují? Pokud ano, vytáhněte si za poslední měsíc deset nejčastějších. Pokud ne, začněte to evidovat. Bez toho přerovnáváte naslepo.</p>
@@ -2054,5 +2057,23 @@ document.addEventListener('keydown', function(e){
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
 <script src="/po-vysledku.js" data-vysledek="#stats-bar" data-az="#stat-celkem"></script>
+<script>
+// Cesta (postup.js): co víme z předchozích kroků (1. 11. 2026).
+(function () {
+  var P = window.tokvaPostup, box = document.getElementById('postup-spaghetti');
+  if (!P || !box) return;
+  var kalk = P.krok('kalkulacka-ztrat'), pred = P.predchozi(), html = '';
+  var kc = kalk && kalk.data && kalk.data.kc ? kalk.data.kc.chuze : 0;
+  if (kc > 0) {
+    html = '<p><strong>Podle Kalkulačky ztrát vás chůze stojí ' + Math.round(kc).toLocaleString('cs-CZ') + ' Kč za rok.</strong> Na plánku teď vidíte, kudy ty peníze odcházejí. Každý metr, který z trasy uberete, z té částky ubírá.</p>';
+  } else if (pred && pred.zjisteni.indexOf('chuze') >= 0) {
+    html = '<p><strong>' + P.nazev(pred.nastroj) + ' ukázal, že se hodně chodí.</strong> Kolik vás to stojí v korunách, spočítáte za 30 vteřin. <a href="../kalkulacka-ztrat/">Spočítat v Kalkulačce ztrát →</a></p>';
+  }
+  var radek = P.radek(['5x-proc-ai-kouc']);
+  if (!html && !radek) return;
+  box.innerHTML = radek + html;
+  box.style.display = 'block';
+})();
+</script>
 </body>
 </html>

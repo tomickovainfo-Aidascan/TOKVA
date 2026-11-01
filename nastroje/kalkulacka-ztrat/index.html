@@ -338,7 +338,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 </style>
 <style id="tokva-pro-texty-css">html:not(.tokva-ma-pro) .jen-s-pro, html.tokva-ma-pro .jen-bez-pro{display:none !important;}</style>
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
-<script src="/prosle.js"></script>
+<script src="/postup.js"></script>
 </head>
 <body>
 
@@ -984,12 +984,13 @@ function update() {
 // Kde to stojí nejvíc a Co udělat teď (1. 11. 2026). Mapa dalších kroků:
 // největší položka určí nástroj, prošlé nástroje (prosle.js) se přeskočí,
 // cesta jde jen dopředu: změřit, najít příčinu, změnit.
+window.tokvaPostupVlastni = true;
 const NASTROJE_DAL = {
-  spaghetti: { url: '../spaghetti-free/', slozka: 'spaghetti', cta: 'Nakreslit Spaghetti diagram' },
-  meric:     { url: '../meric-plytvani-free/', slozka: 'meric-plytvani', cta: 'Změřit to v Měřiči plýtvání' },
-  casova:    { url: '../casova-studie/', slozka: 'casova-studie', cta: 'Zaznamenat den v Časové studii' },
-  proc:      { url: '../5x-proc-ai-kouc/', slozka: '5x-proc', cta: 'Najít příčinu pomocí 5× Proč' },
-  s5:        { url: '../5S_audit/', slozka: '5S', cta: 'Udělat pořádek podle 5S' }
+  spaghetti: { url: '../spaghetti-free/', slozka: 'spaghetti', cta: 'Nakreslit Spaghetti diagram', vete: 'Doporučuji udělat Spaghetti diagram.' },
+  meric:     { url: '../meric-plytvani-free/', slozka: 'meric-plytvani', cta: 'Změřit to v Měřiči plýtvání', vete: 'Doporučuji to změřit Měřičem plýtvání.' },
+  casova:    { url: '../casova-studie/', slozka: 'casova-studie', cta: 'Zaznamenat den v Časové studii', vete: 'Doporučuji zaznamenat jeden den v Časové studii.' },
+  proc:      { url: '../5x-proc-ai-kouc/', slozka: '5x-proc-ai-kouc', cta: 'Najít příčinu pomocí 5× Proč', vete: 'Doporučuji najít příčinu pomocí 5× Proč.' },
+  s5:        { url: '../5S_audit/', slozka: '5S_audit', cta: 'Udělat pořádek podle 5S', vete: 'Doporučuji udělat pořádek podle 5S.' }
 };
 const CESTA_DAL = { chuze: ['spaghetti', 'meric'], prostoje: ['meric', 'proc'], admin: ['meric', 'casova'], kamion: ['meric', 'spaghetti'], vse: ['meric', 'casova'] };
 const PROC_DAL = {
@@ -1002,6 +1003,11 @@ const PROC_DAL = {
   proc: 'Změřené to už máte. Teď najděte, proč to vzniká. Bez příčiny se problém za měsíc vrátí.',
   s5: 'Příčinu znáte. Teď změňte jednu věc a za týden to spočítejte znovu.'
 };
+// 1. pád, 4. pád, 7. pád (Audit ukázal chůzi, začít chůzí)
+const SLOVO = {
+  chuze: ['chůze', 'chůzi', 'chůzí'], prostoje: ['čekání', 'čekání', 'čekáním'],
+  admin: ['administrativa', 'administrativu', 'administrativou'], kamion: ['dodávky a expedice', 'dodávky a expedici', 'dodávkami a expedicí']
+};
 const STOJI = {
   chuze:    { nazev: 'Zbytečná chůze a přesuny', odkaz: 'spaghetti', pricina: 'Většinou leží často brané věci daleko od místa, kde se s nimi pracuje.' },
   prostoje: { nazev: 'Čekání a prostoje', odkaz: 'meric', pricina: 'Většinou se čeká na materiál, na informaci nebo na někoho, kdo má rozhodnout.' },
@@ -1009,11 +1015,13 @@ const STOJI = {
   kamion:   { nazev: 'Dodávky a expedice', odkaz: 'meric', pricina: 'Většinou ruční kontrola papírů a přeskládávání, protože místo není připravené.' }
 };
 
+// Hotovo = nástroj je v rozpracované cestě (postup.js), ne jen otevřený.
 function proselNastroj(klic) {
-  let seznam = [];
-  try { seznam = typeof window.tokvaProsle === 'function' ? window.tokvaProsle() : []; } catch (e) {}
-  const slozka = NASTROJE_DAL[klic].slozka;
-  return seznam.some(function (s) { return s.indexOf(slozka) === 0; });
+  try { return !!(window.tokvaPostup && window.tokvaPostup.hotovo(NASTROJE_DAL[klic].slozka)); } catch (e) { return false; }
+}
+function klicPodleSlozky(slozka) {
+  for (const k in NASTROJE_DAL) if (NASTROJE_DAL[k].slozka === slozka) return k;
+  return null;
 }
 
 function vykreslitKdeStoji(hodnoty, celkem, v) {
@@ -1038,7 +1046,7 @@ function vykreslitKdeStoji(hodnoty, celkem, v) {
     if (k === 'kamion') vypocet = v.kamionu + '× týdně, pokaždé ' + v.kamionCas + ' min. Za rok ' + fmt(h) + ' hodin.';
     else vypocet = v[k] + ' min na člověka za směnu, ' + lideText + ', ' + smenyText + '. Za rok ' + fmt(h) + ' hodin.';
     const cil = NASTROJE_DAL[STOJI[k].odkaz];
-    const odkaz = proselNastroj(STOJI[k].odkaz) ? '' : '<a class="stoji-odkaz" href="' + cil.url + '">Změřit →</a>';
+    const odkaz = '<a class="stoji-odkaz" href="' + cil.url + '">Změřit →</a>';
     return '<div class="stoji-row' + (i === 0 ? ' prvni' : '') + '">' +
       '<div class="stoji-hlava"><span class="stoji-nazev">' + STOJI[k].nazev + '</span>' + odkaz + '</div>' +
       '<div class="stoji-kc">' + fmt(kc) + ' Kč za rok<span class="stoji-podil">' + podil + ' %</span></div>' +
@@ -1058,9 +1066,31 @@ function vykreslitKdeStoji(hodnoty, celkem, v) {
     hlavni = prvni;
     druhy = !proselNastroj(druha) ? druha : (druha === 'proc' ? 's5' : (proselNastroj('proc') ? 's5' : 'proc'));
   }
-  const procText = PROC_DAL[hlavni === 'meric' ? 'meric_' + kategorie : hlavni];
+  let procText = PROC_DAL[hlavni === 'meric' ? 'meric_' + kategorie : hlavni];
+  const P = window.tokvaPostup;
+  // Spojení s předchozím krokem cesty (např. Mini audit): potvrdil se, nebo ne?
+  const pred = P ? P.predchozi() : null;
+  const kcNej = hodinyRok(hodnoty[nej]) * v.mzda;
+  if (pred && kategorie !== 'vse') {
+    const zbyva = P.zbyva().map(klicPodleSlozky).filter(function (k) { return k && k !== hlavni; });
+    if (pred.zjisteni.indexOf(nej) >= 0) {
+      procText = P.nazev(pred.nastroj) + ' i výpočet ukazují na stejné místo: ' + SLOVO[nej][0] + '. Už to není dojem, je to ' + fmt(kcNej) + ' Kč za rok. ' + NASTROJE_DAL[hlavni].vete;
+    } else if (SLOVO[pred.zjisteni[0]]) {
+      procText = P.nazev(pred.nastroj) + ' ukázal ' + SLOVO[pred.zjisteni[0]][1] + ', výpočet ' + SLOVO[nej][1] + '. Doporučuji začít ' + SLOVO[nej][2] + ', v korunách je dražší.';
+      if (zbyva.length) {
+        druhy = zbyva[0];
+        procText += ' ' + P.nazev(NASTROJE_DAL[druhy].slozka) + ' máte v cestě jako další krok.';
+      }
+    }
+  }
+  if (P && toolStartedOdeslano) {
+    P.zapsat({ zjisteni: [nej], doporuceno: [NASTROJE_DAL[hlavni].slozka].concat(druhy ? [NASTROJE_DAL[druhy].slozka] : []),
+      data: { rok: Math.round(polozky.reduce(function (s, k) { return s + hodinyRok(hodnoty[k]) * v.mzda; }, 0)),
+        kc: { chuze: Math.round(hodinyRok(hodnoty.chuze) * v.mzda), prostoje: Math.round(hodinyRok(hodnoty.prostoje) * v.mzda), admin: Math.round(hodinyRok(hodnoty.admin) * v.mzda), kamion: Math.round(hodinyRok(hodnoty.kamion) * v.mzda) } } });
+  }
   const klik = function (k) { return ' onclick="if(typeof trackTokvaEvent===\'function\')trackTokvaEvent(\'dalsi_krok_klik\',{source_tool:\'kalkulacka_ztrat\',cil:\'' + k + '\'})"'; };
-  box.innerHTML = '<div class="dalsi-krok-nadpis">Co udělat teď</div>' +
+  const radek = P ? P.radek([NASTROJE_DAL[hlavni].slozka]) : '';
+  box.innerHTML = radek + '<div class="dalsi-krok-nadpis">Co udělat teď</div>' +
     '<a class="dalsi-krok-hlavni" href="' + NASTROJE_DAL[hlavni].url + '"' + klik(hlavni) + '>' + NASTROJE_DAL[hlavni].cta + '&nbsp;→</a>' +
     '<p class="dalsi-krok-proc">' + procText + '</p>' +
     (druhy ? '<a class="dalsi-krok-druhy" href="' + NASTROJE_DAL[druhy].url + '"' + klik(druhy) + '>' + NASTROJE_DAL[druhy].cta + '&nbsp;→</a>' : '');

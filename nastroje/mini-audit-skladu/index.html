@@ -596,7 +596,7 @@ footer { background:#0a0a0a; padding:22px 40px; display:flex; justify-content:sp
 </style>
 <style id="tokva-pro-texty-css">html:not(.tokva-ma-pro) .jen-s-pro, html.tokva-ma-pro .jen-bez-pro{display:none !important;}</style>
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
-<script src="/prosle.js"></script>
+<script src="/postup.js"></script>
 </head>
 <body data-tisk-hlavicka>
 
@@ -1497,13 +1497,15 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 // Kdo ještě nezná ztrátu v korunách, jde nejdřív do Kalkulačky ztrát (30 vteřin,
 // hned číslo, motivace pokračovat). Kdo ji už použil, jde rovnou na nástroj
 // k nejslabšímu místu. Časová studie (celý den) jen když nic jiného není.
+window.tokvaPostupVlastni = true;
 function vykreslitDalsiKrok(slabaMista) {
   const box = document.getElementById('dalsi-krok');
   if (!box) return;
   if (!slabaMista.length) { box.style.display = 'none'; return; }
   const KALK = { url: '../kalkulacka-ztrat/', cta: 'Spočítat finanční dopad' };
+  const P = window.tokvaPostup;
   let znaKoruny = false;
-  try { znaKoruny = !!localStorage.getItem('kalk_ztrat_rozpracovany_vstup'); } catch (e) {}
+  try { znaKoruny = P ? P.hotovo('kalkulacka-ztrat') : !!localStorage.getItem('kalk_ztrat_rozpracovany_vstup'); } catch (e) {}
   const nastroje = [];
   slabaMista.forEach(function (q) { const c = CTA_ODKAZ[q]; if (c && c.url.indexOf('kalkulacka-ztrat') < 0 && !nastroje.some(function (n) { return n.url === c.url; })) nastroje.push(c); });
   nastroje.sort(function (a, b) { return (a.url.indexOf('casova-studie') >= 0) - (b.url.indexOf('casova-studie') >= 0); });
@@ -1512,8 +1514,16 @@ function vykreslitDalsiKrok(slabaMista) {
   const proc = hlavni === KALK
     ? 'Za 30 vteřin uvidíte, kolik vás tyhle ztráty stojí za rok. S číslem v korunách se líp rozhoduje, co řešit první.'
     : 'Ztrátu v korunách už znáte. Teď se pusťte do nejslabšího místa.';
-  box.innerHTML = '<div class="dalsi-krok-nadpis">Co udělat teď</div>' +
-    '<a class="dalsi-krok-hlavni" href="' + hlavni.url + '">' + hlavni.cta + ' →</a>' + '<p class="dalsi-krok-proc">' + proc + '</p>' +
+  // Zápis do cesty (postup.js): co audit zjistil a co doporučil. Otázky
+  // převedené na položky Kalkulačky ztrát, aby je další krok mohl porovnat.
+  const SLOZKA = function (u) { const m = /\.\.\/([^\/]+)\//.exec(u); return m ? m[1] : ''; };
+  const ZJ = { 1: 'chuze', 2: 'chuze', 3: 'kamion', 5: 'prostoje', 6: 'admin' };
+  const zjisteni = [];
+  slabaMista.forEach(function (q) { const z = ZJ[q]; if (z && zjisteni.indexOf(z) < 0) zjisteni.push(z); });
+  const doporuceno = [SLOZKA(hlavni.url)].concat(druhy ? [SLOZKA(druhy.url)] : []);
+  if (P && !(typeof zobrazenoZOdkazu !== 'undefined' && zobrazenoZOdkazu)) P.zapsat({ zjisteni: zjisteni, doporuceno: doporuceno });
+  box.innerHTML = (P ? P.radek(doporuceno) : '') + '<div class="dalsi-krok-nadpis">Co udělat teď</div>' +
+    '<a class="dalsi-krok-hlavni" href="' + hlavni.url + '">' + hlavni.cta + '&nbsp;→</a>' + '<p class="dalsi-krok-proc">' + proc + '</p>' +
     
     (druhy ? '<a class="dalsi-krok-druhy" href="' + druhy.url + '">' + druhy.cta + ' →</a>' : '');
   box.style.display = 'block';
