@@ -56,6 +56,10 @@ window.trackTokvaEvent = function (n, p) { if (typeof window.gtag === "function"
   .footer-sl a{color:#545454;text-decoration:underline;text-underline-offset:2px;}
   .footer-vpravo{text-align:right;}
   @media (max-width:700px){.topbar{padding:12px 16px;}.wrap{padding:32px 18px 48px;}.karta{padding:22px 18px;}.site-footer{padding:20px 16px;}.footer-in{flex-direction:column;gap:10px;}.footer-vpravo{text-align:left;}}
+.rozcesti-radek{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:18px;}
+.rozcesti-radek .zpet{margin-top:0;}
+.zpet-rozcesti{font-size:14px;font-weight:700;color:var(--mid,#545454);text-decoration:none;}
+.zpet-rozcesti:hover{color:var(--gold-dark,#976e12);}
 </style>
 </head>
 <body>
@@ -90,7 +94,7 @@ window.trackTokvaEvent = function (n, p) { if (typeof window.gtag === "function"
     <p class="pozn" id="v-pozn"></p>
     <p class="pozn">Doporučení vychází z vašich odpovědí a pomáhá vybrat první krok.</p>
     <div class="dalsi" id="v-dalsi"></div>
-    <button class="zpet" type="button" onclick="znovu()">Vyplnit znovu</button>
+    <div class="rozcesti-radek"><button class="zpet" type="button" onclick="znovu()">Vyplnit znovu</button><a class="zpet-rozcesti" href="https://tokva.cz/vstup/">Řeším něco jiného, zpět na rozcestí</a></div>
   </div>
 </main>
 
