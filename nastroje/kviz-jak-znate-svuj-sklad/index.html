@@ -328,6 +328,27 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
 .notice-btn.secondary:hover { border-color: var(--light); color: var(--dark); }
 #nav-ucet-info,#nav-ucet-email{white-space:nowrap;border:none!important;background:none!important;padding:0!important;font-weight:400!important;color:var(--mid)!important;}
 @media (max-width:600px){#nav-ucet-info{display:none!important;}}
+
+.dalsi-krok{background:#111;color:#fff;border-radius:14px;padding:22px 22px 20px;margin:0 0 18px;}
+.dalsi-krok-nadpis{font-family:'Poppins',sans-serif;font-weight:800;font-size:19px;margin-bottom:6px;}
+.dalsi-krok-proc{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.8);margin:0 0 16px;}
+.dalsi-krok-hlavni{display:block;text-align:center;background:#e9a91b;color:#000;font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;padding:16px 18px;border-radius:10px;text-decoration:none;}
+.dalsi-krok-hlavni:hover{background:#fff;}
+.dalsi-krok-druhy{display:block;text-align:center;margin-top:10px;border:1.5px solid rgba(255,255,255,.35);color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:14.5px;padding:11px 16px;border-radius:10px;text-decoration:none;}
+.dalsi-krok-druhy:hover{border-color:#e9a91b;color:#e9a91b;}
+.tip-vic{margin-top:8px;}
+.tip-vic>summary{cursor:pointer;font-weight:700;font-size:14px;color:#976e12;list-style:none;}
+.tip-vic>summary::-webkit-details-marker{display:none;}
+.tip-vic[open]>summary{margin-bottom:8px;}
+.oblasti-sbalene,.odpovedi-sbalene{margin:0 0 18px;background:#fff;border:1px solid #e8e6e0;border-radius:12px;padding:14px 18px;}
+.oblasti-sbalene>summary,.odpovedi-sbalene>summary{cursor:pointer;font-weight:700;font-size:14.5px;color:#976e12;list-style:none;}
+.oblasti-sbalene>summary::-webkit-details-marker,.odpovedi-sbalene>summary::-webkit-details-marker{display:none;}
+.oblasti-sbalene>summary::after,.odpovedi-sbalene>summary::after{content:" ↓";}.oblasti-sbalene[open]>summary::after,.odpovedi-sbalene[open]>summary::after{content:" ↑";}
+.oblasti-sbalene[open]>summary,.odpovedi-sbalene[open]>summary{margin-bottom:12px;}
+.akce-radek .cta-final-btns .btn-gold{background:transparent;color:#111;border:1.5px solid #c9c5bc;}
+.akce-radek .cta-final-btns .btn-gold:hover{border-color:#e9a91b;color:#976e12;background:transparent;}
+.akce-radek button.btn-gold,.akce-radek .btn-gold{background:transparent;color:#111;border:1.5px solid #c9c5bc;}
+.co-dal-kroky-panel{padding:16px 18px;}
 </style>
 
 <style id="cookies-css">
@@ -837,74 +858,15 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
       <div class="skore-popis" id="skore-popis"></div>
     </div>
 
-    <div class="detail-panel">
-      <div class="detail-header">Co výsledky říkají</div>
-      <div id="detail-rows"></div>
-    </div>
-
     <div class="detail-panel" id="co-dal-panel">
-      <div class="detail-header">Co s tím</div>
+      <div class="detail-header">Kde ztrácíte nejvíc</div>
       <div id="co-dal"></div>
-      <div class="co-dal-kroky no-print">
-        <p>Dál to má tři kroky a ten třetí většina lidí vynechá, přitom až v něm se změna potvrdí:</p>
-        <ol>
-          <li>Vyberte jedno slepé místo. To, u kterého vás zamrzelo, že odpověď neznáte.</li>
-          <li>Začněte ho měřit. Nemusí to být systém: tři týdny zápisu na papír dokážou většinu věcí ukázat.</li>
-          <li>Za tři měsíce projděte kvíz znovu a položte oba výsledky vedle sebe.</li>
-        </ol>
-        <p class="jen-s-pro">Výsledek se ukládá do Historie kvízů na téhle stránce. Až kvíz za tři měsíce projdete znovu, v historii zaškrtněte oba a dejte Porovnat vybrané.</p>
-        <a class="jen-s-pro" href="#historie-panel" onclick="event.preventDefault();document.getElementById('historie-panel').scrollIntoView({behavior:'smooth',block:'center'});">Otevřít historii kvízů →</a>
-        <p class="jen-bez-pro">Kvíz můžete zdarma vyplnit, kolikrát chcete, jen výsledek po zavření stránky zmizí. Tokva Pro výsledky uloží k projektu a automaticky je porovná otázku po otázce.</p>
-        <a class="jen-bez-pro" href="#pro-final-panel" onclick="event.preventDefault();document.getElementById('pro-final-panel').scrollIntoView({behavior:'smooth',block:'center'});">Automatické porovnání v Tokva Pro →</a>
-      </div>
+      
     </div>
 
-    <div class="vysledky-detail" id="projekt-panel" style="display:none;">
-      <div class="detail-header" style="margin:-20px -22px 14px;padding:16px 20px;border-bottom:1px solid var(--border);">Zařadit k projektu</div>
-      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Výsledek už je uložený v historii. Tady ho jen přiřadíte k projektu, podruhé se neuloží. Nepovinné, pomůže vám ho později najít pohromadě s ostatními nástroji.</p>
-      <select id="projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
-        <option value="">Bez projektu</option>
-        <option value="__novy__">+ Nový projekt…</option>
-      </select>
-      <input id="projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
-      <div id="premereni-wrap" style="display:none;margin-bottom:10px;">
-        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;">
-          <input type="checkbox" id="premereni-checkbox" checked style="margin-top:3px;">
-          <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
-        </label>
-      </div>
-      <button class="btn-gold" style="width:100%;" onclick="ulozitZarazeniProjektu()">Uložit zařazení</button>
-      <div id="projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
-    </div>
+    <div class="dalsi-krok" id="dalsi-krok" style="display:none;"></div>
 
-    <div class="vysledky-detail" id="akcni-panel" style="display:none;">
-      <div class="detail-header" style="margin:-20px -22px 14px;padding:16px 20px;border-bottom:1px solid var(--border);">Přidat do akčního plánu</div>
-      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle výsledek. Projekt je nepovinný.</p>
-      <p style="font-size:12px;color:var(--light);line-height:1.5;margin-bottom:10px;">Tohle je rychlé založení. Odhadovaný přínos i pozdější ověření výsledku doplníte, když úkol otevřete přímo v Akčním plánu.</p>
-      <input id="akce-nazev" type="text" placeholder="Co se má udělat" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
-      <select id="akce-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
-        <option value="">Bez projektu</option>
-        <option value="__novy__">+ Nový projekt…</option>
-      </select>
-      <input id="akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-        <input id="akce-investice" type="number" placeholder="Investice (Kč)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
-        <input id="akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-        <input id="akce-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
-        <input id="akce-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
-      </div>
-      <button class="btn-gold" style="width:100%;" onclick="pridatDoAkcnihoPlanu()">+ Přidat do akčního plánu</button>
-      <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
-    </div>
-
-    <div class="vysledky-detail" id="export-panel" style="display:none;">
-      <div class="detail-header" style="margin:-20px -22px 14px;padding:16px 20px;border-bottom:1px solid var(--border);">Vaše data</div>
-      <button class="btn-gold" style="width:100%;" onclick="exportovatData()">Exportovat moje data (CSV)</button>
-    </div>
-
-    <div class="vysledky-detail">
+    <div class="vysledky-detail akce-radek">
       <div class="no-print" style="display:flex;gap:12px;flex-wrap:wrap;">
         <button class="btn-zpet" onclick="window.print()">Vytisknout výsledky</button>
         <button class="btn-zpet" onclick="zacitZnovu()">Vyplnit znovu</button>
@@ -1022,6 +984,78 @@ footer{background:#0a0a0a;padding:20px 24px;display:flex;justify-content:space-b
         </div>
       </div>
     </div>
+
+    <details class="odpovedi-sbalene"><summary>Přehled všech vašich odpovědí</summary>
+    <div class="detail-panel">
+      <div class="detail-header">Co výsledky říkají</div>
+      <div id="detail-rows"></div>
+    </div>
+    </details>
+
+    <div class="detail-panel co-dal-kroky-panel"><div class="co-dal-kroky no-print">
+        <p>Dál to má tři kroky a ten třetí většina lidí vynechá, přitom až v něm se změna potvrdí:</p>
+        <ol>
+          <li>Vyberte jedno slepé místo. To, u kterého vás zamrzelo, že odpověď neznáte.</li>
+          <li>Začněte ho měřit. Nemusí to být systém: tři týdny zápisu na papír dokážou většinu věcí ukázat.</li>
+          <li>Za tři měsíce projděte kvíz znovu a položte oba výsledky vedle sebe.</li>
+        </ol>
+        <p class="jen-s-pro">Výsledek se ukládá do Historie kvízů na téhle stránce. Až kvíz za tři měsíce projdete znovu, v historii zaškrtněte oba a dejte Porovnat vybrané.</p>
+        <a class="jen-s-pro" href="#historie-panel" onclick="event.preventDefault();document.getElementById('historie-panel').scrollIntoView({behavior:'smooth',block:'center'});">Otevřít historii kvízů →</a>
+        <p class="jen-bez-pro">Kvíz můžete zdarma vyplnit, kolikrát chcete, jen výsledek po zavření stránky zmizí. Tokva Pro výsledky uloží k projektu a automaticky je porovná otázku po otázce.</p>
+        <a class="jen-bez-pro" href="#pro-final-panel" onclick="event.preventDefault();document.getElementById('pro-final-panel').scrollIntoView({behavior:'smooth',block:'center'});">Automatické porovnání v Tokva Pro →</a>
+      </div></div>
+
+
+    
+
+    
+
+    <div class="vysledky-detail" id="projekt-panel" style="display:none;">
+      <div class="detail-header" style="margin:-20px -22px 14px;padding:16px 20px;border-bottom:1px solid var(--border);">Zařadit k projektu</div>
+      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Výsledek už je uložený v historii. Tady ho jen přiřadíte k projektu, podruhé se neuloží. Nepovinné, pomůže vám ho později najít pohromadě s ostatními nástroji.</p>
+      <select id="projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
+        <option value="">Bez projektu</option>
+        <option value="__novy__">+ Nový projekt…</option>
+      </select>
+      <input id="projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <div id="premereni-wrap" style="display:none;margin-bottom:10px;">
+        <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;">
+          <input type="checkbox" id="premereni-checkbox" checked style="margin-top:3px;">
+          <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
+        </label>
+      </div>
+      <button class="btn-gold" style="width:100%;" onclick="ulozitZarazeniProjektu()">Uložit zařazení</button>
+      <div id="projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+    </div>
+
+    <div class="vysledky-detail" id="akcni-panel" style="display:none;">
+      <div class="detail-header" style="margin:-20px -22px 14px;padding:16px 20px;border-bottom:1px solid var(--border);">Přidat do akčního plánu</div>
+      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle výsledek. Projekt je nepovinný.</p>
+      <p style="font-size:12px;color:var(--light);line-height:1.5;margin-bottom:10px;">Tohle je rychlé založení. Odhadovaný přínos i pozdější ověření výsledku doplníte, když úkol otevřete přímo v Akčním plánu.</p>
+      <input id="akce-nazev" type="text" placeholder="Co se má udělat" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <select id="akce-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
+        <option value="">Bez projektu</option>
+        <option value="__novy__">+ Nový projekt…</option>
+      </select>
+      <input id="akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <input id="akce-investice" type="number" placeholder="Investice (Kč)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+        <input id="akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <input id="akce-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+        <input id="akce-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+      </div>
+      <button class="btn-gold" style="width:100%;" onclick="pridatDoAkcnihoPlanu()">+ Přidat do akčního plánu</button>
+      <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+    </div>
+
+    <div class="vysledky-detail" id="export-panel" style="display:none;">
+      <div class="detail-header" style="margin:-20px -22px 14px;padding:16px 20px;border-bottom:1px solid var(--border);">Vaše data</div>
+      <button class="btn-gold" style="width:100%;" onclick="exportovatData()">Exportovat moje data (CSV)</button>
+    </div>
+
+    
 
   </div>
 
@@ -1952,6 +1986,30 @@ function obnovitVysledekZOdkazu() {
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', obnovitVysledekZOdkazu); else setTimeout(obnovitVysledekZOdkazu, 0);
 
 function tokvaEscKviz(t) { return String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+// Další krok po výsledku (1. 11. 2026): jedno velké tlačítko a jedno menší.
+// Kdo ještě nezná ztrátu v korunách, jde nejdřív do Kalkulačky ztrát (30 vteřin),
+// kdo ji zná, rovnou na nástroj k nejslabšímu místu. Časová studie až nakonec.
+function vykreslitDalsiKrok(slabaMista) {
+  const box = document.getElementById('dalsi-krok');
+  if (!box) return;
+  if (!slabaMista.length) { box.style.display = 'none'; return; }
+  const KALK = { url: '../kalkulacka-ztrat/', cta: 'Spočítat finanční dopad' };
+  let znaKoruny = false;
+  try { znaKoruny = !!localStorage.getItem('kalk_ztrat_rozpracovany_vstup'); } catch (e) {}
+  const nastroje = [];
+  slabaMista.forEach(function (q) { const o = CO_DAL_ODKAZY[q]; if (o && o.url.indexOf('kalkulacka-ztrat') < 0 && !nastroje.some(function (n) { return n.url === o.url; })) nastroje.push({ url: o.url, cta: o.nazev }); });
+  nastroje.sort(function (a, b) { return (a.url.indexOf('casova-studie') >= 0) - (b.url.indexOf('casova-studie') >= 0); });
+  const hlavni = znaKoruny ? (nastroje[0] || KALK) : KALK;
+  const druhy = znaKoruny ? (nastroje[1] || null) : (nastroje[0] || null);
+  const proc = hlavni === KALK
+    ? 'Za 30 vteřin uvidíte, kolik vás slepá místa stojí za rok. S číslem v korunách se líp rozhoduje, co řešit první.'
+    : 'Ztrátu v korunách už znáte. Teď se pusťte do nejslabšího místa.';
+  box.innerHTML = '<div class="dalsi-krok-nadpis">Co udělat teď</div><p class="dalsi-krok-proc">' + proc + '</p>' +
+    '<a class="dalsi-krok-hlavni" href="' + hlavni.url + '">' + hlavni.cta + ' →</a>' +
+    (druhy ? '<a class="dalsi-krok-druhy" href="' + druhy.url + '">' + druhy.cta + ' →</a>' : '');
+  box.style.display = 'block';
+}
+
 function zobrazVysledky() {
   if (!zobrazenoZOdkazu) oznamitDokonceni();
   // Jen když je výsledek odemčený e-mailem (jinak by obnovení stránky s kódem
@@ -2047,7 +2105,7 @@ function zobrazVysledky() {
   } else {
     coDal.innerHTML = top.map(({i}) => {
       const odkaz = CO_DAL_ODKAZY[i];
-      const tlacitko = odkaz
+      const tlacitko_nepouzito = odkaz
         ? `<div style="margin-top:12px;padding-top:12px;border-top:1px dashed rgba(233,169,27,.4);">
             <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:7px;">Doporučený další krok</div>
             <a href="${odkaz.url}" target="_blank" style="display:inline-block;background:var(--black);color:var(--white);font-size:13px;font-weight:600;padding:9px 18px;border-radius:6px;text-decoration:none;">${odkaz.nazev} →</a>
@@ -2055,15 +2113,18 @@ function zobrazVysledky() {
         : '';
       return `
       <div style="padding:14px 18px;border-bottom:1px solid #f5f5f5;">
-        <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:5px;">Zjistit: ${OTAZKY_NAZVY[i-1]}</div>
-        <div style="font-size:13px;color:var(--mid);line-height:1.7;">${TIPY[i-1]}</div>
-        <div style="font-size:12px;color:var(--light);line-height:1.6;margin-top:8px;"><strong style="color:var(--mid);">Proč na tom záleží:</strong> ${PROC_ZALEZI[i-1]}</div>
-        ${tlacitko}
+        <div style="font-size:14px;font-weight:700;color:var(--dark);margin-bottom:5px;">Zjistit: ${OTAZKY_NAZVY[i-1]}</div>
+        <div style="font-size:13.5px;color:var(--mid);line-height:1.6;">${PROC_ZALEZI[i-1]}</div>
+        <details class="tip-vic"><summary>Co s tím →</summary>
+          <div style="font-size:13px;color:var(--mid);line-height:1.7;">${TIPY[i-1]}</div>
+          ${odkaz ? `<a class="tip-cta-link" href="${odkaz.url}" target="_blank" style="display:inline-block;margin-top:8px;font-weight:700;color:var(--gold-dark);text-decoration:none;">${odkaz.nazev} →</a>` : ''}
+        </details>
       </div>
     `;
-    }).join('') + '<div style="padding:12px 18px;font-size:12px;color:var(--light);">Tipy pro vaše největší rezervy.</div>';
+    }).join('');
   }
 
+  vykreslitDalsiKrok(top.map(function (x) { return x.i; }));
   document.getElementById('vysledky').classList.add('active');
   setTimeout(() => document.getElementById('vysledky').scrollIntoView({behavior:'smooth',block:'start'}), 50);
 

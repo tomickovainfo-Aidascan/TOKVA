@@ -407,6 +407,27 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
 .notice-btn.secondary:hover { border-color: var(--light); color: var(--dark); }
 #nav-ucet-info,#nav-ucet-email{white-space:nowrap;border:none!important;background:none!important;padding:0!important;font-weight:400!important;color:var(--mid)!important;}
 @media (max-width:600px){#nav-ucet-info{display:none!important;}}
+
+.dalsi-krok{background:#111;color:#fff;border-radius:14px;padding:22px 22px 20px;margin:0 0 18px;}
+.dalsi-krok-nadpis{font-family:'Poppins',sans-serif;font-weight:800;font-size:19px;margin-bottom:6px;}
+.dalsi-krok-proc{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.8);margin:0 0 16px;}
+.dalsi-krok-hlavni{display:block;text-align:center;background:#e9a91b;color:#000;font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;padding:16px 18px;border-radius:10px;text-decoration:none;}
+.dalsi-krok-hlavni:hover{background:#fff;}
+.dalsi-krok-druhy{display:block;text-align:center;margin-top:10px;border:1.5px solid rgba(255,255,255,.35);color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:14.5px;padding:11px 16px;border-radius:10px;text-decoration:none;}
+.dalsi-krok-druhy:hover{border-color:#e9a91b;color:#e9a91b;}
+.tip-vic{margin-top:8px;}
+.tip-vic>summary{cursor:pointer;font-weight:700;font-size:14px;color:#976e12;list-style:none;}
+.tip-vic>summary::-webkit-details-marker{display:none;}
+.tip-vic[open]>summary{margin-bottom:8px;}
+.oblasti-sbalene,.odpovedi-sbalene{margin:0 0 18px;background:#fff;border:1px solid #e8e6e0;border-radius:12px;padding:14px 18px;}
+.oblasti-sbalene>summary,.odpovedi-sbalene>summary{cursor:pointer;font-weight:700;font-size:14.5px;color:#976e12;list-style:none;}
+.oblasti-sbalene>summary::-webkit-details-marker,.odpovedi-sbalene>summary::-webkit-details-marker{display:none;}
+.oblasti-sbalene>summary::after,.odpovedi-sbalene>summary::after{content:" ↓";}.oblasti-sbalene[open]>summary::after,.odpovedi-sbalene[open]>summary::after{content:" ↑";}
+.oblasti-sbalene[open]>summary,.odpovedi-sbalene[open]>summary{margin-bottom:12px;}
+.x-nepouzito{background:transparent;color:#111;border:1.5px solid #c9c5bc;}
+.x-nepouzito2{border-color:#e9a91b;color:#976e12;background:transparent;}
+#vysledek .oblasti-sbalene .v-card,#vysledek .odpovedi-sbalene .v-card{border:none;box-shadow:none;padding:0;margin:0;}
+#vysledek .oblasti-sbalene .v-card>h3,#vysledek .odpovedi-sbalene .v-card>h3{display:none;}
 </style>
 <style id="cookies-css">
 .cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
@@ -636,64 +657,7 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     <p id="v-nejslabsi">-</p>
     <div id="v-nejslabsi-krok" style="margin-top:10px;font-size:13px;color:var(--dark);line-height:1.6;"></div>
   </div>
-  <div class="v-card" id="v-oblasti-card">
-    <h3>Všech 6 oblastí</h3>
-    <div id="v-oblasti-rows"></div>
-  </div>
-  <div class="v-card" id="v-odpovedi-card">
-    <h3>Vaše odpovědi</h3>
-    <div id="v-odpovedi-rows"></div>
-  </div>
-  <div class="v-card" id="co-s-vysledkem-card">
-    <h3>Co s výsledkem udělat</h3>
-    <p style="margin-bottom:10px;"><strong style="color:var(--dark);">Dneska.</strong> Vezměte svou nejslabší oblast a pojmenujte jednu konkrétní informaci, která se u vás ztrácí nejčastěji. Ne celou oblast, jednu informaci: termín odvozu, změnu v zakázce, výsledek kontroly.</p>
-    <p style="margin-bottom:10px;"><strong style="color:var(--dark);">Do týdne.</strong> Určete pro tu jednu informaci jedno místo a jednoho člověka, který ji tam zapisuje. A řekněte nahlas celému týmu, že se hledá tam a nikde jinde. Víc pravidel teď nezavádějte. Jedno dodržené je k něčemu, pět nedodržených k ničemu.</p>
-    <p><strong style="color:var(--dark);">Za dva měsíce.</strong> Vyplňte kvíz znovu a porovnejte skóre u té jedné oblasti. Když se neposunulo, pravidlo se nedrží a nemá cenu přidávat další.</p>
-    <p class="no-print" id="co-s-vysledkem-odkaz" style="margin-top:12px;"><a href="#pro-final-panel" style="color:var(--gold-dark);font-weight:700;text-decoration:none;">Jak si výsledek uložit na porovnání →</a></p>
-  </div>
-  <div class="v-card" id="v-ulozit-card" style="display:none;">
-    <h3>Uložit a sledovat vývoj</h3>
-    <p style="margin-bottom:12px;">Uložte si tenhle výsledek a příště uvidíte, jestli se komunikace ve firmě zlepšuje.</p>
-    <button class="btn-spustit" id="btn-ulozit-vysledek" onclick="klikUlozitVysledek()">Uložit tento výsledek</button>
-  </div>
-  <div class="v-card" id="projekt-panel" style="display:none;">
-    <h3>Zařadit k projektu</h3>
-    <p style="margin-bottom:10px;">Výsledek už je uložený v historii. Tady ho jen přiřadíte k projektu, podruhé se neuloží. Nepovinné, pomůže vám ho později najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
-    <select id="projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
-      <option value="">Bez projektu</option>
-      <option value="__novy__">+ Nový projekt…</option>
-    </select>
-    <input id="projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
-    <div id="premereni-wrap" style="display:none;margin-bottom:10px;">
-      <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;">
-        <input type="checkbox" id="premereni-checkbox" checked style="margin-top:3px;">
-        <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
-      </label>
-    </div>
-    <button class="btn-spustit" style="width:100%;" onclick="ulozitZarazeniProjektu()">Uložit zařazení</button>
-    <div id="projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
-  </div>
-  <div class="v-card" id="akcni-panel" style="display:none;">
-    <h3>Přidat do akčního plánu</h3>
-    <p style="margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle výsledek. Projekt je nepovinný.</p>
-    <p style="font-size:12px;color:var(--light);line-height:1.5;margin-bottom:10px;">Tohle je rychlé založení. Odhadovaný přínos i pozdější ověření výsledku doplníte, když úkol otevřete přímo v Akčním plánu.</p>
-    <input id="akce-nazev" type="text" placeholder="Co se má udělat" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
-    <select id="akce-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
-      <option value="">Bez projektu</option>
-      <option value="__novy__">+ Nový projekt…</option>
-    </select>
-    <input id="akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-      <input id="akce-investice" type="number" placeholder="Investice (Kč)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
-      <input id="akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-      <input id="akce-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
-      <input id="akce-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
-    </div>
-    <button class="btn-spustit" style="width:100%;" onclick="pridatDoAkcnihoPlanu()">+ Přidat do akčního plánu</button>
-    <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
-  </div>
+  <div class="dalsi-krok" id="dalsi-krok" style="display:none;"></div>
   <div class="email-card">
     <h3>Chcete mít výsledek v e-mailu?</h3>
     <p style="font-size:12px;color:var(--mid);margin-bottom:6px;">Pošleme vám ho do schránky, ať se k němu můžete kdykoliv vrátit.</p>
@@ -809,6 +773,71 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
       </div>
     </div>
   </div>
+  <details class="oblasti-sbalene"><summary>Výsledek ve všech 6 oblastech</summary>
+  <div class="v-card" id="v-oblasti-card">
+    <h3>Všech 6 oblastí</h3>
+    <div id="v-oblasti-rows"></div>
+  </div>
+  </details>
+  <details class="odpovedi-sbalene"><summary>Přehled všech vašich odpovědí</summary>
+  <div class="v-card" id="v-odpovedi-card">
+    <h3>Vaše odpovědi</h3>
+    <div id="v-odpovedi-rows"></div>
+  </div>
+  </details>
+  
+  
+  <div class="v-card" id="co-s-vysledkem-card">
+    <h3>Co s výsledkem udělat</h3>
+    <p style="margin-bottom:10px;"><strong style="color:var(--dark);">Dneska.</strong> Vezměte svou nejslabší oblast a pojmenujte jednu konkrétní informaci, která se u vás ztrácí nejčastěji. Ne celou oblast, jednu informaci: termín odvozu, změnu v zakázce, výsledek kontroly.</p>
+    <p style="margin-bottom:10px;"><strong style="color:var(--dark);">Do týdne.</strong> Určete pro tu jednu informaci jedno místo a jednoho člověka, který ji tam zapisuje. A řekněte nahlas celému týmu, že se hledá tam a nikde jinde. Víc pravidel teď nezavádějte. Jedno dodržené je k něčemu, pět nedodržených k ničemu.</p>
+    <p><strong style="color:var(--dark);">Za dva měsíce.</strong> Vyplňte kvíz znovu a porovnejte skóre u té jedné oblasti. Když se neposunulo, pravidlo se nedrží a nemá cenu přidávat další.</p>
+    <p class="no-print" id="co-s-vysledkem-odkaz" style="margin-top:12px;"><a href="#pro-final-panel" style="color:var(--gold-dark);font-weight:700;text-decoration:none;">Jak si výsledek uložit na porovnání →</a></p>
+  </div>
+  <div class="v-card" id="v-ulozit-card" style="display:none;">
+    <h3>Uložit a sledovat vývoj</h3>
+    <p style="margin-bottom:12px;">Uložte si tenhle výsledek a příště uvidíte, jestli se komunikace ve firmě zlepšuje.</p>
+    <button class="btn-spustit" id="btn-ulozit-vysledek" onclick="klikUlozitVysledek()">Uložit tento výsledek</button>
+  </div>
+  <div class="v-card" id="projekt-panel" style="display:none;">
+    <h3>Zařadit k projektu</h3>
+    <p style="margin-bottom:10px;">Výsledek už je uložený v historii. Tady ho jen přiřadíte k projektu, podruhé se neuloží. Nepovinné, pomůže vám ho později najít pohromadě s ostatními nástroji, které se týkají stejné věci.</p>
+    <select id="projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
+      <option value="">Bez projektu</option>
+      <option value="__novy__">+ Nový projekt…</option>
+    </select>
+    <input id="projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <div id="premereni-wrap" style="display:none;margin-bottom:10px;">
+      <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--mid);cursor:pointer;">
+        <input type="checkbox" id="premereni-checkbox" checked style="margin-top:3px;">
+        <span>Tohle je ověření předchozího výsledku ve stejném projektu.</span>
+      </label>
+    </div>
+    <button class="btn-spustit" style="width:100%;" onclick="ulozitZarazeniProjektu()">Uložit zařazení</button>
+    <div id="projekt-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+  </div>
+  <div class="v-card" id="akcni-panel" style="display:none;">
+    <h3>Přidat do akčního plánu</h3>
+    <p style="margin-bottom:10px;">Založí úkol v Akčním plánu s odkazem na tenhle výsledek. Projekt je nepovinný.</p>
+    <p style="font-size:12px;color:var(--light);line-height:1.5;margin-bottom:10px;">Tohle je rychlé založení. Odhadovaný přínos i pozdější ověření výsledku doplníte, když úkol otevřete přímo v Akčním plánu.</p>
+    <input id="akce-nazev" type="text" placeholder="Co se má udělat" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <select id="akce-projekt-select" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;">
+      <option value="">Bez projektu</option>
+      <option value="__novy__">+ Nový projekt…</option>
+    </select>
+    <input id="akce-projekt-novy-nazev" type="text" placeholder="Název nového projektu" style="display:none;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;margin-bottom:10px;box-sizing:border-box;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <input id="akce-investice" type="number" placeholder="Investice (Kč)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+      <input id="akce-prinos" type="number" placeholder="Očekávaný přínos (Kč/rok)" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <input id="akce-osoba" type="text" placeholder="Odpovědná osoba" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+      <input id="akce-termin" type="date" style="padding:10px;border-radius:8px;border:1px solid var(--border);font-size:14px;box-sizing:border-box;">
+    </div>
+    <button class="btn-spustit" style="width:100%;" onclick="pridatDoAkcnihoPlanu()">+ Přidat do akčního plánu</button>
+    <div id="akce-stav" style="font-size:12px;color:var(--mid);margin-top:8px;"></div>
+  </div>
+  
   <div class="no-print" style="display:flex;flex-direction:column;gap:0;">
     <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);" onclick="window.print()">Vytisknout výsledky</button>
     <button class="btn-spustit" style="background:transparent;border:1px solid var(--border);color:var(--mid);margin-top:8px;" onclick="zacitZnovu()">Vyplnit znovu</button>
@@ -2761,7 +2790,28 @@ function vykreslitOdpovediRecap(){
 }
 
 // ============ ZOBRAZENÍ VÝSLEDKU ============
+// Další krok po výsledku (1. 11. 2026): jedno velké tlačítko a jedno menší.
+// Kdo ještě nezná ztrátu v korunách, jde nejdřív do Kalkulačky ztrát (30 vteřin),
+// jinak rovnou hledat příčinu přes 5× Proč. Časová studie (celý den) až dál dole.
+function vykreslitDalsiKrok() {
+  const box = document.getElementById('dalsi-krok');
+  if (!box) return;
+  const KALK = { url: '../kalkulacka-ztrat/', cta: 'Spočítat finanční dopad' };
+  const PROC = { url: '../5x-proc-ai-kouc/', cta: 'Najít příčinu pomocí 5× Proč' };
+  let znaKoruny = false;
+  try { znaKoruny = !!localStorage.getItem('kalk_ztrat_rozpracovany_vstup'); } catch (e) {}
+  const hlavni = znaKoruny ? PROC : KALK, druhy = znaKoruny ? null : PROC;
+  const proc = znaKoruny
+    ? 'Ztrátu v korunách už znáte. Teď zjistěte, proč se informace ztrácí právě v nejslabší oblasti.'
+    : 'Čekání a dohledávání informací stojí peníze. Za 30 vteřin uvidíte kolik, a s číslem v korunách se líp rozhoduje, co řešit první.';
+  box.innerHTML = '<div class="dalsi-krok-nadpis">Co udělat teď</div><p class="dalsi-krok-proc">' + proc + '</p>' +
+    '<a class="dalsi-krok-hlavni" href="' + hlavni.url + '">' + hlavni.cta + ' →</a>' +
+    (druhy ? '<a class="dalsi-krok-druhy" href="' + druhy.url + '">' + druhy.cta + ' →</a>' : '');
+  box.style.display = 'block';
+}
+
 function zobrazitVysledek(){
+  setTimeout(vykreslitDalsiKrok, 0);
   oznamitDokonceni();
   if (!zobrazenoZOdkazu) smazatRozpracovanyKviz();
   const {skore, maxSkore, nejslabsiKey, oblastiVysledky, nevimOtazky, zadnyProblem} = spocitatSkore();
