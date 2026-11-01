@@ -133,6 +133,9 @@ input[type=range]::-webkit-slider-thumb:hover { transform:scale(1.2); }
 .dalsi-krok-druhy{display:block;text-align:center;margin-top:12px;border:1.5px solid #976e12;color:#976e12;background:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:14.5px;padding:11px 16px;border-radius:10px;text-decoration:none;}
 .dalsi-krok-druhy:hover{background:#976e12;color:#fff;}
 .stoji-row{padding:14px 20px;border-bottom:1px solid #f0f0f0;}
+#stoji-seznam,#dalsi-krok{overflow-anchor:none;}
+.dalsi-krok-proc{min-height:4.5em;}
+.stoji-proc{min-height:3em;}
 .stoji-row:last-child{border-bottom:none;}
 .stoji-hlava{display:flex;justify-content:space-between;align-items:baseline;gap:12px;}
 .stoji-nazev{font-size:14px;font-weight:700;color:var(--dark);}
@@ -1029,13 +1032,19 @@ function vykreslitKdeStoji(hodnoty, celkem, v) {
   const box = document.getElementById('dalsi-krok');
   if (!seznam || !box) return;
   const hodinyRok = function (hTyden) { return hTyden / 5 * PRACOVNICH_DNU_ROK; };
-  const polozky = Object.keys(hodnoty).filter(function (k) { return hodnoty[k] > 0; })
-    .sort(function (a, b) { return hodnoty[b] - hodnoty[a]; });
-  if (!polozky.length || celkem <= 0) {
-    seznam.innerHTML = '<div class="stoji-row"><div class="stoji-proc">Zadejte čísla a uvidíte, která položka vás stojí nejvíc.</div></div>';
-    box.style.display = 'none';
+  // Všechny čtyři řádky zůstávají i s nulou: když řádek mizel, stránka se při
+  // posouvání posuvníku zkrátila a obrazovka poskočila.
+  const polozky = Object.keys(hodnoty).sort(function (a, b) { return hodnoty[b] - hodnoty[a]; });
+  if (celkem <= 0) {
+    // Řádky i panel zůstávají na místě (jen panel zneviditelněný), aby
+    // stránka při stažení všech posuvníků na nulu neposkočila.
+    seznam.querySelectorAll('.stoji-kc').forEach(function (el) { el.firstChild.textContent = '0 Kč za rok'; });
+    seznam.querySelectorAll('.stoji-podil').forEach(function (el) { el.textContent = '0 %'; });
+    seznam.querySelectorAll('.stoji-bar').forEach(function (el) { el.style.width = '0%'; });
+    box.style.visibility = 'hidden';
     return;
   }
+  box.style.visibility = '';
   const smenyText = v.smeny === 1 ? '1 směna' : v.smeny + (v.smeny < 5 ? ' směny' : ' směn');
   const lideText = v.lide + (v.lide === 1 ? ' člověk' : (v.lide < 5 ? ' lidé' : ' lidí'));
   seznam.innerHTML = polozky.map(function (k, i) {
@@ -1043,7 +1052,8 @@ function vykreslitKdeStoji(hodnoty, celkem, v) {
     const kc = h * v.mzda;
     const podil = Math.round(hodnoty[k] / celkem * 100);
     let vypocet;
-    if (k === 'kamion') vypocet = v.kamionu + '× týdně, pokaždé ' + v.kamionCas + ' min. Za rok ' + fmt(h) + ' hodin.';
+    if (!(hodnoty[k] > 0)) vypocet = 'Zadali jste nulu, tady nic neztrácíte.';
+    else if (k === 'kamion') vypocet = v.kamionu + '× týdně, pokaždé ' + v.kamionCas + ' min. Za rok ' + fmt(h) + ' hodin.';
     else vypocet = v[k] + ' min na člověka za směnu, ' + lideText + ', ' + smenyText + '. Za rok ' + fmt(h) + ' hodin.';
     const cil = NASTROJE_DAL[STOJI[k].odkaz];
     const odkaz = '<a class="stoji-odkaz" href="' + cil.url + '">Změřit →</a>';
@@ -1051,7 +1061,7 @@ function vykreslitKdeStoji(hodnoty, celkem, v) {
       '<div class="stoji-hlava"><span class="stoji-nazev">' + STOJI[k].nazev + '</span>' + odkaz + '</div>' +
       '<div class="stoji-kc">' + fmt(kc) + ' Kč za rok<span class="stoji-podil">' + podil + ' %</span></div>' +
       '<div class="stoji-bar-bg"><div class="stoji-bar" style="width:' + podil + '%"></div></div>' +
-      '<div class="stoji-proc">' + vypocet + ' ' + STOJI[k].pricina + '</div>' +
+      '<div class="stoji-proc">' + vypocet + (hodnoty[k] > 0 ? ' ' + STOJI[k].pricina : '') + '</div>' +
       '</div>';
   }).join('');
 
