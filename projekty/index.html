@@ -113,17 +113,50 @@ nav {background:var(--white);border-bottom:2px solid var(--gold);padding:12px 20
 .fs-nepotvrzeno{background:#fbe4e1;color:var(--red);}
 .fs-ceka{background:rgba(233,169,27,.15);color:var(--gold-dark);}
 
-/* CASOVA OSA */
-.casova-osa-wrap{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px;}
-.casova-osa-wrap h4{font-family:"Poppins",sans-serif;font-size:11.5px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px;}
-.casova-osa{display:flex;gap:0;overflow-x:auto;padding-bottom:4px;}
-.osa-bod{flex-shrink:0;text-align:center;min-width:110px;position:relative;padding:0 6px;}
-.osa-bod::before{content:"";position:absolute;top:5px;left:0;right:0;height:2px;background:var(--border);}
-.osa-bod:first-child::before{left:50%;}
-.osa-bod:last-child::before{right:50%;}
-.osa-tecka{width:10px;height:10px;border-radius:50%;background:var(--gold);margin:0 auto 6px;position:relative;z-index:1;border:2px solid var(--white);}
-.osa-datum{font-size:10px;color:var(--light);font-weight:600;}
-.osa-nazev{font-size:11px;color:var(--dark);margin-top:2px;line-height:1.4;}
+/* CASOVA OSA PROJEKTU (stejny vzhled na /pro/ i v projektu) */
+.tko{--tk-g:#e9a91b;--tk-gd:#976e12;--tk-gl:#fdf3d9;--tk-dark:#111;--tk-mid:#545454;--tk-light:#7c7975;--tk-border:#e2e2e2;--tk-paper:#f5f4f0;--tk-red:#c0392b;--tk-green:#2a7a4f;--tk-greenl:#e8f5ee;container-type:inline-size;background:#fff;border:1px solid var(--tk-border);border-radius:14px;padding:22px 24px 18px;font-family:"DM Sans",Arial,sans-serif;color:var(--tk-dark);text-align:left;line-height:1.5;box-sizing:border-box;}
+.tko *{box-sizing:border-box;}
+.tko-hlava{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+.tko-stitek{display:inline-block;font-size:10px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--tk-gd);background:var(--tk-gl);border:1px solid rgba(233,169,27,.35);padding:3px 10px;border-radius:3px;margin-bottom:8px;}
+.tko-nazev{font-family:"Poppins",sans-serif;font-size:19px;font-weight:800;line-height:1.25;margin:0;color:var(--tk-dark);}
+.tko-popis{font-size:13px;color:var(--tk-mid);margin:4px 0 0;}
+.tko-znovu{border:1px solid var(--tk-border);background:var(--tk-paper);color:var(--tk-dark);font:600 12.5px "DM Sans",sans-serif;border-radius:999px;padding:7px 14px;cursor:pointer;white-space:nowrap;}
+.tko-znovu:hover{border-color:var(--tk-g);color:var(--tk-gd);}
+.tko-stav{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+.tko-cislo{font:500 56px/1 "DM Mono",monospace;color:var(--tk-light);transition:color .4s;}
+.tko-cislo small{font:500 14px "DM Sans",sans-serif;color:var(--tk-light);margin-left:6px;}
+.tko-zmena{display:inline-block;margin-left:10px;font:600 12.5px "DM Sans",sans-serif;color:var(--tk-green);background:var(--tk-greenl);padding:3px 9px;border-radius:999px;vertical-align:middle;}
+.tko-faze-text{font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--tk-light);text-align:right;margin-left:auto;}
+.tko-faze-text b{display:block;font:800 18px "Poppins",sans-serif;letter-spacing:0;text-transform:none;color:var(--tk-dark);margin-top:3px;}
+.tko-draha{position:relative;height:14px;border-radius:999px;background:#eeece6;overflow:hidden;}
+.tko-draha i{position:absolute;top:0;bottom:0;width:0;transition:width .9s cubic-bezier(.2,.8,.2,1);}
+.tko-draha i:nth-child(1){left:0;background:#f0c35a;}
+.tko-draha i:nth-child(2){left:25%;background:#e9a91b;}
+.tko-draha i:nth-child(3){left:50%;background:#c48e10;}
+.tko-draha i:nth-child(4){left:75%;background:#2a7a4f;}
+.tko-faze{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:14px;}
+.tko-sloupec{opacity:.3;transition:opacity .5s;}
+.tko-sloupec.on{opacity:1;}
+.tko-sloupec h4{margin:0 0 10px;font:800 13px "Poppins",sans-serif;letter-spacing:.5px;display:flex;align-items:center;gap:7px;color:var(--tk-dark);text-transform:none;}
+.tko-sloupec h4 span{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--tk-gl);color:var(--tk-gd);font:500 10.5px "DM Mono",monospace;}
+.tko-sloupec:nth-child(4) h4 span{background:var(--tk-greenl);color:var(--tk-green);}
+.tko-bod{position:relative;padding:0 0 10px 16px;opacity:0;transform:translateY(6px);transition:opacity .45s,transform .45s;}
+.tko-bod.on{opacity:1;transform:none;}
+.tko-bod::before{content:"";position:absolute;left:0;top:6px;width:8px;height:8px;border-radius:50%;background:var(--tk-g);}
+.tko-bod::after{content:"";position:absolute;left:3.5px;top:16px;bottom:0;width:1px;background:var(--tk-border);}
+.tko-bod:last-child::after{display:none;}
+.tko-sloupec:nth-child(4) .tko-bod::before{background:var(--tk-green);}
+.tko-bod .d{font:500 10.5px "DM Mono",monospace;color:var(--tk-light);}
+.tko-bod .n{font-size:12.5px;font-weight:600;line-height:1.35;color:var(--tk-dark);overflow-wrap:anywhere;}
+.tko-bod .v{font-size:11.5px;color:var(--tk-mid);line-height:1.4;overflow-wrap:anywhere;}
+.tko-bod.ukol .n::before{content:"Úkol: ";font-weight:400;color:var(--tk-mid);}
+.tko-prazdno{font-size:12px;color:var(--tk-light);font-style:italic;}
+.tko-dalsi{font-size:11.5px;color:var(--tk-light);padding-left:16px;}
+.tko-pata{margin-top:6px;padding-top:12px;border-top:1px solid var(--tk-border);font-size:11.5px;color:var(--tk-light);}
+@container (max-width:620px){.tko-faze{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:16px;}.tko-cislo{font-size:44px;}.tko-cislo small{display:block;margin:6px 0 0;}.tko-faze-text{text-align:left;margin-left:0;}}
+@container (max-width:360px){.tko-faze{grid-template-columns:1fr;}}
+@media (max-width:600px){.tko{padding:18px 16px 16px;}}
+#casova-osa-wrap{margin-bottom:16px;}
 
 /* PREZENTACE MOD */
 body.prezentace{background:var(--black);}
@@ -385,10 +418,7 @@ body.prezentace footer{display:none;}
 
     <div class="faze-sloupce" id="faze-sloupce"></div>
 
-    <div class="casova-osa-wrap" id="casova-osa-wrap" style="display:none;">
-      <h4>Časová osa</h4>
-      <div class="casova-osa" id="casova-osa"></div>
-    </div>
+    <div class="casova-osa-wrap" id="casova-osa-wrap" style="display:none;"></div>
 
     <p class="skryt-v-prezentaci" style="margin-bottom:20px;"><a href="#" id="odkaz-akcni-plan-projektu" style="color:var(--gold-dark);font-weight:700;font-size:13px;text-decoration:none;" target="_blank">→ Otevřít akční plán tohohle projektu</a></p>
   </div>
@@ -1160,16 +1190,109 @@ function prepnoutPrezentaci() {
   if (prezentace) window.scrollTo(0, 0);
 }
 
+// Casova osa projektu: fáze Vidět, Změřit, Změnit, Ověřit jako plnici se draha.
+// Animace bezi jednou pri prvnim otevreni projektu, pak je k dispozici tlacitko Prehrat znovu.
+const TKO_TEXTY = [['Fáze 1 · Vidět', 'Kde to drhne'], ['Fáze 2 · Změřit', 'Co říkají čísla'], ['Fáze 3 · Změnit', 'Co s tím děláme'], ['Fáze 4 · Ověřit', 'Pomohlo to?']];
+const TKO_MAX_BODU = 4;
+const tkoPrehrano = new Set();
+let tkoBezi = 0;
+
+function tkoDatum(d) { return d ? new Date(d).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' }) : ''; }
+
+function tkoBodHtml(pol) {
+  if (pol.typ === 'vysledek') {
+    const tr = pol.data;
+    const v = tr.hlavni_hodnota_cislo != null ? tr.hlavni_hodnota_cislo + (tr.hlavni_hodnota_jednotka ? ' ' + tr.hlavni_hodnota_jednotka : '') : zkratit(tr.shrnuti || '', 60);
+    return '<div class="tko-bod"><div class="d">' + tkoDatum(tr.created_at) + '</div><div class="n">' + escapovat(zkratit(toolNazev(tr), 40)) + '</div>' + (v ? '<div class="v">' + escapovat(v) + '</div>' : '') + '</div>';
+  }
+  if (pol.typ === 'ukol') {
+    const a = pol.data;
+    return '<div class="tko-bod ukol"><div class="d">' + tkoDatum(a.created_at) + '</div><div class="n">' + escapovat(zkratit(a.title, 40)) + '</div><div class="v">' + escapovat(NAZVY_STAVU_AKCE[a.status] || a.status || '') + '</div></div>';
+  }
+  if (pol.typ === 'overeni') {
+    const a = pol.data;
+    let v = 'Čeká na ověření';
+    if (a.verification_confirmed === true) v = 'Potvrzeno' + (a.actual_benefit != null ? ', ' + formatKc(a.actual_benefit) + '/rok' : '');
+    else if (a.verification_confirmed === false) v = 'Nepotvrdilo se';
+    return '<div class="tko-bod"><div class="d">' + tkoDatum(a.verification_date + 'T00:00:00') + '</div><div class="n">' + escapovat(zkratit(a.title, 40)) + '</div><div class="v">' + escapovat(v) + '</div></div>';
+  }
+  return '';
+}
+
 function renderCasovaOsa() {
   const wrap = document.getElementById('casova-osa-wrap');
-  const osa = document.getElementById('casova-osa');
-  const body = [];
-  aktualniToolRuny.forEach(tr => body.push({ cas: new Date(tr.created_at).getTime(), nazev: toolNazev(tr) }));
-  aktualniAkce.forEach(a => body.push({ cas: new Date(a.created_at).getTime(), nazev: a.title }));
-  body.sort((x, y) => x.cas - y.cas);
-  if (!body.length) { wrap.style.display = 'none'; return; }
+  const sloupce = sestavitSloupce();
+  const klice = FAZE_RADY.map(r => r.klic);
+  const pocet = klice.reduce((n, k) => n + sloupce[k].length, 0);
+  if (!pocet) { wrap.style.display = 'none'; return; }
   wrap.style.display = prezentace ? 'none' : 'block';
-  osa.innerHTML = body.map(b => '<div class="osa-bod"><div class="osa-tecka"></div><div class="osa-datum">' + new Date(b.cas).toLocaleDateString('cs-CZ') + '</div><div class="osa-nazev">' + escapovat(zkratit(b.nazev, 26)) + '</div></div>').join('');
+
+  const plne = klice.map(k => sloupce[k].length > 0);
+  const posledni = plne.lastIndexOf(true);
+
+  // Velke cislo: overeny prinos, jinak ocekavany potencial, jinak nic.
+  const overene = aktualniAkce.filter(a => a.verification_confirmed === true && a.actual_benefit != null);
+  const p = aktualniProjekt || {};
+  let cil = null, popisek = '', barva = '#976e12';
+  if (overene.length) { cil = overene.reduce((s, a) => s + Number(a.actual_benefit || 0), 0); popisek = 'Kč/rok ověřený přínos'; barva = '#2a7a4f'; }
+  else if (p.expected_potential_kc || p.expected_potential_kc === 0) { cil = Number(p.expected_potential_kc); popisek = 'Kč/rok očekávaný potenciál'; }
+
+  const sloupceHtml = FAZE_RADY.map((rada, i) => {
+    const pol = sloupce[rada.klic];
+    const vidne = pol.slice(-TKO_MAX_BODU);
+    const dalsi = pol.length - vidne.length;
+    return '<div class="tko-sloupec"><h4><span>' + (i + 1) + '</span>' + rada.nadpis + '</h4>' +
+      (pol.length ? (dalsi ? '<div class="tko-dalsi">+ ' + dalsi + ' starší</div>' : '') + vidne.map(tkoBodHtml).join('') : '<div class="tko-prazdno">Zatím nic</div>') + '</div>';
+  }).join('');
+
+  wrap.innerHTML = '<section class="tko" aria-label="Časová osa projektu">' +
+    '<div class="tko-hlava"><div><div class="tko-stitek">Časová osa</div></div><button class="tko-znovu" type="button">↻ Přehrát znovu</button></div>' +
+    '<div class="tko-stav">' + (cil != null ? '<div class="tko-cislo"></div>' : '') + '<div class="tko-faze-text"></div></div>' +
+    '<div class="tko-draha" aria-hidden="true"><i></i><i></i><i></i><i></i></div>' +
+    '<div class="tko-faze">' + sloupceHtml + '</div></section>';
+
+  const k = wrap.querySelector('.tko');
+  const cislo = k.querySelector('.tko-cislo'), ft = k.querySelector('.tko-faze-text');
+  const pruhy = [].slice.call(k.querySelectorAll('.tko-draha i'));
+  const sl = [].slice.call(k.querySelectorAll('.tko-sloupec'));
+  const pis = (h, b) => { if (cislo) { cislo.innerHTML = Number(h).toLocaleString('cs-CZ') + '<small>' + popisek + '</small>'; cislo.style.color = b; } };
+  const fz = i => { ft.innerHTML = i < 0 ? 'Začátek projektu<b>Něco ve firmě drhne</b>' : TKO_TEXTY[i][0] + '<b>' + TKO_TEXTY[i][1] + '</b>'; };
+  const pauza = ms => new Promise(r => setTimeout(r, ms));
+  const konec = () => {
+    pruhy.forEach((pr, i) => { pr.style.transition = 'none'; pr.style.width = plne[i] ? '25%' : '0'; });
+    sl.forEach((s, i) => s.classList.toggle('on', plne[i]));
+    k.querySelectorAll('.tko-bod').forEach(b => b.classList.add('on'));
+    fz(posledni); if (cil != null) pis(cil, barva);
+  };
+  async function prehraj() {
+    const id = ++tkoBezi;
+    pruhy.forEach(pr => { pr.style.transition = 'none'; pr.style.width = '0'; });
+    sl.forEach(s => s.classList.remove('on'));
+    k.querySelectorAll('.tko-bod').forEach(b => b.classList.remove('on'));
+    void k.offsetWidth; pruhy.forEach(pr => { pr.style.transition = ''; });
+    fz(-1); if (cislo) { cislo.innerHTML = '?<small>' + popisek + '</small>'; cislo.style.color = '#7c7975'; }
+    await pauza(400);
+    for (let i = 0; i <= posledni; i++) {
+      if (id !== tkoBezi) return;
+      fz(i);
+      if (!plne[i]) { await pauza(300); continue; }
+      pruhy[i].style.width = '25%'; sl[i].classList.add('on');
+      const body = sl[i].querySelectorAll('.tko-bod');
+      for (let j = 0; j < body.length; j++) { await pauza(300); if (id !== tkoBezi) return; body[j].classList.add('on'); }
+      await pauza(450);
+    }
+    if (id !== tkoBezi || cislo == null) return;
+    const t0 = performance.now();
+    await new Promise(r => { const f = t => { if (id !== tkoBezi) return r(); const q = Math.min(1, (t - t0) / 1000), e = 1 - Math.pow(1 - q, 3); pis(Math.round(cil * e), barva); q < 1 ? requestAnimationFrame(f) : r(); }; requestAnimationFrame(f); });
+  }
+  k.querySelector('.tko-znovu').addEventListener('click', prehraj);
+
+  const klid = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (klid || prezentace || tkoPrehrano.has(p.id) || !('IntersectionObserver' in window)) { tkoBezi++; konec(); return; }
+  tkoPrehrano.add(p.id);
+  konec(); // do doby nez na osu uzivatel doroluje, je videt konecny stav
+  const o = new IntersectionObserver(e => { if (e[0].isIntersecting) { o.disconnect(); prehraj(); } }, { threshold: .4 });
+  o.observe(k);
 }
 
 // =============================================
