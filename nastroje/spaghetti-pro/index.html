@@ -2382,6 +2382,10 @@ function onTouchStart(e) {
   } else if (e.touches.length === 1 && mod === 'kreslit') {
     const t = e.touches[0];
     pendingTouch = { mod: 'kreslit', pos: getCanvasPos({clientX: t.clientX, clientY: t.clientY}) };
+  } else if (e.touches.length === 1 && mod === 'oznacit') {
+    // Oznacit misto: na mobilu se klik kvuli preventDefault nevyvola, poznamka se otevre v onTouchEnd.
+    const t = e.touches[0];
+    pendingTouch = { mod: 'oznacit', pos: getCanvasPos({clientX: t.clientX, clientY: t.clientY}) };
   } else if (e.touches.length === 1 && mod === 'posouvat') {
     pendingTouch = null;
     const t = e.touches[0];
@@ -2430,6 +2434,8 @@ function onTouchEnd(e) {
   if (pendingTouch && e.touches.length === 0) {
     if (pendingTouch.mod === 'kalibrace') {
       kalibraceKlik(pendingTouch.pos);
+    } else if (pendingTouch.mod === 'oznacit') {
+      otevritPoznamku(pendingTouch.pos);
     } else if (pendingTouch.mod === 'kreslit') {
       zakazky[aktivniZakazka].body.push(pendingTouch.pos);
       kreslit();
