@@ -12,6 +12,7 @@
     meric:     { url: '/nastroje/meric-plytvani-free/', slozka: 'meric-plytvani', cta: 'Změřit to v Měřiči plýtvání', overit: 'Ověřit změnu: změřit znovu v Měřiči' },
     kalk:      { url: '/nastroje/kalkulacka-ztrat/', slozka: 'kalkulacka-ztrat', cta: 'Spočítat finanční dopad', overit: 'Ověřit změnu: spočítat znovu v Kalkulačce' },
     casova:    { url: '/nastroje/casova-studie/', slozka: 'casova-studie', cta: 'Zaznamenat den v Časové studii', overit: 'Ověřit změnu: zaznamenat den znovu' },
+    kalkHaseni: { url: '/nastroje/kalkulacka-ztrat/', slozka: 'kalkulacka-ztrat', cta: 'Spočítat, kolik vás stojí hašení problémů' },
     m2:        { url: '/nastroje/kalkulacka-nakladu-skladu/', slozka: 'kalkulacka-nakladu-skladu', cta: 'Spočítat, kolik stojí metr skladu' },
     proc:      { url: '/nastroje/5x-proc-ai-kouc/', slozka: '5x-proc-ai-kouc', cta: 'Najít příčinu pomocí 5× Proč' },
     s5:        { url: '/nastroje/5S_audit/', slozka: '5S_audit', cta: 'Udělat pořádek podle 5S' },

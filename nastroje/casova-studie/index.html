@@ -2289,13 +2289,13 @@ function vykreslitDalsiKrokCS(nej) {
   if (!window.tokvaDalsiKrok) return;
   const A = window.tokvaDalsiKrok.AUTOMATIZACE;
   const DEF = {
-    haseni: { kroky: ['proc', 'kviz'], text: 'Nejvíc času mimo práci vám bere hašení problémů. Co hasíte pořád dokola, má jednu příčinu. Najděte ji.' },
+    haseni: { kroky: ['proc', 'kalkHaseni', 'kviz'], text: 'Nejvíc času mimo práci vám bere hašení problémů. Co hasíte pořád dokola, má jednu příčinu. Najděte ji.' },
     komunikace: { kroky: ['kviz', 'proc'], text: 'Nejvíc času mimo práci vám bere komunikace. Kvíz ukáže, kde se informace ztrácejí.' },
     administrativa: { kroky: ['proc'], text: 'Nejvíc času mimo práci vám bere administrativa. Najděte, proč se dělá a jestli je všechna potřeba. Přepisujete stejné údaje víckrát? To jde často zautomatizovat. ' + A, zj: ['admin'] },
     presun: { kroky: ['proc'], text: 'Nejvíc času mimo práci vám berou přesuny. Musí se jezdit, nebo by stačil telefon?' }
   };
   const d = DEF[nej] || { kroky: [], text: 'Tady nic nedoporučím. Přestávka, rodina a osobní čas nejsou plýtvání, je to váš den.' };
-  window.tokvaDalsiKrok.vykreslit(document.getElementById('dalsi-krok-cs'), { kroky: d.kroky, text: d.text, zjisteni: d.zj || [], max: d.kroky.length || 1 });
+  window.tokvaDalsiKrok.vykreslit(document.getElementById('dalsi-krok-cs'), { kroky: d.kroky, text: d.text, zjisteni: d.zj || [], max: Math.min(2, d.kroky.length) || 1 });
 }
 
 function klasifikujCinnost(key, kid) {
