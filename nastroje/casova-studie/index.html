@@ -1260,6 +1260,7 @@ nav {
 </style>
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
 <script src="/postup.js"></script>
+<script src="/dalsi-krok.js"></script>
 </head>
 <body data-tisk-hlavicka>
 <style id="cookies-css-2">
@@ -2143,8 +2144,8 @@ function renderZaznamy() {
     const ODKAZ_KAT = {
       haseni: { nazev: 'Najít příčinu pomocí 5× Proč', url: '../5x-proc-ai-kouc/' },
       komunikace: { nazev: 'Zjistit úroveň komunikačního chaosu', url: '../kviz-komunikacniho-chaosu/' },
-      administrativa: { nazev: 'Spočítat finanční dopad', url: '../kalkulacka-ztrat/' },
-      presun: { nazev: 'Nakreslit Spaghetti diagram', url: '../spaghetti-free/' }
+      administrativa: { nazev: 'Najít příčinu pomocí 5× Proč', url: '../5x-proc-ai-kouc/' },
+      presun: { nazev: 'Najít příčinu pomocí 5× Proč', url: '../5x-proc-ai-kouc/' }
     };
     const top3 = REZERVA_KAT
       .map(id => ({ id, k: katInfo(id), ms: katCas[id] || 0 }))
@@ -2269,6 +2270,7 @@ function renderZaznamy() {
         </div>
       </div>
       <div class="kat-bars">${barsHtml2}</div>
+      <div id="dalsi-krok-cs"></div>
       <div class="nejdelsi-blok">Nejdelší soustředěný pracovní blok: <strong>${formatDuration(nejdelsiBlok)}</strong></div>
       <div class="preruseni-info">Pracovní bloky byly přerušeny <strong>${preruseni}×</strong></div>
       ${top3Html}
@@ -2277,7 +2279,23 @@ function renderZaznamy() {
     prepnoutOdkazyNaPro(jePro);
     zobrazitOdkazAkcniPlan(jePro);
     zobrazitOdkazProjekty(jePro);
+    vykreslitDalsiKrokCS(top3.length ? top3[0].id : null);
   }
+}
+
+// Co udělat teď (2. 11. 2026): podle kategorie mimo produktivní práci, která zabrala nejvíc.
+window.tokvaPostupVlastni = true;
+function vykreslitDalsiKrokCS(nej) {
+  if (!window.tokvaDalsiKrok) return;
+  const A = window.tokvaDalsiKrok.AUTOMATIZACE;
+  const DEF = {
+    haseni: { kroky: ['proc', 'kviz'], text: 'Nejvíc času mimo práci vám bere hašení problémů. Co hasíte pořád dokola, má jednu příčinu. Najděte ji.' },
+    komunikace: { kroky: ['kviz', 'proc'], text: 'Nejvíc času mimo práci vám bere komunikace. Kvíz ukáže, kde se informace ztrácejí.' },
+    administrativa: { kroky: ['proc'], text: 'Nejvíc času mimo práci vám bere administrativa. Najděte, proč se dělá a jestli je všechna potřeba. Přepisujete stejné údaje víckrát? To jde často zautomatizovat. ' + A, zj: ['admin'] },
+    presun: { kroky: ['proc'], text: 'Nejvíc času mimo práci vám berou přesuny. Musí se jezdit, nebo by stačil telefon?' }
+  };
+  const d = DEF[nej] || { kroky: [], text: 'Tady nic nedoporučím. Přestávka, rodina a osobní čas nejsou plýtvání, je to váš den.' };
+  window.tokvaDalsiKrok.vykreslit(document.getElementById('dalsi-krok-cs'), { kroky: d.kroky, text: d.text, zjisteni: d.zj || [], max: d.kroky.length || 1 });
 }
 
 function klasifikujCinnost(key, kid) {

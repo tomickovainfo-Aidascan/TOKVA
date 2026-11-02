@@ -76,7 +76,7 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
       "name": "Co mám dělat s výsledkem?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Vyberte si navazující nástroj podle toho, kam kořenová příčina spadá (karty níž), nebo rovnou udělejte první krok z výstupu."
+        "text": "Rovnou udělejte první krok z výstupu. Pod výsledkem vám appka v panelu Co udělat teď doporučí, čím změnu ověřit."
       }
     },
     {
@@ -756,6 +756,7 @@ nav {
 </style>
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
 <script src="/postup.js"></script>
+<script src="/dalsi-krok.js"></script>
 </head>
 <body>
 <style id="cookies-css-2">
@@ -919,7 +920,7 @@ nav {
       <div>
         <div class="po-vysledku">
         <h3 class="content-card-title" style="margin-bottom:14px;">Co dělat s výsledkem?</h3>
-        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">První krok máte ve výstupu výš. Vyberte oblast, do které vaše příčina spadá, a pokračujte tím jedním nástrojem. Ne všemi šesti.</p>
+        <p style="font-size:14px;color:var(--mid);line-height:1.75;margin-bottom:10px;">První krok máte ve výstupu výš. Pod ním v panelu Co udělat teď najdete, čím změnu ověřit. Jeden nástroj, ne všech šest.</p>
         </div>
         <div class="metoda-blok">
           <h2 class="metoda-nadpis">Jak funguje metoda 5× Proč</h2>
@@ -948,7 +949,7 @@ nav {
           </details>
           <details class="faq-item">
             <summary class="faq-q">Co mám dělat s výsledkem?</summary>
-            <div class="faq-a">Vyberte si navazující nástroj podle toho, kam kořenová příčina spadá (karty níž), nebo rovnou udělejte první krok z výstupu.</div>
+            <div class="faq-a">Rovnou udělejte první krok z výstupu. Pod výsledkem vám appka v panelu Co udělat teď doporučí, čím změnu ověřit.</div>
           </details>
           <details class="faq-item">
             <summary class="faq-q">Uvidí ten rozhovor můj tým?</summary>
@@ -965,49 +966,6 @@ nav {
         </div>
       <div data-tokva-zpetna-vazba data-nastroj="5x-proc"></div>
       </div>
-    </div>
-  </div>
-</div>
-
-<div class="po-vysledku dalsi-nastroje-wrap" id="dalsi-nastroje">
-  <h2 class="content-card-title">Podle čeho pokračovat</h2>
-  <p class="dalsi-nastroje-vysvetleni" id="dalsi-nastroje-vysvetleni"></p>
-  <div class="dalsi-nastroje-grid">
-    <div class="dalsi-nastroj-card" id="dalsi-karta-5s">
-      <div class="dalsi-nastroj-tag">Uspořádání, hledání, chybí standard</div>
-      <div class="dalsi-nastroj-nazev">5S pro každého smrtelníka</div>
-      <div class="dalsi-nastroj-popis">Zavedete přehledné uspořádání a jednoduchý standard pro jeho udržení.</div>
-      <a href="../5S_audit/" target="_blank" class="dalsi-nastroj-btn">Otevřít průvodce 5S</a>
-    </div>
-    <div class="dalsi-nastroj-card" id="dalsi-karta-spaghetti">
-      <div class="dalsi-nastroj-tag">Pohyb, špatná dispozice</div>
-      <div class="dalsi-nastroj-nazev">Spaghetti diagram</div>
-      <div class="dalsi-nastroj-popis">Nakreslíte skutečnou trasu a uvidíte, kde se dá zkrátit.</div>
-      <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Spaghetti diagram</a>
-    </div>
-    <div class="dalsi-nastroj-card" id="dalsi-karta-meric">
-      <div class="dalsi-nastroj-tag">Čas, čekání</div>
-      <div class="dalsi-nastroj-nazev">Měřič plýtvání</div>
-      <div class="dalsi-nastroj-popis">Změříte, kolik času kde opravdu padá.</div>
-      <a href="../meric-plytvani-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Měřič plýtvání</a>
-    </div>
-    <div class="dalsi-nastroj-card" id="dalsi-karta-casova">
-      <div class="dalsi-nastroj-tag">Přetížení administrativou</div>
-      <div class="dalsi-nastroj-nazev">Časová studie mého dne</div>
-      <div class="dalsi-nastroj-popis">Zjistíte, co vám ve dni skutečně bere čas.</div>
-      <a href="../casova-studie/" target="_blank" class="dalsi-nastroj-btn">Otevřít Časovou studii</a>
-    </div>
-    <div class="dalsi-nastroj-card" id="dalsi-karta-kalkulacka-sklad">
-      <div class="dalsi-nastroj-tag">Prostor, kapacita</div>
-      <div class="dalsi-nastroj-nazev">Kalkulačka nákladů provozu</div>
-      <div class="dalsi-nastroj-popis">Spočítáte, co vás stojí využití prostoru.</div>
-      <a href="../kalkulacka-nakladu-skladu/" target="_blank" class="dalsi-nastroj-btn">Otevřít Kalkulačku nákladů skladu</a>
-    </div>
-    <div class="dalsi-nastroj-card" id="dalsi-karta-kalkulacka-ztrat">
-      <div class="dalsi-nastroj-tag">Finanční dopad</div>
-      <div class="dalsi-nastroj-nazev">Kalkulačka ztrát</div>
-      <div class="dalsi-nastroj-popis">Odhadnete, kolik vás problém stojí v korunách.</div>
-      <a href="../kalkulacka-ztrat/" target="_blank" class="dalsi-nastroj-btn">Otevřít Kalkulačku ztrát</a>
     </div>
   </div>
 </div>
@@ -1744,6 +1702,7 @@ function zvyraznitDoporucenyNastroj(raw) {
   });
   const vysvetleniEl = document.getElementById('dalsi-nastroje-vysvetleni');
   if (vysvetleniEl) { vysvetleniEl.style.display = 'none'; vysvetleniEl.textContent = ''; }
+  window.tokva5xKlic = null;
 
   const text = (
     (extrahovatSekci(raw, '4. KOŘENOVÁ PŘÍČINA') || '') + ' ' +
@@ -1757,7 +1716,8 @@ function zvyraznitDoporucenyNastroj(raw) {
     const skore = DALSI_KEYWORDS[klic].reduce((s, kw) => s + (text.includes(kw) ? 1 : 0), 0);
     if (skore > nejlepsiSkore) { nejlepsiSkore = skore; nejlepsiKlic = klic; }
   });
-  if (!nejlepsiKlic || nejlepsiSkore < 2) return; // jediné shodné klíčové slovo je moc slabý signál (mohlo se trefit náhodou) - necháme všech 6 karet rovnocenných, radši žádné doporučení než špatné
+  if (!nejlepsiKlic || nejlepsiSkore < 2) return;
+  window.tokva5xKlic = nejlepsiKlic; // jediné shodné klíčové slovo je moc slabý signál (mohlo se trefit náhodou) - necháme všech 6 karet rovnocenných, radši žádné doporučení než špatné
 
   const karta = document.getElementById('dalsi-karta-' + nejlepsiKlic);
   if (!karta) return;
@@ -1774,6 +1734,7 @@ function zvyraznitDoporucenyNastroj(raw) {
   if (grid && grid.firstChild !== karta) grid.insertBefore(karta, grid.firstChild);
 }
 
+window.tokvaPostupVlastni = true;
 function renderOutput(raw, ulozit = true, neuplne = false) {
   // Značka konce výstupu je jen pro appku. Po dopsání přes "Dokončit výstup"
   // v textu zůstávala (i useknutá jako "KONEC===") a tiskla se.
@@ -1989,6 +1950,18 @@ function renderOutput(raw, ulozit = true, neuplne = false) {
   card.appendChild(btnRow);
 
 
+  // Co udělat teď (2. 11. 2026): Akční plán, pak ověřit změnu tím, čím člověk
+  // měřil. Kdo neměřil, dostane nástroj, na který míří analýza, jinak 5S.
+  if (window.tokvaDalsiKrok && card.querySelector('.output-section')) {
+    const dk = document.createElement('div');
+    card.appendChild(dk);
+    const KLIC = { '5s': 's5', 'spaghetti': 'spaghetti', 'meric': 'meric', 'casova': 'casova', 'kalkulacka-sklad': 'm2', 'kalkulacka-ztrat': 'kalk' };
+    const podleAnalyzy = KLIC[window.tokva5xKlic] || 's5';
+    window.tokvaDalsiKrok.vykreslit(dk, {
+      kroky: ['plan', 'overit', podleAnalyzy, 's5'], zapsat: ulozit,
+      text: 'Příčinu máte. Udělejte jednu změnu a za týden změřte znovu. Až druhé měření ukáže, jestli to zabralo.'
+    });
+  }
   chat.appendChild(card);
   chat.scrollTop = chat.scrollHeight;
 

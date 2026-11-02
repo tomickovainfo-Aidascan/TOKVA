@@ -1078,6 +1078,7 @@ body.je-pro .jen-free { display:none; }
 <style id="tokva-pro-texty-css">html:not(.tokva-ma-pro) .jen-s-pro, html.tokva-ma-pro .jen-bez-pro{display:none !important;}</style>
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
 <script src="/postup.js"></script>
+<script src="/dalsi-krok.js"></script>
 </head>
 <body>
 <style id="cookies-css-2">
@@ -1247,31 +1248,6 @@ body.je-pro .jen-free { display:none; }
         </div>
       <div data-tokva-zpetna-vazba data-nastroj="5s-audit"></div>
       </div>
-    </div>
-  </div>
-</div>
-
-<div class="po-vysledku dalsi-nastroje-wrap" id="dalsi-nastroje">
-  <h2 class="content-card-title">Navazující nástroje</h2>
-  <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Pořádek je první krok. Tyhle tři appky se hodí, až budete chtít vědět, kde se i na uklizeném pracovišti pořád ztrácí čas.</p>
-  <div class="dalsi-nastroje-grid">
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Kde se ztrácí čas</div>
-      <div class="dalsi-nastroj-nazev">Měřič plýtvání</div>
-      <div class="dalsi-nastroj-popis">Pořádek je hotový, teď změřte, kde se i tak ztrácí čas.</div>
-      <a href="../meric-plytvani-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Měřič plýtvání</a>
-    </div>
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Standard se nedrží</div>
-      <div class="dalsi-nastroj-nazev">5× Proč AI kouč</div>
-      <div class="dalsi-nastroj-popis">Pomůže najít pravděpodobnou příčinu, proč se lidi vrací ke starému nepořádku.</div>
-      <a href="../5x-proc-ai-kouc/" target="_blank" class="dalsi-nastroj-btn">Otevřít 5× Proč AI kouč</a>
-    </div>
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Hodně chůze kolem místa</div>
-      <div class="dalsi-nastroj-nazev">Spaghetti diagram</div>
-      <div class="dalsi-nastroj-popis">Nakreslete trasu kolem pracoviště a uvidíte, kde se dá zkrátit.</div>
-      <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Spaghetti diagram</a>
     </div>
   </div>
 </div>
@@ -2400,6 +2376,16 @@ function renderMain() {
   // Souhrn a doporučení, jakmile je místo hotové (všech 5 kroků splněno)
   if (splneno === 5) {
     main.appendChild(renderVysledekPanel());
+    const dk = document.createElement('div');
+    main.appendChild(dk);
+    if (window.tokvaDalsiKrok) {
+      // Kdo v cestě neměřil, dostane Měřič (kolik času teď jde na hledání).
+      const overit = window.tokvaDalsiKrok.overitNastroj();
+      window.tokvaDalsiKrok.vykreslit(dk, {
+        kroky: overit ? ['overit', 'plan'] : ['meric', 'plan'],
+        text: 'Pracoviště je uklizené. Teď ověřte, jestli to zabralo: změřte stejný proces znovu. Za měsíc udělejte kontrolu, jestli pořádek vydržel.'
+      });
+    }
   }
 
   // Kontroly a úkoly, vždy viditelné (ne jen po 4/5 krocích) - obě jsou Pro.
@@ -2419,6 +2405,7 @@ function renderMain() {
 }
 
 // Souhrn po dokončení všech 5S na daném místě - co to znamená a co dál
+window.tokvaPostupVlastni = true;
 function renderVysledekPanel() {
   const div = document.createElement('div');
   div.className = 'vysledek-panel';

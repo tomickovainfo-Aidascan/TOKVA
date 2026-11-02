@@ -413,6 +413,7 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
 <style id="tokva-pro-texty-css">html:not(.tokva-ma-pro) .jen-s-pro, html.tokva-ma-pro .jen-bez-pro{display:none !important;}</style>
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
 <script src="/postup.js"></script>
+<script src="/dalsi-krok.js"></script>
 </head>
 <body>
 
@@ -1084,6 +1085,8 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </div>
       </div>
 
+      <div id="dalsi-krok-m2"></div>
+
       <!-- Breakdown -->
       <div class="breakdown">
         <div class="breakdown-title">
@@ -1213,31 +1216,6 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         </div>
       <div data-tokva-zpetna-vazba data-nastroj="kalkulacka-naklady-skladu"></div>
       </div>
-    </div>
-  </div>
-</div>
-
-<div class="po-vysledku dalsi-nastroje-wrap">
-  <h2 class="content-card-title">Navazující nástroje</h2>
-  <p style="font-size:12.5px;color:var(--light);margin:-6px 0 16px;max-width:600px;">Číslo za metr víte. Tyhle appky pomohou s tím, proč je takové, jaké je.</p>
-  <div class="dalsi-nastroje-grid">
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Využíváte prostor dobře?</div>
-      <div class="dalsi-nastroj-nazev">Spaghetti diagram</div>
-      <div class="dalsi-nastroj-popis">Nakreslete skutečnou trasu do plánku a uvidíte, kudy se zbytečně chodí a kde je zabraný prostor.</div>
-      <a href="../spaghetti-free/" target="_blank" class="dalsi-nastroj-btn">Otevřít Spaghetti diagram</a>
-    </div>
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Problém je v uspořádání?</div>
-      <div class="dalsi-nastroj-nazev">5S pro každého smrtelníka</div>
-      <div class="dalsi-nastroj-popis">Pokud vysoký náklad souvisí s tím, jak je sklad uspořádaný, tady dáte věcem systém.</div>
-      <a href="../5S_audit/" target="_blank" class="dalsi-nastroj-btn">Otevřít průvodce 5S</a>
-    </div>
-    <div class="dalsi-nastroj-card">
-      <div class="dalsi-nastroj-tag">Platíte za metry, které nevyužíváte?</div>
-      <div class="dalsi-nastroj-nazev">Mini audit skladu</div>
-      <div class="dalsi-nastroj-popis">Ukáže, kde se v provozu ztrácí čas a místo.</div>
-      <a href="../mini-audit-skladu/" target="_blank" class="dalsi-nastroj-btn">Otevřít Mini audit skladu</a>
     </div>
   </div>
 </div>
@@ -2870,5 +2848,15 @@ function tisknoutNakladySkladu() {
 <script src="../../zpetna-vazba.js"></script>
 <script src="/menu.js"></script>
 <script src="/po-vysledku.js" data-vysledek=".results"></script>
+<script>
+// Co udělat teď (2. 11. 2026)
+(function () {
+  if (!window.tokvaDalsiKrok) return;
+  window.tokvaDalsiKrok.vykreslit(document.getElementById('dalsi-krok-m2'), {
+    kroky: ['s5', 'spaghetti'], zapsat: false,
+    text: 'Teď víte, kolik stojí každý metr. Než budete hledat větší halu, podívejte se, co na těch metrech leží. Vytřídit, co zabírá místo zbytečně, je nejlevnější metr.'
+  });
+})();
+</script>
 </body>
 </html>

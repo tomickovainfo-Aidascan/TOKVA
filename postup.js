@@ -19,7 +19,7 @@
     'kviz-jak-znate-svuj-sklad': 'Kvíz Jak znáte svůj sklad', 'kviz-komunikacniho-chaosu': 'Kvíz komunikačního chaosu',
     'kalkulacka-ztrat': 'Kalkulačka ztrát', 'kalkulacka-nakladu-skladu': 'Kalkulačka nákladů skladu',
     'spaghetti': 'Spaghetti diagram', 'meric-plytvani': 'Měřič plýtvání', 'casova-studie': 'Časová studie',
-    '5x-proc-ai-kouc': '5× Proč', '5S_audit': '5S'
+    '5x-proc-ai-kouc': '5× Proč', '5S_audit': '5S', 'akcni-plan': 'Akční plán'
   };
   function druh(slozka) { return String(slozka || '').replace(/-(free|pro)$/, ''); }
   var m = /\/nastroje\/([^\/?#]+)/.exec(location.pathname);
