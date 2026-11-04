@@ -1,0 +1,242 @@
+{
+  "_poznamka": "Znění otázek appky na dotazníky pilotu. Zdroj: Moje-AI/10-obchod/pilot/dotazniky-pilot.md (verze 2). Měnit tady, appka se nemusí upravovat. typ: kratka/delsi (pole na psaní, delsi má i Diktovat) | vyber (tlačítka) | stupnice (čísla jako tlačítka) | souhlas (uloží se přes zvláštní funkci, s časem). skupina: otázky se stejnou skupinou se zobrazí na jedné obrazovce. zobrazit_pokud: zobrazí se jen když sesterská otázka má danou hodnotu.",
+
+  "d1": {
+    "nazev": "Dotazník 1: na začátku",
+    "uvod": "Tyhle otázky mi pomůžou pochopit, odkud startujete, abychom na konci věděli, co se opravdu změnilo.",
+    "konec": "Děkuji za vyplnění. Další krátký dotazník přijde den po prvním měření v Tokvě.",
+    "otazky": [
+      { "id": "1", "povinna": true, "typ": "kratka", "text": "Jak se jmenuje firma a jakou máte ve firmě roli?" },
+      {
+        "id": "2", "povinna": true, "typ": "vyber",
+        "text": "Kolik lidí pracuje v provozu, kterého se to týká?",
+        "moznosti": [
+          { "hodnota": "do5", "popis": "Do 5" },
+          { "hodnota": "6-15", "popis": "6 až 15" },
+          { "hodnota": "16-30", "popis": "16 až 30" },
+          { "hodnota": "vic30", "popis": "Víc než 30" }
+        ]
+      },
+      {
+        "id": "3", "povinna": true, "typ": "delsi",
+        "text": "Co vás v provozu teď nejvíc pálí?",
+        "kontext": "Popište to vlastními slovy, jako byste to říkali kolegovi."
+      },
+      {
+        "id": "4", "povinna": false, "typ": "vyber",
+        "text": "Jak dlouho už tenhle problém řešíte?",
+        "moznosti": [
+          { "hodnota": "mesic", "popis": "Méně než měsíc" },
+          { "hodnota": "par_mesicu", "popis": "Pár měsíců" },
+          { "hodnota": "rok", "popis": "Přes rok" },
+          { "hodnota": "vzdy", "popis": "Co si pamatuju" }
+        ]
+      },
+      { "id": "5", "povinna": false, "typ": "delsi", "text": "Co jste s ním zatím zkoušeli a jak to dopadlo?" },
+      {
+        "id": "6", "povinna": true, "typ": "kratka",
+        "text": "Kolik času podle vás u tohoto procesu padá na chůzi, hledání a čekání?",
+        "kontext": "Stačí odhad v procentech nebo minutách za směnu. Porovná se s prvním měřením Měřičem."
+      },
+      {
+        "id": "7", "povinna": false, "typ": "kratka",
+        "text": "Kolik vás to podle odhadu stojí?",
+        "kontext": "Stačí hrubě: hodiny týdně, korunami, nebo slovy."
+      },
+      {
+        "id": "8", "povinna": false, "typ": "vyber",
+        "text": "Měříte něco z toho dnes?",
+        "moznosti": [
+          { "hodnota": "pravidelne", "popis": "Ano, pravidelně" },
+          { "hodnota": "obcas", "popis": "Občas, ručně" },
+          { "hodnota": "ne", "popis": "Ne, jen odhadujeme" }
+        ]
+      },
+      {
+        "id": "9", "povinna": false, "typ": "vyber",
+        "text": "V čem dnes evidujete úkoly a zlepšení?",
+        "moznosti": [
+          { "hodnota": "papir", "popis": "Papír" },
+          { "hodnota": "excel", "popis": "Excel nebo tabulka" },
+          { "hodnota": "system", "popis": "Informační systém" },
+          { "hodnota": "nikde", "popis": "Nikde, v hlavě" },
+          { "hodnota": "jinak", "popis": "Jinak" }
+        ]
+      },
+      { "id": "10", "povinna": true, "typ": "delsi", "text": "Co by pro vás po třech měsících znamenalo „tohle stálo za to“?" },
+      {
+        "id": "11", "povinna": false, "typ": "delsi",
+        "text": "Je něco, čeho se u Tokvy obáváte?",
+        "kontext": "Třeba čas, odpor lidí, složitost."
+      },
+      { "id": "12", "povinna": true, "typ": "kratka", "text": "Kdo u vás rozhoduje o změnách v provozu a kdo bude s Tokvou pracovat?" }
+    ]
+  },
+
+  "d2": {
+    "nazev": "Dotazník 2: po prvním použití",
+    "uvod": "Máte za sebou první měření nebo první výsledek. Teď je nejlepší chvíle říct, co bylo jasné a co ne, dokud to máte čerstvě v hlavě.",
+    "konec": "Děkuji za vyplnění. Poslední krátký dotazník přijde později.",
+    "otazky": [
+      {
+        "id": "1", "povinna": true, "typ": "vyber",
+        "text": "Který nástroj jste použili jako první?",
+        "moznosti": [
+          { "hodnota": "meric-free", "popis": "Měřič plýtvání" },
+          { "hodnota": "meric-pro", "popis": "Měřič plýtvání Pro" },
+          { "hodnota": "kalkulacka", "popis": "Kalkulačka ztrát" },
+          { "hodnota": "kalkulacka-naklady-skladu", "popis": "Kalkulačka nákladů skladu na m²" },
+          { "hodnota": "mini-audit", "popis": "Mini audit skladu" },
+          { "hodnota": "mini-audit-vyroba", "popis": "Mini audit výroby" },
+          { "hodnota": "kviz-sklad", "popis": "Kvíz: Jak dobře znáte svůj sklad" },
+          { "hodnota": "kviz-komunikace", "popis": "Kvíz komunikačního chaosu" },
+          { "hodnota": "spaghetti-sklad", "popis": "Spaghetti diagram" },
+          { "hodnota": "spaghetti-vyroba", "popis": "Spaghetti diagram Pro" },
+          { "hodnota": "5s-audit", "popis": "5S pro každého smrtelníka" },
+          { "hodnota": "5x-proc", "popis": "5× Proč AI kouč" },
+          { "hodnota": "casova-studie", "popis": "Časová studie mého dne" }
+        ]
+      },
+      {
+        "id": "2", "povinna": false, "typ": "stupnice",
+        "text": "Jak snadno jste se zorientovali?",
+        "moznosti": [
+          { "hodnota": "1", "popis": "1 = vůbec" },
+          { "hodnota": "2", "popis": "2" },
+          { "hodnota": "3", "popis": "3" },
+          { "hodnota": "4", "popis": "4" },
+          { "hodnota": "5", "popis": "5 = úplně bez problému" }
+        ]
+      },
+      { "id": "3", "povinna": true, "typ": "delsi", "text": "Kde jste se zasekli nebo nevěděli, co dál?" },
+      {
+        "id": "4", "povinna": true, "typ": "vyber", "skupina": "4",
+        "text": "Seděl výsledek s tím, co jste si mysleli předtím?",
+        "moznosti": [
+          { "hodnota": "potvrdil", "popis": "Ano, potvrdil to" },
+          { "hodnota": "castecne", "popis": "Částečně" },
+          { "hodnota": "jine", "popis": "Ne, ukázal něco jiného" }
+        ]
+      },
+      {
+        "id": "4b", "povinna": false, "typ": "delsi", "skupina": "4",
+        "text": "Co vás překvapilo, v dobrém nebo ve špatném?"
+      },
+      {
+        "id": "5", "povinna": false, "typ": "vyber",
+        "text": "Rozuměli jste výsledku bez vysvětlování?",
+        "moznosti": [
+          { "hodnota": "ano", "popis": "Ano" },
+          { "hodnota": "castecne", "popis": "S některými částmi ne" },
+          { "hodnota": "ne", "popis": "Ne" }
+        ]
+      },
+      {
+        "id": "6", "povinna": true, "typ": "vyber",
+        "text": "Kolik času vám zabralo všechno kolem měření, tedy nastavení, zorientování a vyhodnocení?",
+        "kontext": "Samotnou dobu měření nepočítejte.",
+        "moznosti": [
+          { "hodnota": "do15", "popis": "Do 15 minut" },
+          { "hodnota": "do_hodiny", "popis": "Do hodiny" },
+          { "hodnota": "vic", "popis": "Víc než hodinu" }
+        ]
+      },
+      {
+        "id": "7", "povinna": true, "typ": "vyber",
+        "text": "Věděli jste po výsledku, co udělat jako další krok?",
+        "moznosti": [
+          { "hodnota": "jasne", "popis": "Ano, bylo to jasné" },
+          { "hodnota": "tusil", "popis": "Tušil jsem" },
+          { "hodnota": "ne", "popis": "Ne" }
+        ]
+      },
+      { "id": "8", "povinna": false, "typ": "kratka", "text": "Jak reagovali lidé na dílně, když se měřilo?" },
+      { "id": "9", "povinna": true, "typ": "delsi", "text": "Co byste v nástroji změnili jako první?" }
+    ]
+  },
+
+  "d3": {
+    "nazev": "Dotazník 3: na konci",
+    "uvod": "Poslední dotazník. Zajímá mě hlavně to, co se u vás opravdu změnilo, i kdyby to bylo málo nebo nic. Upřímná odpověď mi pomůže víc než zdvořilá.",
+    "konec": "Děkuji za vyplnění. Jako poděkování vám pošlu kartu s porovnáním před a po.",
+    "otazky": [
+      {
+        "id": "1", "povinna": true, "typ": "vyber",
+        "text": "Vyřešili jste problém, se kterým jste začínali?",
+        "moznosti": [
+          { "hodnota": "ano", "popis": "Ano" },
+          { "hodnota": "castecne", "popis": "Částečně" },
+          { "hodnota": "ne", "popis": "Ne" },
+          { "hodnota": "jiny_cil", "popis": "Změnil se nám cíl" }
+        ]
+      },
+      {
+        "id": "2", "povinna": true, "typ": "delsi", "skupina": "2",
+        "text": "Co konkrétně se změnilo?",
+        "kontext": "Ideálně číslem: minuty, metry, hodiny, koruny."
+      },
+      {
+        "id": "2b", "povinna": true, "typ": "vyber", "skupina": "2",
+        "text": "Změřili jste stav před a po?",
+        "moznosti": [
+          { "hodnota": "tokva", "popis": "Ano, v Tokvě" },
+          { "hodnota": "jinak", "popis": "Ano, jinak" },
+          { "hodnota": "ne", "popis": "Ne" }
+        ]
+      },
+      { "id": "3", "povinna": false, "typ": "kratka", "text": "Který nástroj vám pomohl nejvíc a proč? Který jste nepoužili nebo vám nic nedal?" },
+      {
+        "id": "4", "povinna": false, "typ": "vyber",
+        "text": "Používali jste akční plán a projekty?",
+        "moznosti": [
+          { "hodnota": "pravidelne", "popis": "Pravidelně" },
+          { "hodnota": "obcas", "popis": "Občas" },
+          { "hodnota": "ne", "popis": "Ne" }
+        ]
+      },
+      { "id": "5", "povinna": true, "typ": "delsi", "text": "Co v Tokvě chybí, abyste ji používali dál?" },
+      {
+        "id": "6", "povinna": true, "typ": "vyber", "skupina": "6",
+        "text": "Pokračovali byste s Tokvou Pro za cenu z tokva.cz/pro/?",
+        "moznosti": [
+          { "hodnota": "ano", "popis": "Ano" },
+          { "hodnota": "mozna", "popis": "Možná" },
+          { "hodnota": "ne", "popis": "Ne" }
+        ]
+      },
+      {
+        "id": "6b", "povinna": false, "typ": "kratka", "skupina": "6",
+        "zobrazit_pokud": { "id": "6", "hodnota": "ne" },
+        "text": "Co by to změnilo?"
+      },
+      {
+        "id": "7", "povinna": true, "typ": "delsi",
+        "text": "Co byste poradili firmě, která je tam, kde jste byli vy před třemi měsíci?",
+        "kontext": "Podklad pro referenci jejich vlastními slovy."
+      },
+      {
+        "id": "8", "povinna": false, "typ": "stupnice",
+        "text": "Jak pravděpodobně byste Tokvu doporučili známému z jiné firmy?",
+        "kontext": "Jen u zakladatelské ceny, u pilotu se neptat.",
+        "poznamka_pro_gabinu": "Nepovinná, takže jde přeskočit. U pilotních firem zatím není v appce jiný způsob jak otázku úplně skrýt, tak doporučuju při vytváření odkazu pilotním firmám připsat do poznámky, že se má přeskočit.",
+        "moznosti": [
+          { "hodnota": "0", "popis": "0 = určitě ne" },
+          { "hodnota": "1", "popis": "1" }, { "hodnota": "2", "popis": "2" }, { "hodnota": "3", "popis": "3" },
+          { "hodnota": "4", "popis": "4" }, { "hodnota": "5", "popis": "5" }, { "hodnota": "6", "popis": "6" },
+          { "hodnota": "7", "popis": "7" }, { "hodnota": "8", "popis": "8" }, { "hodnota": "9", "popis": "9" },
+          { "hodnota": "10", "popis": "10 = určitě ano" }
+        ]
+      },
+      {
+        "id": "9", "povinna": false, "typ": "souhlas",
+        "text": "Můžu váš výsledek použít jako příběh na webu nebo LinkedInu?",
+        "kontext": "Text dostanete předem ke schválení, citlivá čísla se nezveřejní.",
+        "moznosti": [
+          { "hodnota": "ano_s_nazvem", "popis": "Ano, i s názvem firmy" },
+          { "hodnota": "ano_bez_nazvu", "popis": "Ano, ale bez názvu" },
+          { "hodnota": "ne", "popis": "Ne" }
+        ]
+      }
+    ]
+  }
+}
