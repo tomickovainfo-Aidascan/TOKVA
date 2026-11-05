@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <script>
-// Google Analytics se spouští až po souhlasu s cookies (/cookies.js na konci stránky).
+// Google Analytics se spouští až po souhlasu s cookies (cookies.js na konci stránky).
 window.trackTokvaEvent = function (eventName, parameters = {}) {
   if (typeof window.gtag !== "function") return;
   window.gtag("event", eventName, { ...parameters, page_path: window.location.pathname });
@@ -10,90 +10,415 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, follow">
-<title>Pilotní provoz zdarma | Tokva</title>
-<meta name="description" content="Tříměsíční pilot Tokvy pro 3 firmy z výroby, skladu a logistiky: jeden problém, měření, příčina a ověření změny. Tři měsíce spolupráce a celkem půl roku Tokvy Pro zdarma.">
+<meta name="robots" content="index, follow">
+<title>Pilot Změř, změň, ověř zdarma: kde provoz ztrácí čas | Tokva</title>
+<meta name="description" content="Chození, hledání, čekání a chyby, které se vracejí. Tříměsíční pilot pro 3 firmy z výroby a skladu: změřit, změnit, ověřit. Tokva Pro na půl roku zdarma.">
 <link rel="canonical" href="https://tokva.cz/pilot/">
+<meta property="og:title" content="Pilot Změř, změň, ověř: od měření po ověření změny">
+<meta property="og:description" content="Tři měsíce na jednom problému, který vás opakovaně zdržuje. Pro 3 firmy z výroby, skladu a logistiky. Tokva Pro na půl roku zdarma.">
+<meta property="og:url" content="https://tokva.cz/pilot/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:image" content="https://tokva.cz/pilot/img/og-pilot.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Měření ve skladu, na mobilu běží Měřič plýtvání z Tokvy">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pilotní program Tokvy: od měření po ověření změny">
+<meta name="twitter:description" content="Tři měsíce na jednom problému, který vás opakovaně zdržuje. Tokva Pro na půl roku zdarma.">
+<meta name="twitter:image" content="https://tokva.cz/pilot/img/og-pilot.jpg">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://tokva.cz/pilot/#stranka",
+      "url": "https://tokva.cz/pilot/",
+      "name": "Pilot Změř, změň, ověř: pilotní program Tokvy zdarma",
+      "inLanguage": "cs",
+      "description": "Tříměsíční pilot pro 3 menší firmy z výroby, skladu, velkoobchodu a logistiky: jeden problém, měření, příčina a ověření změny. Tokva Pro na půl roku zdarma.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "Tokva",
+        "url": "https://tokva.cz/"
+      },
+      "author": {
+        "@id": "https://tokva.cz/pilot/#gabriela"
+      },
+      "primaryImageOfPage": "https://tokva.cz/pilot/img/og-pilot.jpg"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://tokva.cz/pilot/#gabriela",
+      "name": "Gabriela Tomíčková",
+      "jobTitle": "AI a procesní konzultantka",
+      "url": "https://gabrielatomickova.cz",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Vrchlabí",
+        "addressCountry": "CZ"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tokva.cz/pilot/#otazky",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Co je pilotní program Tokvy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pilot Změř, změň, ověř je tříměsíční spolupráce na jednom problému, který vás v provozu opakovaně zdržuje: chození, hledání, čekání nebo chyby, které se vracejí. Změříte ho přímo v provozu, uděláte jednu změnu a změříte znovu, jestli zabrala. Získáte tři měsíce spolupráce a celkem půl roku Tokvy Pro zdarma."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Pro koho je pilot určený?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pro malé a střední firmy z výroby, skladu, velkoobchodu nebo logistiky s 1 až 100 zaměstnanci, v řešeném provozu nebo na směně ideálně 3 až 30 lidí. Nemusíte znát Lean ani Kaizen. Pilot je možný po celé ČR, pilot je omezený na 3 firmy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Co v pilotu dostanu zdarma?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tři měsíce spolupráce na jednom konkrétním problému, pomoc od výběru měření po vyhodnocení změny a Tokvu Pro na šest měsíců zdarma."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Co bude potřeba ode mě?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Konkrétní problém z vašeho provozu a ochota vyzkoušet změnu, 30 až 45 minut na úvodní schůzku a čas na vlastní měření podle typu problému, tři krátké dotazníky během pilotu (každý zabere asi 10 minut), průběžná komunikace a krátké závěrečné zhodnocení. A souhlas, že výsledek pilotu můžu uvést jako referenci. Text vám vždy dám předem ke schválení a citlivá čísla nezveřejním."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kolik času pilot zabere?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nejrychleji se dá změřit, změnit jednu věc a změřit totéž znovu za 14 dní. Jestli se nový stav udrží, se ale ukáže až s odstupem času, proto pilot trvá tři měsíce. Z vašeho času: úvodní schůzka 30 až 45 minut, tři krátké dotazníky po asi 10 minutách a vlastní měření. Když jeden cyklus trvá kolem 2 minut, změříte ho s přípravou do 10 minut."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Musí lidi na dílně něco umět?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ne. Kdo umí ťuknout na mobil, zvládne Měřič plýtvání. Nemusíte znát Lean, Kaizen ani Excel a nic se neinstaluje. Měření si spolu vyzkoušíme hned na úvodní schůzce."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Co když to nevyjde?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Řeknete mi to na rovinu. Nic neplatíte a čísla z vlastního měření už máte, takže víte, kde vám utíká čas. Z vašeho času vás to stojí 30 až 45 minut úvodní schůzky a vlastní měření."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Co bude po pilotu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Na konci spolu vyhodnotíme, co se změnilo a co ještě potřebuje pozornost. Tokvu Pro pak můžete používat ještě další tři měsíce zdarma. Nic se samo neprodlužuje: týden před koncem vám přijde e-mail, jestli chcete pokračovat."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kolik to pak stojí?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pilot i šest měsíců Tokvy Pro jsou zdarma. Kdo bude chtít pokračovat, dostane Tokvu Pro za zakladatelskou cenu, podle varianty od 499 Kč měsíčně. Nástroje zdarma můžete používat dál i bez předplatného."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kdo uvidí naše data?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Vaše data vidíte vy a lidé, které do Tokvy pozvete. Během pilotu do nich nahlížím i já, abych vám mohla radit. Ven nic nejde: do reference jen text, který vám dám předem ke schválení, a citlivá čísla nezveřejním."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kdo pilot vede?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Gabriela Tomíčková, procesní konzultantka z Vrchlabí. 10 let zlepšovala výrobu jako KAIZEN specialistka a 6 let vedla velkoobchodní sklad s 20 lidmi, kde za 4 roky stejnou práci se stejnými lidmi zvládali o 30 % méně hodin."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Jak se do pilotu přihlásit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Klikněte na Chci se přihlásit. Kdo má účet v Tokvě, je přihlášený jedním klikem, ostatní vyplní e-mail a název firmy, telefon je nepovinný. Na e-mail přijde potvrzení. Do 2 pracovních dnů se vám ozvu a domluvíme úvodní schůzku. Pilot je omezený na 3 firmy, vybírám z přihlášených."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <style>
   :root{
     --gold:#e9a91b; --gold-dark:#976e12; --gold-light:#fdf3d9;
     --black:#000000; --dark:#111111; --mid:#545454; --silver:#a8a6a6;
     --white:#ffffff; --paper:#fafaf8; --border:#e8e8e8;
+    --lista:64px; --tma:#0e0e0e;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:'DM Sans',sans-serif;color:var(--dark);background:var(--paper);}
   a{text-decoration:none;}
+  img{max-width:100%;}
 
-  /* Horní lišta, stejná jako na úvodní stránce */
+  /* Horní lišta, stejná jako na tokva.cz (menu.js ji doladí) */
   .topbar{background:var(--black);color:var(--white);padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:200;border-bottom:2px solid var(--gold);flex-wrap:wrap;row-gap:8px;}
   .topbar .brand{font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;color:var(--white);}
   .topbar-right{display:flex;align-items:center;flex-wrap:wrap;row-gap:8px;}
   .topbar-login{color:var(--gold);font-size:13px;font-weight:700;border:1px solid var(--gold);padding:7px 16px;border-radius:6px;}
   .topbar-login:hover{background:var(--gold);color:var(--black);}
-  /* Hero */
-  .hero{background:var(--black);padding:64px 0 52px;position:relative;overflow:hidden;}
+
+  /* Úvod: do 5 vteřin jasné, o co jde */
+  .hero{background:var(--black);padding:60px 0 48px;position:relative;overflow:hidden;}
   .hero::before{content:"";position:absolute;top:-70px;right:-70px;width:240px;height:240px;border-radius:50%;border:42px solid rgba(233,169,27,0.07);pointer-events:none;}
   .hero-inner{max-width:1040px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
   .badge{display:inline-block;background:rgba(233,169,27,0.14);color:var(--gold);font-size:13px;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;padding:7px 16px;border-radius:20px;margin-bottom:22px;}
   .hero h1{font-family:'Poppins',sans-serif;font-weight:900;font-size:clamp(28px,4vw,44px);letter-spacing:-0.5px;color:var(--white);margin:0 0 18px;max-width:820px;line-height:1.15;}
-  .hero h1 .hl{color:var(--gold);}
-  .hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:580px;line-height:1.75;font-weight:300;margin:0;}
-
-  /* Content */
-  .content{max-width:1040px;margin:0 auto;padding:56px 24px 20px;}
-  .content > *{max-width:760px;}
-  .block{margin-bottom:52px;}
-  .block h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(20px,3vw,26px);letter-spacing:-0.3px;margin:0 0 18px;color:var(--dark);}
-  .block > p{font-size:16px;line-height:1.75;color:var(--mid);max-width:640px;margin:0;}
-
-  .check-list{list-style:none;padding:0;margin:0;}
-  .check-list li{font-size:16px;line-height:1.6;color:var(--dark);padding-left:30px;position:relative;margin-bottom:13px;}
-  .check-list li::before{content:"✓";position:absolute;left:0;top:0;color:var(--gold-dark);font-weight:700;}
-
-  /* Z praxe - černá karta, podle appkového vzoru */
-  .practice-card{background:var(--black);border-radius:16px;padding:32px 32px;margin-bottom:52px;}
-  .practice-card .tag{display:inline-block;background:rgba(233,169,27,0.14);color:var(--gold);font-size:12px;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;padding:5px 12px;border-radius:14px;margin-bottom:16px;}
-  .practice-card p{font-size:16px;line-height:1.75;color:rgba(255,255,255,0.85);font-weight:300;margin:0;}
-  .practice-card p strong{color:var(--white);font-weight:600;}
-
-  /* Steps */
-  .steps-list{list-style:none;padding:0;margin:0;counter-reset:step;}
-  .steps-list li{counter-increment:step;display:flex;gap:16px;margin-bottom:20px;}
-  .steps-list li::before{content:counter(step);flex:0 0 32px;height:32px;border-radius:50%;background:var(--gold-light);color:var(--gold-dark);font-family:'Poppins',sans-serif;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;}
-  .steps-list .step-text{font-size:16px;line-height:1.6;color:var(--dark);padding-top:4px;}
-
-  /* CTA */
-  .hero h1 .hl{display:block;}
+  .hero h1 .hl{color:var(--gold);display:block;}
+  .hero-bolest{font-size:clamp(17px,1.6vw,19px);line-height:1.6;color:var(--white);font-weight:500;max-width:620px;margin:0 0 14px;}
+  .hero-sub{font-size:16px;color:rgba(255,255,255,0.72);max-width:600px;line-height:1.75;font-weight:300;margin:0;}
   .hero-cta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:28px;}
   .hero-cta-note{font-size:14px;color:rgba(255,255,255,0.6);}
-  .block > p + .check-list{margin-top:20px;}
-  #prihlasit{scroll-margin-top:90px;}
-  .cta-block{background:var(--gold-light);border-radius:16px;padding:44px 36px;text-align:center;margin-bottom:60px;}
-  .cta-block h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:26px;margin:0 0 12px;color:var(--dark);}
-  .cta-block p{font-size:16px;line-height:1.6;color:var(--mid);margin:0 0 26px;max-width:480px;margin-left:auto;margin-right:auto;}
   .btn-gold{display:inline-block;background:var(--gold);color:var(--black);font-weight:700;font-size:16px;padding:15px 32px;border-radius:10px;}
-  .btn-outline{display:inline-block;background:transparent;color:var(--dark);font-weight:700;font-size:16px;padding:13px 30px;border-radius:10px;border:2px solid var(--dark);}
-  .cta-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
-  .cta-note{font-size:13px;color:var(--silver);margin-top:18px;}
+  .btn-gold:hover{background:var(--gold-dark);color:var(--white);}
+  .btn-gold:focus-visible{outline:3px solid var(--white);outline-offset:3px;}
+  /* Střídající se slovo v nadpisu: čas, kapacitu, peníze */
+  .rotace{display:inline-block;position:relative;height:1.15em;overflow:hidden;vertical-align:bottom;white-space:nowrap;}
+  .rotace__slova{display:block;}
+  .rotace__slovo{display:block;height:1.15em;line-height:1.15;}
+  .rotace__slovo span{text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:3px;text-underline-offset:0.1em;}
+  .rotace-bezi .rotace{transition:width .45s ease;}
+  .rotace-bezi .rotace__slova{position:absolute;left:0;top:0;transition:transform .55s cubic-bezier(.65,0,.35,1);}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 
-  /* Footer */
-  .site-footer{background:#fff;border-top:1px solid #e8e8e8;padding:22px 24px;margin-top:0;font-family:'DM Sans',sans-serif;}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:48px;align-items:end;}
+  .btn-odkaz{display:inline-block;color:var(--white);font-weight:600;font-size:15px;padding:14px 4px;border-bottom:2px solid var(--gold);line-height:1.2;}
+  .btn-odkaz:hover{color:var(--gold);}
+  .kdo{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:22px 22px 20px;color:rgba(255,255,255,0.85);}
+  .kdo__hlava{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+  .kdo__hlava img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);flex:0 0 64px;}
+  .kdo__jmeno{font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;color:var(--white);line-height:1.25;}
+  .kdo__role{font-size:13px;color:var(--gold);font-weight:600;}
+  .kdo p{font-size:15px;line-height:1.6;margin:0 0 10px;}
+  .kdo a{color:var(--gold);font-size:14px;font-weight:600;border-bottom:1px solid rgba(233,169,27,0.5);}
+  @media (max-width:860px){.hero-grid{grid-template-columns:1fr;gap:28px;}}
+
+  .sjedte{display:flex;align-items:center;gap:10px;margin-top:34px;color:rgba(255,255,255,0.55);font-size:14px;}
+  .sjedte::before{content:"";width:18px;height:18px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg) translateY(-4px);}
+
+  /* ===== PROHLÍDKA: základ = obyčejná stránka (bez JS, s omezením animací) ===== */
+  .prohlidka{background:var(--tma);color:var(--white);padding:24px 0 8px;}
+  .krok{padding:28px 0;}
+  .krok__scena{max-width:1040px;margin:0 auto;padding:0 24px;}
+  .krok__foto{position:relative;border-radius:14px;overflow:hidden;background:#222;}
+  .krok__plocha{position:relative;width:100%;aspect-ratio:16/9;}
+  .krok__plocha img{display:block;width:100%;height:100%;object-fit:cover;}
+  .krok__displej{display:none;position:absolute;background-repeat:no-repeat;pointer-events:none;
+    left:51.26%;top:30.07%;width:12.62%;height:43.89%;}
+  .krok__text{padding:20px 2px 4px;max-width:640px;}
+  .krok__cislo{font-size:13px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+  .krok__text h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(26px,3.2vw,40px);line-height:1.15;letter-spacing:-0.3px;margin:0 0 12px;color:var(--white);}
+  .krok__text p{font-size:clamp(17px,1.4vw,19px);line-height:1.65;margin:0;color:rgba(255,255,255,0.92);}
+  .krok__karta{margin-top:16px;background:var(--white);border-radius:12px;padding:10px 10px 8px;max-width:520px;}
+  .krok__karta img{display:block;width:100%;height:auto;border-radius:6px;}
+  .krok__karta figcaption{font-size:12px;color:var(--mid);padding:6px 4px 0;}
+  .prohlidka-pozn{max-width:1040px;margin:0 auto;padding:6px 24px 22px;font-size:12px;color:rgba(255,255,255,0.45);}
+
+  @media (max-width:700px){
+    .krok__plocha{aspect-ratio:4/5;}
+    .krok__displej{left:26.20%;width:28.06%;}
+    .krok__scena{padding:0 16px;}
+  }
+
+  /* ===== PROHLÍDKA ŽIVĚ: zapne skript dole, jen bez omezení animací ===== */
+  html.prohlidka-bezi .prohlidka{padding:0;position:relative;}
+  html.prohlidka-bezi .prohlidka-pozn{position:relative;z-index:30;padding-top:14px;}
+  html.prohlidka-bezi .krok{height:100vh;height:100svh;padding:0;}
+  html.prohlidka-bezi .krok:last-of-type{height:150vh;height:150svh;}
+  html.prohlidka-bezi .krok__scena{position:fixed;left:0;right:0;top:var(--lista);bottom:0;max-width:none;margin:0;padding:0;
+    display:none;overflow:hidden;background:var(--tma);will-change:opacity,clip-path;}
+  html.prohlidka-bezi .krok__scena.je-videt{display:block;}
+  html.prohlidka-bezi .krok__foto{position:absolute;inset:0;border-radius:0;background:var(--tma);}
+  html.prohlidka-bezi .krok__plocha{position:absolute;left:50%;top:50%;aspect-ratio:16/9;
+    width:max(100%, calc((100vh - var(--lista)) * 16 / 9));
+    width:max(100%, calc((100svh - var(--lista)) * 16 / 9));
+    transform:translate(-50%,-50%) scale(var(--zoom,1)) translateX(var(--pan,0%));will-change:transform;}
+  html.prohlidka-bezi .krok__foto::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 45%);}
+  html.prohlidka-bezi .krok__text{position:absolute;left:clamp(20px,4vw,56px);bottom:clamp(56px,9vh,96px);max-width:560px;z-index:2;
+    background:rgba(10,10,10,0.84);border-radius:14px;border-left:5px solid var(--gold);padding:26px 30px 28px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.35);
+    opacity:var(--text,1);transform:translateY(calc((1 - var(--text,1)) * 18px));}
+  html.prohlidka-bezi .krok__karta{position:absolute;z-index:2;right:clamp(20px,4vw,56px);top:clamp(20px,5vh,48px);
+    width:min(440px,38vw);margin:0;box-shadow:0 12px 36px rgba(0,0,0,0.35);
+    opacity:var(--karta,1);transform:translateY(calc((1 - var(--karta,1)) * 18px));}
+
+  @media (max-width:700px){
+    html.prohlidka-bezi .krok__foto{position:absolute;left:0;right:0;top:0;bottom:auto;height:min(125vw, 54vh);height:min(125vw, 54svh);}
+    html.prohlidka-bezi .krok__foto::after{display:none;}
+    html.prohlidka-bezi .krok__plocha{aspect-ratio:4/5;width:max(100%, calc(min(125vw, 54vh) * 0.8));width:max(100%, calc(min(125vw, 54svh) * 0.8));}
+    html.prohlidka-bezi .krok__text{left:0;right:0;bottom:auto;top:min(125vw, 54vh);top:min(125vw, 54svh);max-width:none;border-radius:0;border-left:0;border-top:4px solid var(--gold);box-shadow:none;background:var(--tma);padding:18px 20px 14px;}
+    html.prohlidka-bezi .krok__text h2{font-size:26px;margin-bottom:10px;}
+    html.prohlidka-bezi .krok__text p{font-size:17px;line-height:1.55;}
+    html.prohlidka-bezi .krok__karta{left:4%;right:auto;width:92%;top:auto;bottom:calc(100% - min(125vw, 54vh) + 10px);bottom:calc(100% - min(125vw, 54svh) + 10px);}
+  }
+
+  /* Tablet na výšku: fotka nahoře, text pod ní (široké fotky z počítačové verze). */
+  @media (min-width:701px) and (max-width:1100px) and (orientation:portrait){
+    html.prohlidka-bezi .krok__foto{position:absolute;left:0;right:0;top:0;bottom:auto;height:64vh;height:64svh;}
+    html.prohlidka-bezi .krok__foto::after{display:none;}
+    html.prohlidka-bezi .krok__plocha{width:max(100%, calc(64vh * 16 / 9));width:max(100%, calc(64svh * 16 / 9));}
+    html.prohlidka-bezi .krok__text{left:0;right:0;bottom:auto;top:64vh;top:64svh;max-width:none;border-radius:0;border-left:0;border-top:4px solid var(--gold);box-shadow:none;background:var(--tma);padding:28px 48px 20px;}
+    html.prohlidka-bezi .krok__text h2{font-size:34px;}
+    html.prohlidka-bezi .krok__text p{max-width:680px;font-size:20px;line-height:1.6;}
+    html.prohlidka-bezi .krok__karta{left:auto;right:28px;top:auto;width:min(460px,62vw);bottom:calc(100% - 64vh + 20px);bottom:calc(100% - 64svh + 20px);}
+  }
+
+  /* Menší telefony (nízká obrazovka): menší fotka, ať se celý text vejde. */
+  @media (max-width:700px) and (max-height:740px){
+    html.prohlidka-bezi .krok__foto{height:min(125vw, 44vh);height:min(125vw, 44svh);}
+    html.prohlidka-bezi .krok__plocha{width:max(100%, calc(min(125vw, 44vh) * 0.8));width:max(100%, calc(min(125vw, 44svh) * 0.8));}
+    html.prohlidka-bezi .krok__text{top:min(125vw, 44vh);top:min(125vw, 44svh);padding-top:14px;}
+    html.prohlidka-bezi .krok__text h2{font-size:23px;margin-bottom:8px;}
+    html.prohlidka-bezi .krok__text p{font-size:16px;line-height:1.5;}
+    html.prohlidka-bezi .krok__karta{bottom:calc(100% - min(125vw, 44vh) + 8px);bottom:calc(100% - min(125vw, 44svh) + 8px);}
+  }
+
+  /* ===== Podmínky a časová náročnost ===== */
+  #podminky{scroll-margin-top:84px;}
+  .cas{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:30px 32px 26px;margin-bottom:48px;}
+  .cas h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(22px,3vw,28px);margin:0 0 6px;color:var(--dark);}
+  .cas__uvod{font-size:16px;color:var(--mid);margin:0 0 22px;line-height:1.6;}
+  .cas__radky{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .cas__radek{border-left:4px solid var(--gold);background:var(--paper);border-radius:0 10px 10px 0;padding:14px 16px;}
+  .cas__kolik{font-family:'Poppins',sans-serif;font-weight:800;font-size:20px;color:var(--dark);margin-bottom:2px;}
+  .cas__co{font-weight:700;font-size:15px;color:var(--dark);margin-bottom:4px;}
+  .cas__radek p{font-size:15px;line-height:1.55;color:var(--mid);margin:0;}
+  .cas__priklad{grid-column:1 / -1;background:var(--gold-light);}
+  .cas__plny{grid-column:1 / -1;}
+  @media (max-width:700px){.cas{padding:24px 18px 20px;}.cas__radky{grid-template-columns:1fr;}}
+
+  /* ===== Důkazy z praxe ===== */
+  .sekce{margin-bottom:56px;}
+  .sekce > h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(24px,3.2vw,32px);letter-spacing:-0.3px;line-height:1.2;margin:0 0 10px;color:var(--dark);}
+  .sekce__uvod{font-size:17px;line-height:1.65;color:var(--mid);margin:0 0 24px;max-width:720px;}
+  .dukazy{display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start;}
+  .dukazy__foto{margin:0;}
+  .dukazy__foto img{display:block;width:100%;height:auto;border-radius:14px;}
+  .dukazy__foto figcaption{font-size:13px;color:var(--mid);margin-top:8px;line-height:1.4;}
+  .dukazy__karty{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .dukaz{background:var(--white);border:1px solid var(--border);border-top:4px solid var(--gold);border-radius:12px;padding:18px 18px 16px;}
+  .dukaz__cislo{font-family:'Poppins',sans-serif;font-weight:900;font-size:clamp(24px,2.3vw,30px);white-space:nowrap;line-height:1.05;color:var(--dark);margin-bottom:6px;}
+  .dukaz__cislo small{font-size:0.5em;font-weight:800;color:var(--gold-dark);display:block;margin-top:4px;}
+  .dukaz p{font-size:15px;line-height:1.55;color:var(--mid);margin:0;}
+  .dukaz p + p{margin-top:8px;}
+  .dukaz__vysvetleni{background:var(--gold-light);border-radius:8px;padding:8px 10px;color:var(--dark) !important;font-size:14px !important;}
+  .dukazy__pozn{grid-column:2;font-size:14px;color:var(--mid);margin:0;}
+  @media (max-width:900px){.dukazy{grid-template-columns:1fr;}.dukazy__foto{max-width:150px;}.dukazy__karty{grid-template-columns:1fr;}.dukazy__pozn{grid-column:1;}}
+
+  /* ===== Čím je to jiné ===== */
+  .jine{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:14px;}
+  .jine__karta{border-radius:12px;padding:20px 20px 18px;background:#efeee9;}
+  .jine__karta h3{font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;margin:0 0 8px;color:var(--dark);}
+  .jine__karta p{font-size:15px;line-height:1.55;color:var(--mid);margin:0;}
+  .jine__karta--my{background:var(--black);}
+  .jine__karta--my h3{color:var(--gold);}
+  .jine__karta--my p{color:rgba(255,255,255,0.88);}
+  @media (max-width:800px){.jine{grid-template-columns:1fr;}}
+
+  /* ===== Pokusný králík + když to nevyjde ===== */
+  .dvoji{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .ramec{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px 24px 20px;}
+  .ramec h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(20px,2.4vw,24px);line-height:1.25;margin:0 0 12px;color:var(--dark);}
+  .ramec p{font-size:16px;line-height:1.65;color:var(--mid);margin:0 0 10px;}
+  .ramec p:last-child{margin-bottom:0;}
+  .ramec--zlaty{background:var(--gold-light);border-color:transparent;}
+  @media (max-width:800px){.dvoji{grid-template-columns:1fr;}}
+
+  /* ===== Časté otázky ===== */
+  .otazky details{border-bottom:1px solid var(--border);}
+  .otazky details:first-of-type{border-top:1px solid var(--border);}
+  .otazky summary{cursor:pointer;list-style:none;padding:18px 40px 18px 0;position:relative;font-family:'Poppins',sans-serif;font-weight:700;font-size:17px;color:var(--dark);}
+  .otazky summary::-webkit-details-marker{display:none;}
+  .otazky summary::after{content:"+";position:absolute;right:6px;top:12px;font-size:26px;font-weight:400;color:var(--gold-dark);}
+  .otazky details[open] summary::after{content:"−";}
+  .otazky summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
+  .otazky details p{font-size:16px;line-height:1.7;color:var(--mid);margin:0 0 18px;max-width:760px;}
+  .otazky details p a{color:var(--gold-dark);text-decoration:underline;}
+
+  /* Volná místa */
+  .mista{display:inline-flex;align-items:center;gap:8px;line-height:1.4;max-width:560px;font-size:14px;font-weight:700;color:var(--white);background:rgba(233,169,27,0.16);border:1px solid rgba(233,169,27,0.45);border-radius:20px;padding:6px 14px;margin-top:16px;}
+  .mista::before{content:"";width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:var(--gold);}
+  .cta-block .mista{color:var(--dark);background:var(--white);border-color:var(--gold);margin:0 0 18px;}
+
+  /* ===== Pohyb ve spodní části: objeví se při posouvání ===== */
+  .prouzek{height:8px;border-radius:4px;background:#ecebe6;overflow:hidden;margin:10px 0 12px;}
+  .prouzek span{display:block;height:100%;width:var(--do);background:var(--gold);border-radius:4px;}
+  html.pohyb .odhal{opacity:0;transform:translateY(14px);transition:opacity .6s ease, transform .6s ease;transition-delay:calc(var(--poradi,0) * 90ms);}
+  html.pohyb .odhal.je-tu{opacity:1;transform:none;}
+  html.pohyb .prouzek span{width:var(--z);transition:width 1.4s cubic-bezier(.3,.6,.2,1) .9s;}
+  html.pohyb .je-tu .prouzek span{width:var(--do);}
+
+  /* ===== Fakta o pilotu ===== */
+  .content{max-width:1040px;margin:0 auto;padding:56px 24px 12px;}
+  .fakta{display:grid;grid-template-columns:1fr 1fr;gap:12px 48px;}
+  .block{margin-bottom:40px;}
+  .block h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(20px,3vw,24px);letter-spacing:-0.3px;margin:0 0 16px;color:var(--dark);}
+  .block > p{font-size:16px;line-height:1.75;color:var(--mid);margin:0;}
+  .block > p + .check-list{margin-top:18px;}
+  .block--siroky{grid-column:1 / -1;max-width:760px;}
+  .check-list{list-style:none;padding:0;margin:0;}
+  .check-list li{font-size:16px;line-height:1.6;color:var(--dark);padding-left:30px;position:relative;margin-bottom:12px;}
+  .check-list li::before{content:"✓";position:absolute;left:0;top:0;color:var(--gold-dark);font-weight:700;}
+  @media (max-width:800px){.fakta{grid-template-columns:1fr;}}
+
+  /* ===== Přihláška ===== */
+  #prihlasit{scroll-margin-top:90px;}
+  .cta-block{background:var(--gold-light);border-radius:16px;padding:44px 32px 40px;text-align:center;margin:8px 0 60px;}
+  .cta-block h2{font-family:'Poppins',sans-serif;font-weight:800;font-size:clamp(22px,3vw,28px);margin:0 0 12px;color:var(--dark);}
+  .cta-block > p{font-size:16px;line-height:1.6;color:var(--mid);margin:0 auto 24px;max-width:520px;}
+  .cta-note{font-size:13px;color:var(--mid);margin-top:18px;}
+
+  /* Patička, stejná jako na tokva.cz */
+  .site-footer{background:#fff;border-top:1px solid #e8e8e8;padding:22px 24px;font-family:'DM Sans',sans-serif;position:relative;z-index:30;}
   .footer-in{max-width:1040px;margin:0 auto;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;}
   .footer-sl{font-size:13px;line-height:1.8;color:#545454;}
   .footer-sl strong{color:#111;}
   .footer-sl a{color:#545454;text-decoration:underline;text-underline-offset:2px;}
   .footer-sl a:hover{color:#976e12;}
   .footer-vpravo{text-align:right;}
-  @media (max-width:700px){.site-footer{padding:20px 16px;}.footer-in{flex-direction:column;gap:10px;}.footer-vpravo{text-align:left;}}
+  main.content, .cta-wrap{position:relative;z-index:30;background:var(--paper);}
 
+  @media (max-width:700px){.site-footer{padding:20px 16px;}.footer-in{flex-direction:column;gap:10px;}.footer-vpravo{text-align:left;}}
   @media (max-width:600px){
     .topbar{padding:12px 16px;}
-    .hero{padding:44px 0 40px;}
+    .hero{padding:40px 0 36px;}
     .hero-inner{padding:0 18px;}
-    .content{padding:44px 18px 16px;}
-    .practice-card, .cta-block{padding:28px 22px;}
+    .content{padding:44px 18px 8px;}
+    .cta-block{padding:32px 18px;}
+    .btn-gold{width:100%;text-align:center;}
   }
 </style>
 </head>
@@ -110,79 +435,306 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 
   <section class="hero">
     <div class="hero-inner">
-      <div class="badge">Pilotní program · 3 místa</div>
-      <h1>Zjistěte, kde váš provoz ztrácí čas. <span class="hl">S mojí podporou od měření po ověření změny.</span></h1>
+      <div class="hero-grid">
+      <div>
+      <div class="badge">Pilot Změř, změň, ověř · zdarma</div>
+      <h1>Zjistěte, kde váš provoz ztrácí <span class="sr-only">čas.</span><span class="rotace" aria-hidden="true"><span class="rotace__slova"><span class="rotace__slovo"><span>čas</span>.</span><span class="rotace__slovo"><span>kapacitu</span>.</span><span class="rotace__slovo"><span>peníze</span>.</span><span class="rotace__slovo"><span>čas</span>.</span></span></span> <span class="hl">S mojí podporou od měření po ověření změny.</span></h1>
+      <p class="hero-bolest">Lidi chodí pro věci, hledají, čekají a opravují chyby, které se pořád vracejí. V žádném výkazu to nevidíte, a tak se to těžko řeší.</p>
       <p class="hero-sub">Během tříměsíčního pilotu se zaměříme na jeden problém, který vás opakovaně zdržuje. Pomůžu vám vybrat měření, vyhodnotit příčiny a ověřit přínos změny. Získáte tři měsíce spolupráce a celkem půl roku Tokvy Pro zdarma.</p>
       <div class="hero-cta">
-        <a href="#prihlasit" class="btn-gold">Chci se přihlásit do pilotu</a>
-        <span class="hero-cta-note">Vyberu tři firmy, pro které bude spolupráce nejpřínosnější.</span>
+        <a href="#prihlasit" class="btn-gold" data-pilot-prihlasit="uvod">Chci se přihlásit</a>
+        <a href="#podminky" class="btn-odkaz">Podmínky a časová náročnost</a>
       </div>
+      <div class="mista">Jen 3 firmy: plná Tokva Pro na půl roku zdarma a moje pomoc s vaším problémem</div>
+      <p class="hero-cta-note" style="margin:10px 0 0;">Vyberu tři firmy, pro které bude spolupráce nejpřínosnější.</p>
+      </div>
+      <aside class="kdo" aria-label="Kdo vás pilotem provede">
+        <div class="kdo__hlava">
+          <img src="img/gabriela-tomickova-kruh.webp" width="120" height="120" alt="Gabriela Tomíčková">
+          <div>
+            <div class="kdo__jmeno">Gabriela Tomíčková</div>
+            <div class="kdo__role">16 let praxe ve výrobě a ve skladu</div>
+          </div>
+        </div>
+        <p>10 let jsem zlepšovala výrobu jako KAIZEN specialistka. Pak jsem 6 let vedla velkoobchodní sklad s 20 lidmi. Za 4 roky jsme tam stejnou práci se stejnými lidmi zvládali o 30 % méně hodin.</p>
+        <p>Pilotem vás provedu osobně. Projekt za vás nevedu, jsem u toho s vámi.</p>
+        <a href="https://tokva.cz/muj-pribeh/">Můj příběh</a>
+      </aside>
+      </div>
+      <div class="sjedte">Sjeďte níž a uvidíte, jak pilot probíhá.</div>
     </div>
   </section>
 
-  <main class="content">
+  <section class="prohlidka" id="prohlidka" aria-label="Jak pilot probíhá">
 
-    <section class="block">
-      <h2>Co z toho budete mít</h2>
-      <ul class="check-list">
-        <li>Čísla místo dojmů: kolik času mizí v chození, čekání nebo hledání a kolik vás to stojí.</li>
-        <li>Pravděpodobnou příčinu a první konkrétní krok, ne seznam teorií.</li>
-        <li>Porovnání před a po: uvidíte, co se po změně zlepšilo a co ještě potřebuje pozornost.</li>
-        <li>Postup, který pak zvládnete sami u dalších problémů.</li>
-      </ul>
+    <article class="krok" data-pan="-1">
+      <div class="krok__scena">
+        <figure class="krok__foto" style="margin:0">
+          <div class="krok__plocha">
+            <picture>
+              <source media="(max-width: 700px)" srcset="img/krok1-uvodni-schuzka-mobil.webp" width="720" height="900">
+              <img src="img/krok1-uvodni-schuzka-pc.webp" srcset="img/krok1-uvodni-schuzka-pc-960.webp 960w, img/krok1-uvodni-schuzka-pc.webp 1600w" sizes="100vw" width="1600" height="900" loading="lazy" decoding="async" alt="Ilustrační fotografie: úvodní schůzka s majitelem menší firmy v kanceláři u skladu">
+            </picture>
+          </div>
+        </figure>
+        <div class="krok__text">
+          <div class="krok__cislo">Krok 1</div>
+          <h2>Úvodní schůzka</h2>
+          <p>Sedneme si na 30 až 45 minut. Do 80 km od Vrchlabí přijedu za vámi, dál to zvládneme online. Vybereme jeden problém, který vás opakovaně zdržuje, dohodneme postup a krátce vás zaškolím.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="krok" data-pan="1" data-meric>
+      <div class="krok__scena">
+        <figure class="krok__foto" style="margin:0">
+          <div class="krok__plocha">
+            <picture>
+              <source media="(max-width: 700px)" srcset="img/krok2-mobil-v-ruce-mobil.webp" width="720" height="900">
+              <img src="img/krok2-mobil-v-ruce-pc.webp" srcset="img/krok2-mobil-v-ruce-pc-960.webp 960w, img/krok2-mobil-v-ruce-pc.webp 1600w" sizes="100vw" width="1600" height="900" loading="lazy" decoding="async" alt="Ilustrační fotografie: měření ve skladu, na mobilu běží Měřič plýtvání z Tokvy">
+            </picture>
+            <div class="krok__displej" aria-hidden="true"></div>
+          </div>
+        </figure>
+        <div class="krok__text">
+          <div class="krok__cislo">Krok 2</div>
+          <h2>Měříte s mobilem v ruce</h2>
+          <p>Měříte práci tak, jak se dělá každý den. Na mobilu ťuknete na to, co se zrovna děje: práce, přesun, hledání, čekání. Čas se počítá sám. Když jeden cyklus trvá kolem 2 minut, je změřeno do 10 minut.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="krok" data-pan="-1">
+      <div class="krok__scena">
+        <figure class="krok__foto" style="margin:0">
+          <div class="krok__plocha">
+            <picture>
+              <source media="(max-width: 700px)" srcset="img/krok3-vysledek-mobil.webp" width="720" height="900">
+              <img src="img/krok3-vysledek-pc.webp" srcset="img/krok3-vysledek-pc-960.webp 960w, img/krok3-vysledek-pc.webp 1600w" sizes="100vw" width="1600" height="900" loading="lazy" decoding="async" alt="Ilustrační fotografie: výsledek měření na tabletu, rozložení času na práci, přesun, hledání a čekání">
+            </picture>
+          </div>
+        </figure>
+        <div class="krok__text">
+          <div class="krok__cislo">Krok 3</div>
+          <h2>Čísla místo dojmů</h2>
+          <p>Hned po měření vidíte, kolik času je práce a kolik mizí v chození, čekání nebo hledání. Porovnáme to s tím, jak jste to odhadovali předem. Často to dopadne jinak.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="krok" data-pan="1">
+      <div class="krok__scena">
+        <figure class="krok__foto" style="margin:0">
+          <div class="krok__plocha">
+            <picture>
+              <source media="(max-width: 700px)" srcset="img/krok4-jedna-zmena-mobil.webp" width="720" height="900">
+              <img src="img/krok4-jedna-zmena-pc.webp" srcset="img/krok4-jedna-zmena-pc-960.webp 960w, img/krok4-jedna-zmena-pc.webp 1600w" sizes="100vw" width="1600" height="900" loading="lazy" decoding="async" alt="Ilustrační fotografie: skladníci přenášejí zboží blíž k výdeji">
+            </picture>
+          </div>
+        </figure>
+        <div class="krok__text">
+          <div class="krok__cislo">Krok 4</div>
+          <h2>Jedna změna</h2>
+          <p>Hledáme pravděpodobnou příčinu, ne viníka. Tohle většinou není problém lidí, ale postupu. Vybereme první konkrétní krok, který má podle měření největší smysl, a zapíšeme, kdo ho udělá a do kdy.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="krok" data-pan="-1">
+      <div class="krok__scena">
+        <figure class="krok__foto" style="margin:0">
+          <div class="krok__plocha">
+            <picture>
+              <source media="(max-width: 700px)" srcset="img/krok5-zmereno-znovu-mobil.webp" width="720" height="900">
+              <img src="img/krok5-zmereno-znovu-pc.webp" srcset="img/krok5-zmereno-znovu-pc-960.webp 960w, img/krok5-zmereno-znovu-pc.webp 1600w" sizes="100vw" width="1600" height="900" loading="lazy" decoding="async" alt="Ilustrační fotografie: sklad po změně, skladník s vozíkem">
+            </picture>
+          </div>
+        </figure>
+        <div class="krok__text">
+          <div class="krok__cislo">Krok 5</div>
+          <h2>Změřeno znovu</h2>
+          <p>Po změně změříte totéž znovu. Před a po vedle sebe ukáže, co se zlepšilo a co ještě potřebuje pozornost. Když první změna nezabere, hledáme dál.</p>
+        </div>
+        <figure class="krok__karta">
+          <img src="img/karta-porovnani-pred-po.webp" width="800" height="344" loading="lazy" decoding="async" alt="Porovnání před a po změně v Tokvě">
+          <figcaption>Porovnání před a po v Tokvě. Čísla jsou ukázková.</figcaption>
+        </figure>
+      </div>
+    </article>
+
+    <article class="krok" data-pan="1">
+      <div class="krok__scena">
+        <figure class="krok__foto" style="margin:0">
+          <div class="krok__plocha">
+            <picture>
+              <source media="(max-width: 700px)" srcset="img/zaver-kovodilna-mobil.webp" width="720" height="900">
+              <img src="img/zaver-kovodilna-pc.webp" srcset="img/zaver-kovodilna-pc-960.webp 960w, img/zaver-kovodilna-pc.webp 1600w" sizes="100vw" width="1600" height="900" loading="lazy" decoding="async" alt="Ilustrační fotografie: dílna menší výrobní firmy">
+            </picture>
+          </div>
+        </figure>
+        <div class="krok__text">
+          <div class="krok__cislo">Po třech měsících</div>
+          <h2>Postup, který zvládnete sami</h2>
+          <p>Na konci pilotu společně vyhodnotíme, co to přineslo. Odnesete si postup, který pak zvládnete sami u dalších problémů, ve skladu i ve výrobě. Tokvu Pro můžete používat ještě další tři měsíce zdarma.</p>
+        </div>
+      </div>
+    </article>
+
+  </section>
+  <p class="prohlidka-pozn" style="background:var(--tma);margin:0;max-width:none;">Fotografie jsou ilustrační. Obrazovky na nich jsou ze skutečné Tokvy.</p>
+
+  <main class="content" id="fakta">
+
+    <section class="sekce" id="z-praxe">
+      <h2>Co už měření v praxi ukázalo</h2>
+      <p class="sekce__uvod">Tři příklady z mých provozů, změřené před změnou i po ní.</p>
+      <div class="dukazy">
+        <figure class="dukazy__foto odhal">
+          <img src="img/gabriela-tomickova-480.webp" width="480" height="600" loading="lazy" decoding="async" alt="Gabriela Tomíčková">
+          <figcaption>Gabriela Tomíčková, 10 let KAIZEN ve výrobě, 6 let vedení skladu</figcaption>
+        </figure>
+        <div>
+          <div class="dukazy__karty">
+            <div class="dukaz odhal">
+              <div class="dukaz__cislo">7,5 → <span data-pocitej-od="7.5" data-pocitej-do="4.2" data-desetiny="1" data-zpozdeni="500">4,2</span> km<small>chůze za směnu</small></div>
+              <div class="prouzek" aria-hidden="true"><span style="--z:100%;--do:56%"></span></div>
+              <p>Skladnice Andula. Šest nejčastěji vychystávaných položek šlo blíž k výdeji, bez investice.</p>
+            </div>
+            <div class="dukaz odhal" style="--poradi:1">
+              <div class="dukaz__cislo">o <span data-pocitej-od="0" data-pocitej-do="3">3</span> hodiny<small>dřív domů, po více změnách</small></div>
+              <p>Noční směna ztrácela hodiny hledáním. Po změnách v postupu odcházela o 3 hodiny dřív, s ní i řidiči a fakturantky.</p>
+              <p class="dukaz__vysvetleni">Nebyla to jedna změna, ale víc najednou: vychystávání po úsecích, dost zboží v regálech a lepší trasa.</p>
+            </div>
+            <div class="dukaz odhal" style="--poradi:2">
+              <div class="dukaz__cislo">o <span data-pocitej-od="0" data-pocitej-do="30">30</span> %<small>méně hodin</small></div>
+              <div class="prouzek" aria-hidden="true"><span style="--z:100%;--do:70%"></span></div>
+              <p>Stejná práce, stejní lidé, za 4 roky o 30 % méně hodin. Zmizely přesčasy, šly přidat odměny.</p>
+            </div>
+          </div>
+        </div>
+        <p class="dukazy__pozn">Každý provoz je jiný a stejné číslo vám slíbit nemůžu. Kolik se dá ušetřit u vás, ukáže až vaše měření.</p>
+      </div>
     </section>
 
-    <section class="block">
-      <h2>Pro koho to je</h2>
-      <ul class="check-list">
-        <li>Malá nebo střední firma z výroby, skladu, velkoobchodu nebo logistiky.</li>
-        <li>Zhruba 10 až 100 zaměstnanců, v řešeném provozu nebo na směně ideálně 3 až 30 lidí.</li>
-        <li>Nemusíte znát Lean ani Kaizen, ani appky tohohle typu.</li>
-        <li>Pilot je možný po celé ČR.</li>
-      </ul>
+    <section class="sekce" id="cim-je-to-jine">
+      <h2>Čím je to jiné</h2>
+      <div class="jine">
+        <div class="jine__karta odhal">
+          <h3>Zpráva od konzultanta</h3>
+          <p>Doporučení na papíře. Často skončí v šuplíku.</p>
+        </div>
+        <div class="jine__karta odhal" style="--poradi:1">
+          <h3>Tabulka v Excelu</h3>
+          <p>Sklad čísel. Neřekne, kde se ztrácí čas.</p>
+        </div>
+        <div class="jine__karta jine__karta--my odhal odhal--vic" style="--poradi:2">
+          <h3>Změř, změň, ověř</h3>
+          <p>Měříte v provozu, změníte jednu věc a změříte znovu. Hned vidíte, jestli to zabralo.</p>
+        </div>
+      </div>
     </section>
 
-    <section class="block">
-      <h2>Co dostanete zdarma</h2>
-      <ul class="check-list">
-        <li>Tři měsíce spolupráce na jednom konkrétním problému.</li>
-        <li>Pomoc od výběru měření po vyhodnocení změny.</li>
-        <li>Tokvu Pro na šest měsíců zdarma.</li>
-      </ul>
+    <section class="sekce dvoji">
+      <div class="ramec odhal">
+        <h2>Budu pokusný králík?</h2>
+        <p>Ne. Pilot je zdarma, protože Tokvu ověřuju v dalších provozech. Postup nový není: stojí na 16 letech praxe a dalších 3 skladech, kam mě posílal ředitel. A měření před a po ukáže černé na bílém, jestli to pomohlo.</p>
+      </div>
+      <div class="ramec ramec--zlaty odhal" style="--poradi:1">
+        <h2>Co když to nevyjde?</h2>
+        <p>Řeknete mi to na rovinu. Nic neplatíte a z měření už víte, kde vám utíká čas. Stálo vás to 30 až 45 minut schůzky a vlastní měření.</p>
+      </div>
     </section>
 
-    <section class="block">
-      <h2>Jak to probíhá</h2>
-      <ul class="steps-list">
-        <li><span class="step-text">Napíšete mi, co vás ve firmě nejvíc pálí.</span></li>
-        <li><span class="step-text">Na úvodní schůzce během 30 až 45 minut vybereme první problém, dohodneme postup a krátce vás zaškolím.</span></li>
-        <li><span class="step-text">Tři měsíce měříte a zlepšujete, já jsem průběžně k dispozici.</span></li>
-        <li><span class="step-text">Na konci pilotu společně vyhodnotíme, co to přineslo. Tokvu Pro pak můžete používat ještě další tři měsíce zdarma.</span></li>
-      </ul>
+    <section class="cas odhal" id="podminky">
+      <h2>Podmínky a časová náročnost</h2>
+      <p class="cas__uvod">Kolik času vás pilot bude stát. Měření i změny děláte při běžné práci, provoz nezastavujete.</p>
+      <div class="cas__radky">
+        <div class="cas__radek">
+          <div class="cas__kolik">30 až 45 minut</div>
+          <div class="cas__co">Úvodní schůzka</div>
+          <p>Do 80 km od Vrchlabí osobně u vás, dál online. Vybereme problém a uděláme spolu první měření.</p>
+        </div>
+        <div class="cas__radek">
+          <div class="cas__kolik">3× asi 10 minut</div>
+          <div class="cas__co">Krátké dotazníky</div>
+          <p>Na začátku, po prvních týdnech a na konci pilotu.</p>
+        </div>
+        <div class="cas__radek cas__priklad">
+          <div class="cas__kolik">Do 10 minut</div>
+          <div class="cas__co">Jedno měření, příklad</div>
+          <p>Vychystání jedné objednávky trvá kolem 2 minut. Někdo z vás ho změří Měřičem plýtvání na mobilu třikrát za sebou, s přípravou to nezabere víc než 10 minut. Měří vedoucí nebo kdokoli z provozu. Delší proces znamená delší měření, vždy je to jen čas samotné práce.</p>
+        </div>
+        <div class="cas__radek">
+          <div class="cas__kolik">Nejrychleji 14 dní</div>
+          <div class="cas__co">První výsledek</div>
+          <p>Změřit, změnit jednu věc a změřit totéž znovu se dá zvládnout i za 14 dní.</p>
+        </div>
+        <div class="cas__radek">
+          <div class="cas__kolik">Tři měsíce</div>
+          <div class="cas__co">Ověření, že to vydrží</div>
+          <p>Jestli se nový stav udrží, se ukáže až s odstupem času. Proto pilot trvá tři měsíce a já jsem po celou dobu průběžně k dispozici.</p>
+        </div>
+        <div class="cas__radek cas__plny">
+          <div class="cas__kolik">Na konci</div>
+          <div class="cas__co">Závěrečné zhodnocení</div>
+          <p>Krátce spolu projdeme, co se změnilo a co ještě potřebuje pozornost.</p>
+        </div>
+      </div>
     </section>
 
-    <section class="block">
-      <h2>Co bude potřeba od vás</h2>
-      <p>Tokvu jsem postavila na tom, co jsem roky dělala v praxi, ve výrobě i ve skladu. Teď si chci ověřit, že pomáhá i v jiných provozech než v těch mých, a doladit ji podle zkušeností prvních firem. Proto od vás chci hlavně upřímnou zpětnou vazbu, co funguje a co ne.</p>
-      <ul class="check-list">
-        <li>Konkrétní problém z vašeho provozu a ochotu vyzkoušet změnu.</li>
-        <li>30 až 45 minut na úvodní schůzku a čas na vlastní měření podle typu problému.</li>
-        <li>Tři krátké dotazníky během pilotu, každý zabere asi 10 minut.</li>
-        <li>Průběžnou komunikaci během pilotu a krátké závěrečné zhodnocení.</li>
-        <li>Souhlas, že výsledek pilotu můžu uvést jako referenci. Text vám vždy dám předem ke schválení a citlivá čísla nezveřejním.</li>
-      </ul>
+    <div class="fakta">
+      <section class="block odhal">
+        <h2>Pro koho to je</h2>
+        <ul class="check-list">
+          <li>Firma z výroby, skladu, velkoobchodu nebo logistiky.</li>
+          <li>1 až 100 zaměstnanců, v řešeném provozu ideálně 3 až 30 lidí.</li>
+          <li>Nemusíte znát Lean ani Kaizen.</li>
+          <li>Kdekoli v ČR.</li>
+        </ul>
+      </section>
+      <section class="block odhal" style="--poradi:1">
+        <h2>Co za to chci</h2>
+        <ul class="check-list">
+          <li>Upřímnou zpětnou vazbu, co funguje a co ne.</li>
+          <li>Tři krátké dotazníky, každý asi 10 minut.</li>
+          <li>Souhlas, že výsledek můžu uvést jako referenci. Text vám dám předem ke schválení a citlivá čísla nezveřejním.</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="sekce otazky" id="otazky">
+      <h2>Časté otázky</h2>
+      <details>
+        <summary>Musí lidi na dílně něco umět?</summary>
+        <p>Ne. Kdo umí ťuknout na mobil, zvládne Měřič plýtvání. Nemusíte znát Lean, Kaizen ani Excel a nic se neinstaluje. Měření si spolu vyzkoušíme hned na úvodní schůzce.</p>
+      </details>
+      <details>
+        <summary>Co bude po pilotu?</summary>
+        <p>Na konci spolu vyhodnotíme, co se změnilo a co ještě potřebuje pozornost. Tokvu Pro pak můžete používat ještě další tři měsíce zdarma. Nic se samo neprodlužuje: týden před koncem vám přijde e-mail, jestli chcete pokračovat.</p>
+      </details>
+      <details>
+        <summary>Kolik to pak stojí?</summary>
+        <p>Pilot i šest měsíců Tokvy Pro jsou zdarma. Kdo bude chtít pokračovat, dostane Tokvu Pro za zakladatelskou cenu, podle varianty od 499 Kč měsíčně (<a href="https://tokva.cz/pro/#ceny">Varianty a ceny</a>). Nástroje zdarma můžete používat dál i bez předplatného.</p>
+      </details>
+      <details>
+        <summary>Kdo uvidí naše data?</summary>
+        <p>Vaše data vidíte vy a lidé, které do Tokvy pozvete. Během pilotu do nich nahlížím i já, abych vám mohla radit. Ven nic nejde: do reference jen text, který vám dám předem ke schválení, a citlivá čísla nezveřejním.</p>
+      </details>
+      <details>
+        <summary>Jak se do pilotu přihlásit?</summary>
+        <p>Klikněte na Chci se přihlásit. Kdo má účet v Tokvě, je přihlášený jedním klikem, ostatní vyplní e-mail a název firmy, telefon je nepovinný. Na e-mail přijde potvrzení. Do 2 pracovních dnů se vám ozvu a domluvíme úvodní schůzku. Pilot je omezený na 3 firmy, vybírám z přihlášených.</p>
+      </details>
     </section>
 
     <div class="cta-block" id="prihlasit">
-      <h2>Jak se přihlásit</h2>
-      <p>Napište mi na LinkedIn nebo na e-mail a krátce popište, co vás ve firmě nejvíc pálí. Z přihlášených vyberu tři firmy, kde bude mít spolupráce podle mě největší smysl.</p>
-      <div class="cta-buttons">
-        <a href="https://www.linkedin.com/in/gabriela-tomíčková" class="btn-gold" target="_blank">Napsat na LinkedIn</a>
-        <a href="mailto:tomickova.info@gmail.com?subject=P%C5%99ihl%C3%A1%C5%A1en%C3%AD%20do%20pilotu%20Tokva" class="btn-outline">Napsat e-mail</a>
+      <div class="mista">Jen 3 místa</div>
+      <h2>Přihláška do pilotu Změř, změň, ověř</h2>
+      <p>Využijte to: plnou Tokvu Pro na půl roku zdarma a moji pomoc s vaším problémem od měření po ověření změny. Přihláška zabere minutu. Do 2 pracovních dnů se vám ozvu a domluvíme úvodní schůzku. Do 14 dnů po ní vám dám vědět, jestli jste v pilotu.</p>
+      <div data-tokva-pilot-prihlaska data-varianta="a">
+        <noscript><p style="color:var(--mid);">Přihláška potřebuje zapnutý JavaScript. Zapněte ho prosím a stránku načtěte znovu.</p></noscript>
       </div>
       <div class="cta-note">Pilot je omezený na 3 firmy, vybírám z přihlášených.</div>
     </div>
-
   </main>
 
 <footer class="site-footer">
@@ -198,7 +750,189 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
   </div>
 </footer>
 
+<script>
+// Střídající se slovo v nadpisu: čas, kapacitu, peníze. Starý vyjede nahoru,
+// nový zespodu. Kdo má omezení animací, vidí jen „čas.“ (a čtečka vždy „čas.“).
+(function () {
+  var r = document.querySelector('.rotace');
+  if (!r) return;
+  var slova = r.querySelector('.rotace__slova');
+  var polozky = slova.children;
+  var n = polozky.length - 1;               // poslední je kopie prvního kvůli plynulému návratu
+  var i = 0;
+  function nastavitSirku(k) {
+    var el = polozky[k];
+    var rng = document.createRange(); rng.selectNodeContents(el);
+    r.style.width = Math.ceil(rng.getBoundingClientRect().width) + 'px';
+  }
+  nastavitSirku(0);
+  window.addEventListener('resize', function () { nastavitSirku(i % n); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { nastavitSirku(i % n); });
+  if (!window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.documentElement.classList.add('rotace-bezi');
+  setInterval(function () {
+    if (document.hidden) return;
+    i++;
+    slova.style.transition = '';
+    slova.style.transform = 'translateY(' + (-i * 1.15) + 'em)';
+    nastavitSirku(i % n);
+    if (i === n) {
+      setTimeout(function () {
+        slova.style.transition = 'none';
+        slova.style.transform = 'translateY(0)';
+        i = 0;
+      }, 600);
+    }
+  }, 1300);
+})();
+</script>
+<script>
+// Spodní část stránky: bloky se objeví při posouvání, čísla v důkazech se
+// dopočítají a proužky se zkrátí. Kdo má omezení animací nebo nemá
+// JavaScript, vidí všechno hned a beze změny (třída "pohyb" se nepřidá).
+(function () {
+  if (!window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+  document.documentElement.classList.add('pohyb');
+  function cislo(x, des) { return x.toFixed(des).replace('.', ','); }
+  function pocitat(el) {
+    var od = parseFloat(el.getAttribute('data-pocitej-od')), do_ = parseFloat(el.getAttribute('data-pocitej-do'));
+    var des = parseInt(el.getAttribute('data-desetiny') || '0', 10);
+    var zpozdeni = parseInt(el.getAttribute('data-zpozdeni') || '200', 10), delka = 1300, start = null;
+    el.textContent = cislo(od, des);
+    setTimeout(function () {
+      function krok(t) {
+        if (start === null) start = t;
+        var p = Math.min(1, (t - start) / delka), e = 1 - Math.pow(1 - p, 3);
+        el.textContent = cislo(od + (do_ - od) * e, des);
+        if (p < 1) requestAnimationFrame(krok);
+      }
+      requestAnimationFrame(krok);
+    }, zpozdeni);
+  }
+  var pozorovatel = new IntersectionObserver(function (zaznamy) {
+    zaznamy.forEach(function (z) {
+      if (!z.isIntersecting) return;
+      z.target.classList.add('je-tu');
+      z.target.querySelectorAll('[data-pocitej-do]').forEach(pocitat);
+      pozorovatel.unobserve(z.target);
+    });
+  }, { threshold: 0.25, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.odhal').forEach(function (el) { pozorovatel.observe(el); });
+})();
+</script>
+<script>
+// Prohlídka pilotu: fotky se při scrolování přibližují, posouvají a prolínají,
+// texty se objevují a mizí u své fotky, Měřič na mobilu běží podle scrolování.
+// Kdo má omezení animací (nebo mu nejde JavaScript), uvidí obyčejnou stránku
+// se stejnými fotkami a texty: bez třídy "prohlidka-bezi" se nic nemění.
+(function () {
+  'use strict';
+  var VARIANTA = 'a';
+  if (!window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.requestAnimationFrame || !('CSS' in window) || !CSS.supports('aspect-ratio', '1 / 1')) return;
+
+  var prohlidka = document.getElementById('prohlidka');
+  var kroky = Array.prototype.slice.call(prohlidka.querySelectorAll('.krok'));
+  if (!kroky.length) return;
+  var sceny = kroky.map(function (k) { return k.querySelector('.krok__scena'); });
+  var n = kroky.length;
+
+  // Měřič plýtvání na mobilu (krok 2): 16 snímků ze záznamu obrazovky v jednom obrázku.
+  var SNIMKY = { soubor: 'img/krok2-meric-snimky.webp', pocet: 16, sloupce: 8, radky: 2 };
+  var meric = prohlidka.querySelector('[data-meric] .krok__displej');
+  var mericNacteny = false, posledniSnimek = -1;
+  function nacistMeric() {
+    if (mericNacteny || !meric) return;
+    mericNacteny = true;
+    var img = new Image();
+    img.onload = function () {
+      meric.style.backgroundImage = 'url(' + SNIMKY.soubor + ')';
+      meric.style.backgroundSize = (SNIMKY.sloupce * 100) + '% ' + (SNIMKY.radky * 100) + '%';
+      meric.style.display = 'block';
+      posledniSnimek = -1;
+      naplanovat();
+    };
+    img.src = SNIMKY.soubor;
+  }
+  function ukazatSnimek(i) {
+    if (!meric || i === posledniSnimek) return;
+    posledniSnimek = i;
+    var s = i % SNIMKY.sloupce, r = Math.floor(i / SNIMKY.sloupce);
+    meric.style.backgroundPosition = (s / (SNIMKY.sloupce - 1) * 100) + '% ' + (r / (SNIMKY.radky - 1) * 100) + '%';
+  }
+
+  var lista = 64, konecOdeslan = false, ceka = false, videneKroky = {};
+  function zmeritListu() {
+    var tb = document.querySelector('.topbar');
+    lista = tb ? Math.round(tb.getBoundingClientRect().height) : 64;
+    document.documentElement.style.setProperty('--lista', lista + 'px');
+  }
+  function omez(x) { return x < 0 ? 0 : (x > 1 ? 1 : x); }
+  function nabeh(x, od, do_) { return omez((x - od) / (do_ - od)); }
+
+  function vykreslit() {
+    ceka = false;
+    var vh = window.innerHeight;
+    var r = prohlidka.getBoundingClientRect();
+    var krokVyska = kroky[0].offsetHeight || (vh - lista);
+    var t = (lista - r.top) / krokVyska;             // 0 = začátek prohlídky
+    var oriznoutNahore = Math.max(0, Math.round(r.top - lista));
+    var oriznoutDole = Math.max(0, Math.round(vh - r.bottom));
+    var mimo = r.bottom <= lista || r.top >= vh;
+
+    for (var i = 0; i < n; i++) {
+      var sc = sceny[i];
+      var mistni = t - i;                            // -1..0 nástup, 0..1 krok běží
+      var posledni = i === n - 1;
+      var videt = !mimo && (i === 0 ? mistni < 1 : mistni > -0.3) && (posledni || mistni < 1);
+      if (!videt) { if (sc.classList.contains('je-videt')) sc.classList.remove('je-videt'); continue; }
+      if (!sc.classList.contains('je-videt')) sc.classList.add('je-videt');
+
+      // Prolnutí: další fotka se během posledních 30 % předchozího kroku rozsvítí přes ni.
+      var pruhlednost = i === 0 ? 1 : nabeh(mistni, -0.3, 0);
+      sc.style.opacity = pruhlednost;
+      sc.style.zIndex = 10 + i;
+      sc.style.clipPath = 'inset(' + oriznoutNahore + 'px 0 ' + oriznoutDole + 'px 0)';
+
+      // Pomalé přiblížení a posun fotky.
+      var postup = nabeh(mistni, -0.3, 1);
+      var smer = parseFloat(kroky[i].getAttribute('data-pan')) || 0;
+      sc.style.setProperty('--zoom', (1.1 - 0.1 * postup).toFixed(4));
+      sc.style.setProperty('--pan', (smer * (1 - postup) * 2).toFixed(3) + '%');
+
+      // Text se objeví a zase zmizí, vždy krátce u své fotky (u posledního zůstane).
+      var text = posledni ? nabeh(mistni, 0.02, 0.18) : Math.min(nabeh(mistni, 0.02, 0.18), 1 - nabeh(mistni, 0.72, 0.9));
+      sc.style.setProperty('--text', text.toFixed(3));
+      sc.style.setProperty('--karta', nabeh(mistni, 0.22, 0.4).toFixed(3));
+
+      // Měřič na mobilu běží podle scrolování.
+      if (kroky[i].hasAttribute('data-meric')) {
+        if (mistni > -0.6) nacistMeric();
+        if (mericNacteny) ukazatSnimek(Math.round(nabeh(mistni, -0.1, 0.75) * (SNIMKY.pocet - 1)));
+      }
+    }
+
+    // Konec prohlídky se počítá jen tomu, kdo opravdu prošel aspoň 4 kroky
+    // (ne tomu, kdo z úvodu skočil rovnou na přihlášku).
+    if (t > 0 && t < n && !document.documentElement.hasAttribute('data-skok')) videneKroky[Math.floor(t)] = true;
+    if (!konecOdeslan && t >= n - 0.6 && Object.keys(videneKroky).length >= 4) {
+      konecOdeslan = true;
+      if (typeof window.trackTokvaEvent === 'function') window.trackTokvaEvent('pilot_prohlidka_konec', { varianta: VARIANTA });
+    }
+  }
+  function naplanovat() { if (!ceka) { ceka = true; window.requestAnimationFrame(vykreslit); } }
+
+  document.documentElement.classList.add('prohlidka-bezi');
+  zmeritListu();
+  vykreslit();
+  window.addEventListener('scroll', naplanovat, { passive: true });
+  window.addEventListener('resize', function () { zmeritListu(); naplanovat(); });
+  window.addEventListener('load', function () { zmeritListu(); naplanovat(); });
+})();
+</script>
 <script src="/menu.js"></script>
 <script src="/cookies.js"></script>
+<script src="/pilot-prihlaska.js" defer></script>
 </body>
 </html>
