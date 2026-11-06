@@ -127,7 +127,7 @@
           '<label class="tb-souhlas"><input type="checkbox" name="souhlas"> <span>Souhlasím se zasíláním tipů a novinek k Tokvě na tento e-mail. Odhlásit se můžu kdykoliv.</span></label>' +
           '<button type="submit" class="tb-btn"></button>' +
         '</form>' +
-        '<p class="tb-zasady">E-mail použiju k odemčení nástrojů. Víc v <a href="' + ZASADY + '" target="_blank" rel="noopener">zásadách ochrany osobních údajů</a>.</p>' +
+        '<p class="tb-zasady">E-mail použiju k odemčení nástrojů a k poslání návodu. Víc v <a href="' + ZASADY + '" target="_blank" rel="noopener">zásadách ochrany osobních údajů</a>.</p>' +
         '<p class="tb-pozn-mala">Odemčení si pamatuje tento prohlížeč. Na jiném zařízení nebo po smazání dat prohlížeče bude potřeba e-mail zadat znovu.</p>' +
       '</div>' +
       '<iframe name="tb-brevo-cil" title="odeslání formuláře" style="display:none;"></iframe>';
@@ -163,12 +163,12 @@
   var TEXTY = {
     vysledek: {
       nadpis: 'Váš výsledek je připravený',
-      text: 'Zadejte e-mail a prohlédněte si výsledek. Odemknete tím i ostatní bezplatné nástroje, příště už e-mail zadávat nemusíte.',
+      text: 'Zadejte e-mail a prohlédněte si výsledek. Odemknete tím i ostatní bezplatné nástroje a příště už e-mail zadávat nemusíte. Navíc vám do e-mailu pošlu návod, co si ve firmě zmapovat dřív, než koupíte AI nástroj.',
       tlacitko: 'Zobrazit výsledek zdarma'
     },
     obecne: {
       nadpis: 'Odemkněte bezplatné nástroje',
-      text: 'Jeden e-mail odemkne výsledky všech bezplatných nástrojů Tokvy. Příště už ho zadávat nemusíte.',
+      text: 'Jeden e-mail odemkne výsledky všech bezplatných nástrojů Tokvy. Příště už ho zadávat nemusíte. Navíc vám do e-mailu pošlu návod, co si ve firmě zmapovat dřív, než koupíte AI nástroj.',
       tlacitko: 'Odemknout nástroje zdarma'
     }
   };
@@ -364,7 +364,7 @@
       karta = document.createElement('div');
       karta.className = 'tb-mlha-karta';
       karta.innerHTML = '<h3>' + TEXTY.vysledek.nadpis + '</h3>' +
-        '<p>Zadejte e-mail a prohlédněte si výsledek. Odemknete tím i ostatní bezplatné nástroje.</p>' +
+        '<p>Zadejte e-mail a prohlédněte si výsledek. Odemknete tím i ostatní bezplatné nástroje. Do e-mailu vám navíc pošlu návod „Chcete automatizovat, ale nevíte, kde začít?“ s pracovním listem k vyplnění.</p>' +
         '<button type="button" class="tb-btn">' + TEXTY.vysledek.tlacitko + '</button>';
       karta.querySelector('.tb-btn').onclick = function () { otevrit('vysledek'); };
       el.insertBefore(karta, el.firstChild);
