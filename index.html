@@ -212,6 +212,14 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
 .pas-zlata{background:var(--gold-light);box-shadow:0 0 0 100vmax var(--gold-light);clip-path:inset(0 -100vmax);}
 .pas + section{border-top:none;}
 .krok-karta img:focus-visible{outline:3px solid #e9a91b;outline-offset:3px;}
+  /* Střídající se slovo v nadpisu: čas, kapacitu, peníze */
+  .rotace{display:inline-block;position:relative;height:1.15em;overflow:hidden;vertical-align:bottom;white-space:nowrap;}
+  .rotace__slova{display:block;}
+  .rotace__slovo{display:block;height:1.15em;line-height:1.15;}
+  .rotace__slovo span{text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:3px;text-underline-offset:0.1em;}
+  .rotace-bezi .rotace{transition:width .45s ease;}
+  .rotace-bezi .rotace__slova{position:absolute;left:0;top:0;transition:transform .55s cubic-bezier(.65,0,.35,1);}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 </style>
 <style id="cookies-css">
 .cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
@@ -271,7 +279,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
    <div class="hero-mrizka">
     <div class="hero-text">
     <p class="pro-koho">Pro majitele malých výrobních firem, vedoucí skladů a mistry</p>
-    <h1>Zjistěte, kde ve výrobě nebo skladu ztrácíte čas. A co změnit jako první.</h1>
+    <h1>Zjistěte, kde ve výrobě nebo skladu ztrácíte <span class="sr-only">čas.</span><span class="rotace" aria-hidden="true"><span class="rotace__slova"><span class="rotace__slovo"><span>čas</span>.</span><span class="rotace__slovo"><span>kapacitu</span>.</span><span class="rotace__slovo"><span>peníze</span>.</span><span class="rotace__slovo"><span>čas</span>.</span></span></span> <span style="display:block">A co změnit jako první.</span></h1>
     <p class="lead">Tokva je webová aplikace, která vás provede měřením provozu a hledáním příčin problémů. Získáte konkrétní podklady pro rozhodnutí, co zlepšit.</p>
     <p class="proof">Vyberte, co právě řešíte, a Tokva vám nabídne vhodný první krok. Bez instalace a znalosti metod.</p>
     <div class="hero-ctas">
@@ -482,6 +490,42 @@ function cookiesOdmitnout() {
   localStorage.setItem('cookies_souhlas', 'ne');
   document.getElementById('cookies-bar').style.display = 'none';
 }
+</script>
+<script>
+// Střídající se slovo v nadpisu: čas, kapacitu, peníze. Starý vyjede nahoru,
+// nový zespodu. Kdo má omezení animací, vidí jen „čas.“ (a čtečka vždy „čas.“).
+(function () {
+  var r = document.querySelector('.rotace');
+  if (!r) return;
+  var slova = r.querySelector('.rotace__slova');
+  var polozky = slova.children;
+  var n = polozky.length - 1;               // poslední je kopie prvního kvůli plynulému návratu
+  var i = 0;
+  function nastavitSirku(k) {
+    var el = polozky[k];
+    var rng = document.createRange(); rng.selectNodeContents(el);
+    r.style.width = Math.ceil(rng.getBoundingClientRect().width) + 'px';
+  }
+  nastavitSirku(0);
+  window.addEventListener('resize', function () { nastavitSirku(i % n); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { nastavitSirku(i % n); });
+  if (!window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.documentElement.classList.add('rotace-bezi');
+  setInterval(function () {
+    if (document.hidden) return;
+    i++;
+    slova.style.transition = '';
+    slova.style.transform = 'translateY(' + (-i * 1.15) + 'em)';
+    nastavitSirku(i % n);
+    if (i === n) {
+      setTimeout(function () {
+        slova.style.transition = 'none';
+        slova.style.transform = 'translateY(0)';
+        i = 0;
+      }, 600);
+    }
+  }, 1300);
+})();
 </script>
 <script src="/menu.js"></script>
 <script src="/video-pauza.js"></script>
