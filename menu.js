@@ -1,6 +1,7 @@
 // Jednotné horní menu na veřejných stránkách a v nástrojích (od 22. 10. 2026).
-// Pořadí: Otevřít Tokvu zdarma (zlaté) · Všechny nástroje · Můj příběh ·
-// Varianty a ceny · Přihlásit se. Odkazy, které stránka nemá, doplní; ty, co
+// Pořadí: Otevřít Tokvu zdarma (zlaté) · Všechny nástroje · Pilot zdarma ·
+// Můj příběh · Varianty a ceny · Přihlásit se. (Pilot zdarma od 6. 11. 2026,
+// dokud nejsou obsazená 3 místa; kdo má Tokva Pro, ho nevidí.) Odkazy, které stránka nemá, doplní; ty, co
 // má, jen přeskládá (zůstanou jim id a chování z auth.js).
 // Na mobilu je vidět jen zlaté tlačítko a „Menu“, zbytek se rozbalí.
 (function () {
@@ -8,6 +9,7 @@
   var VSTUP = 'https://tokva.cz/vstup/';
   var KATALOG = 'https://tokva.cz/nastroje/';
   var PRIBEH = 'https://tokva.cz/muj-pribeh/';
+  var PILOT = 'https://tokva.cz/pilot/';
   // data-jen-sbalit: stránky po přihlášení (Přehled, Projekty…) – nic
   // nepřidávat ani nepřeskládávat, jen na mobilu schovat položky pod Menu.
   var skript = document.currentScript;
@@ -18,7 +20,7 @@
     '.menu-zlate:hover{background:#976e12 !important;border-color:#976e12 !important;color:#fff !important;}' +
     '.menu-kontejner{gap:8px;}' +
     // Kdo má Tokva Pro: bez Otevřít Tokvu zdarma, Můj příběh a Varianty a ceny.
-    'html.tokva-ma-pro .menu-zlate,html.tokva-ma-pro .menu-pribeh,html.tokva-ma-pro #nav-pro-odkaz,html.tokva-ma-pro .menu-pro{display:none !important;}' +
+    'html.tokva-ma-pro .menu-zlate,html.tokva-ma-pro .menu-pribeh,html.tokva-ma-pro #nav-pro-odkaz,html.tokva-ma-pro .menu-pro,html.tokva-ma-pro .menu-pilot{display:none !important;}' +
     '.menu-prepinac{display:none !important;cursor:pointer;font-family:inherit;background:transparent;}' +
     // Jednotný vzhled lišty a tlačítek na webu i v nástrojích (23. 10.).
     // Černá lišta = web, bílá = nástroje. Barvy zůstávají, velikosti jsou stejné.
@@ -28,6 +30,7 @@
     '.menu-lista-svetla .menu-kontejner > a:not(.menu-zlate),.menu-lista-svetla .menu-kontejner > button{color:#111 !important;background:#fff !important;border-color:#c9c5bc !important;border-style:solid !important;}' +
     '.menu-lista-svetla .menu-kontejner > a:not(.menu-zlate):hover,.menu-lista-svetla .menu-kontejner > button:hover{border-color:#e9a91b !important;}' +
     '.menu-lista-svetla .menu-kontejner > .nav-aktivni{border-color:#e9a91b !important;}' +
+    '.menu-lista:not(.menu-lista-svetla) .menu-kontejner > .nav-aktivni{background:rgba(233,169,27,.2) !important;}' +
     '@media (max-width:700px){' +
       '.menu-lista{min-height:58px;padding-top:10px !important;padding-bottom:10px !important;padding-left:16px !important;padding-right:16px !important;}' +
       '.menu-kontejner > a,.menu-kontejner > button{padding:8px 14px !important;}' +
@@ -149,6 +152,16 @@
     var jeKatalog = /^\/nastroje\/?$/.test(location.pathname);
     if (!vsechny && !jeKatalog) vsechny = odkaz(KATALOG, 'Všechny nástroje');
     if (!pribeh) pribeh = odkaz(PRIBEH, 'Můj příběh');
+    var pilot = najdi(function (d) { return text(d) === 'Pilot zdarma'; }) || odkaz(PILOT, 'Pilot zdarma');
+    pilot.classList.add('menu-pilot');
+    if (/^\/pilot\/?$/.test(location.pathname)) {
+      pilot.setAttribute('aria-current', 'page');
+      pilot.classList.add('nav-aktivni');
+    } else {
+      pilot.addEventListener('click', function () {
+        try { if (typeof window.trackTokvaEvent === 'function') window.trackTokvaEvent('pilot_menu_click', { placement: 'menu' }); } catch (e) {}
+      });
+    }
     pribeh.classList.add('menu-pribeh');
     if (pro) pro.classList.add('menu-pro');
     if (!zlate) {
@@ -158,11 +171,11 @@
       });
     }
 
-    // Přeskládat: zlaté na začátek, pak Všechny nástroje, Můj příběh, Pro.
+    // Přeskládat: zlaté na začátek, pak Všechny nástroje, Pilot zdarma, Můj příběh, Pro.
     // Položky přihlášeného (Přehled, Projekty…) a účet zůstanou za nimi.
     kont.insertBefore(zlate, kont.firstChild);
     var za = zlate;
-    [vsechny, pribeh, pro].forEach(function (el) {
+    [vsechny, pilot, pribeh, pro].forEach(function (el) {
       if (!el) return;
       kont.insertBefore(el, za.nextSibling);
       za = el;
