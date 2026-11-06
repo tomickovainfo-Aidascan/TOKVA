@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<script>
+// Google Analytics se spouští až po souhlasu s cookies (cookies.js na konci stránky).
+window.trackTokvaEvent = function (eventName, parameters = {}) {
+  if (typeof window.gtag !== "function") return;
+  window.gtag("event", eventName, { ...parameters, page_path: window.location.pathname });
+};
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Skrytá stránka: odkaz na ni je jen v potvrzovacím e-mailu brány (Brevo, Tokva brána). Nedávat do sitemap ani do menu. -->
+<meta name="robots" content="noindex, nofollow">
+<title>Chcete automatizovat, ale nevíte, kde začít? | Tokva</title>
+<meta name="description" content="Co si zmapovat dřív, než koupíte AI nástroj. Návod v pěti krocích s pracovním listem.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#ffffff;font-family:'DM Sans',system-ui,sans-serif;font-size:16px;line-height:1.6;color:#2f2f2f}
+a{color:#545454}a:hover{color:#2f2f2f}
+.stranka{max-width:794px;margin:0 auto;padding:56px 72px 72px;background:#ffffff}
+.hlavicka,.tisk-hlavicka{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:3px solid #e9a91b}
+.tisk-hlavicka{display:none}
+.znacka{display:flex;align-items:center;gap:12px}
+.znacka img{width:36px;height:36px;flex:0 0 36px;display:block}
+.znacka-text{display:flex;flex-direction:column;line-height:1.25}
+.znacka-jmeno,.web{font-family:Poppins,sans-serif;font-weight:600;font-size:15px;color:#545454}
+.znacka-popis{font-size:13px;color:#545454}
+.stitek{margin:40px 0 8px;font-family:Poppins,sans-serif;font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#8a6200}
+h1{margin:0;font-family:Poppins,sans-serif;font-weight:700;font-size:38px;line-height:1.2;color:#545454;text-wrap:balance}
+.podtitul{margin:12px 0 0;font-family:Poppins,sans-serif;font-weight:500;font-size:20px;line-height:1.4;color:#545454}
+.tmavy-pruh{margin:28px 0 0;padding:20px 24px;background:#545454;border-radius:10px;color:#ffffff}
+.tmavy-pruh p{margin:0;font-size:18px;line-height:1.5}
+.tmavy-pruh strong{color:#f4c65a}
+h2{margin:0 0 12px;font-family:Poppins,sans-serif;font-weight:600;font-size:24px;line-height:1.3;color:#545454}
+h2.prvni{margin-top:40px}
+p{text-wrap:pretty}
+.krok{margin:40px 0 4px;font-family:Poppins,sans-serif;font-weight:700;font-size:14px;color:#8a6200}
+.m0{margin:0}.m12{margin:0 0 12px}.m16{margin:0 0 16px}.m10{margin:0 0 10px}.m6{margin:0 0 6px}
+.tucne{font-weight:700}
+ol{margin:0 0 12px;padding-left:22px}
+ol li,ul li{margin-bottom:6px}
+ol li:last-child,ul li:last-child{margin-bottom:0}
+.pribeh{margin:20px 0 0;padding:18px 22px;background:#fdf3dc;border-radius:10px}
+.pribeh-nadpis{margin:0 0 8px;font-family:Poppins,sans-serif;font-weight:600;font-size:15px;color:#545454}
+.pribeh ul{margin:0 0 10px;padding-left:20px}
+.pribeh-cislo{display:flex;gap:20px;align-items:center}
+.velke-cislo{flex:0 0 auto;font-family:Poppins,sans-serif;font-weight:700;font-size:44px;line-height:1;color:#545454}
+.ramecek{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:13px;line-height:1.35}
+.ramecek table{min-width:620px}
+th{text-align:left;padding:8px;font-weight:700;border:1px solid #545454;background:#545454;color:#ffffff}
+td{border:1px solid #bdbdbd;height:30px;vertical-align:top}
+.list td{height:34px;padding:0}
+.list th:first-child{width:30%}
+.hromadky{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.hromadka{padding:16px;border:2px solid #545454;border-radius:10px}
+.hromadka.zlata{border-color:#e9a91b;background:#fdf3dc}
+.hromadka-nazev{margin:0 0 6px;font-family:Poppins,sans-serif;font-weight:700;font-size:18px;color:#545454}
+.hromadka-popis{margin:0 0 8px;font-size:14px;line-height:1.45}
+.hromadka-priklad{margin:0;font-size:13px;line-height:1.45;color:#545454}
+.otazky{display:flex;flex-direction:column;gap:8px;margin:0 0 16px}
+.otazka{display:flex;gap:12px;align-items:flex-start}
+.ctverecek{flex:0 0 18px;height:18px;margin-top:3px;border:2px solid #545454;border-radius:3px}
+/* Oživení při scrollování (6.11.): hromádky se postupně zvětší a zase zmenší, otázky se samy odškrtají */
+.hromadka{transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .45s ease,border-color .45s ease;transform-origin:center}
+.hromadka.aktivni{transform:scale(1.07);box-shadow:0 12px 28px rgba(84,84,84,.22);border-color:#e9a91b;position:relative;z-index:1}
+.ctverecek{display:flex;align-items:center;justify-content:center;transition:background-color .3s ease,border-color .3s ease}
+.ctverecek svg{width:14px;height:14px;display:block}
+.ctverecek path{fill:none;stroke:#2f2f2f;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .35s ease .1s}
+.otazka span:last-child{transition:color .3s ease}
+.otazka.zaskrtnuto .ctverecek{background:#e9a91b;border-color:#e9a91b}
+.otazka.zaskrtnuto .ctverecek path{stroke-dashoffset:0}
+@media (prefers-reduced-motion:reduce){
+  .hromadka,.ctverecek,.ctverecek path{transition:none}
+  .hromadka.aktivni{transform:none}
+}
+.poznamka{margin:14px 0 0;font-size:13px;color:#545454}
+/* Pole pracovního listu */
+.list input,.list select{display:block;width:100%;height:100%;min-height:34px;border:0;margin:0;padding:6px 8px;background:transparent;font:inherit;font-size:14px;color:#2f2f2f;border-radius:0}
+.list input:focus,.list select:focus,.prvni-vec input:focus{outline:2px solid #e9a91b;outline-offset:-2px;background:#fffaf0}
+.list select{cursor:pointer;-webkit-appearance:auto;appearance:auto}
+.tisk-hodnota{display:none}
+.prvni-vec{margin:8px 0 0;border-bottom:1px solid #545454}
+.prvni-vec input{display:block;width:100%;height:34px;border:0;padding:4px 6px;background:transparent;font:inherit;color:#2f2f2f}
+/* Tlačítka */
+.tlacitka{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
+.tl{display:inline-block;padding:12px 20px;border-radius:8px;font-family:Poppins,sans-serif;font-weight:600;font-size:15px;line-height:1.3;text-decoration:none;cursor:pointer;border:2px solid #e9a91b;background:#e9a91b;color:#2f2f2f}
+.tl:hover{background:#d39716;border-color:#d39716;color:#2f2f2f}
+.tl.obrys{background:#ffffff;border-color:#545454;color:#545454}
+.tl.obrys:hover{background:#f3f3f3;color:#2f2f2f}
+.tl.jemne{background:transparent;border-color:transparent;color:#545454;text-decoration:underline;padding-left:6px;padding-right:6px}
+.tl.jemne:hover{color:#2f2f2f;background:transparent}
+.tl:focus-visible{outline:3px solid #545454;outline-offset:2px}
+.pdf-nadpis{margin:24px 0 0;font-weight:700}
+.ulozeno{margin:8px 0 0;font-size:13px;color:#545454}
+.zaver{margin:44px 0 0;padding:28px;background:#545454;border-radius:12px;color:#ffffff}
+.zaver h2{margin:0 0 10px;color:#ffffff}
+.zaver .tl{padding:14px 24px;font-size:16px}
+.zaver-podpis{margin:20px 0 0;font-size:15px}
+
+@media (max-width:640px){
+  .stranka{padding:28px 18px 48px}
+  .hlavicka{gap:10px}
+  .znacka-popis{display:none}
+  h1{font-size:28px}
+  .podtitul{font-size:18px}
+  .tmavy-pruh p{font-size:17px}
+  h2{font-size:21px}
+  .hromadky{grid-template-columns:1fr}
+  .pribeh{padding:16px 16px}
+  .pribeh-cislo{flex-direction:column;align-items:flex-start;gap:10px}
+  .velke-cislo{font-size:38px}
+  .zaver{padding:22px 18px}
+  .tl{width:100%;text-align:center}
+  .tl.jemne{width:auto}
+}
+
+/* Tisk do PDF */
+@page{size:A4;margin:14mm 12mm}
+@media print{
+  body{font-size:12pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .stranka{max-width:none;padding:0}
+  .bez-tisku,#cookies-bar{display:none !important}
+  .ramecek{overflow:visible}
+  .ramecek table{min-width:0}
+  .list input,.list select,.prvni-vec input{display:none !important}
+  .tisk-hodnota{display:block;padding:6px 8px;min-height:34px;font-size:11pt;white-space:pre-wrap;word-break:break-word}
+  .prvni-vec .tisk-hodnota{padding:4px 6px}
+  tr,.pribeh,.hromadka,.otazka,.zaver,.ramecek{break-inside:avoid}
+  h2,.krok{break-after:avoid}
+  a{text-decoration:none}
+  .hromadka.aktivni{transform:none;box-shadow:none;border-color:#545454}
+  .hromadka.zlata.aktivni{border-color:#e9a91b}
+  .otazka.zaskrtnuto .ctverecek{background:transparent;border-color:#545454}
+  .ctverecek svg{display:none}
+  /* Jen pracovní list */
+  body.tisk-list .stranka > *:not(#pracovni-list):not(.tisk-hlavicka){display:none !important}
+  body.tisk-list .tisk-hlavicka{display:flex}
+  body.tisk-list #pracovni-list h2{margin-top:24px}
+  body.tisk-prazdny .list tr.navic{display:none}
+}
+</style>
+</head>
+<body>
+<div class="stranka">
+
+<div class="tisk-hlavicka">
+<div class="znacka"><img src="/favicon.svg" alt="Tokva" width="36" height="36"><span class="znacka-jmeno">Tokva.cz</span></div>
+</div>
+
+<header class="hlavicka">
+<div class="znacka">
+<img src="/favicon.svg" alt="Tokva" width="36" height="36">
+<div class="znacka-text">
+<span class="znacka-jmeno">Gabriela Tomíčková</span>
+<span class="znacka-popis">zlepšování provozu ve výrobě a skladu</span>
+</div>
+</div>
+<span class="web">tokva.cz</span>
+</header>
+
+<main>
+<p class="stitek">Návod zdarma</p>
+<h1>Chcete automatizovat, ale nevíte, kde začít?</h1>
+<p class="podtitul">Co si zmapovat dřív, než koupíte AI nástroj</p>
+
+<div class="tmavy-pruh">
+<p>Než koupíte AI nástroj, zjistěte, co vaši lidé opravdu dělají. Jinak zautomatizujete i to, co by se mělo zrušit. <strong>A budete plýtvat rychleji.</strong></p>
+</div>
+
+<h2 class="prvni">Nejdřív proces, pak nástroj</h2>
+<p class="m12">Hodně firem teď řeší, jaký AI nástroj pořídit. Otázka „co nám AI zautomatizuje“ je ale až druhá v pořadí. První zní: co u nás děláme zbytečně?</p>
+<p class="m12">Ukážu vám to na jednom příběhu ze skladu velkoobchodu, který jsem vedla. Každé ráno tam řidiči místo nakládání slučovali zboží z několika palet na jednu. Trvalo to i dvě hodiny a o to později vyjížděli na rozvoz. Na první pohled to vypadalo jako úkol pro program. Vyřešilo se to jinak. Projdeme to krok za krokem.</p>
+<p class="m0">Návod vás provede pěti kroky: od toho, co kdo dělá, po první věc, kterou má smysl zautomatizovat. Vystačíte si s papírem, tužkou a lidmi, kteří tu práci dělají každý den.</p>
+
+<p class="krok">KROK 1</p>
+<h2>Sepište, co kdo dělá</h2>
+<p class="m12">Začněte seznamem činností, ne seznamem lidí. Každá řádka je jedna věc, která se ve firmě opakuje.</p>
+<p class="m16">Nejčastěji se zapomene na práci „mezi“: přepisování, dohledávání, volání, kde co je, čekání na podpis. Právě tam bývá nejvíc schovaného času. Zeptejte se lidí přímo: „Co děláte každý den, i když to nikdo nevidí?“</p>
+<div class="ramecek">
+<table>
+<thead><tr><th>Činnost</th><th>Kdo</th><th>Jak často</th><th>Kolik času (odhad)</th><th>Odkud bere informace</th><th>Komu to předává</th></tr></thead>
+<tbody>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+<p style="margin:12px 0 0">Čas zatím jen odhadněte a zapište. Odhad budete potřebovat v kroku 2, abyste ho mohli porovnat se skutečností.</p>
+<div class="pribeh">
+<p class="pribeh-nadpis">V našem skladu to vypadalo takhle</p>
+<ul>
+<li>Zákazník doobjednal. Obchodní zástupce to zadal do systému a systém založil novou, samostatnou objednávku. Předchozí objednávka už se v tu chvíli chystala, takže je sloučit nešlo.</li>
+<li>Noční skladníci chystali každou objednávku zvlášť. Jeden zákazník tak měl zboží na několika paletách.</li>
+<li>Ráno řidiči palety dohledávali a zboží slučovali, než mohli nakládat.</li>
+</ul>
+<p class="m0">Na papíře šlo o tři běžné činnosti tří různých lidí. Teprve vedle sebe ukázaly, že jedna přidává práci té další.</p>
+</div>
+
+<p class="krok">KROK 2</p>
+<h2>Ověřte to v provozu</h2>
+<p class="m12">Seznam z kroku 1 popisuje, jak to má fungovat. Skutečnost uvidíte, až se půjdete podívat a změříte to.</p>
+<p class="m12">Lidé nelžou. Jen svou práci znají tak dobře, že už nevidí, kolik v ní je chůze, hledání a čekání.</p>
+<p class="m6 tucne">Jak na to:</p>
+<ol>
+<li>Vyberte jednu činnost ze seznamu, která se opakuje nejčastěji.</li>
+<li>Postavte se vedle člověka, který ji dělá, a zapisujte, co dělá: práce, chůze, hledání, čekání, papírování. Měří se přímo při běžné práci, nic se nezastavuje.</li>
+<li>Porovnejte výsledek s odhadem z kroku 1.</li>
+</ol>
+<p class="m12">Měření není kontrola lidí. Řekněte jim to dopředu nahlas: hledáme, kde nás brzdí postup, ne kdo je pomalý. <strong>Tohle většinou není problém lidí. Tohle je problém procesu.</strong></p>
+<p class="m0">Zapisovat můžete na papír, nebo použijte Měřič plýtvání v Tokvě zdarma na <a href="https://tokva.cz">tokva.cz</a>. Rovnou vám spočítá, kolik času je práce a kolik ztráty.</p>
+<div class="tlacitka bez-tisku">
+<a class="tl" href="/nastroje/meric-plytvani-free/">Chci to rovnou změřit</a>
+</div>
+<div class="pribeh">
+<p class="pribeh-nadpis">V našem skladu</p>
+<p class="m0">Žádný výkaz neukazoval, že řidiči ráno slučují palety. Viděla jsem to až sama, když jsem ráno stála ve skladu. Místo toho, aby si palety očíslovali a nakládali, překládali zboží z několika palet na jednu. Někdy i dvě hodiny.</p>
+</div>
+
+<p class="krok">KROK 3</p>
+<h2>Rozdělte činnosti na tři hromádky</h2>
+<p class="m16">U každé činnosti se zeptejte: proč se to dělá? A musí to být takhle? Podle odpovědi ji dáte na jednu ze tří hromádek. Pořadí je důležité: automatizovat má smysl až to, co zbude.</p>
+<div class="hromadky">
+<div class="hromadka">
+<p class="hromadka-nazev">1. Zrušit</p>
+<p class="hromadka-popis">Nic by se nestalo, kdyby se nedělala.</p>
+<p class="hromadka-priklad">Nářadí u sebe místo cesty pro něj. Informace napsaná na místě místo volání.</p>
+</div>
+<div class="hromadka">
+<p class="hromadka-nazev">2. Zjednodušit</p>
+<p class="hromadka-popis">Je nutná, ale jde zkrátit nebo dělat méně často.</p>
+<p class="hromadka-priklad">Jednou s vozíkem místo pětkrát s náručí. Co se bere nejčastěji, leží nejblíž.</p>
+</div>
+<div class="hromadka zlata">
+<p class="hromadka-nazev">3. Automatizovat</p>
+<p class="hromadka-popis">Je nutná, už zjednodušená a opakuje se pořád stejně.</p>
+<p class="hromadka-priklad">Přepis údajů z jednoho systému do druhého. Souhrn z čísel, která už jsou v počítači.</p>
+</div>
+</div>
+<p style="margin:16px 0 0">Změny na první a druhé hromádce většinou nestojí žádné peníze, jen rozhodnutí. A každá z nich zmenší to, co byste jinak platili za automatizaci.</p>
+<div class="pribeh">
+<p class="pribeh-nadpis">V našem skladu</p>
+<ul>
+<li><strong>Zrušit:</strong> ranní slučování palet kvůli doobjednávkám. Kdyby se zboží jednoho zákazníka chystalo rovnou dohromady, nebylo by co slučovat.</li>
+<li><strong>Zjednodušit:</strong> chystání v noci. Objednávky jsme nočním skladníkům rozdělili podle tras. Skladník věděl, že tohohle zákazníka už chystal, a doobjednávku přidal k jeho zboží.</li>
+<li><strong>Nechat:</strong> slučování kvůli místu v autě. Na auto se vejde jen omezený počet palet, takže na jedné paletě bývají 2 až 4 zákazníci podle množství a pořadí vykládky. To je nutná práce, ne chyba postupu.</li>
+</ul>
+<p class="m0 tucne">Automatizovat tu nakonec nebylo potřeba nic.</p>
+</div>
+
+<p class="krok">KROK 4</p>
+<h2>Co se hodí na automatizaci a co ne</h2>
+<p class="m10">Na automatizaci se hodí činnost, u které odpovíte „ano“ na většinu těchto otázek:</p>
+<div class="otazky">
+<div class="otazka"><span class="ctverecek"></span><span>Opakuje se často a pokaždé stejně?</span></div>
+<div class="otazka"><span class="ctverecek"></span><span>Dokážete ji popsat jako postup krok za krokem, bez „to záleží“?</span></div>
+<div class="otazka"><span class="ctverecek"></span><span>Informace, se kterými pracuje, už jsou v počítači (e-mail, tabulka, systém), ne v hlavě nebo na papíru?</span></div>
+<div class="otazka"><span class="ctverecek"></span><span>Když ji dělá člověk, dělá v ní chyby z únavy nebo z přepisování?</span></div>
+<div class="otazka"><span class="ctverecek"></span><span>Poznáte snadno, že je hotová dobře?</span></div>
+</div>
+<p class="m12"><strong>AI pomůže hlavně s prací kolem informací:</strong> přepisování, třídění, hledání v dokumentech, kontrola dokumentů, souhrny, odpovědi na opakované dotazy.</p>
+<p class="m0"><strong>Nepomůže s tím, co se děje fyzicky na dílně a ve skladu.</strong> Chůzi pro materiál, hledání nářadí nebo čekání u stroje nevyřeší žádný program. Tam pomůže rozmístění, pořádek a jasný postup. A ty už máte na hromádkách 1 a 2.</p>
+<div class="pribeh">
+<p class="pribeh-nadpis">V našem skladu</p>
+<p class="m0">„Systém neumí sloučit objednávky“ zní jako jasný úkol pro program. Jenže systém slučovat uměl. Nešlo to jen u objednávek, které už byly stažené k chystání, a rozpracovanou objednávku logicky sloučit nejde. A stahovat se muselo brzy: objednávky se přijímaly do 16 hodin a na vychystání bylo jen šest hodin. Programem se to vyřešit nedalo. Pomohlo změnit, jak se práce dělí mezi lidi.</p>
+</div>
+
+<p class="krok">KROK 5</p>
+<h2>Vyberte jednu věc a změřte před a po</h2>
+<p class="m12">Nezačínejte velkým projektem. Vyberte jednu činnost, která se opakuje nejčastěji a nejvíc lidi zdržuje. Změřte ji, změňte a změřte znovu.</p>
+<p class="m6">Než začnete cokoli automatizovat, u každého procesu si nejdřív odpovězte na dvě otázky:</p>
+<ol>
+<li>Je opravdu nutný? Co by se stalo, kdybychom ho přestali dělat?</li>
+<li>Nešlo by ho dělat jednodušeji? Kratší cesta, méně kroků, méně přepisování.</li>
+</ol>
+<p class="m12">Když tohle přeskočíte, zautomatizujete i zbytečný proces. A zaplatíte za to, že vám plýtvání poběží rychleji a bez přestávky.</p>
+<p class="m12">Bez druhého měření nevíte, jestli změna zabrala. Stejně to platí pro AI nástroj. Když víte, kolik času činnost zabírá dnes, za měsíc poznáte, jestli se nástroj vyplatil. Bez toho jen věříte prodejci.</p>
+<div class="pribeh pribeh-cislo">
+<div class="velke-cislo">−40&nbsp;%</div>
+<div>
+<p class="pribeh-nadpis" style="margin-bottom:4px">V našem skladu</p>
+<p class="m0">Po rozdělení objednávek podle tras ranní slučování kvůli doobjednávkám téměř zmizelo. Jen výjimečně něco nebylo hotové. Čas, který řidiči strávili na skladu, klesl v průměru o 40 %.</p>
+</div>
+</div>
+</main>
+
+<section id="pracovni-list">
+<h2 style="margin:44px 0 8px">Pracovní list</h2>
+<p style="margin:0 0 14px">Vytiskněte si ho a vyplňte s lidmi, kteří práci dělají. Sloupec „Změřeno“ doplňte po kroku 2, hromádku po kroku 3.</p>
+<div class="ramecek">
+<table class="list">
+<thead><tr><th>Činnost</th><th>Kdo</th><th>Jak často</th><th>Odhad času</th><th>Změřeno</th><th>Hromádka 1 / 2 / 3</th></tr></thead>
+<tbody id="list-radky"></tbody>
+</table>
+</div>
+<p class="poznamka">Hromádka: 1 zrušit, 2 zjednodušit, 3 automatizovat</p>
+<div class="tlacitka bez-tisku">
+<button type="button" class="tl obrys" id="pridat-radek">Chci další řádek</button>
+</div>
+<p style="margin:18px 0 0" class="tucne"><label for="prvni-vec">První věc, kterou změříme před a po:</label></p>
+<div class="prvni-vec"><input type="text" id="prvni-vec" autocomplete="off"><span class="tisk-hodnota" id="prvni-vec-tisk"></span></div>
+
+<div class="bez-tisku">
+<p class="ulozeno">Co vyplníte, zůstává jen v tomhle prohlížeči. Nikam se neposílá.</p>
+<p class="pdf-nadpis">Uložit do PDF nebo vytisknout:</p>
+<div class="tlacitka">
+<button type="button" class="tl obrys" data-pdf="prazdny">Chci prázdný list do PDF</button>
+<button type="button" class="tl obrys" data-pdf="vyplneny">Chci svůj vyplněný list do PDF</button>
+<button type="button" class="tl obrys" data-pdf="cely">Chci celý návod do PDF</button>
+</div>
+<div class="tlacitka">
+<a class="tl" href="/nastroje/meric-plytvani-free/">Chci to rovnou změřit</a>
+<button type="button" class="tl jemne" id="zacit-znovu">Chci začít znovu</button>
+</div>
+</div>
+</section>
+
+<div class="zaver">
+<h2>Když budete chtít pomoct</h2>
+<p class="m12">Tenhle postup zvládnete sami. Nejtěžší na něm není tabulka, ale podívat se na vlastní provoz zvenčí. To je u věcí, které děláte roky, těžké pro každého.</p>
+<p style="margin:0 0 20px">Deset let jsem dělala zlepšování ve výrobě a šest let vedla sklad velkoobchodu s asi dvaceti lidmi. Když budete chtít, abych se na vaše činnosti podívala s vámi, napište mi na WhatsApp, co vás nejvíc zdržuje.</p>
+<a class="tl bez-tisku" href="https://wa.me/420608221039?text=Dobr%C3%BD%20den%2C%20%C4%8Detl%20jsem%20n%C3%A1vod%20k%20automatizaci.%20Nejv%C3%ADc%20n%C3%A1s%20zdr%C5%BEuje%3A%20">Chci se na to podívat s vámi</a>
+<p class="zaver-podpis">Gabriela Tomíčková · Tokva · tokva.cz · WhatsApp +420 608 221 039</p>
+</div>
+
+</div>
+
+<script>
+// Pracovní list: vyplňuje se na stránce, ukládá se jen do localStorage tohoto prohlížeče.
+(function () {
+  'use strict';
+  var KLIC = 'tokva_navod_co_automatizovat_v1';
+  var ZAKLAD = 8;
+  var SLOUPCE = ['Činnost', 'Kdo', 'Jak často', 'Odhad času', 'Změřeno', 'Hromádka'];
+  var HROMADKY = [['', ''], ['1', '1 zrušit'], ['2', '2 zjednodušit'], ['3', '3 automatizovat']];
+  var tbody = document.getElementById('list-radky');
+  var prvni = document.getElementById('prvni-vec');
+  var prvniTisk = document.getElementById('prvni-vec-tisk');
+
+  function nacist() {
+    try {
+      var d = JSON.parse(localStorage.getItem(KLIC) || 'null');
+      if (d && Array.isArray(d.radky)) return d;
+    } catch (e) {}
+    return { radky: [], prvni: '' };
+  }
+  function ulozit() {
+    var radky = [];
+    tbody.querySelectorAll('tr').forEach(function (tr) {
+      var r = [];
+      tr.querySelectorAll('input,select').forEach(function (p) { r.push(p.value); });
+      radky.push(r);
+    });
+    try { localStorage.setItem(KLIC, JSON.stringify({ radky: radky, prvni: prvni.value })); } catch (e) {}
+  }
+  function textHodnoty(pole) {
+    if (pole.tagName === 'SELECT') return pole.value ? pole.options[pole.selectedIndex].text : '';
+    return pole.value;
+  }
+  function synchronizovat(pole) {
+    var s = pole.parentNode.querySelector('.tisk-hodnota');
+    if (s) s.textContent = textHodnoty(pole);
+  }
+  function pridatRadek(hodnoty) {
+    hodnoty = hodnoty || [];
+    var tr = document.createElement('tr');
+    if (tbody.children.length >= ZAKLAD) tr.className = 'navic';
+    var cislo = tbody.children.length + 1;
+    SLOUPCE.forEach(function (nazev, i) {
+      var td = document.createElement('td');
+      var pole;
+      if (i === 5) {
+        pole = document.createElement('select');
+        HROMADKY.forEach(function (h) {
+          var o = document.createElement('option');
+          o.value = h[0]; o.textContent = h[1];
+          pole.appendChild(o);
+        });
+      } else {
+        pole = document.createElement('input');
+        pole.type = 'text';
+        pole.autocomplete = 'off';
+      }
+      pole.setAttribute('aria-label', nazev + ', řádek ' + cislo);
+      pole.value = hodnoty[i] || '';
+      var span = document.createElement('span');
+      span.className = 'tisk-hodnota';
+      td.appendChild(pole);
+      td.appendChild(span);
+      tr.appendChild(td);
+      synchronizovat(pole);
+    });
+    tbody.appendChild(tr);
+    return tr;
+  }
+  function postavit(d) {
+    tbody.innerHTML = '';
+    var pocet = Math.max(ZAKLAD, d.radky.length);
+    for (var i = 0; i < pocet; i++) pridatRadek(d.radky[i]);
+    prvni.value = d.prvni || '';
+    synchronizovat(prvni);
+  }
+
+  postavit(nacist());
+
+  document.getElementById('pracovni-list').addEventListener('input', function (e) {
+    if (e.target.matches('input,select')) { synchronizovat(e.target); ulozit(); }
+  });
+  document.getElementById('pracovni-list').addEventListener('change', function (e) {
+    if (e.target.matches('input,select')) { synchronizovat(e.target); ulozit(); }
+  });
+  document.getElementById('pridat-radek').addEventListener('click', function () {
+    var tr = pridatRadek();
+    ulozit();
+    tr.querySelector('input').focus();
+  });
+  document.getElementById('zacit-znovu').addEventListener('click', function () {
+    if (!window.confirm('Opravdu chcete vymazat celý pracovní list?')) return;
+    try { localStorage.removeItem(KLIC); } catch (e) {}
+    postavit({ radky: [], prvni: '' });
+  });
+
+  // PDF přes tisk prohlížeče
+  function uklidit() {
+    document.body.classList.remove('tisk-list', 'tisk-prazdny');
+    tbody.querySelectorAll('input,select').forEach(synchronizovat);
+    synchronizovat(prvni);
+  }
+  window.addEventListener('afterprint', uklidit);
+  document.querySelectorAll('[data-pdf]').forEach(function (tl) {
+    tl.addEventListener('click', function () {
+      var typ = tl.getAttribute('data-pdf');
+      uklidit();
+      if (typ !== 'cely') document.body.classList.add('tisk-list');
+      if (typ === 'prazdny') {
+        document.body.classList.add('tisk-prazdny');
+        document.querySelectorAll('#pracovni-list .tisk-hodnota').forEach(function (s) { s.textContent = ''; });
+      }
+      if (typeof window.trackTokvaEvent === 'function') window.trackTokvaEvent('navod_pdf', { typ_pdf: typ });
+      window.print();
+    });
+  });
+})();
+</script>
+<script>
+// Oživení při scrollování: hromádky 1, 2, 3 se postupně zvětší a zase zmenší, otázky v kroku 4 se postupně odškrtají.
+(function () {
+  'use strict';
+  var hromadky = document.querySelector('.hromadky');
+  var karty = hromadky ? hromadky.querySelectorAll('.hromadka') : [];
+  var otazky = document.querySelectorAll('.otazka');
+  var uzky = window.matchMedia('(max-width:640px)');
+  var ceka = false;
+
+  otazky.forEach(function (o) {
+    var c = o.querySelector('.ctverecek');
+    if (c) c.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8"/></svg>';
+  });
+
+  function aktualizovat() {
+    ceka = false;
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var aktivni = -1;
+    if (karty.length) {
+      if (uzky.matches) {
+        // Na mobilu jsou pod sebou: zvětší se ta, která je zrovna uprostřed obrazovky.
+        var nejbliz = vh * 0.3;
+        karty.forEach(function (k, i) {
+          var r = k.getBoundingClientRect();
+          var d = Math.abs(r.top + r.height / 2 - vh / 2);
+          if (d < nejbliz) { nejbliz = d; aktivni = i; }
+        });
+      } else {
+        // Na počítači jsou vedle sebe: při scrollování přes ně se střídají 1, 2, 3.
+        var r = hromadky.getBoundingClientRect();
+        var start = vh * 0.85, konec = vh * 0.2 - r.height;
+        var p = (start - r.top) / (start - konec);
+        if (p >= 0 && p < 1) aktivni = Math.floor(p * karty.length);
+      }
+      karty.forEach(function (k, i) { k.classList.toggle('aktivni', i === aktivni); });
+    }
+    otazky.forEach(function (o) {
+      o.classList.toggle('zaskrtnuto', o.getBoundingClientRect().top < vh * 0.7);
+    });
+  }
+  function naplanovat() {
+    if (ceka) return;
+    ceka = true;
+    window.requestAnimationFrame(aktualizovat);
+  }
+  window.addEventListener('scroll', naplanovat, { passive: true });
+  window.addEventListener('resize', naplanovat);
+  aktualizovat();
+})();
+</script>
+<script src="/cookies.js"></script>
+<script>
+// GA4: událost navod_otevren, jen když je souhlas s cookies (hned, nebo až po kliknutí na Souhlasím).
+(function () {
+  var odeslano = false;
+  function poslat() {
+    if (odeslano || typeof window.gtag !== 'function') return;
+    odeslano = true;
+    window.trackTokvaEvent('navod_otevren');
+  }
+  var puvodni = window.spustitGA;
+  if (typeof puvodni === 'function') {
+    window.spustitGA = function () { puvodni(); poslat(); };
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', poslat);
+  else poslat();
+})();
+</script>
+</body>
+</html>
