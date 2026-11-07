@@ -1,0 +1,18 @@
+# Interní soubory, které nesmí na veřejný GitHub (bezpečnostní kontrola 7. 11. 2026, nález 3)
+.claude/
+STAV.md
+MASTER PLÁN TOKVA.txt
+PLAN TOKVA PRO.txt
+Marketing/
+_scratch/
+_navrhy/
+5x-proc-apps-script-doplnek.md
+supabase-schema-navrh.md
+návaznosti-souvislosti_applikací.txt
+nastroje/prehled-nastroju-tokva-27-10.xlsx
+supabase/.temp/
+videa/Screen_Recording_*
+.env
+.env.*
+*.key
+node_modules/

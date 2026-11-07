@@ -1101,7 +1101,7 @@ async function nacistPdf(file) {
   try {
     await nacistPdfJs();
     const buffer = await file.arrayBuffer();
-    const pdfDoc = await pdfjsLib.getDocument({ data: buffer }).promise;
+    const pdfDoc = await pdfjsLib.getDocument({ data: buffer, isEvalSupported: false }).promise;
     const page = await pdfDoc.getPage(1);
     const zakladniViewport = page.getViewport({ scale: 1 });
     const cilovaSirka = 1800;
