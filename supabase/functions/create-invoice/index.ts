@@ -327,14 +327,16 @@ Deno.serve(async (req) => {
               (jePrvniPoObjednavce
                 ? "<p>platba dorazila, děkuju. Tokva Pro je u vás aktivní" + (konecPro ? " do " + konecPro : "") + ". " +
                   "Přístup najdete tady: <a href=\"https://tokva.cz/moje-tokva/\">tokva.cz/moje-tokva</a></p>" +
-                  "<p>Fakturu pro účetnictví vám pošlu zvlášť. Je už zaplacená, nic dalšího neplaťte.</p>"
+                  "<p>Fakturu pro účetnictví vám pošlu zvlášť. Je už zaplacená, nic dalšího neplaťte.</p>" +
+                  "<p>K Tokva Pro patří slíbený bonus, návod <a href=\"https://tokva.cz/navod/co-automatizovat/\">Chcete automatizovat, ale nevíte, kde začít?</a> Pět kroků, jak zjistit, co ve firmě zrušit, co zjednodušit a co má smysl předat AI, s pracovním listem.</p>"
                 : jeProdlouzeni
                 ? "<p>díky, že pokračujete. Tokva Pro máte prodloužené" + (konecPro ? " do " + konecPro : "") +
                   ", běží dál bez přerušení.</p>" +
                   "<p>Fakturu na " + cena + " Kč za další měsíc dostanete zvlášť, splatnost je 14 dní.</p>"
                 : "<p>Tokva Pro je u vás aktivní" + (konecPro ? " do " + konecPro : "") + ". Přístup najdete tady: " +
                   "<a href=\"https://tokva.cz/moje-tokva/\">tokva.cz/moje-tokva</a></p>" +
-                  "<p>Fakturu na " + cena + " Kč za měsíc dostanete zvlášť.</p>") +
+                  "<p>Fakturu na " + cena + " Kč za měsíc dostanete zvlášť.</p>" +
+                  "<p>K Tokva Pro patří slíbený bonus, návod <a href=\"https://tokva.cz/navod/co-automatizovat/\">Chcete automatizovat, ale nevíte, kde začít?</a> Pět kroků, jak zjistit, co ve firmě zrušit, co zjednodušit a co má smysl předat AI, s pracovním listem.</p>") +
               "<p>Kdyby něco nesedělo nebo jste měli otázku, napište na <a href=\"mailto:tomickova.info@gmail.com\">tomickova.info@gmail.com</a> nebo odpovězte na tento e-mail.</p>" +
               "<p>Gabriela</p>",
           }),
