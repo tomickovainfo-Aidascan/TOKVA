@@ -321,6 +321,14 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
 @container (max-width:360px){.tko-faze{grid-template-columns:1fr;}}
 @media (max-width:600px){.tko{padding:18px 16px 16px;}}
 .ukazky-karty .tko{border-color:#e6e3dc;}
+/* 7. 11. 2026: pruh s bolestmi mezi úvodem a ceníkem */
+.bolesti{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:4px 0 12px;}
+.bolest{background:#fff;border:1px solid var(--border2);border-radius:12px;padding:14px 16px;}
+.bolest h3{font-family:'Poppins',sans-serif;font-weight:800;font-size:15px;color:var(--dark);margin-bottom:6px;}
+.bolest p{font-size:13.5px;color:var(--mid);line-height:1.5;margin:0;}
+.bolesti-pointa{font-family:'Poppins',sans-serif;font-weight:800;font-size:15.5px;color:var(--dark);margin:0 0 26px;}
+@media (max-width:860px){.bolesti{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:520px){.bolesti{grid-template-columns:1fr;}}
 </style>
 <script type="application/ld+json">
 {
@@ -446,6 +454,17 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
 
 
 
+
+  <section aria-labelledby="bolesti-nadpis">
+    <h2 class="pilire-uvod" id="bolesti-nadpis">Znáte to?</h2>
+    <div class="bolesti">
+      <div class="bolest"><h3>Změna vydrží pár týdnů</h3><p>Pak se jede zase po staru a nikdo přesně neví, kdy a proč.</p></div>
+      <div class="bolest"><h3>Nikdo neví, jestli to pomohlo</h3><p>Opatření jste zavedli, ale čísla před změnou a po ní nemáte.</p></div>
+      <div class="bolest"><h3>Úkoly z porady se ztratí</h3><p>Domluvíte se, kdo co udělá. Za měsíc to visí a nikdo si nevzpomene.</p></div>
+      <div class="bolest"><h3>Všechno ví jeden člověk</h3><p>Když mistr odejde na dovolenou, nikdo neví, co se měřilo a co se změnilo.</p></div>
+    </div>
+    <p class="bolesti-pointa">Tohle většinou není problém lidí. Tohle je problém procesu.</p>
+  </section>
 
   <div class="objednavka-box cenik-box pas pas-cerna" id="ceny">
     <h2>Varianty a ceny</h2>

@@ -319,6 +319,15 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
 .pro-item:hover{transform:translateY(-3px);}
 .velke-cislo{color:var(--gold-dark);font-size:1.15em;white-space:nowrap;}
 @media (prefers-reduced-motion: reduce){.bolest:hover,.pro-item:hover{transform:none;}}
+
+/* 7. 11. 2026: Proč ne Excel ani drahý poradce */
+.srovnani{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0 14px;}
+.srovnani-karta{background:#fff;border:1px solid var(--border2);border-radius:12px;padding:18px 20px;}
+.srovnani-karta h3{font-family:'Poppins',sans-serif;font-weight:800;font-size:15.5px;color:var(--dark);margin-bottom:8px;}
+.srovnani-karta p{font-size:14px;color:var(--mid);line-height:1.55;}
+.srovnani-karta.tokva{border:2px solid var(--gold);background:#fffaf0;}
+.srovnani-pointa{font-size:15px;color:var(--dark);}
+@media (max-width:860px){.srovnani{grid-template-columns:1fr;}}
 </style>
 <style id="cookies-css">
 .cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
@@ -497,6 +506,16 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
     </div>
     <p class="pro-cena">Nástroje jsou zdarma. <b>Tokva Pro od 499 Kč měsíčně</b> (zakladatelská cena), peníze zpět, když vám první měsíc nepomůže.</p>
     <a class="btn btn-obrys" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'homepage',placement:'section'})">Zjistit více o Tokva Pro</a>
+  </section>
+
+  <section class="pas pas-bila" aria-labelledby="srovnani-nadpis">
+    <h2 class="section-title" id="srovnani-nadpis">Proč ne Excel ani drahý poradce?</h2>
+    <div class="srovnani">
+      <div class="srovnani-karta odhal" style="--poradi:0"><h3>Tabulka v Excelu</h3><p>Někdo ji musí postavit, udržovat a hlídat. Vzorce se rozbijí, verze se množí po e-mailech. Když autor odejde, nikdo neví, jak funguje.</p></div>
+      <div class="srovnani-karta odhal" style="--poradi:1"><h3>Poradce na místě</h3><p>Dobrý, když potřebujete pomoc u vás. Platíte ale každý jeho den. A když odjede, měření a hlídání změn zůstane na vás.</p></div>
+      <div class="srovnani-karta tokva odhal" style="--poradi:2"><h3>Tokva</h3><p>Postup je připravený: změřit, najít příčinu, rozdělit úkoly, změřit znovu. Nástroje jsou zdarma, Tokva Pro od 499&nbsp;Kč měsíčně. Výsledky zůstávají u vaší firmy.</p></div>
+    </div>
+    <p class="srovnani-pointa odhal" style="--poradi:3">A když budete chtít pomoc přímo u vás, přijedu. Do zhruba 80 km od Vrchlabí.</p>
   </section>
 
   <section class="pas pas-bila faq-uvod" aria-labelledby="faq-nadpis">
