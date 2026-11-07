@@ -46,6 +46,70 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
   "description": "Tokva je webová aplikace pro malé výrobní a skladové firmy. Provede vás měřením provozu a hledáním příčin problémů, abyste věděli, kde ztrácíte čas a co změnit jako první."
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Pro koho je Tokva?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pro majitele a vedoucí menších firem ve výrobě, skladu, velkoobchodu nebo logistice, zhruba do 100 lidí. Nepotřebujete žádné znalosti metod ani techniky."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Nebude to další složitý program?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ne. Tokva běží v prohlížeči na počítači i v mobilu, nic se neinstaluje a nepotřebujete Excel ani znalost odborných metod. Otevřete ji, změříte jednu věc a hned vidíte výsledek."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kolik času to zabere?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Měří se přímo při běžné práci, na jedné zakázce nebo jednom pracovním cyklu, bez přerušení výroby. Nemusíte organizovat audit ani poradu. Začnete jednou věcí, která vás zdržuje."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Nebudou to lidé na dílně brát jako kontrolu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Měří se postup, ne výkon lidí. Nikoho nehodnotíme a nehledáme viníka. Cílem je lidem ubrat zbytečné chození, hledání a čekání, ne přidat práci."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co se stane s mým e-mailem?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "E-mail slouží k odemčení výsledků. Tipy a novinky posílám jen tomu, kdo k tomu zaškrtne souhlas, a odhlásit se můžete jedním klikem. Podrobnosti jsou v zásadách ochrany osobních údajů."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Nahradí Tokva poradce?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tokva vás provede tím, co bychom spolu dělali na místě: najít, kde mizí čas, změřit to, hledat příčinu a ověřit, jestli změna zabrala. Když budete chtít pomoc přímo u vás, dělám konzultace do zhruba 80 km od Vrchlabí."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Co když mi Tokva Pro nesedne?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Když vám Tokva Pro v prvním měsíci nepomůže, vrátím vám peníze. Stačí napsat e-mail, důvod uvádět nemusíte."
+      }
+    }
+  ]
+}
+</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -220,6 +284,41 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
   .rotace-bezi .rotace{transition:width .45s ease;}
   .rotace-bezi .rotace__slova{position:absolute;left:0;top:0;transition:transform .55s cubic-bezier(.65,0,.35,1);}
   .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+/* 7. 11. 2026: Poznáváte se, jistoty, cena, časté otázky */
+.bolesti{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0 14px;}
+.bolest{background:#fff;border:1px solid var(--border2);border-radius:12px;padding:16px 18px;}
+.bolest h3{font-family:'Poppins',sans-serif;font-weight:800;font-size:15.5px;color:var(--dark);margin-bottom:6px;}
+.bolest p{font-size:14px;color:var(--mid);line-height:1.55;}
+.bolesti-pointa{font-family:'Poppins',sans-serif;font-weight:800;font-size:16px;color:var(--dark);}
+@media (max-width:860px){.bolesti{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:520px){.bolesti{grid-template-columns:1fr;}}
+.jistoty{font-size:13px;color:var(--mid);margin-top:10px;line-height:1.6;}
+.jistoty b{color:var(--dark);}
+.pro-cena{font-size:14px;color:rgba(255,255,255,.75);margin:6px 0 18px;}
+.pro-cena b{color:var(--gold);}
+.faq-uvod{margin-top:8px;}
+details.faq-item{padding:0;}
+details.faq-item summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;}
+details.faq-item summary::-webkit-details-marker{display:none;}
+details.faq-item summary h3{margin:0;}
+details.faq-item summary::after{content:"+";font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;color:var(--gold-dark);line-height:1;flex-shrink:0;}
+details.faq-item[open] summary::after{content:"−";}
+details.faq-item > p{padding:0 20px 16px;margin:0;}
+.faq-uvod details.faq-item summary h3{font-size:15px;}
+
+/* 7. 11. 2026: pohyb při posouvání (jen když uživatel nemá omezené animace) */
+html.pohyb .odhal{opacity:0;transform:translateY(18px) scale(.97);transition:opacity .6s ease, transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--poradi,0) * 90ms);}
+html.pohyb .odhal.je-tu{opacity:1;transform:none;}
+html.pohyb .krok-karta picture{display:block;overflow:hidden;border-radius:12px;}
+html.pohyb .krok-karta img{transform:scale(1.12);transition:transform 1.4s cubic-bezier(.2,.7,.2,1);}
+html.pohyb .krok-karta.je-tu img{transform:scale(1);}
+.bolest{transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;}
+.bolest:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(0,0,0,.08);border-color:var(--gold);}
+.pro-item{transition:transform .25s ease;}
+.pro-item:hover{transform:translateY(-3px);}
+.velke-cislo{color:var(--gold-dark);font-size:1.15em;white-space:nowrap;}
+@media (prefers-reduced-motion: reduce){.bolest:hover,.pro-item:hover{transform:none;}}
 </style>
 <style id="cookies-css">
 .cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
@@ -285,7 +384,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <div class="hero-ctas">
       <a class="btn btn-gold" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'hero'})">Otevřít Tokvu zdarma</a>
     </div>
-    <p class="brana-pozn">Výsledky bezplatných nástrojů pak odemknete jedním zadáním e-mailu v tomto prohlížeči.</p>
+    <p class="jistoty"><b>Zdarma a bez platební karty.</b> Výsledky odemknete jedním zadáním e-mailu, z dalších e-mailů se odhlásíte jedním klikem.<br><b>U Tokva Pro vrátím peníze,</b> když vám první měsíc nepomůže.</p>
     </div>
     <figure class="hero-obraz">
       <video poster="videa/meric-ukazka-nahled.jpg" width="480" height="770" autoplay muted loop playsinline preload="metadata" aria-label="Ukázka Měřiče plýtvání na mobilu: měření přípravy objednávky a výsledek s rozložením času">
@@ -297,6 +396,17 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
    </div>
   </section>
 
+  <section class="pas pas-bila" aria-labelledby="bolesti-nadpis">
+    <h2 class="section-title" id="bolesti-nadpis">Poznáváte se?</h2>
+    <div class="bolesti">
+      <div class="bolest odhal" style="--poradi:0"><h3>Chodí se pro věci</h3><p>Lidé celou směnu chodí pro věci, které by mohly ležet o pár metrů blíž. Chůze není v žádném výkazu.</p></div>
+      <div class="bolest odhal" style="--poradi:1"><h3>Hledá se</h3><p>Materiál, nářadí, doklad, výkres. Pokaždé jen chvilka, ale za směnu se to nasčítá.</p></div>
+      <div class="bolest odhal" style="--poradi:2"><h3>Čeká se</h3><p>Na vozík, na podpis, na jednoho člověka, bez kterého se nepohne nic dalšího.</p></div>
+      <div class="bolest odhal" style="--poradi:3"><h3>Chyby se vracejí</h3><p>Stejná záměna nebo předělávka za měsíc znovu, i když se to už jednou „vyřešilo“.</p></div>
+    </div>
+    <p class="bolesti-pointa odhal" style="--poradi:4">Tohle většinou není problém lidí. Tohle je problém procesu. A ten se dá změřit.</p>
+  </section>
+
 
   <section class="pas pas-bila">
     <h2 class="section-title">Od prvního zjištění k řešení. S podporou Tokvy v každém kroku.</h2>
@@ -305,19 +415,19 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
       <p class="demo-popis">Kde začít, Mini audit skladu, Spaghetti diagram a na konci výsledek v korunách. Tak, jak to uvidíte na mobilu.</p>
     </div>
     <div class="kroky-karty">
-      <div class="krok-karta">
+      <div class="krok-karta odhal" style="--poradi:0">
         <picture><source srcset="obrazky/krok-1.webp" type="image/webp"><img src="obrazky/krok-1.jpg" width="800" height="749" alt="Výsledek kvízu Kde začít: doporučená oblast Sklad" loading="lazy"></picture>
         <div class="krok-text"><span class="step-num">01</span><h3>Tokva vám ukáže, kde začít</h3><p>Pár jednoduchých otázek o vašem provozu a Tokva doporučí oblast, kterou má smysl řešit jako první.</p></div>
       </div>
-      <div class="krok-karta">
+      <div class="krok-karta odhal" style="--poradi:1">
         <picture><source srcset="obrazky/krok-2.webp" type="image/webp"><img src="obrazky/krok-2.jpg" width="800" height="806" alt="Spaghetti diagram: plánek skladu s nakreslenými trasami, celkem 78 metrů" loading="lazy"></picture>
         <div class="krok-text"><span class="step-num">02</span><h3>Tokva vám pomůže změřit, jak velký je problém</h3><p>Provede vás jednoduchým měřením a výsledky přehledně zobrazí. Uvidíte, kde mizí čas a kolik vás to zhruba stojí.</p></div>
       </div>
-      <div class="krok-karta">
+      <div class="krok-karta odhal" style="--poradi:2">
         <picture><source srcset="obrazky/krok-3.webp" type="image/webp"><img src="obrazky/krok-3.jpg" width="800" height="746" alt="5× Proč AI kouč: pravděpodobná příčina a první krok do 24 hodin" loading="lazy"></picture>
         <div class="krok-text"><span class="step-num">03</span><h3>Tokva pomůže najít příčinu a další krok</h3><p>Otázkami vás dovede k pravděpodobné příčině problému a pomůže určit, co změnit jako první.</p></div>
       </div>
-      <div class="krok-karta">
+      <div class="krok-karta odhal" style="--poradi:3">
         <picture><source srcset="obrazky/krok-4.webp" type="image/webp"><img src="obrazky/krok-4.jpg" width="800" height="344" alt="Tokva Pro: porovnání dvou výpočtů, ztráta klesla o 975 000 Kč ročně" loading="lazy"></picture>
         <div class="krok-text"><span class="step-num">04 <span class="krok-pro">Tokva Pro</span></span><h3>Tokva porovná stav před změnou a po&nbsp;ní</h3><p>Ukáže, jestli se provoz opravdu zlepšil a kde má smysl pokračovat.</p></div>
       </div>
@@ -361,7 +471,7 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <div class="duvera-box">
       <img class="duvera-foto" src="obrazky/gabriela-tomickova.jpg" width="96" height="96" alt="Gabriela Tomíčková" loading="lazy">
       <div>
-        <p>Tokva vychází z 16 let mé praxe ve výrobě a ve vedení skladu. Z toho, co v provozu opravdu fungovalo. Ve skladu s 20 lidmi jsme za čtyři roky snížili počet hodin na stejnou práci o 30 %. Bez drahých systémů. Jen dívat se, měřit a měnit to, co má smysl.</p>
+        <p>Tokva vychází z 16 let mé praxe ve výrobě a ve vedení skladu. Z toho, co v provozu opravdu fungovalo. Ve skladu s 20 lidmi jsme za čtyři roky snížili počet hodin na stejnou práci o <b class="velke-cislo"><span data-pocitej-od="0" data-pocitej-do="30">30</span> %</b>. Bez drahých systémů. Jen dívat se, měřit a měnit to, co má smysl.</p>
         <p class="duvera-podpis">Gabriela Tomíčková<span>10 let KAIZEN ve výrobě, 6 let vedení skladu</span></p>
         <a class="duvera-odkaz" href="https://tokva.cz/muj-pribeh/">Přečtěte si můj příběh →</a>
       </div>
@@ -380,12 +490,45 @@ section { padding:52px 0; border-top:1px solid var(--border2); }
     <h2 class="section-title" style="color:var(--gold);">Jedna appka vyřeší jednu otázku. Tokva Pro propojí celý problém.</h2>
     <p class="lead">Bezplatné nástroje vám pomůžou rychle zjistit, co se děje. V Tokva Pro jsou výsledky navázané na vaši firmu a projekty, takže nemusíte pokaždé začínat znovu.</p>
     <div class="pro-grid">
-      <div class="pro-item"><h3>Uložíte výsledky</h3><p>Máte měření, audity a analýzy na jednom místě.</p></div>
-      <div class="pro-item"><h3>Propojíte je s konkrétním problémem</h3><p>Výsledky jednotlivých nástrojů nejsou izolované.</p></div>
-      <div class="pro-item"><h3>Převedete zjištění do akčního plánu</h3><p>Co změnit, kdo to udělá a do kdy.</p></div>
-      <div class="pro-item"><h3>Porovnáte stav před a po</h3><p>Uvidíte, jestli opatření skutečně pomohlo.</p></div>
+      <div class="pro-item odhal" style="--poradi:0"><h3>Výsledky nezůstanou v hlavě jednoho člověka</h3><p>Měření, fotky i poznámky zůstávají u vaší firmy, i když mistr odejde na dovolenou.</p></div>
+      <div class="pro-item odhal" style="--poradi:1"><h3>Nezačínáte pokaždé znovu</h3><p>Výsledky z různých nástrojů se skládají k jednomu problému, ne do šuplíku.</p></div>
+      <div class="pro-item odhal" style="--poradi:2"><h3>Nic se neztratí mezi směnami</h3><p>Každá změna má člověka a termín. Je vidět, co je hotové a co visí.</p></div>
+      <div class="pro-item odhal" style="--poradi:3"><h3>Budete vědět, ne jen tušit</h3><p>Tokva porovná měření před změnou a po ní a ukáže, jestli to zabralo.</p></div>
     </div>
+    <p class="pro-cena">Nástroje jsou zdarma. <b>Tokva Pro od 499 Kč měsíčně</b> (zakladatelská cena), peníze zpět, když vám první měsíc nepomůže.</p>
     <a class="btn btn-obrys" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'homepage',placement:'section'})">Zjistit více o Tokva Pro</a>
+  </section>
+
+  <section class="pas pas-bila faq-uvod" aria-labelledby="faq-nadpis">
+    <h2 class="section-title" id="faq-nadpis">Časté otázky</h2>
+    <details class="faq-item odhal" style="--poradi:0">
+      <summary><h3>Pro koho je Tokva?</h3></summary>
+      <p>Pro majitele a vedoucí menších firem ve výrobě, skladu, velkoobchodu nebo logistice, zhruba do 100 lidí. Nepotřebujete žádné znalosti metod ani techniky.</p>
+    </details>
+    <details class="faq-item odhal" style="--poradi:1">
+      <summary><h3>Nebude to další složitý program?</h3></summary>
+      <p>Ne. Tokva běží v prohlížeči na počítači i v mobilu, nic se neinstaluje a nepotřebujete Excel ani znalost odborných metod. Otevřete ji, změříte jednu věc a hned vidíte výsledek.</p>
+    </details>
+    <details class="faq-item odhal" style="--poradi:2">
+      <summary><h3>Kolik času to zabere?</h3></summary>
+      <p>Měří se přímo při běžné práci, na jedné zakázce nebo jednom pracovním cyklu, bez přerušení výroby. Nemusíte organizovat audit ani poradu. Začnete jednou věcí, která vás zdržuje.</p>
+    </details>
+    <details class="faq-item odhal" style="--poradi:3">
+      <summary><h3>Nebudou to lidé na dílně brát jako kontrolu?</h3></summary>
+      <p>Měří se postup, ne výkon lidí. Nikoho nehodnotíme a nehledáme viníka. Cílem je lidem ubrat zbytečné chození, hledání a čekání, ne přidat práci.</p>
+    </details>
+    <details class="faq-item odhal" style="--poradi:4">
+      <summary><h3>Co se stane s mým e-mailem?</h3></summary>
+      <p>E-mail slouží k odemčení výsledků. Tipy a novinky posílám jen tomu, kdo k tomu zaškrtne souhlas, a odhlásit se můžete jedním klikem. Podrobnosti jsou v <a href="https://tokva.cz/ochrana-osobnich-udaju/">zásadách ochrany osobních údajů</a>.</p>
+    </details>
+    <details class="faq-item odhal" style="--poradi:5">
+      <summary><h3>Nahradí Tokva poradce?</h3></summary>
+      <p>Tokva vás provede tím, co bychom spolu dělali na místě: najít, kde mizí čas, změřit to, hledat příčinu a ověřit, jestli změna zabrala. Když budete chtít pomoc přímo u vás, dělám konzultace do zhruba 80 km od Vrchlabí.</p>
+    </details>
+    <details class="faq-item odhal" style="--poradi:6">
+      <summary><h3>Co když mi Tokva Pro nesedne?</h3></summary>
+      <p>Když vám Tokva Pro v prvním měsíci nepomůže, vrátím vám peníze. Stačí napsat e-mail, důvod uvádět nemusíte.</p>
+    </details>
   </section>
 
   <section class="zaver pas pas-zlata">
@@ -525,6 +668,37 @@ function cookiesOdmitnout() {
       }, 600);
     }
   }, 1300);
+})();
+</script>
+<script>
+// Bloky se při posouvání objeví a přiblíží, obrázky kroků se jemně oddálí
+// do správné velikosti, číslo 30 % se dopočítá. Kdo má omezení animací nebo
+// nemá JavaScript, vidí všechno hned a beze změny (třída "pohyb" se nepřidá).
+(function () {
+  if (!window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+  document.documentElement.classList.add('pohyb');
+  function pocitat(el) {
+    var od = parseFloat(el.getAttribute('data-pocitej-od')), do_ = parseFloat(el.getAttribute('data-pocitej-do'));
+    var delka = 1300, start = null;
+    el.textContent = String(od);
+    function krok(t) {
+      if (start === null) start = t;
+      var p = Math.min(1, (t - start) / delka), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = String(Math.round(od + (do_ - od) * e));
+      if (p < 1) requestAnimationFrame(krok);
+    }
+    setTimeout(function () { requestAnimationFrame(krok); }, 250);
+  }
+  var pozorovatel = new IntersectionObserver(function (zaznamy) {
+    zaznamy.forEach(function (z) {
+      if (!z.isIntersecting) return;
+      z.target.classList.add('je-tu');
+      if (z.target.hasAttribute('data-pocitej-do')) pocitat(z.target);
+      pozorovatel.unobserve(z.target);
+    });
+  }, { threshold: 0.2, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.odhal, [data-pocitej-do]').forEach(function (el) { pozorovatel.observe(el); });
 })();
 </script>
 <script src="/menu.js"></script>
