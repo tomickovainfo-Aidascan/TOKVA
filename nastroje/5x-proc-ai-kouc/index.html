@@ -757,6 +757,7 @@ nav {
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
 <script src="/postup.js"></script>
 <script src="/dalsi-krok.js"></script>
+<script src="/pripomenout-overeni.js"></script>
 </head>
 <body>
 <style id="cookies-css-2">
@@ -1959,8 +1960,14 @@ function renderOutput(raw, ulozit = true, neuplne = false) {
     const podleAnalyzy = KLIC[window.tokva5xKlic] || 's5';
     window.tokvaDalsiKrok.vykreslit(dk, {
       kroky: ['plan', 'overit', podleAnalyzy, 's5'], zapsat: ulozit,
-      text: 'Příčinu máte. Udělejte jednu změnu a za týden změřte znovu. Až druhé měření ukáže, jestli to zabralo.'
+      text: 'Příčinu máte. Udělejte jednu změnu a za 1 až 2 týdny změřte znovu, stejný proces a stejná směna. Až druhé měření ukáže, jestli to zabralo.'
     });
+    const pripomenout = document.createElement('div');
+    pripomenout.setAttribute('data-tokva-pripomenout', '');
+    pripomenout.setAttribute('data-nazev', '5× Proč: ověřit opatření');
+    pripomenout.setAttribute('data-za-dni', '10');
+    card.appendChild(pripomenout);
+    if (window.tokvaPripomenoutOvereni) window.tokvaPripomenoutOvereni.vykreslit(pripomenout);
   }
   chat.appendChild(card);
   chat.scrollTop = chat.scrollHeight;

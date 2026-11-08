@@ -546,8 +546,9 @@ footer { background:#0a0a0a; padding:24px 40px; display:flex; justify-content:sp
         <div class="top-loss-label">Největší zdroj ztráty</div>
         <div class="top-loss-name" id="top-loss-name">-</div>
         <div class="top-loss-sub" id="top-loss-sub">Zadejte čísla vlevo, ukážeme vám, kam se podívat nejdřív.</div>
-        <div class="top-loss-tip" id="top-loss-tip" style="display:none;">Tady začněte. Jedna položka, jedna změna, jedno druhé měření.</div>
+        <div class="top-loss-tip" id="top-loss-tip" style="display:none;">Tady začněte. Jedna položka, jedna změna, a za 1 až 2 týdny po změně spočítejte znovu, stejný proces a stejná směna.</div>
         <a class="top-loss-cta" id="top-loss-cta" href="#" target="_blank" style="display:none;">Zjistit teď →</a>
+        <div data-tokva-pripomenout data-nazev="Kalkulačka ztrát: přepočet po změně" data-za-dni="10"></div>
       </div>
 
       <div class="uloz-btn-row" style="margin-top:16px;">
@@ -1004,7 +1005,7 @@ const PROC_DAL = {
   meric_chuze: 'Nejvíc vás stojí chůze. Změřte jednu směnu a uvidíte, kolik z ní je opravdu chození.',
   meric_vse: 'Ztráty jsou rozložené do víc oblastí. Měřič ukáže, která z nich je v provozu ve skutečnosti největší.',
   proc: 'Změřené to už máte. Teď najděte, proč to vzniká. Bez příčiny se problém za měsíc vrátí.',
-  s5: 'Příčinu znáte. Teď změňte jednu věc a za týden to spočítejte znovu.'
+  s5: 'Příčinu znáte. Teď změňte jednu věc a za 1 až 2 týdny to spočítejte znovu.'
 };
 // 1. pád, 4. pád, 7. pád (Audit ukázal chůzi, začít chůzí)
 const SLOVO = {
@@ -1888,6 +1889,7 @@ function cookiesOdmitnout() {
 </script>
 
 <script src="../../zpetna-vazba.js"></script>
+<script src="/pripomenout-overeni.js"></script>
 <script src="/menu.js"></script>
 <script src="/po-vysledku.js" data-vysledek=".results"></script>
 </body>

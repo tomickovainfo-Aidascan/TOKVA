@@ -1079,6 +1079,7 @@ body.je-pro .jen-free { display:none; }
 <style id="tokva-menu-css">.nav-right a.nav-btn{text-decoration:none;} .nav-btn.nav-aktivni{border-color:var(--gold,#e9a91b)!important;color:var(--black,#1a1a1a)!important;font-weight:700;} .nastroj-lista{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:8px 40px;background:var(--white,#fff);border-bottom:1px solid var(--border,#e5e5e5);} @media (max-width:600px){.nastroj-lista{padding:8px 20px;}} .nastroj-lista:not(:has(> :not([style*="display:none"]):not([style*="display: none"]))){display:none;}</style>
 <script src="/postup.js"></script>
 <script src="/dalsi-krok.js"></script>
+<script src="/pripomenout-overeni.js"></script>
 </head>
 <body>
 <style id="cookies-css-2">
@@ -2383,9 +2384,15 @@ function renderMain() {
       const overit = window.tokvaDalsiKrok.overitNastroj();
       window.tokvaDalsiKrok.vykreslit(dk, {
         kroky: overit ? ['overit', 'plan'] : ['meric', 'plan'],
-        text: 'Pracoviště je uklizené. Teď ověřte, jestli to zabralo: změřte stejný proces znovu. Za měsíc udělejte kontrolu, jestli pořádek vydržel.'
+        text: 'Pracoviště je uklizené. Chcete vědět, kolik času to ušetřilo? Měřičem plýtvání změřte práci na tomhle pracovišti, nejlíp před úklidem i po něm, a porovnejte. Za měsíc udělejte i kontrolu, jestli pořádek vydržel.'
       });
     }
+    const pripomenout = document.createElement('div');
+    pripomenout.setAttribute('data-tokva-pripomenout', '');
+    pripomenout.setAttribute('data-nazev', '5S: kontrola pracoviště');
+    pripomenout.setAttribute('data-za-dni', '30');
+    main.appendChild(pripomenout);
+    if (window.tokvaPripomenoutOvereni) window.tokvaPripomenoutOvereni.vykreslit(pripomenout);
   }
 
   // Kontroly a úkoly, vždy viditelné (ne jen po 4/5 krocích) - obě jsou Pro.

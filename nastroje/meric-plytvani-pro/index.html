@@ -704,6 +704,8 @@ footer{background:#0a0a0a;padding:16px 20px;display:flex;justify-content:space-b
     </div>
   </div>
 
+  <div data-tokva-pripomenout data-nazev="Měřič plýtvání Pro: druhé měření" data-za-dni="10"></div>
+
   <!-- AKCE -->
   <div class="btn-row">
     <button class="btn-akce btn-gmail" onclick="tiskReport()">Tisk / PDF</button>
@@ -895,7 +897,7 @@ function prevzitMereniZFree() {
     localStorage.setItem('meric_pro_hist', JSON.stringify(hist));
     localStorage.setItem('meric_free_prevzato', znacka);
   } catch (e) {}
-  const textBezUctu = 'Vaše měření z bezplatného měřiče „' + (free.nazev || 'Měření') + '“ je teď v historii. Až po změně změříte ten samý proces znovu, zaškrtněte obě měření a porovnejte je jako PŘED × PO.';
+  const textBezUctu = 'Vaše měření z bezplatného měřiče „' + (free.nazev || 'Měření') + '“ je teď v historii. Změřte znovu za 1 až 2 týdny po změně, stejný proces a stejná směna, zaškrtněte obě měření a porovnejte je jako PŘED × PO.';
   ulozitDoSupabase(zaznam, plyKcRok).then(runId => {
     if (!runId) { upozornit(textBezUctu, 'Měření převzato'); return; }
     let hist2 = [];
@@ -905,7 +907,7 @@ function prevzitMereniZFree() {
     // Rovnou ukázat převzaté měření s tlačítkem na úkol a projekt, ať se
     // s ním dá hned pracovat a nemusí se hledat v historii.
     otevritModalDetailVysledkuZeZaznamu(polozka || Object.assign({}, zaznam, { toolRunId: runId }),
-      '<strong>Měření z bezplatného měřiče je uložené ve vašem účtu.</strong> Dole ho zařadíte k projektu a můžete k němu přidat úkol. Až po změně změříte ten samý proces znovu, zaškrtněte v historii obě měření a porovnejte je jako PŘED × PO.');
+      '<strong>Měření z bezplatného měřiče je uložené ve vašem účtu.</strong> Dole ho zařadíte k projektu a můžete k němu přidat úkol. Změřte znovu za 1 až 2 týdny po změně, stejný proces a stejná směna, zaškrtněte v historii obě měření a porovnejte je jako PŘED × PO.');
   }).catch(() => upozornit(textBezUctu, 'Měření převzato'));
 }
 
@@ -2095,7 +2097,7 @@ function nacistHistorii() {
   histWrap.innerHTML = `
     <div class="krok-num">Historie měření</div>
     <div class="krok-title">Poslední měření</div>
-    <p style="font-size:12px;color:var(--light);line-height:1.6;margin-bottom:10px;">Historie ukládá pouze základní přehled. Kompletní výsledky si po každém měření uložte do PC nebo stáhněte do CSV. Zaškrtněte dvě měření stejného procesu a porovnejte je jako PŘED × PO.</p>
+    <p style="font-size:12px;color:var(--light);line-height:1.6;margin-bottom:10px;">Historie ukládá pouze základní přehled. Kompletní výsledky si po každém měření uložte do PC nebo stáhněte do CSV. Změřte znovu za 1 až 2 týdny po změně, stejný proces a stejná směna, zaškrtněte dvě měření a porovnejte je jako PŘED × PO.</p>
     <div id="pred-po-vysledek"></div>
     <div class="hist-list">${hist.slice(0,8).map((z, i) => `
       <div class="hist-row" onclick="otevritModalDetailVysledku(${i})">
@@ -2677,6 +2679,7 @@ document.addEventListener('keydown', function(e){
 });
 </script>
 <script src="../../zpetna-vazba.js"></script>
+<script src="/pripomenout-overeni.js"></script>
 <script src="/menu.js"></script>
 </body>
 </html>
