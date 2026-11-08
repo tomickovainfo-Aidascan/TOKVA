@@ -375,6 +375,28 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
 .reference blockquote{margin:0;font-size:15.5px;line-height:1.7;color:var(--dark);font-style:italic;}
 .reference figcaption{margin-top:10px;font-size:14px;color:var(--mid);}
 .reference figcaption b{color:var(--dark);font-style:normal;}
+
+/* 8. 11. 2026: přepočet ztrát na úvodní stránce */
+.prepocet{background:#fff;border:1px solid var(--border2);border-radius:14px;padding:24px 26px;max-width:820px;display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center;}
+@media (max-width:760px){.prepocet{grid-template-columns:1fr;gap:20px;padding:20px;}}
+.prepocet-pole{margin-bottom:16px;}
+.prepocet-pole label{display:flex;justify-content:space-between;gap:10px;font-size:14.5px;color:var(--dark);font-weight:600;margin-bottom:6px;}
+.prepocet-pole output{font-family:'Poppins',sans-serif;font-weight:800;color:var(--gold-dark);white-space:nowrap;}
+.prepocet-pole input[type=range]{width:100%;accent-color:#e9a91b;height:28px;}
+.prepocet-pole small{display:block;font-size:12.5px;color:var(--mid);margin-top:2px;}
+.prepocet-vysledek{background:var(--gold-light,#fdf3d9);border-radius:12px;padding:20px 22px;text-align:center;}
+.prepocet-vysledek .pv-popis{font-size:14px;color:var(--mid);margin-bottom:4px;}
+.prepocet-vysledek .pv-kc{font-family:'Poppins',sans-serif;font-weight:800;font-size:34px;color:var(--dark);line-height:1.15;}
+.prepocet-vysledek .pv-dalsi{font-size:14px;color:var(--dark);margin-top:6px;}
+.prepocet-vysledek .btn{margin-top:14px;}
+.prepocet-pozn{font-size:12.5px;color:var(--mid);margin-top:12px;line-height:1.5;}
+.prepocet-pozn a{color:var(--gold-dark);font-weight:700;}
+
+/* 8. 11. 2026: pojmenovaná metoda */
+.metoda{border-left:4px solid var(--gold);background:#fff;border-radius:0 12px 12px 0;padding:16px 22px;max-width:820px;margin:4px 0 22px;}
+.metoda-nazev{font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;color:var(--gold-dark);margin:0 0 6px;}
+.metoda p{font-size:15px;line-height:1.65;color:var(--dark);margin:0;}
+.metoda p + p{margin-top:0;}
 </style>
 <style id="cookies-css">
 .cookies-bar{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:2px solid #e9a91b;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;z-index:9999;font-family:"DM Sans",sans-serif;}
@@ -463,9 +485,43 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
     <p class="bolesti-pointa odhal" style="--poradi:4">Tohle většinou není problém lidí. Tohle je problém procesu. A ten se dá změřit.</p>
   </section>
 
+  <section class="pas pas-bila" aria-labelledby="prepocet-nadpis">
+    <h2 class="section-title" id="prepocet-nadpis">Kolik vás to stojí? Spočítejte si to s vašimi čísly.</h2>
+    <div class="prepocet odhal" style="--poradi:0">
+      <div>
+        <div class="prepocet-pole">
+          <label for="pp-lide">Kolika lidí se to týká <output id="pp-lide-v">5</output></label>
+          <input type="range" id="pp-lide" min="1" max="100" value="5" step="1">
+        </div>
+        <div class="prepocet-pole">
+          <label for="pp-min">Kolik minut denně každý z nich chodí, hledá nebo čeká <output id="pp-min-v">20 min</output></label>
+          <input type="range" id="pp-min" min="5" max="120" value="20" step="5">
+          <small>Nevíte? Odhadněte. Přesné číslo ukáže měření.</small>
+        </div>
+        <div class="prepocet-pole">
+          <label for="pp-kc">Kolik vás stojí hodina práce <output id="pp-kc-v">300 Kč</output></label>
+          <input type="range" id="pp-kc" min="150" max="800" value="300" step="10">
+          <small>Mzda + odvody zaměstnavatele.</small>
+        </div>
+      </div>
+      <div class="prepocet-vysledek" aria-live="polite">
+        <div class="pv-popis">To je u vás zhruba</div>
+        <div class="pv-kc"><span id="pp-mesic">10 500</span>&nbsp;Kč</div>
+        <div class="pv-popis">měsíčně za čas, který nic nevytvoří</div>
+        <div class="pv-dalsi"><b id="pp-hodiny">35</b> hodin měsíčně · <b id="pp-rok">126 000</b> Kč ročně</div>
+        <a class="btn btn-gold" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'prepocet'})">Chci zjistit, kolik to je doopravdy</a>
+      </div>
+    </div>
+    <p class="prepocet-pozn">Je to odhad z čísel, která zadáte, ne slib úspory. Počítáme s 21 pracovními dny v měsíci. Kolik to u vás je doopravdy, ukáže měření přímo při běžné práci. Podrobněji podle druhů ztrát spočítá <a href="https://tokva.cz/nastroje/kalkulacka-ztrat/" onclick="trackTokvaEvent('tool_click',{placement:'prepocet',tool:'kalkulacka_ztrat'})">Kalkulačka ztrát</a>.</p>
+  </section>
+
 
   <section class="pas pas-bila">
     <h2 class="section-title">Od prvního zjištění k řešení. S podporou Tokvy v každém kroku.</h2>
+    <div class="metoda odhal" style="--poradi:0">
+      <p class="metoda-nazev">Metoda Změř, změň, ověř</p>
+      <p>Stojí na stejných základech jako Lean a KAIZEN, se kterými zlepšují provoz velké výrobní firmy. Tokva je převádí do jednoduchých kroků, které zvládne mistr bez školení a bez odborných slov. A na rozdíl od většiny postupů nekončí změnou, ale druhým měřením. <b>Uvidíte, jestli změna opravdu zabrala.</b></p>
+    </div>
     <div class="demo-blok">
       <button type="button" class="demo-tlacitko" onclick="document.getElementById('ukazka-okno').showModal();var v=document.getElementById('ukazka-video');v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});trackTokvaEvent('ukazka_click',{placement:'demo_tlacitko'})"><span class="demo-play" aria-hidden="true"></span><span><b>Chci vidět ukázku</b><small>1 min 40 s · bez zvuku</small></span></button>
       <p class="demo-popis">Kde začít, Mini audit skladu, Spaghetti diagram a na konci výsledek v korunách. Tak, jak to uvidíte na mobilu.</p>
@@ -783,5 +839,28 @@ function cookiesOdmitnout() {
 </script>
 <script src="/menu.js"></script>
 <script src="/video-pauza.js"></script>
+<script>
+/* 8. 11. 2026: přepočet ztrát */
+(function(){
+  var L=document.getElementById('pp-lide'),M=document.getElementById('pp-min'),K=document.getElementById('pp-kc');
+  if(!L||!M||!K) return;
+  var f=function(n){return Math.round(n).toLocaleString('cs-CZ');};
+  var zaokr=function(n){return n>=10000?Math.round(n/500)*500:Math.round(n/100)*100;};
+  var hlaseno=false;
+  function prepocitat(e){
+    var lide=+L.value, min=+M.value, kc=+K.value;
+    document.getElementById('pp-lide-v').textContent=lide;
+    document.getElementById('pp-min-v').textContent=min+' min';
+    document.getElementById('pp-kc-v').textContent=f(kc)+' Kč';
+    var hodiny=lide*min/60*21, mesic=hodiny*kc;
+    document.getElementById('pp-hodiny').textContent=f(hodiny);
+    document.getElementById('pp-mesic').textContent=f(zaokr(mesic));
+    document.getElementById('pp-rok').textContent=f(zaokr(mesic*12));
+    if(e && !hlaseno && typeof trackTokvaEvent==='function'){hlaseno=true;trackTokvaEvent('prepocet_pouzit',{placement:'homepage'});}
+  }
+  [L,M,K].forEach(function(x){x.addEventListener('input',prepocitat);});
+  prepocitat();
+})();
+</script>
 </body>
 </html>
