@@ -49,6 +49,46 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tokva.cz/#firma",
+      "name": "Tokva",
+      "url": "https://tokva.cz/",
+      "logo": "https://tokva.cz/favicon.svg",
+      "founder": { "@id": "https://tokva.cz/#gabriela" },
+      "areaServed": "CZ"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://tokva.cz/#gabriela",
+      "name": "Gabriela Tomíčková",
+      "jobTitle": "Procesní konzultantka, autorka Tokvy",
+      "description": "16 let praxe: 10 let KAIZEN ve výrobě, 6 let vedení skladu velkoobchodu.",
+      "url": "https://gabrielatomickova.cz/",
+      "worksFor": { "@id": "https://tokva.cz/#firma" }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Tokva",
+      "url": "https://tokva.cz/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "cs",
+      "description": "Webová aplikace pro malé výrobní a skladové firmy: měření provozu, hledání příčin problémů a porovnání stavu před změnou a po ní.",
+      "publisher": { "@id": "https://tokva.cz/#firma" },
+      "offers": [
+        { "@type": "Offer", "name": "Nástroje zdarma", "price": "0", "priceCurrency": "CZK" },
+        { "@type": "Offer", "name": "Tokva Pro (zakladatelská cena)", "url": "https://tokva.cz/pro/",
+          "priceSpecification": { "@type": "UnitPriceSpecification", "price": "499", "priceCurrency": "CZK", "unitCode": "MON" } }
+      ]
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
     {
@@ -387,11 +427,11 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
    <div class="hero-mrizka">
     <div class="hero-text">
     <p class="pro-koho">Pro majitele malých výrobních firem, vedoucí skladů a mistry</p>
-    <h1>Zjistěte, kde ve výrobě nebo skladu ztrácíte <span class="sr-only">čas.</span><span class="rotace" aria-hidden="true"><span class="rotace__slova"><span class="rotace__slovo"><span>čas</span>.</span><span class="rotace__slovo"><span>kapacitu</span>.</span><span class="rotace__slovo"><span>peníze</span>.</span><span class="rotace__slovo"><span>čas</span>.</span></span></span> <span style="display:block">A co změnit jako první.</span></h1>
+    <h1>Zjistěte, kde ve výrobě nebo skladu ztrácíte <span class="rotace"><span class="rotace__slova"><span class="rotace__slovo"><span>čas</span>.</span></span></span> <span style="display:block">A co změnit jako první.</span></h1>
     <p class="lead">Tokva je webová aplikace, která vás provede měřením provozu a hledáním příčin problémů. Získáte konkrétní podklady pro rozhodnutí, co zlepšit.</p>
     <p class="proof">Vyberte, co právě řešíte, a Tokva vám nabídne vhodný první krok. Bez instalace a znalosti metod.</p>
     <div class="hero-ctas">
-      <a class="btn btn-gold" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'hero'})">Otevřít Tokvu zdarma</a>
+      <a class="btn btn-gold" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'hero'})">Chci otevřít Tokvu zdarma</a>
     </div>
     <p class="jistoty"><b>Zdarma a bez platební karty.</b> Výsledky odemknete jedním zadáním e-mailu, z dalších e-mailů se odhlásíte jedním klikem.<br><b>U Tokva Pro vrátím peníze,</b> když vám první měsíc nepomůže.</p>
     </div>
@@ -420,7 +460,7 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
   <section class="pas pas-bila">
     <h2 class="section-title">Od prvního zjištění k řešení. S podporou Tokvy v každém kroku.</h2>
     <div class="demo-blok">
-      <button type="button" class="demo-tlacitko" onclick="document.getElementById('ukazka-okno').showModal();var v=document.getElementById('ukazka-video');v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});trackTokvaEvent('ukazka_click',{placement:'demo_tlacitko'})"><span class="demo-play" aria-hidden="true"></span><span><b>Pustit ukázku</b><small>1 min 40 s · bez zvuku</small></span></button>
+      <button type="button" class="demo-tlacitko" onclick="document.getElementById('ukazka-okno').showModal();var v=document.getElementById('ukazka-video');v.currentTime=0;var p=v.play();if(p&&p.catch)p.catch(function(){});trackTokvaEvent('ukazka_click',{placement:'demo_tlacitko'})"><span class="demo-play" aria-hidden="true"></span><span><b>Chci vidět ukázku</b><small>1 min 40 s · bez zvuku</small></span></button>
       <p class="demo-popis">Kde začít, Mini audit skladu, Spaghetti diagram a na konci výsledek v korunách. Tak, jak to uvidíte na mobilu.</p>
     </div>
     <div class="kroky-karty">
@@ -505,7 +545,7 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
       <div class="pro-item odhal" style="--poradi:3"><h3>Budete vědět, ne jen tušit</h3><p>Tokva porovná měření před změnou a po ní a ukáže, jestli to zabralo.</p></div>
     </div>
     <p class="pro-cena">Nástroje jsou zdarma. <b>Tokva Pro od 499 Kč měsíčně</b> (zakladatelská cena), peníze zpět, když vám první měsíc nepomůže.</p>
-    <a class="btn btn-obrys" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'homepage',placement:'section'})">Zjistit více o Tokva Pro</a>
+    <a class="btn btn-obrys" href="https://tokva.cz/pro/" onclick="trackTokvaEvent('pro_click',{source_tool:'homepage',placement:'section'})">Chci vědět víc o Tokva Pro</a>
   </section>
 
   <section class="pas pas-bila" aria-labelledby="srovnani-nadpis">
@@ -553,7 +593,7 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
   <section class="zaver pas pas-zlata">
     <h2 class="section-title">Začněte jedním problémem.</h2>
     <p class="lead">Vyberte, co vás právě zdržuje, a Tokva vám nabídne první krok.</p>
-    <a class="btn btn-gold" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'zaver'})">Otevřít Tokvu zdarma</a>
+    <a class="btn btn-gold" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'zaver'})">Chci otevřít Tokvu zdarma</a>
     <p class="brana-pozn">Výsledky bezplatných nástrojů pak odemknete jedním zadáním e-mailu v tomto prohlížeči.</p>
   </section>
 
@@ -656,10 +696,19 @@ function cookiesOdmitnout() {
 <script>
 // Střídající se slovo v nadpisu: čas, kapacitu, peníze. Starý vyjede nahoru,
 // nový zespodu. Kdo má omezení animací, vidí jen „čas.“ (a čtečka vždy „čas.“).
+// V HTML je jen „čas.“, aby vyhledávače četly nadpis jednou větou; další
+// slova doplní tenhle skript (skrytá pro čtečky).
 (function () {
   var r = document.querySelector('.rotace');
   if (!r) return;
   var slova = r.querySelector('.rotace__slova');
+  ['kapacitu', 'peníze', 'čas'].forEach(function (w) {
+    var s = document.createElement('span');
+    s.className = 'rotace__slovo';
+    s.setAttribute('aria-hidden', 'true');
+    s.innerHTML = '<span>' + w + '</span>.';
+    slova.appendChild(s);
+  });
   var polozky = slova.children;
   var n = polozky.length - 1;               // poslední je kopie prvního kvůli plynulému návratu
   var i = 0;
