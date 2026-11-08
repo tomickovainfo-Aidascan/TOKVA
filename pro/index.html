@@ -336,6 +336,14 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
 .reference blockquote{margin:0;font-size:15.5px;line-height:1.7;color:var(--dark);font-style:italic;}
 .reference figcaption{margin-top:10px;font-size:14px;color:var(--mid);}
 .reference figcaption b{color:var(--dark);font-style:normal;}
+/* 8. 11. 2026: Proč ne Excel nebo porada */
+.proc-ne{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:4px 0 28px;}
+.proc-ne-karta{background:#fff;border:1px solid var(--border2);border-radius:12px;padding:16px 18px;}
+.proc-ne-karta h3{font-family:'Poppins',sans-serif;font-weight:800;font-size:15.5px;color:var(--dark);margin:0 0 6px;}
+.proc-ne-karta p{font-size:14px;color:var(--mid);line-height:1.55;margin:0;}
+.proc-ne-karta.tokva{border:2px solid var(--gold);background:#fffaf0;}
+.proc-ne-karta.tokva p{color:var(--dark);}
+@media (max-width:760px){.proc-ne{grid-template-columns:1fr;}}
 </style>
 <script type="application/ld+json">
 {
@@ -455,7 +463,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
 
 <main class="main">
   <a class="back-link" href="https://tokva.cz/">← Zpět na Tokvu</a>
-  <div class="badge">Zakladatelská cena pro prvních 20 firem. Zachováte si ji po celou dobu nepřerušeného předplatného.</div>
+  <div class="badge">Zakladatelská cena pro prvních 20 firem, výměnou za zpětnou vazbu. Zachováte si ji po celou dobu nepřerušeného předplatného.</div>
   <h1>Zavedli jste v provozu změnu. Víte, jestli opravdu zabrala?</h1>
   <p class="lead" style="margin-bottom:22px;">Pro majitele menších výrobních firem, vedoucí skladů a mistry. Tokva Pro propojí měření, úkoly a druhé měření, takže uvidíte, kolik minut a korun změna přinesla.<br><span class="sipka" aria-hidden="true"></span>Budete vědět, co změnit, kdo to udělá a jestli opatření pomohlo.</p>
 
@@ -518,7 +526,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
       <div class="cenik-podminky">
         <p><b>Garance vrácení peněz.</b> Když vám Tokva Pro v prvním měsíci nepomůže, vrátím vám peníze. Stačí napsat e-mail. Podrobnosti jsou v <a href="https://tokva.cz/obchodni-podminky/#garance">obchodních podmínkách</a>.</p>
         <p><b>Bonus k předplatnému:</b> návod „Chcete automatizovat, ale nevíte, kde začít?“ Pět kroků, jak zjistit, co ve firmě zrušit, co zjednodušit a co má smysl předat AI, s pracovním listem na příkladu ze skladu. Pošlu vám ho e-mailem spolu se zapnutím Tokva Pro.</p>
-        <p><b>Zakladatelská cena pro prvních 20 firem.</b> Zachováte si ji po celou dobu nepřerušeného předplatného.</p>
+        <p><b>Zakladatelská cena pro prvních 20 firem.</b> Zachováte si ji po celou dobu nepřerušeného předplatného. Proč jen 20? Víc firem nestihnu poctivě poslouchat a podle jejich zpětné vazby Tokvu ladit.</p>
         <p id="objednavka-podminka-popis"><b>Co za ni chci:</b> zpětnou vazbu. Tři krátké dotazníky, každý zhruba na 10 minut: než začnete, po prvním použití a po měsíci provozu. A já uvidím, jak Tokvu používá vaše firma jako celek, ne kdo konkrétně. Podle toho appku doladím.</p>
         <p><b>Bez závazku a bez automatického prodlužování.</b> Týden před koncem předplatného vám přijde e-mail, jestli chcete pokračovat. Když ne, appka se přepne na verzi zdarma. Předtím si můžete výsledky stáhnout jedním exportem.</p>
       </div>
@@ -637,6 +645,13 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
     <div class="vyhoda"><dt>Mistr měří, vy vidíte výsledek</dt><dd>Nikdo nic nepřeposílá. Na poradě výsledek ukážete za dvě minuty, bez skládání tabulek.</dd></div>
     <div class="vyhoda"><dt>Vaše data zůstávají vaše</dt><dd>Data máte kdykoli ke stažení, i když Tokvu chcete přestat platit.</dd></div>
   </dl>
+
+  <h2 class="pilire-uvod">Proč ne Excel nebo porada?</h2>
+  <div class="proc-ne">
+    <div class="proc-ne-karta"><h3>Excel</h3><p>Ukáže čísla, ale ne, co je za nimi. A kdo ho za měsíc otevře, aby změnu změřil znovu?</p></div>
+    <div class="proc-ne-karta"><h3>Porada</h3><p>Domluví úkoly. Za měsíc si nikdo nepamatuje, kdo měl co udělat a jestli to pomohlo.</p></div>
+    <div class="proc-ne-karta tokva"><h3>Tokva Pro</h3><p>Drží celou cestu na jednom místě: měření, příčinu, úkol s člověkem a termínem. Úkol nekončí u „Hotovo“, ale jde dál do „Ověřit výsledek“, takže druhé měření nezapadne. Metoda Změř, změň, ověř dotažená do konce.</p></div>
+  </div>
 
   <h2 class="pilire-uvod">Z praxe: co ukáže druhé měření</h2>
   <div class="hero-proof praxe-blok">
