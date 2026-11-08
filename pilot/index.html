@@ -426,6 +426,20 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
   .kdo__reference blockquote{margin:0;font-size:14px;line-height:1.6;font-style:italic;color:rgba(255,255,255,.92);}
   .kdo__reference figcaption{margin-top:8px;font-size:12.5px;color:rgba(255,255,255,.65);line-height:1.45;}
   .kdo__reference figcaption b{color:#fff;}
+  /* 8. 11. 2026: přepočet ztrát (stejný jako na úvodní stránce) */
+  .prepocet{background:#fff;border:1px solid #e8e6e0;border-radius:14px;padding:24px 26px;display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center;}
+  @media (max-width:760px){.prepocet{grid-template-columns:1fr;gap:20px;padding:20px;}}
+  .prepocet-pole{margin-bottom:16px;}
+  .prepocet-pole label{display:flex;justify-content:space-between;gap:10px;font-size:14.5px;color:var(--dark);font-weight:600;margin-bottom:6px;}
+  .prepocet-pole output{font-family:'Poppins',sans-serif;font-weight:800;color:var(--gold-dark);white-space:nowrap;}
+  .prepocet-pole input[type=range]{width:100%;accent-color:#e9a91b;height:28px;}
+  .prepocet-pole small{display:block;font-size:12.5px;color:var(--mid);margin-top:2px;}
+  .prepocet-vysledek{background:var(--gold-light);border-radius:12px;padding:20px 22px;text-align:center;}
+  .prepocet-vysledek .pv-popis{font-size:14px;color:var(--mid);margin-bottom:4px;}
+  .prepocet-vysledek .pv-kc{font-family:'Poppins',sans-serif;font-weight:800;font-size:34px;color:var(--dark);line-height:1.15;}
+  .prepocet-vysledek .pv-dalsi{font-size:14px;color:var(--dark);margin-top:6px;}
+  .prepocet-vysledek .btn-gold{margin-top:14px;display:inline-block;}
+  .prepocet-pozn{font-size:12.5px;color:var(--mid);margin-top:12px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -625,6 +639,37 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
         </div>
         <p class="dukazy__pozn">Každý provoz je jiný a stejné číslo vám slíbit nemůžu. Kolik se dá ušetřit u vás, ukáže až vaše měření.</p>
       </div>
+    </section>
+
+    <section class="sekce" id="u-vas" aria-labelledby="prepocet-nadpis">
+      <h2 id="prepocet-nadpis">A kolik je to u vás?</h2>
+      <p class="sekce__uvod">Moje čísla jsou z mých provozů. Spočítejte si to s vašimi.</p>
+      <div class="prepocet">
+        <div>
+          <div class="prepocet-pole">
+            <label for="pp-lide">Kolika lidí se to týká <output id="pp-lide-v">5</output></label>
+            <input type="range" id="pp-lide" min="1" max="100" value="5" step="1">
+          </div>
+          <div class="prepocet-pole">
+            <label for="pp-min">Kolik minut denně každý z nich chodí, hledá nebo čeká <output id="pp-min-v">20 min</output></label>
+            <input type="range" id="pp-min" min="5" max="120" value="20" step="5">
+            <small>Nevíte? Odhadněte. Přesné číslo ukáže měření v pilotu.</small>
+          </div>
+          <div class="prepocet-pole">
+            <label for="pp-kc">Kolik vás stojí hodina práce <output id="pp-kc-v">300 Kč</output></label>
+            <input type="range" id="pp-kc" min="150" max="800" value="300" step="10">
+            <small>Mzda + odvody zaměstnavatele.</small>
+          </div>
+        </div>
+        <div class="prepocet-vysledek" aria-live="polite">
+          <div class="pv-popis">To je u vás zhruba</div>
+          <div class="pv-kc"><span id="pp-mesic">10 500</span>&nbsp;Kč</div>
+          <div class="pv-popis">měsíčně za čas, který nic nevytvoří</div>
+          <div class="pv-dalsi"><b id="pp-hodiny">35</b> hodin měsíčně · <b id="pp-rok">126 000</b> Kč ročně</div>
+          <a class="btn-gold" href="#prihlasit" data-pilot-prihlasit="prepocet">Chci zjistit, kolik to je doopravdy</a>
+        </div>
+      </div>
+      <p class="prepocet-pozn">Je to odhad z čísel, která zadáte, ne slib úspory. Počítáme s 21 pracovními dny v měsíci. Kolik to u vás je doopravdy, ukáže měření v pilotu přímo při běžné práci.</p>
     </section>
 
     <section class="sekce" id="cim-je-to-jine">
@@ -945,5 +990,28 @@ window.trackTokvaEvent = function (eventName, parameters = {}) {
 <script src="/menu.js"></script>
 <script src="/cookies.js"></script>
 <script src="/pilot-prihlaska.js" defer></script>
+<script>
+/* 8. 11. 2026: přepočet ztrát */
+(function(){
+  var L=document.getElementById('pp-lide'),M=document.getElementById('pp-min'),K=document.getElementById('pp-kc');
+  if(!L||!M||!K) return;
+  var f=function(n){return Math.round(n).toLocaleString('cs-CZ');};
+  var zaokr=function(n){return n>=10000?Math.round(n/500)*500:Math.round(n/100)*100;};
+  var hlaseno=false;
+  function prepocitat(e){
+    var lide=+L.value, min=+M.value, kc=+K.value;
+    document.getElementById('pp-lide-v').textContent=lide;
+    document.getElementById('pp-min-v').textContent=min+' min';
+    document.getElementById('pp-kc-v').textContent=f(kc)+' Kč';
+    var hodiny=lide*min/60*21, mesic=hodiny*kc;
+    document.getElementById('pp-hodiny').textContent=f(hodiny);
+    document.getElementById('pp-mesic').textContent=f(zaokr(mesic));
+    document.getElementById('pp-rok').textContent=f(zaokr(mesic*12));
+    if(e && !hlaseno && typeof trackTokvaEvent==='function'){hlaseno=true;trackTokvaEvent('prepocet_pouzit',{placement:'pilot'});}
+  }
+  [L,M,K].forEach(function(x){x.addEventListener('input',prepocitat);});
+  prepocitat();
+})();
+</script>
 </body>
 </html>
