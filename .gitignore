@@ -16,3 +16,6 @@ videa/Screen_Recording_*
 .env.*
 *.key
 node_modules/
+
+# Surové fotky a videa pro obsah (8. 11. 2026), nikdy na GitHub
+obrázky-videa/
