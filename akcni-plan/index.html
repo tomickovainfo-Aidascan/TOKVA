@@ -458,7 +458,7 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
           <label class="field-check"><input type="checkbox" id="ak-potvrzeno"> Výsledek potvrzen</label>
         </div>
         <div id="ak-pripomenout-wrap" style="display:none;margin-top:12px;">
-          <div id="ak-pripomenout" data-tokva-pripomenout data-za-dni="10"></div>
+          <div id="ak-pripomenout" data-tokva-pripomenout data-nastroj="akcni-plan" data-za-dni="10"></div>
         </div>
       </details>
 
@@ -1283,7 +1283,7 @@ function aktualizovatPripomenoutAkce() {
   if (stav !== 'hotovo') { wrap.style.display = 'none'; return; }
   const nazev = (document.getElementById('ak-title').value || 'akce v Tokvě').trim();
   const box = document.getElementById('ak-pripomenout');
-  box.setAttribute('data-nazev', 'Ověřit: ' + nazev);
+  box.setAttribute('data-nazev', nazev);
   wrap.style.display = 'block';
   if (window.tokvaPripomenoutOvereni) window.tokvaPripomenoutOvereni.vykreslit(box);
 }
