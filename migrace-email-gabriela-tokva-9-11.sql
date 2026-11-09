@@ -5,12 +5,17 @@
 -- migrace se neupravuje, tahle jen nahrazuje stejnou funkci (create or
 -- replace) s opravenou adresou, nic jiného na ní neměníme.
 --
+-- Doplněno set search_path = public (bezpečné nastavení pro security definer,
+-- stejně jako u ostatních funkcí), ať se oprava adresy nepřepíše přes případné
+-- bezpečnostní nastavení z kontroly.
+--
 -- Spusť celé najednou v Supabase SQL Editoru.
 
 create or replace function public.zkontrolovat_limit_pozvanky()
 returns trigger
 language plpgsql
 security definer
+set search_path = public
 as $$
 declare
   v_max integer;
