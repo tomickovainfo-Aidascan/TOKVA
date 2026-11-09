@@ -1784,12 +1784,28 @@ nacistPrihlaseniStav();
 <script>
 // Sdílené odesílání vlastních událostí do GA4 - no-op, dokud gtag
 // neexistuje (např. návštěvník ještě neodsouhlasil cookies).
-window.trackTokvaEvent = function (eventName, parameters = {}) {
-  if (typeof window.gtag !== "function") return;
-  window.gtag("event", eventName, {
-    ...parameters,
-    page_path: window.location.pathname
-  });
+// Události GA4 (upraveno 9. 11. 2026): co se stane před souhlasem s cookies, se podrží
+// jen v paměti stránky. Klikne-li člověk „Souhlasím“, odešle se to; při „Odmítnout“
+// se to zahodí a nic se nikam nepošle. Bez souhlasu GA4 vůbec neběží.
+window.trackTokvaEvent = function (eventName, parameters) {
+  var data = Object.assign({}, parameters || {}, { page_path: window.location.pathname });
+  if (typeof window.gtag === "function") { window.gtag("event", eventName, data); return; }
+  var fronta = window.__tokvaFronta = window.__tokvaFronta || [];
+  if (fronta.length < 50) fronta.push([eventName, data]);
+  if (window.__tokvaHlidac) return;
+  var kol = 0;
+  window.__tokvaHlidac = setInterval(function () {
+    kol++;
+    var souhlas = null;
+    try { souhlas = localStorage.getItem('cookies_souhlas'); } catch (e) {}
+    var konec = function () { clearInterval(window.__tokvaHlidac); window.__tokvaHlidac = null; };
+    if (souhlas === 'ne' || kol > 3600) { window.__tokvaFronta = []; konec(); return; }
+    if (typeof window.gtag !== "function") return;
+    var f = window.__tokvaFronta || [];
+    window.__tokvaFronta = [];
+    f.forEach(function (u) { window.gtag("event", u[0], u[1]); });
+    konec();
+  }, 1000);
 };
 
 (function(){
