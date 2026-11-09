@@ -42,6 +42,13 @@
     return 'https://calendar.google.com/calendar/render?' + params.join('&');
   }
 
+  // RFC 5545: zpětné lomítko, čárka, středník a nový řádek se v textových
+  // polích (SUMMARY, DESCRIPTION) escapují, jinak si je někteří kalendáři
+  // (hlavně na Androidu) vyloží jako oddělovače a text uříznou.
+  function icsText(s) {
+    return String(s).replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\n/g, '\\n');
+  }
+
   function icsUrl(nazev, datum) {
     var radky = [
       'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Tokva//Pripomenuti overeni//CS', 'CALSCALE:GREGORIAN',
@@ -50,8 +57,8 @@
       'DTSTAMP:' + ymd(new Date()) + 'T000000Z',
       'DTSTART;VALUE=DATE:' + ymd(datum),
       'DTEND;VALUE=DATE:' + ymd(denPote(datum)),
-      'SUMMARY:Ověřit: ' + nazev,
-      'DESCRIPTION:' + POPIS,
+      'SUMMARY:' + icsText('Ověřit: ' + nazev),
+      'DESCRIPTION:' + icsText(POPIS),
       'END:VEVENT', 'END:VCALENDAR'
     ];
     return 'data:text/calendar;charset=utf-8,' + encodeURIComponent(radky.join('\r\n'));
@@ -81,7 +88,7 @@
     var datum = zaDni(dny);
     var android = jeAndroid();
 
-    box.className = 'pripomenout';
+    box.classList.add('pripomenout');
     box.innerHTML =
       '<p class="pripomenout-text">Ať to nezapadne: přidejte si připomínku na ověření za ' + dny + ' dní.</p>' +
       '<div class="pripomenout-tlacitka">' +

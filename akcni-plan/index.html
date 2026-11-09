@@ -402,14 +402,14 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
     <p class="modal-sub">Co změníme, proč a jak poznáme, že to zabralo.</p>
     <form id="form-akce" onsubmit="ulozitAkci(event)">
       <div class="field"><label>Co se má udělat *</label>
-        <input type="text" id="ak-title" placeholder="např. Označit lokace skladu" required></div>
+        <input type="text" id="ak-title" placeholder="např. Označit lokace skladu" required oninput="aktualizovatPripomenoutAkce()"></div>
       <div class="field"><label>Proč to děláme</label>
         <textarea id="ak-reason" placeholder="Např. nejasné uložení zboží prodlužuje vychystávání"></textarea></div>
       <div class="field-row">
         <div class="field"><label>Projekt</label>
           <select id="ak-projekt"><option value="">Bez projektu</option></select></div>
         <div class="field"><label>Stav</label>
-          <select id="ak-status">
+          <select id="ak-status" onchange="aktualizovatPripomenoutAkce()">
             <option value="novy">Nový</option>
             <option value="probiha">Probíhá</option>
             <option value="hotovo">Hotovo</option>
@@ -456,6 +456,9 @@ footer{max-width:1040px;margin:30px auto 0;padding:20px 16px;border-top:1px soli
         </div>
         <div class="field" style="margin-top:12px;">
           <label class="field-check"><input type="checkbox" id="ak-potvrzeno"> Výsledek potvrzen</label>
+        </div>
+        <div id="ak-pripomenout-wrap" style="display:none;margin-top:12px;">
+          <div id="ak-pripomenout" data-tokva-pripomenout data-za-dni="10"></div>
         </div>
       </details>
 
@@ -1272,6 +1275,19 @@ function resetovatFotoStav() {
   document.getElementById('ak-foto-nahled').src = '';
 }
 
+// 8. 11. 2026: tlačítko "Přidat ověření do kalendáře" u úkolu ve stavu
+// Hotovo, ať nezapadne, kdy se má provést druhé měření.
+function aktualizovatPripomenoutAkce() {
+  const stav = document.getElementById('ak-status').value;
+  const wrap = document.getElementById('ak-pripomenout-wrap');
+  if (stav !== 'hotovo') { wrap.style.display = 'none'; return; }
+  const nazev = (document.getElementById('ak-title').value || 'akce v Tokvě').trim();
+  const box = document.getElementById('ak-pripomenout');
+  box.setAttribute('data-nazev', 'Ověřit: ' + nazev);
+  wrap.style.display = 'block';
+  if (window.tokvaPripomenoutOvereni) window.tokvaPripomenoutOvereni.vykreslit(box);
+}
+
 function otevritModalNovaAkce() {
   editovanaAkceId = null;
   document.getElementById('modal-akce-nadpis').textContent = 'Nová akce';
@@ -1280,6 +1296,7 @@ function otevritModalNovaAkce() {
   resetovatFotoStav();
   document.getElementById('modal-akce-err').style.display = 'none';
   document.getElementById('modal-akce-overlay').classList.add('visible');
+  aktualizovatPripomenoutAkce();
 }
 
 async function otevritModalUpravitAkce(id) {
@@ -1303,6 +1320,7 @@ async function otevritModalUpravitAkce(id) {
   resetovatFotoStav();
   document.getElementById('modal-akce-err').style.display = 'none';
   document.getElementById('modal-akce-overlay').classList.add('visible');
+  aktualizovatPripomenoutAkce();
 
   if (akceSFotkou.has(id)) {
     try {
@@ -1600,6 +1618,7 @@ function tisknoutAkcniPlan() {
 }
 </script>
 <script src="../zpetna-vazba.js"></script>
+<script src="/pripomenout-overeni.js"></script>
 <script>
 // Výška horní lišty pro ukotvenou hlavičku tabulky (lišta se na užší obrazovce zalamuje).
 (function () {
