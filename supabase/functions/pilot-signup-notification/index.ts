@@ -25,7 +25,7 @@ const WEBHOOK_SECRET = Deno.env.get("WEBHOOK_SECRET")!;
 const PILOT_LIST_ID = parseInt(Deno.env.get("PILOT_BREVO_LIST_ID") || "", 10);
 
 const ODESILATEL = { name: "Gabriela Tomíčková, Tokva", email: "gabriela@tokva.cz" };
-const GABINA = "tomickova.info@gmail.com";
+const GABINA = "gabriela@tokva.cz";
 
 function esc(s: unknown): string {
   return String(s ?? "")

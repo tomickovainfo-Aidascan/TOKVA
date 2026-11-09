@@ -166,7 +166,7 @@
         box.innerHTML = '<p class="zv-diky"><strong>Díky, dorazilo to.</strong> Jestli jste nechali e-mail, ozvu se.</p>';
       } catch (ex) {
         console.warn('Zpětnou vazbu se nepodařilo odeslat.', ex);
-        ukazatChybu('Zprávu se nepodařilo odeslat. Zkuste to prosím znovu, nebo mi napište na tomickova.info@gmail.com.');
+        ukazatChybu('Zprávu se nepodařilo odeslat. Zkuste to prosím znovu, nebo mi napište na gabriela@tokva.cz.');
         btnOdeslat.disabled = false;
       }
     });

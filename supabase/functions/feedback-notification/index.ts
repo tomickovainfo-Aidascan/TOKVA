@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
 
   const body: Record<string, unknown> = {
     sender: { name: "Tokva", email: "gabriela@tokva.cz" },
-    to: [{ email: "tomickova.info@gmail.com" }],
+    to: [{ email: "gabriela@tokva.cz" }],
     subject: "Zpětná vazba: " + nastroj + (z.email ? " (s e-mailem)" : ""),
     htmlContent:
       "<p><strong>Nástroj:</strong> " + esc(nastroj) + "<br>" +

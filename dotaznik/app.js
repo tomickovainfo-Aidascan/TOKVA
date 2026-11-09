@@ -294,7 +294,7 @@
 
   async function init() {
     if (!klic) {
-      zobrazitChybu('Chybí odkaz na dotazník. Zkontrolujte prosím adresu, nebo mi napište na tomickova.info@gmail.com.');
+      zobrazitChybu('Chybí odkaz na dotazník. Zkontrolujte prosím adresu, nebo mi napište na gabriela@tokva.cz.');
       return;
     }
     try {
@@ -332,7 +332,7 @@
       vykreslitObrazovku();
     } catch (e) {
       console.warn('Dotaznik se nepodarilo nacist', e);
-      zobrazitChybu('Tenhle odkaz nefunguje. Zkontrolujte ho prosím, nebo mi napište na tomickova.info@gmail.com.');
+      zobrazitChybu('Tenhle odkaz nefunguje. Zkontrolujte ho prosím, nebo mi napište na gabriela@tokva.cz.');
     }
   }
 

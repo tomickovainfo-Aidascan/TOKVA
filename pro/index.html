@@ -387,7 +387,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
       "name": "Co když mi Tokva Pro nesedne?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Když vám Tokva Pro v prvním měsíci nepomůže, vrátím vám peníze. Stačí do konce prvního měsíce napsat e-mail na tomickova.info@gmail.com, důvod uvádět nemusíte. Peníze pošlu do 14 dnů a appka se přepne na verzi zdarma."
+        "text": "Když vám Tokva Pro v prvním měsíci nepomůže, vrátím vám peníze. Stačí do konce prvního měsíce napsat e-mail na gabriela@tokva.cz, důvod uvádět nemusíte. Peníze pošlu do 14 dnů a appka se přepne na verzi zdarma."
       }
     },
     {
@@ -727,7 +727,7 @@ details.faq-item > p{padding:0 20px 16px;margin:0;}
   </details>
   <details class="faq-item">
     <summary><h3>Co když mi Tokva Pro nesedne?</h3></summary>
-    <p>Když vám Tokva Pro v prvním měsíci nepomůže, vrátím vám peníze. Stačí do konce prvního měsíce napsat e-mail na <a href="mailto:tomickova.info@gmail.com">tomickova.info@gmail.com</a>, důvod uvádět nemusíte. Peníze pošlu do 14 dnů na účet, ze kterého přišla platba, a appka se přepne na verzi zdarma.</p>
+    <p>Když vám Tokva Pro v prvním měsíci nepomůže, vrátím vám peníze. Stačí do konce prvního měsíce napsat e-mail na <a href="mailto:gabriela@tokva.cz">gabriela@tokva.cz</a>, důvod uvádět nemusíte. Peníze pošlu do 14 dnů na účet, ze kterého přišla platba, a appka se přepne na verzi zdarma.</p>
   </details>
   <details class="faq-item">
     <summary><h3>Můžu předplatné kdykoliv ukončit?</h3></summary>
@@ -897,9 +897,9 @@ document.getElementById('objednavka-form').addEventListener('input', function ()
 }, { once: true });
 
 function prelozitChybuObjednavky(msg) {
-  if (msg.includes('already registered')) return 'Tenhle e-mail už má u nás účet. Přihlaste se prosím a napište mi rovnou na tomickova.info@gmail.com, objednávku vyřídíme ručně.';
+  if (msg.includes('already registered')) return 'Tenhle e-mail už má u nás účet. Přihlaste se prosím a napište mi rovnou na gabriela@tokva.cz, objednávku vyřídíme ručně.';
   if (msg.includes('Password should be')) return 'Heslo musí mít aspoň 6 znaků.';
-  return 'Něco se nepovedlo: ' + msg + '. Napište mi prosím rovnou na tomickova.info@gmail.com.';
+  return 'Něco se nepovedlo: ' + msg + '. Napište mi prosím rovnou na gabriela@tokva.cz.';
 }
 
 async function odeslatObjednavku(e) {
@@ -976,7 +976,7 @@ async function odeslatObjednavku(e) {
     });
     if (orderError) {
       console.warn('Účet vznikl, ale objednávka se neuložila.', orderError);
-      err.textContent = 'Účet se založil, ale fakturační údaje se bohužel neuložily. Napište mi je prosím rovnou na tomickova.info@gmail.com, ať mám na fakturu všechno správně.';
+      err.textContent = 'Účet se založil, ale fakturační údaje se bohužel neuložily. Napište mi je prosím rovnou na gabriela@tokva.cz, ať mám na fakturu všechno správně.';
       err.style.display = 'block';
       btn.disabled = false;
       return false;

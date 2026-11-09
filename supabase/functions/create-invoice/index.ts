@@ -318,7 +318,7 @@ Deno.serve(async (req) => {
           headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
           body: JSON.stringify({
             sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
-            replyTo: { email: "tomickova.info@gmail.com", name: "Gabriela Tomíčková" },
+            replyTo: { email: "gabriela@tokva.cz", name: "Gabriela Tomíčková" },
             to: [{ email }],
             subject: jePrvniPoObjednavce ? "Platba dorazila, Tokva Pro je aktivní"
               : jeProdlouzeni ? "Tokva Pro máte prodloužené" : "Vaše Tokva Pro je aktivní",
@@ -337,7 +337,7 @@ Deno.serve(async (req) => {
                   "<a href=\"https://tokva.cz/moje-tokva/\">tokva.cz/moje-tokva</a></p>" +
                   "<p>Fakturu na " + cena + " Kč za měsíc dostanete zvlášť.</p>" +
                   "<p>K Tokva Pro patří slíbený bonus, návod <a href=\"https://tokva.cz/navod/co-automatizovat/\">Chcete automatizovat, ale nevíte, kde začít?</a> Pět kroků, jak zjistit, co ve firmě zrušit, co zjednodušit a co má smysl předat AI, s pracovním listem.</p>") +
-              "<p>Kdyby něco nesedělo nebo jste měli otázku, napište na <a href=\"mailto:tomickova.info@gmail.com\">tomickova.info@gmail.com</a> nebo odpovězte na tento e-mail.</p>" +
+              "<p>Kdyby něco nesedělo nebo jste měli otázku, napište na <a href=\"mailto:gabriela@tokva.cz\">gabriela@tokva.cz</a> nebo odpovězte na tento e-mail.</p>" +
               "<p>Gabriela</p>",
           }),
         });
@@ -354,7 +354,7 @@ Deno.serve(async (req) => {
       headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({
         sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
-        to: [{ email: "tomickova.info@gmail.com" }],
+        to: [{ email: "gabriela@tokva.cz" }],
         subject: (jePrvniPoObjednavce ? "Faktura (zaplacená, VS " + vs + ") - "
           : jeProdlouzeni ? "Koncept faktury (prodloužení) - " : "Koncept faktury vytvořen - ") + (org.name || org.id),
         htmlContent:
@@ -386,7 +386,7 @@ Deno.serve(async (req) => {
         headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
         body: JSON.stringify({
           sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
-          to: [{ email: "tomickova.info@gmail.com" }],
+          to: [{ email: "gabriela@tokva.cz" }],
           subject: "Faktura se NEVYTVOŘILA - " + (org.name || org.id),
           htmlContent:
             "<p>Vytvoření konceptu faktury pro firmu " + (org.name || "-") +

@@ -26,7 +26,7 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 const ODESILATEL = { name: "Tokva", email: "gabriela@tokva.cz" };
-const GABINA = "tomickova.info@gmail.com";
+const GABINA = "gabriela@tokva.cz";
 
 function datum(d: string | null): string {
   if (!d) return "-";
@@ -47,7 +47,7 @@ async function poslat(to: { email: string; name?: string }, subject: string, htm
   const res = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
     headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
-    body: JSON.stringify({ sender: ODESILATEL, replyTo: { email: "tomickova.info@gmail.com", name: "Gabriela Tomíčková" }, to: [to], subject, htmlContent }),
+    body: JSON.stringify({ sender: ODESILATEL, replyTo: { email: "gabriela@tokva.cz", name: "Gabriela Tomíčková" }, to: [to], subject, htmlContent }),
   });
   if (!res.ok) throw new Error("Brevo " + res.status + ": " + (await res.text()));
 }

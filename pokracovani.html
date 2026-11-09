@@ -153,14 +153,14 @@ async function potvrditPokracovani() {
       } else {
         document.getElementById('ok-nadpis').textContent = 'Pokračování už máte potvrzené';
         okText.textContent = (konec ? 'Tokva Pro platí do ' + new Date(konec).toLocaleDateString('cs-CZ') + '. ' : '') +
-          'Kdyby něco nesedělo, napište mi na tomickova.info@gmail.com.';
+          'Kdyby něco nesedělo, napište mi na gabriela@tokva.cz.';
       }
     }
     document.getElementById('stav-form').classList.add('skryty');
     document.getElementById('stav-ok').classList.add('aktivni');
   } catch (ex) {
     console.warn('Potvrzení pokračování se nepovedlo.', ex);
-    zprava.textContent = 'Něco se nepovedlo, zkuste to prosím znovu nebo napište na tomickova.info@gmail.com.';
+    zprava.textContent = 'Něco se nepovedlo, zkuste to prosím znovu nebo napište na gabriela@tokva.cz.';
     zprava.style.display = 'block';
     btn.disabled = false;
   }

@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
-        to: [{ email: "tomickova.info@gmail.com" }],
+        to: [{ email: "gabriela@tokva.cz" }],
         subject: "Nová objednávka - " + (order.company_name || order.email),
         htmlContent:
           "<p>Přišla nová objednávka Tokva Pro:</p>" +

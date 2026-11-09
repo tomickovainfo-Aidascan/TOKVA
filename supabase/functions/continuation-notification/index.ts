@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
     },
     body: JSON.stringify({
       sender: { name: "Tokva Pro", email: "gabriela@tokva.cz" },
-      to: [{ email: "tomickova.info@gmail.com" }],
+      to: [{ email: "gabriela@tokva.cz" }],
       subject: "Potvrzeno pokračování - " + (org.name || org.id),
       htmlContent:
         "<p>Firma potvrdila, že chce pokračovat v Tokva Pro:</p>" +
