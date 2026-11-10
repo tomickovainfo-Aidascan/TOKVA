@@ -54,13 +54,15 @@ function escapeHtml(s: string): string {
 }
 
 async function poslat(to: { email: string; name?: string }, subject: string, htmlContent: string) {
+  // Brevo odmítne prázdné jméno ("name is missing in to") - stává se, když
+  // odpovědná osoba má účet, ale bez vyplněného celého jména.
   const res = await fetch("https://api.brevo.com/v3/smtp/email", {
     method: "POST",
     headers: { "api-key": BREVO_API_KEY, "Content-Type": "application/json" },
     body: JSON.stringify({
       sender: ODESILATEL,
       replyTo: { email: "gabriela@tokva.cz", name: "Gabriela Tomíčková" },
-      to: [to],
+      to: [{ email: to.email, name: to.name || to.email }],
       subject,
       htmlContent,
     }),
@@ -96,11 +98,14 @@ Deno.serve(async (req) => {
     return { email: profil.email, name: profil.full_name || "" };
   }
 
-  // Odpovědná osoba (actions.responsible_person) je volný text - najde se
-  // podle jména mezi členy firmy, co mají účet. Nenajde se (nemá účet,
-  // je prázdná, jméno nesedí), pošle se majiteli.
-  async function emailOdpovedneOsoby(orgId: string, jmeno: string | null): Promise<{ email: string; name: string } | null> {
-    if (!jmeno?.trim()) return null;
+  // Odpovědná osoba (actions.responsible_person) je volný text - bývá to
+  // jméno, ale i e-mail nebo jeho začátek před @ (appka ho tak někdy
+  // předvyplní). Hledá se nejdřív podle e-mailu (celý, nebo shoda se
+  // začátkem před @), až pak podle jména. Nenajde se (nemá účet, je
+  // prázdná, nic nesedí), pošle se majiteli.
+  async function emailOdpovedneOsoby(orgId: string, zadani: string | null): Promise<{ email: string; name: string } | null> {
+    const hledane = zadani?.trim().toLowerCase();
+    if (!hledane) return null;
     const { data: clenove } = await supabase
       .from("organization_members")
       .select("user_id")
@@ -109,11 +114,17 @@ Deno.serve(async (req) => {
     const { data: profily } = await supabase
       .from("profiles")
       .select("id, email, full_name")
-      .in("id", clenove.map((c) => c.user_id))
-      .ilike("full_name", jmeno.trim());
-    const shoda = profily?.[0];
-    if (!shoda?.email) return null;
-    return { email: shoda.email, name: shoda.full_name || "" };
+      .in("id", clenove.map((c) => c.user_id));
+    if (!profily?.length) return null;
+    const shodaEmail = profily.find((p) => {
+      const email = p.email?.toLowerCase();
+      if (!email) return false;
+      return email === hledane || email.split("@")[0] === hledane;
+    });
+    if (shodaEmail?.email) return { email: shodaEmail.email, name: shodaEmail.full_name || "" };
+    const shodaJmeno = profily.find((p) => p.full_name?.trim().toLowerCase() === hledane);
+    if (shodaJmeno?.email) return { email: shodaJmeno.email, name: shodaJmeno.full_name || "" };
+    return null;
   }
 
   // "nebo dřív" (ne jen = dnes), ať připomínka nezapadne, když cron den
