@@ -53,28 +53,36 @@ body { font-family:'DM Sans',sans-serif; background:var(--paper); color:var(--da
 .topbar .brand { font-family:'Poppins',sans-serif; font-weight:800; font-size:15px; text-decoration:none; color:var(--white); }
 .topbar .brand span { color:var(--gold); }
 
-.main { padding:80px 24px 100px; max-width:640px; margin:0 auto; text-align:center; }
+.main { padding:64px 24px 100px; max-width:640px; margin:0 auto; text-align:center; }
 .kod { font-family:'Poppins',sans-serif; font-size:15px; font-weight:800; letter-spacing:3px; color:var(--gold-dark); margin-bottom:18px; }
 h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.5vw,34px); font-weight:900; letter-spacing:-0.5px; margin-bottom:16px; line-height:1.25; }
-.popis { font-size:15.5px; color:var(--mid); margin-bottom:36px; max-width:480px; margin-left:auto; margin-right:auto; }
+.popis { font-size:15.5px; color:var(--mid); margin-bottom:8px; max-width:480px; margin-left:auto; margin-right:auto; }
+
+.diagram { width:100%; max-width:280px; height:auto; margin:20px auto 4px; display:block; }
+.diagram .cara { fill:none; stroke:var(--silver); stroke-width:3; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:1000; stroke-dashoffset:1000; animation:kreslit-cestu 3s ease forwards; }
+.diagram .sipka { fill:var(--gold); opacity:0; animation:objevit-sipku 0.3s ease forwards; animation-delay:2.75s; }
+@keyframes kreslit-cestu { to { stroke-dashoffset:0; } }
+@keyframes objevit-sipku { to { opacity:1; } }
+@media (prefers-reduced-motion: reduce) {
+  .diagram .cara { animation:none; stroke-dashoffset:0; }
+  .diagram .sipka { animation:none; opacity:1; }
+}
+
+.pocitadlo-text { font-size:14.5px; color:var(--silver); margin-bottom:32px; }
+.pocitadlo-text strong { color:var(--gold-dark); font-weight:700; }
 
 .akce { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:56px; }
-.btn { display:inline-block; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; padding:13px 26px; border-radius:8px; text-decoration:none; }
+.btn { display:inline-flex; align-items:center; min-height:44px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; padding:13px 26px; border-radius:8px; text-decoration:none; }
 .btn-gold { background:var(--gold); color:var(--black); }
 .btn-gold:hover { background:var(--gold-dark); color:var(--white); }
 .btn-outline { border:1px solid var(--border-strong); color:var(--dark); }
 .btn-outline:hover { border-color:var(--gold-dark); color:var(--gold-dark); }
 
-.rychle { text-align:left; border-top:1px solid var(--border); padding-top:32px; }
-.rychle-nadpis { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--silver); margin-bottom:16px; text-align:center; }
-.rychle-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.rychle-link { display:block; background:var(--white); border:1px solid var(--border); border-radius:10px; padding:14px 16px; text-decoration:none; color:var(--dark); font-size:14px; font-weight:600; }
-.rychle-link:hover { border-color:var(--gold); color:var(--gold-dark); }
-
 @media(max-width:600px){
   .topbar{padding:14px 16px;}
-  .main{padding:56px 16px 80px;}
-  .rychle-grid{grid-template-columns:1fr;}
+  .main{padding:48px 16px 80px;}
+  .akce{flex-direction:column; align-items:stretch;}
+  .akce .btn{justify-content:center;}
 }
 </style>
 </head>
@@ -85,27 +93,40 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(26px,3.5vw,34px); font-we
 </div>
 
 <main class="main">
-  <div class="kod">404</div>
-  <h1>Tahle stránka tu není</h1>
-  <p class="popis">Odkaz je asi starý, nebo jste se překlepli v adrese. Appky i obsah Tokvy najdete odsud dál.</p>
+  <div class="kod">Chyba 404 · plýtvání hledáním</div>
+  <h1>Tahle stránka tu není. Hledání je plýtvání.</h1>
+  <p class="popis">Odkaz je starý nebo překlep. Než se ztratí další minuta, vyberte si, kam dál.</p>
+
+  <svg class="diagram" viewBox="0 0 320 150" aria-hidden="true">
+    <path class="cara" pathLength="1000" d="M20,120 C45,55 75,165 100,85 C115,35 60,10 68,55 C76,100 140,108 128,58 C118,10 182,0 192,46 C202,92 252,96 232,56 C218,26 262,16 282,42 L298,30" />
+    <polygon class="sipka" points="298,22 298,38 316,30" />
+  </svg>
+
+  <p class="pocitadlo-text">Na hledání jste tu zatím strávili <strong id="pocitadlo">0:00</strong>.</p>
 
   <div class="akce">
-    <a class="btn btn-gold" href="https://tokva.cz/">Zpět na Tokvu</a>
-    <a class="btn btn-outline" href="https://tokva.cz/nastroje/">Všechny appky</a>
-  </div>
-
-  <div class="rychle">
-    <div class="rychle-nadpis">Nejčastěji hledané</div>
-    <div class="rychle-grid">
-      <a class="rychle-link" href="https://tokva.cz/sklad/">Sklad</a>
-      <a class="rychle-link" href="https://tokva.cz/vyroba/">Výroba</a>
-      <a class="rychle-link" href="https://tokva.cz/administrativa/">Administrativa</a>
-      <a class="rychle-link" href="https://tokva.cz/lide-a-komunikace/">Lidé a komunikace</a>
-      <a class="rychle-link" href="https://tokva.cz/pro/">Tokva Pro</a>
-      <a class="rychle-link" href="https://tokva.cz/prihlaseni.html">Přihlásit se</a>
-    </div>
+    <a class="btn btn-gold" href="/nastroje/">Všechny appky</a>
+    <a class="btn btn-outline" href="/nastroje/meric-plytvani-free/">Měřič plýtvání</a>
+    <a class="btn btn-outline" href="/">Úvod Tokvy</a>
   </div>
 </main>
+
+<script>
+(function(){
+  var el = document.getElementById('pocitadlo');
+  if (!el) return;
+  var zacatek = Date.now();
+  function tik() {
+    var s = Math.floor((Date.now() - zacatek) / 1000);
+    var m = Math.floor(s / 60);
+    var ss = s % 60;
+    el.textContent = m + ':' + (ss < 10 ? '0' : '') + ss;
+  }
+  setInterval(tik, 1000);
+})();
+
+window.trackTokvaEvent('stranka_404', { cesta: window.location.pathname });
+</script>
 
 <script src="/cookies.js"></script>
 </body>
