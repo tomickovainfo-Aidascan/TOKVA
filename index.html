@@ -268,6 +268,8 @@ h1 { font-family:'Poppins',sans-serif; font-size:clamp(28px,4vw,44px); font-weig
 .btn-gold:hover { background:var(--gold-dark); color:var(--white); }
 .btn-outline { background:transparent; color:var(--dark); border:1.5px solid var(--border-strong); }
 .btn-outline:hover { border-color:var(--gold); color:var(--gold-dark); }
+.btn-maly { font-size:13px; padding:10px 16px; min-height:44px; display:inline-flex; align-items:center; }
+.krok-tlacitka { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
 
 section { padding:52px 0; border-top:1px solid var(--border2); }
 .section-title { font-family:'Poppins',sans-serif; font-weight:800; font-size:22px; letter-spacing:.2px; color:var(--dark); margin-bottom:10px; }
@@ -473,7 +475,7 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
     <div class="hero-text">
     <p class="pro-koho">Pro majitele malých výrobních firem, vedoucí skladů a mistry</p>
     <h1>Zjistěte, kde ve výrobě nebo skladu ztrácíte <span class="rotace"><span class="rotace__slova"><span class="rotace__slovo"><span>čas</span>.</span></span></span> <span style="display:block">A co změnit jako první.</span></h1>
-    <p class="lead">Přesčasy, zpožděné zakázky a&nbsp;pocit, že se pořád něco hasí? Často za tím jsou minuty chůze, hledání a&nbsp;čekání, které nikdo nevidí. Webová aplikace Tokva je změří a&nbsp;ukáže, kde začít.</p>
+    <p class="lead">Přesčasy, zpožděné zakázky a&nbsp;pocit, že se pořád něco hasí? Často za tím je plýtvání: minuty chůze, hledání a&nbsp;čekání, které nikdo nevidí. Webová aplikace Tokva je změří a&nbsp;ukáže, kde začít.</p>
     <p class="proof">Vyberte, co právě řešíte, a Tokva vám nabídne vhodný první krok. Bez instalace a znalosti metod.</p>
     <div class="hero-ctas">
       <a class="btn btn-gold" href="https://tokva.cz/vstup/" onclick="trackTokvaEvent('vstup_click',{placement:'hero'})">Chci otevřít Tokvu zdarma</a>
@@ -491,7 +493,7 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
   </section>
 
   <section class="pas pas-bila" aria-labelledby="bolesti-nadpis">
-    <h2 class="section-title" id="bolesti-nadpis">Poznáváte se?</h2>
+    <h2 class="section-title" id="bolesti-nadpis">Kde se ve výrobě a skladu ztrácí čas?</h2>
     <div class="bolesti">
       <div class="bolest odhal" style="--poradi:0"><h3>Chodí se pro věci</h3><p>Lidé celou směnu chodí pro věci, které by mohly ležet o pár metrů blíž. Chůze není v žádném výkazu.</p></div>
       <div class="bolest odhal" style="--poradi:1"><h3>Hledá se</h3><p>Materiál, nářadí, doklad, výkres. Pokaždé jen chvilka, ale za směnu se to nasčítá.</p></div>
@@ -545,15 +547,15 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
     <div class="kroky-karty">
       <div class="krok-karta odhal" style="--poradi:0">
         <picture><source srcset="obrazky/krok-1.webp" type="image/webp"><img src="obrazky/krok-1.jpg" width="800" height="749" alt="Výsledek kvízu Kde začít: doporučená oblast Sklad" loading="lazy"></picture>
-        <div class="krok-text"><span class="step-num">01</span><h3>Tokva vám ukáže, kde začít</h3><p>Pár jednoduchých otázek o vašem provozu a Tokva doporučí oblast, kterou má smysl řešit jako první.</p></div>
+        <div class="krok-text"><span class="step-num">01</span><h3>Tokva vám ukáže, kde začít</h3><p>Pár jednoduchých otázek o vašem provozu a Tokva doporučí oblast, kterou má smysl řešit jako první.</p><div class="krok-tlacitka"><a class="btn btn-obrys btn-maly" href="https://tokva.cz/kde-zacit/" onclick="trackTokvaEvent('nastroj_click',{placement:'kroky',tool:'kde_zacit'})">Chci zjistit, kde začít</a></div></div>
       </div>
       <div class="krok-karta odhal" style="--poradi:1">
         <picture><source srcset="obrazky/krok-2.webp" type="image/webp"><img src="obrazky/krok-2.jpg" width="800" height="806" alt="Spaghetti diagram: plánek skladu s nakreslenými trasami, celkem 78 metrů" loading="lazy"></picture>
-        <div class="krok-text"><span class="step-num">02</span><h3>Tokva vám pomůže změřit, jak velký je problém</h3><p>Provede vás jednoduchým měřením a výsledky přehledně zobrazí. Uvidíte, kde mizí čas a kolik vás to zhruba stojí.</p></div>
+        <div class="krok-text"><span class="step-num">02</span><h3>Tokva vám pomůže změřit, jak velký je problém</h3><p>Provede vás jednoduchým měřením a výsledky přehledně zobrazí. Uvidíte, kde mizí čas a kolik vás to zhruba stojí. Třeba <b>Měřičem plýtvání</b> změříte chůzi, hledání a čekání, <b>špagetovým diagramem</b> nakreslíte, kudy se chodí.</p><div class="krok-tlacitka"><a class="btn btn-obrys btn-maly" href="https://tokva.cz/nastroje/meric-plytvani-free/" onclick="trackTokvaEvent('nastroj_click',{placement:'kroky',tool:'meric_plytvani'})">Chci změřit plýtvání</a><a class="btn btn-obrys btn-maly" href="https://tokva.cz/nastroje/spaghetti-free/" onclick="trackTokvaEvent('nastroj_click',{placement:'kroky',tool:'spaghetti_diagram'})">Chci nakreslit špagetový diagram</a></div></div>
       </div>
       <div class="krok-karta odhal" style="--poradi:2">
         <picture><source srcset="obrazky/krok-3.webp" type="image/webp"><img src="obrazky/krok-3.jpg" width="800" height="746" alt="5× Proč AI kouč: pravděpodobná příčina a první krok do 24 hodin" loading="lazy"></picture>
-        <div class="krok-text"><span class="step-num">03</span><h3>Tokva pomůže najít příčinu a další krok</h3><p>Otázkami vás dovede k pravděpodobné příčině problému a pomůže určit, co změnit jako první.</p></div>
+        <div class="krok-text"><span class="step-num">03</span><h3>Tokva pomůže najít příčinu a další krok</h3><p>Otázkami vás dovede k pravděpodobné příčině problému a pomůže určit, co změnit jako první. Pomůže vám metoda <b>5× proč</b>.</p><div class="krok-tlacitka"><a class="btn btn-obrys btn-maly" href="https://tokva.cz/nastroje/5x-proc-ai-kouc/" onclick="trackTokvaEvent('nastroj_click',{placement:'kroky',tool:'5x_proc'})">Chci zkusit 5× proč</a></div></div>
       </div>
       <div class="krok-karta odhal" style="--poradi:3">
         <picture><source srcset="obrazky/krok-4.webp" type="image/webp"><img src="obrazky/krok-4.jpg" width="800" height="393" alt="Tokva Pro: porovnání dvou výpočtů, ztráta skladu s 5 lidmi klesla z 303 333 na 113 750 Kč ročně" loading="lazy"></picture>
@@ -561,7 +563,7 @@ html.pohyb .krok-karta.je-tu img{transform:scale(1);}
       </div>
     </div>
     <p class="kroky-pozn">Obrázky jsou z appky Tokva s ukázkovými daty.</p>
-    <dialog id="obr-okno" onclick="this.close()"><button type="button" class="ukazka-zavrit" aria-label="Zavřít">×</button><img src="" alt=""></dialog>
+    <dialog id="obr-okno" onclick="this.close()"><button type="button" class="ukazka-zavrit" aria-label="Zavřít">×</button><img src="" alt="Zvětšený obrázek"></dialog>
     <script>
     // Klepnutím na obrázek kroku se otevře ve velkém.
     document.querySelectorAll('.krok-karta img').forEach(function (i) {
