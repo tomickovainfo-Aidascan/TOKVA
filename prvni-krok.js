@@ -207,7 +207,7 @@
 
   // ---- Spaghetti diagram Pro ----
   function spaghetti() {
-    return { oblast: null, text: 'Vytiskněte diagram a položte ho na stůl tomu, kdo po té trase chodí. Jediná otázka: které kolečko je tady zbytečné? Pak přesuňte tři nejčastěji používané věci blíž a za týden nakreslete trasu znovu.', odkaz: null };
+    return { oblast: null, text: 'Vytiskněte diagram a položte ho na stůl tomu, kdo po té trase chodí. Jediná otázka: které kolečko je tady zbytečné? Pak přesuňte tři nejčastěji používané věci blíž a za 1 až 3 týdny nakreslete trasu znovu.', odkaz: null };
   }
 
   // ---- 5S pracoviště: první nedokončený krok ----

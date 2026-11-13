@@ -14,7 +14,7 @@
 //   audit a kvíz / náklady skladu / akční plán), název a odkaz.
 // data-nazev: nepovinné, přepíše název nástroje z tabulky (u Akčního plánu
 //   je to vždy název konkrétního úkolu, protože ten appka zná jen ona sama).
-// data-za-dni: za kolik dní (výchozí 10, tedy uprostřed doporučených 1 až 2 týdnů).
+// data-za-dni: za kolik dní (výchozí 10, v rozmezí doporučených 1 až 3 týdnů).
 (function () {
   'use strict';
 
